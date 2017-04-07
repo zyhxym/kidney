@@ -1,0 +1,18 @@
+<div class="msgbox image-msgbox {{'msgbox-'+direct}}">
+	<!-- display time -->
+	<div class="msg-time"><div>{{msg.createTimeInMillis | msgdate}}</div></div>
+	<!-- avatar -->
+	<img class="avatar" ng-src="{{msg.fromUser.avatarPath || 'img/max.png'}}" ng-click="emitEvent('profile',msg.fromID)"/>
+	<!-- chat bubble -->
+	<div class="msg-body media-image" ng-click="emitEvent('image','img',msg.content.localThumbnailPath,msg.serverMessageId)">
+		<!-- text content -->
+		<!-- <div class="media-image"> -->
+			<img ng-src="{{msg.content.localThumbnailPath}}"/>
+		<!-- </div> -->
+		
+	</div>
+	<!-- <div class="status">{{msg.status}} </div> -->
+</div>
+
+
+    <!-- padding-top: {{msg.content.format.height/msg.content.format.width*100 + '%' -->

@@ -1,0 +1,24 @@
+
+<ion-view view-title="进行中">
+    <ion-nav-bar class="bar-positive">
+      <ion-nav-back-button class="button-clear">
+        <i class="ion-arrow-left-c"></i>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-content>
+	    <div>
+		等待患者：{{patients.length}}
+		</div>
+        <div class="list">
+            <a class="item item-thumbnail-left" href="#/tab/detail" ng-repeat="p in patients">
+                <img src="img/{{p.head}}">
+				<div>
+                <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
+				<span class="mine-msg-right">{{p.time}}</span>
+                <p class="friend-detail-p" style="white-space:nowrap;">{{p.qs}}</p>
+				</div>
+            </a>      
+        </div>
+    </ion-content>
+</ion-view>
+

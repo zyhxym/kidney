@@ -1,0 +1,20 @@
+<div class="msgbox msgbox-card">
+	<!-- display time -->
+	<div class="msg-time"><div>{{msg.createTimeInMillis | msgdate}}</div></div>
+		<div class="media-card">
+			<div class="title">dfashf</div>
+			<hr/>
+			<div class="info">
+				<p><span>fsdfaf：</span>fddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</p>
+				
+				<p><span>adfdsfasf</span> dffdf</p>
+			</div>
+			<hr/>
+			<div class="img-info">图片</div>
+			<img ng-repeat="url in picurl" ng-src="{{url.src}}" ng-click="emitEvent('image','',url.src,url.hiRes)"/>
+		</div>
+		<!-- <div class="status">{{msg.status}} </div> -->
+
+		
+	</div>
+</div>

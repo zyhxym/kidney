@@ -1,0 +1,12 @@
+<div class="msgbox {{'msgbox-'+direct}}">
+	<!-- display time -->
+	<div class="msg-time"><div>{{msg.createTimeInMillis | msgdate}}</div></div>
+	<!-- avatar -->
+	<img class="avatar" ng-src="{{msg.fromUser.avatarPath || 'img/max.png'}}" ng-click="emitEvent('profile',msg.fromID)"/>
+	<!-- chat bubble -->
+	<div class="msg-body">
+		<!-- text content -->
+		<div class="media-text">{{msg.content.text}}</div>
+	</div>
+	<!-- <div class="status">{{msg.status}} </div> -->
+</div>

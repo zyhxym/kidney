@@ -1,0 +1,24 @@
+<!-- <ion-header-bar align-title="center" class="bar-positive">
+    <div class="buttons">
+        <button class="button button-icon ion-ios-arrow-left" ng-click="$ionicGoBack()">
+        </button>
+    </div>
+    <div class="h1 title login-title" >我的二维码</div>
+</ion-header-bar> -->
+<ion-view>
+    <ion-content has-bouncing="true" overflow-scroll="false">
+	    <div style="width:100%;height:100px;"></div>
+        <div style="width:280px;height:350px;display:block;margin:auto;padding-top:20px;padding-left:20px;border:solid lightblue">         
+		 <div style="width:100px;height:90px;float:left;padding-top:10px;padding-left:10px;"><img style="width:60px;height:60px;" ng-src="img/head/{{doctor.photoUrl}}"></div>
+		 <div style="width:150px;height:90px;float:left;padding-top:20px;">
+                <span>{{doctor.name}}</span> <span>{{doctor.title}}</span>
+                <p>{{doctor.workUnit}}&nbsp;&nbsp;&nbsp;{{doctor.department}}</p>
+		 </div>
+		 <div style="width:100%;padding-left:60px;"><img ng-src="img/qrcode.png"></div>
+		  <div style="width:100%;padding-left:30px;font-size:10px">长按扫一扫我的二维码，关注我</div>
+	    </div>
+    </ion-content>
+
+    <!--选择地区-->
+    <div class="js-citySelestNode tab-nav tabs hide-on-keyboard-open"  style="padding:0 10px;width:100%;height:auto;background-color:#fff;"></div>
+</ion-view>

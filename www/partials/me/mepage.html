@@ -1,0 +1,48 @@
+<ion-header-bar align-title="center" class="bar-stable">
+	<button class="button  button-clear icon ion-qr-scanner"></button>
+    <div class="h1 title"> 
+		  <label class="item item-input" >
+			  <i class="icon ion-search placeholder-icon"></i>
+			  <input type="text" placeholder="搜索联系人">
+        </label>
+    </div>
+	<button class="button button-clear icon ion-android-mail"></button>
+</ion-header-bar>
+<ion-view>
+    <ion-content has-bouncing="true" overflow-scroll="false" class="has-header has-tabs">
+        <ion-list>
+            <ion-item class="item-avatar item-icon-right item-button-right" type="item-text-wrap" href="#/tab/qrcode">
+                <img ng-src="img/{{doctor.photoUrl}}">
+                <h2>{{doctor.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{doctor.title}}</h2>
+                <p>{{doctor.workUnit}}&nbsp;&nbsp;{{doctor.department}}</p>
+				<img ng-src="img/default_user.png" style="width:50px;height:50px;position: absolute;right: 60px;top:10px;">
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </ion-item>
+            <a class="item item-icon-left" href="#/tab/myinfo">
+                <i class="icon ion-ios-pricetags-outline"></i>
+                我的资料
+                <span class="badge badge-positive">></span>
+            </a>
+            <a class="item item-icon-left" href="#/tab/myfee">
+                <i class="icon ion-android-globe"></i>
+                收费定制
+                <span class="badge badge-positive">></span>
+            </a>
+			 <a class="item item-icon-left" href="#/tab/feedback">
+                <i class="icon ion-android-star"></i>
+                我的评价
+                <span class="badge badge-positive">></span>
+            </a>
+            <a class="item item-icon-left" href="#/tab/set">
+                <i class="icon ion-ios-gear-outline"></i>
+                设置
+				<span class="badge badge-positive">></span>
+            </a>
+			<a class="item item-icon-left" href="#/tab/about">
+                <i class="icon ion-information"></i>
+                关于
+				<span class="badge badge-positive">></span>
+            </a>
+        </ion-list>
+    </ion-content>
+</ion-view>

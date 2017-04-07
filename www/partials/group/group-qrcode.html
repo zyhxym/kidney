@@ -1,0 +1,16 @@
+<ion-view hide-tabs view-title="团队二维码">
+  <ion-content class="padding gray-back">
+  
+  <div class="qr-code">
+    <div >
+      <img src="img/ionic.png"/>
+      <div class="title">肾病管理医学团队</div>
+    </div>
+    <div>
+      <qrcode  version=3 error-correction-level="M" size="250" data="{{params.groupId}}" download></qrcode>
+      <div style="color:#888;margin-top:10px">扫一扫，加入群聊</div>
+    </div>
+  </div>
+
+  </ion-content>
+</ion-view>

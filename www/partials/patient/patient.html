@@ -1,0 +1,15 @@
+<ion-view view-title="患者列表">
+    <ion-content>
+        <div class="list">
+            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients">
+                <img src="img/default_user.png">
+				<div>
+                <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
+				<span class="mine-msg-right">{{p.symptom}}</span>
+                <p class="friend-detail-p">预约时间{{p.appoint}}</p>
+				</div>
+            </a>      
+        </div>
+    </ion-content>
+</ion-view>
+

@@ -1,0 +1,34 @@
+<!-- <ion-header-bar align-title="center" class="bar-stable">
+    <div class="buttons">
+        <button class="button button-icon ion-ios-arrow-left" ng-click="$ionicGoBack()">
+        </button>
+    </div>
+    <div class="h1 title login-title" >患者详情</div>
+</ion-header-bar> -->
+<ion-view view-title="患者详情">
+    <ion-content class="has-header">
+        <div class="list card">  
+            <ion-item class="item item-avatar" href="#/tab/detail">
+				<img src="img/{{p.head}}">
+				<span>{{p.name}}</span><span>&nbsp;&nbsp;&nbsp;{{p.gender}}</span>&nbsp;&nbsp;&nbsp;<span>{{p.birthday}}</span>
+				<p>身份证号 {{p.IDNo}}</p>
+				<p>地区 {{p.provice}} {{p.city}}</p>
+				<p>是否VIP {{p.VIP}}</p>
+				<p>是否有高血压 {{p.hypertension}}</p>
+			</ion-item>	
+
+			<button class="button button-block" ng-click="goToDiagnose()">Diagnose</button>		
+				
+            <ion-item>
+			     最近就诊信息
+			</ion-item>		
+			<ion-item ng-repeat="di in diagnosisInfo">
+			     <h2>{{di.time}}</h2>
+				 <p>就诊医院 {{di.hosptial}}</p>
+				 <p>就诊科室 {{di.department}}</p>
+				 <p>就诊诊断 {{di.diagnosis}}</p>
+			</ion-item>				
+        </div>
+    </ion-content>
+</ion-view>
+

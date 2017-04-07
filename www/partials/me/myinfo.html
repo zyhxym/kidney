@@ -1,0 +1,84 @@
+<!-- <ion-header-bar align-title="center" class="bar-positive">
+    <div class="buttons">
+        <button class="button button-icon ion-ios-arrow-left" ng-click="$ionicGoBack()">
+        </button>
+    </div>
+    <div class="h1 title login-title" >个人资料</div>
+	<button class="button ion-edit button-stable" ng-click="toggle()">编辑</button>
+</ion-header-bar> -->
+<ion-view>
+    <ion-content>
+        <div class="blank-h12"></div>
+		
+		<div ng-show="myDiv">
+        <ion-item>
+            <span class="msg">姓名</span>
+			<p class="myinfo-msg-right">{{doctor.name}}</p>
+       
+        </ion-item>
+        <ion-item>
+            <span class="msg">我的头像</span>
+			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/head/{{doctor.photoUrl}}"></p>
+
+        </ion-item>
+        <ion-item>
+            <span class="msg">我的职位</span>
+			<p class="myinfo-msg-right">{{doctor.title}}</p>
+
+        </ion-item>
+        <ion-item>
+            <span class="msg">我的医院</span>
+			<p class="myinfo-msg-right">{{doctor.workUnit}}</p>
+
+        </ion-item>
+		<ion-item>
+            <span class="msg">我的科室</span>
+			<p class="myinfo-msg-right">{{doctor.department}}</p>
+
+        </ion-item>
+		<ion-item>
+            <span class="msg">我的擅长</span>
+			<p class="myinfo-msg-right">{{doctor.major}}</p>
+
+        </ion-item>
+		</div>
+		
+		<div ng-show="updateDiv">
+			<ion-item>
+				<span class="msg">姓名</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.name"></p>
+			</ion-item>
+			<ion-item>
+				<span class="msg">我的头像</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/{{user.photoUrl}}"></p>
+			</ion-item>
+			<ion-item>
+				<span class="msg">我的职位</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.title"></p>
+			</ion-item>
+			<ion-item>
+				<span class="msg">我的医院</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.workUnit"></p>
+			</ion-item>
+			<ion-item>
+				<span class="msg">我的科室</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.department"></p>
+			</ion-item>
+			<ion-item>
+				<span class="msg">我的擅长</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.major"></p>
+			</ion-item>
+			
+			<ion-item>
+			<button class="btn btn-success" ng-click="toggle()"><span class="glyphicon glyphicon-save"></span>修改</button>
+			</ion-item>
+        </div>
+    </ion-content>
+	
+</ion-view>

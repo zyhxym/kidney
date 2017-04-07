@@ -1,0 +1,50 @@
+<ion-view hide-tabs view-title="新建团队">
+<!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+ <!--    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons> -->
+  <ion-content  class="gray-back">
+	<div style="background-color: #FFF" class="list">
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">团队名</span>
+    <input type="text" placeholder="请输入">
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">key1</span>
+    <input type="text" placeholder="请输入">
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">key2</span>
+    <input type="text" placeholder="请输入">
+  </label>
+</div>
+<div class="item">添加成员</div>
+<div style="background-color: #FFF" class="padding">
+        <div class="avatar-item" ng-repeat="member in group.members">
+            <img src="{{member.url}}" />
+            <div>{{member.name}}</div>
+        </div>
+        <div style="vertical-align: top" class="avatar-item" ng-click="addMember()">
+            <div style="width:100%;padding: 10%;
+		  box-sizing: border-box;
+		  position: relative;border:1px  solid #aaa;font-size:3em;color:#aaa">
+                <i class="icon ion-android-add"></i>
+            </div>
+        </div>
+			</div>
+<!-- <div class="list margin-list">
+			<a class="item " href="#">
+		    添加成员<div class="item-span">几人</div>
+		  </a>
+		  div
+		</div> -->
+  </ion-content>
+  <div style="width:100%;position: absolute;bottom:30px;padding-bottom:10px ;background-color: transparent;border-width:0;z-index:99" >
+  <a style="width:120px;margin:auto;text-align:center;box-shadow: 1px 1.5px 3px #aaa;font-size:1.1em;padding:10px 16px" class="item" href="#">
+		    <!-- <i class="icon ion-android-pin"></i> -->
+		    创建
+		  </a>
+		  </div>
+</ion-view>

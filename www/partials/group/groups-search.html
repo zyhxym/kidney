@@ -1,0 +1,41 @@
+<ion-view  hide-tabs view-title="new TEAM( )">
+<!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-qr-scanner" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons>
+  <ion-content class="gray-back">
+
+ <div class="bar item-input-inset bar-light">
+    <div class="item-input-wrapper">
+      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+      <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索群号">
+      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+    </div>
+    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+  </div> 
+  <div style="width:100%;background-color: #FFF;height:2.4em;margin-top:2.8em;line-height: 2.4em;font-size:1.3em;padding:0 1.5em">
+  <div>
+    <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 群推荐
+  </div>
+  </div>
+    <ion-list">
+  
+      <ion-item class="item-avatar" type="item-text-wrap" href="#tab/groups/add/111111">
+        <img ng-src="img/avatar.png">
+        <h2>范德萨</h2>
+        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>56</span></div>
+        <p>使用扫一扫或者群号搜索功能加入团队</p>
+      
+      </ion-item>
+      <ion-item class="item-avatar" type="item-text-wrap"  href="#tab/groups/add/333333">
+        <img ng-src="img/avatar.png">
+        <h2>罗斯伯格</h2>
+        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>56</span></div>
+        <p>通过群号搜索，点击搜索结果，跳转界面7.4.</p>
+      
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

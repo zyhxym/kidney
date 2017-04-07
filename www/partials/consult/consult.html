@@ -1,0 +1,38 @@
+<ion-view>
+    <ion-nav-bar class="bar-positive">
+        <ion-nav-buttons side="left">
+          <a class="button button-icon icon ion-qr-scanner" ng-click=""></a>
+        
+        <input ng-model="tag" style="left:12%;bottom:5px;position:absolute;padding-left:23px" auto-focus-when="focus" placeholder="搜索联系人" ng-model="searchInput">
+        </ion-nav-buttons>
+        <ion-nav-buttons side="right">
+          <a class="button button-icon icon ion-android-mail" ng-click="popover.show($event)"></a>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-content has-bouncing="true" overflow-scroll="false">  
+       <div class="blank-h12"></div>
+	    <div>进行中</div>
+        <div class="card">
+            <a href="#/tab/doing" class="subdued">
+                <div class="item item-text-wrap"">
+				    <i class="icon ion-calendar"></i>
+					{{riqi}}&nbsp;&nbsp;&nbsp;
+                    {{doctor.a}}位  等待咨询患者
+					<i class="icon ion-chevron-right mine-msg-right"></i>
+                </div>
+            </a>
+        </div>
+		<div>已完成</div>
+        <div class="card">
+            <a href="#/tab/did" class="subdued">
+                <div class="item item-text-wrap">
+				    <i class="icon ion-android-clipboard"></i>
+                    {{riqi}}&nbsp;&nbsp;&nbsp;
+                    {{doctor.b}}位  已完成咨询
+					<i class="icon ion-chevron-right mine-msg-right"></i>
+                </div>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>
+<!-- 页面下方按钮-tab -->

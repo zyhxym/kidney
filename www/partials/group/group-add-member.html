@@ -1,0 +1,28 @@
+<ion-view hide-tabs view-title="选择医生">
+  <ion-content class="gray-back">
+  <div class="bar item-input-inset bar-light">
+    <div class="item-input-wrapper">
+      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+      <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索联系人">
+      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+    </div>
+    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+  </div> 
+  <!-- <div > -->
+  <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
+        <img ng-src="{{chat.face}}">
+        <h2>{{chat.name}}</h2>
+        <p>{{chat.lastText}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(chat)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+
+      <ion-item>医生1</ion-item>
+      <ion-item>医生2</ion-item>
+      <ion-item>医生3</ion-item>
+
+  </ion-content>
+</ion-view>

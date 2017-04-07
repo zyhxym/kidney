@@ -1,0 +1,22 @@
+<ion-view view-title="done">
+    <ion-nav-bar class="bar-positive">
+      <ion-nav-back-button class="button-clear">
+        <i class="ion-arrow-left-c"></i>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-content>
+		<div>
+		已完成：{{patients.length}}
+		</div>
+        <div class="list">
+            <a class="item item-thumbnail-left" href="#/tab/detail" ng-repeat="p in patients">
+                <img src="img/{{p.head}}">
+				<div>
+                <span>{{p.name}}</span><span>{{p.gender}}</span><span>{{p.age}}</span>
+				</div>
+                <p><i class="icon ion-android-hand"></i>{{p.qs}}</p>
+				<span class="mine-msg-right">{{p.time}}</span>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

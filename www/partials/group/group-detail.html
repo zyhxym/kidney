@@ -1,0 +1,38 @@
+<ion-view  hide-tabs view-title="团队信息">
+    <!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+    <!--    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons> -->
+    <ion-content class=" gray-back">
+        <div style="background-color: #FFF" class="padding">
+        <div class="avatar-item" ng-repeat="member in group.members">
+            <img src="{{member.url}}" />
+            <div>{{member.name}}</div>
+        </div>
+        <div style="vertical-align: top" class="avatar-item" ng-click="addMember()">
+            <div style="width:100%;padding: 10%;
+		  box-sizing: border-box;
+		  position: relative;border:1px  solid #aaa;font-size:3em;color:#aaa">
+                <i class="icon ion-android-add"></i>
+            </div>
+        </div>
+			</div>
+        <div class="list margin-list">
+            <div class="item item-icon-right" href="#">
+                团队名称
+                <span class="item-note">BME319</span>
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <a class="item item-icon-right" ng-click="showQRCode()">
+                团队二维码
+                <!-- <span class="item-note">BME319</span> -->
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </a>
+        </div>
+        <!-- </div> -->
+    </ion-content>
+</ion-view>

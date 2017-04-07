@@ -20,7 +20,25 @@
     "cordova-plugin-statusbar",
     "cordova-plugin-device",
     "cordova-plugin-splashscreen",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-compat",
+    {
+      "id": "jmessage-phonegap-plugin",
+      "locator": "jmessage-phonegap-plugin-2.2.0",
+      "variables": {
+        "APP_KEY": "c0524084aee992b10b9ef922"
+      }
+    },
+    "cordova-plugin-media",
+    "cordova-plugin-file",
+    "cordova-plugin-camera"
   ],
-  "cordovaPlatforms": []
+  "cordovaPlatforms": [
+    "android",
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
+  ]
 }

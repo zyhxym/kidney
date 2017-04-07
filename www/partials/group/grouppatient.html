@@ -1,0 +1,83 @@
+<ion-view title="团队病例">
+<!--   <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>
+    
+  </ion-nav-bar> -->
+  <!-- <div class="bar bar-subheader item-input-inset bar-light">
+    <div class="item-input-wrapper">
+      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+      <input type="search" ng-blur="doResume()" ng-model="query.groupname" ng-change="startSearch(query)" placeholder="搜索团队名称">
+      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+    </div> -->
+    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+  <!-- </div> -->
+  <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
+  <ion-content padding="true" style="">
+<!--     <div ng-if="searchflag">
+      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.groupname}}<span></a>
+      <hr class="list" />
+    </div> -->
+    <lable>进行中：{{ongoingcounts}}</lable>
+    <ion-list> 
+      <div ng-repeat="grouppatient in grouppatients1 |filter:byRange()|filter: query" collection-item-height="94px" ng-click="groupcommunication(grouppatient)">
+        <div class="row" style="height:88px">
+          <div class = col-25>
+            <img ng-src="{{grouppatient.photoAdd}}" style="height: 70px;width: 70px; padding-left: 5px">
+          </div>
+          <div class = col-75>
+            <div class = "row">
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.name}}</span>
+              </div>
+              <div class = col-10>
+                <span style="float:left">{{grouppatient.gender}}</span>
+              </div>
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.age}}岁</span>
+              </div>
+              <div class = col-50>
+                <span style="float:right">{{grouppatient.lasttime}}</span>
+              </div>
+            </div>
+            <div>
+              <span style="float:left">{{grouppatient.question}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </ion-list>
+    <lable>已处理：{{finishedcounts}}</lable>
+    <ion-list> 
+      <div ng-repeat="grouppatient in grouppatients2 |filter:byRange()|filter: query" collection-item-height="94px" ng-click="groupcommunication(grouppatient)">
+        <div class="row" style="height:88px">
+          <div class = col-25>
+            <img ng-src="{{grouppatient.photoAdd}}" style="height: 70px;width: 70px; padding-left: 5px">
+          </div>
+          <div class = col-75>
+            <div class = "row">
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.name}}</span>
+              </div>
+              <div class = col-10>
+                <span style="float:left">{{grouppatient.gender}}</span>
+              </div>
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.age}}岁</span>
+              </div>
+              <div class = col-50>
+                <span style="float:right">{{grouppatient.lasttime}}</span>
+              </div>
+            </div>
+            <div>
+              <span style="float:left">{{grouppatient.question}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </ion-list>
+  </ion-content>
+          
+</ion-view>

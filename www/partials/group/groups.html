@@ -1,0 +1,37 @@
+<ion-view view-title="TEAMS">
+<!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons>
+    <!-- <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons> -->
+  <ion-content>
+    <ion-list>
+  
+
+      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#tab/groups/chat/435343">
+        <img ng-src="img/avatar.png">
+        <h2>范德萨</h2>
+        <p>使用扫一扫或者群号搜索功能加入团队</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(chat)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" type="item-text-wrap" href="#tab/groups/chat/435343">
+        <img ng-src="img/avatar.png">
+        <h2>范德萨</h2>
+        <p>通过群号搜索，点击搜索结果，跳转界面7.4.</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(chat)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

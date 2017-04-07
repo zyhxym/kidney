@@ -1,0 +1,27 @@
+<!-- <ion-header-bar align-title="center" class="bar-stable">
+    <div class="buttons">
+        <button class="button button-icon ion-ios-arrow-left" ng-click="$ionicGoBack()">
+        </button>
+    </div>
+    <div class="h1 title login-title" >收费定制</div>
+</ion-header-bar> -->
+<ion-view>
+    <ion-content>
+        <div class="blank-h12"></div>
+        <ion-item>
+            <span class="msg">咨询收费</span>
+			<p class="myinfo-msg-right"><input type=text ng-model="doctor.charge1">20</p>
+            <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">问诊收费</span>
+			<p class="myinfo-msg-right"><input type=text ng-model="doctor.charge2">100</p>
+		    <i class="icon ion-edit mine-msg-right"></i>
+			
+        </ion-item>
+        <div class="blank-h12"></div>
+        <button class="button button-positive mine-verfy-btn" ng-click="save()">保存修改</button>
+
+      
+    </ion-content>
+</ion-view>
