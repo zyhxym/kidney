@@ -62,9 +62,18 @@ angular.module('kidney.directives', ['kidney.services'])
     return {
         restrict:'AE',
         link:function($scope){
-            $rootScope.hideTabs = 'tabs-item-hide';
-            $scope.$on('$destroy',function(){
-                $rootScope.hideTabs = ' ';
+            $scope.$on('$ionicView.beforeEnter',function(){
+                $rootScope.hideTabs = 'tabs-item-hide';
+            })
+        }
+    }
+})
+.directive('showTabs',function($rootScope){ 
+    return {
+        restrict:'AE',
+        link:function($scope){
+            $scope.$on('$ionicView.beforeEnter',function(){
+                $rootScope.hideTabs = '';
             })
         }
     }

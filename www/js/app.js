@@ -244,8 +244,8 @@ angular.module('kidney',[
         url: '/groups',
         views: {
             'tab-groups':{
-                controller: 'mygrouplistCtrl',
-                templateUrl: 'partials/group/mygrouplist.html'
+                controller: 'groupsCtrl',
+                templateUrl: 'partials/group/groups.html'
             }
         }
     })
@@ -304,30 +304,22 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-chat', {
-            url: '/groups/chat/:type/:groupId',
+            url: '/groups/chat/:type/:teamId/:groupId',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-chat.html',
                     controller: 'GroupChatCtrl'
                 }
             }
+
         })
-    .state('tab.group-discuss',{
-        url:'/groups/discuss/:groupId',
-        views: {
-                'tab-groups': {
-                    templateUrl: 'partials/group/group-discuss.html',
-                    controller: 'GroupDiscussCtrl'
-                }
-            }
-    })
-    .state('tab.grouppatient', {
+    .state('tab.group-patient', {
         // cache: false,
-        url: '/grouppatient',
+        url: '/group/:teamId/patients',
         views: {
             'tab-groups':{
-                controller: 'grouppatientCtrl',
-                templateUrl: 'partials/group/grouppatient.html'
+                controller: 'groupPatientCtrl',
+                templateUrl: 'partials/group/group-patient.html'
             }
         }
     })

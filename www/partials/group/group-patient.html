@@ -1,0 +1,121 @@
+<ion-view title="团队病例">
+    <ion-nav-bar>
+        <ion-nav-buttons side="left">
+            <button class="button button-icon icon ion-android-arrow-back" ng-click="backToGroups()"></button>
+        </ion-nav-buttons>
+        <!-- <ion-nav-back-button> -->
+        <!-- </ion-nav-back-button> -->
+    </ion-nav-bar>
+    <!-- <div class="bar bar-subheader item-input-inset bar-light">
+    <div class="item-input-wrapper">
+      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+      <input type="search" ng-blur="doResume()" ng-model="query.groupname" ng-change="startSearch(query)" placeholder="搜索团队名称">
+      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+    </div> -->
+    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+    <!-- </div> -->
+    <ion-content class="gray-back">
+        <!--     <div ng-if="searchflag">
+      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.groupname}}<span></a>
+      <hr class="list" />
+    </div> -->
+        <!--     <lable>进行中：{{grouppatients1.length}}</lable>
+    <ion-list> 
+      <div ng-repeat="grouppatient in grouppatients1 |filter:byRange()|filter: query" collection-item-height="94px" ng-click="groupcommunication(grouppatient)">
+        <div class="row" style="height:88px">
+          <div class = col-25>
+            <img ng-src="{{grouppatient.photoAdd}}" style="height: 70px;width: 70px; padding-left: 5px">
+          </div>
+          <div class = col-75>
+            <div class = "row">
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.name}}</span>
+              </div>
+              <div class = col-10>
+                <span style="float:left">{{grouppatient.gender}}</span>
+              </div>
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.age}}岁</span>
+              </div>
+              <div class = col-50>
+                <span style="float:right">{{grouppatient.lasttime}}</span>
+              </div>
+            </div>
+            <div>
+              <span style="float:left">{{grouppatient.question}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </ion-list>
+    <lable>已处理：{{grouppatients2.length}}</lable>
+    <ion-list> 
+      <div ng-repeat="grouppatient in grouppatients2 |filter:byRange()|filter: query" collection-item-height="94px" ng-click="groupcommunication(grouppatient)">
+        <div class="row" style="height:88px">
+          <div class = col-25>
+            <img ng-src="{{grouppatient.photoAdd}}" style="height: 70px;width: 70px; padding-left: 5px">
+          </div>
+          <div class = col-75>
+            <div class = "row">
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.name}}</span>
+              </div>
+              <div class = col-10>
+                <span style="float:left">{{grouppatient.gender}}</span>
+              </div>
+              <div class = col-20>
+                <span style="float:left">{{grouppatient.age}}岁</span>
+              </div>
+              <div class = col-50>
+                <span style="float:right">{{grouppatient.lasttime}}</span>
+              </div>
+            </div>
+            <div>
+              <span style="float:left">{{grouppatient.question}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </ion-list> -->
+        <div style="width:100%;background-color: #FFF;height:2.4em;line-height: 2.4em;font-size:1.3em;padding:0 1.5em">
+            <div>
+                <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 进行中：{{grouppatients1.length}}
+            </div>
+        </div>
+        <ion-list>
+            <ion-item ng-repeat="grouppatient in grouppatients1" class="item-avatar" type="item-text-wrap" ng-click="goChat(grouppatient.patientID)">
+                <img ng-src="{{grouppatient.photoAdd}}">
+                <div>
+                    <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.name}}</div>
+                    <div style="display:inline-block">{{grouppatient.gender}} {{grouppatient.age}}岁</div>
+                    <div style="display:inline-block;float:right">{{grouppatient.lasttime}}</div>
+                </div>
+                <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
+                <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.question}}</div>
+                <div style="display:inline-block;float:right"><i class="icon ion-android-pin"></i> 位置</div>
+                <p><i class="icon ion-android-car"></i>The cordova.plugins.Keyboard object provides functions to make interacting with the keyboard easier, and fires events to indicate that the keyboard will hide/show.</p>
+            </ion-item>
+        </ion-list>
+        <div style="width:100%;background-color: #FFF;height:2.4em;line-height: 2.4em;margin-top:1.5em;font-size:1.3em;padding:0 1.5em">
+            <div>
+                <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 已处理：{{grouppatients2.length}}
+            </div>
+        </div>
+        <ion-list class="margin-list">
+            <ion-item ng-repeat="grouppatient in grouppatients2" class="item-avatar" type="item-text-wrap">
+                <img ng-src="{{grouppatient.photoAdd}}">
+                <div>
+                    <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.name}}</div>
+                    <div style="display:inline-block">{{grouppatient.gender}} {{grouppatient.age}}岁</div>
+                    <div style="display:inline-block;float:right">{{grouppatient.lasttime}}</div>
+                </div>
+                <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
+                <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.question}}</div>
+                <div style="display:inline-block;float:right"><i class="icon ion-android-pin"></i> 位置</div>
+                <p><i class="icon ion-android-car"></i>The cordova.plugins.Keyboard object provides functions to make interacting with the keyboard easier, and fires events to indicate that the keyboard will hide/show.</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
