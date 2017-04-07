@@ -162,16 +162,7 @@ angular.module('kidney',[
         }
     })
 
-    .state('tab.groups', {
-        // cache: false,
-        url: '/groups',
-        views: {
-            'tab-groups':{
-                controller: 'mygrouplistCtrl',
-                templateUrl: 'partials/group/mygrouplist.html'
-            }
-        }
-    })
+    
 
     //"我"页面
     .state('tab.me', {
@@ -248,7 +239,16 @@ angular.module('kidney',[
     })
 
     // views-tab-groups
-
+    .state('tab.groups', {
+        // cache: false,
+        url: '/groups',
+        views: {
+            'tab-groups':{
+                controller: 'mygrouplistCtrl',
+                templateUrl: 'partials/group/mygrouplist.html'
+            }
+        }
+    })
     .state('tab.new-group', {
         url: '/newgroup',
         views: {
