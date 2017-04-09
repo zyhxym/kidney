@@ -3,9 +3,9 @@ angular.module('kidney.directives', ['kidney.services'])
 //XJZ
 .directive('myMessage',['Storage',function(Storage){
     var picArr=[
-                {"src":"img/sky.png","hiRes":"img/start.png"},
-                {"src":"img/avatar.png","hiRes":"img/bigPic.jpg"},
-                {"src":"img/max.png","hiRes":"img/max.png"}
+                {"src":"img/default_user.png","hiRes":"img/avatar.png"},
+                {"src":"img/ionic.png","hiRes":"img/avatar.jpg"},
+                {"src":"img/max.png","hiRes":"img/avatar.png"}
             ];
     return {
         template: '<div ng-include="getTemplateUrl()"></div>',
@@ -18,9 +18,14 @@ angular.module('kidney.directives', ['kidney.services'])
             var type='';
             $scope.getTemplateUrl = function(){
                 if($scope.msg.contentType=='custom'){
+                    // type=$scope.msg.content.contentStringMap.type;
+                    // $scope.customMsgUrl=JSON.parse($scope.msg.content.contentStringMap.picurl);
+                    // $scope.customMsg=JSON.parse($scope.customMsg);
+                    // console.log($scope.customMsgUrl);
                     type=$scope.msg.content.contentStringMap.type;
                     return 'templates/msg/'+ type+'.html';
                 }
+                // type=$scope.msg.contentType=='custom'?$scope.msg.content.contentStringMap.type:$scope.msg.contentType;
                 type=$scope.msg.contentType;
                 return 'templates/msg/'+type+'.html';
             }
@@ -28,8 +33,24 @@ angular.module('kidney.directives', ['kidney.services'])
             $scope.emitEvent = function(code){
               $scope.$emit(code,arguments);
             }
-            $scope.direct = $scope.msg.fromID==window.JMessage.username?'right':'left';
+            // $scope.direct = $scope.msg.fromID==window.JMessage.username?'right':'left';
+            
+            // $scope.showProfile = function(){
+            //     console.log($scope.msg.fromID);
+            // }
+            // $scope.viewImage= function(thumb,url){
+            //     if(type=='image'){
+            //         //image massage
+            //         $scope.$emit('viewImage',type,thumb,$scope.msg.serverMessageId);
+            //     }else{
+            //         //image in card
+            //         $scope.$emit('viewImage',type,thumb,url);
+            //     }
+            // };
             $scope.picurl=picArr;
+            // $scope.playVoice = function(){
+
+            // }
         }
     }
 }])
@@ -56,6 +77,83 @@ angular.module('kidney.directives', ['kidney.services'])
         }
     }
 }])
+//加载数据的loading spin
+    //xjz
+    .directive('mySpin',[function(){
+          var opts = {
+        lines: 9 // The number of lines to draw
+      , length: 0 // The length of each line
+      , width: 8 // The line thickness
+      , radius: 10 // The radius of the inner circle
+      , scale: 1 // Scales overall size of the spinner
+      , corners: 1 // Corner roundness (0..1)
+      , color: '#FFF' // #rgb or #rrggbb or array of colors
+      , opacity: 0.35 // Opacity of the lines
+      , rotate: 0 // The rotation offset
+      , direction: 1 // 1: clockwise, -1: counterclockwise
+      , speed: 1 // Rounds per second
+      , trail: 44 // Afterglow percentage
+      , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+      , zIndex: 2e9 // The z-index (defaults to 2000000000)
+      , className: 'spinner' // The CSS class to assign to the spinner
+      , top: '50%' // Top position relative to parent
+      , left: '50%' // Left position relative to parent
+      , shadow: true // Whether to render a shadow
+      , hwaccel: false // Whether to use hardware acceleration
+      , position: 'absolute' // Element positioning
+      };
+        return{
+            restrict:'A',
+            link:function(scope,elem,attr){
+                scope.$watch(attr.mySpin, function(value) {
+                    if(value=='send_going'){
+                        scope.spin=new Spinner(opts).spin(elem[0]);
+                    }else if(scope.spin){
+                        scope.spin.stop();
+                        scope.spin=null;
+                    }
+                  });
+            }
+        }
+    }])
+    .directive('mySmallSpin',[function(){
+          var opts = {
+        lines: 9 // The number of lines to draw
+      , length: 0 // The length of each line
+      , width: 6 // The line thickness
+      , radius: 7 // The radius of the inner circle
+      , scale: 1 // Scales overall size of the spinner
+      , corners: 1 // Corner roundness (0..1)
+      , color: '#000' // #rgb or #rrggbb or array of colors
+      , opacity: 0.35 // Opacity of the lines
+      , rotate: 0 // The rotation offset
+      , direction: 1 // 1: clockwise, -1: counterclockwise
+      , speed: 1 // Rounds per second
+      , trail: 44 // Afterglow percentage
+      , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+      , zIndex: 2e9 // The z-index (defaults to 2000000000)
+      , className: 'spinner' // The CSS class to assign to the spinner
+      , top: '50%' // Top position relative to parent
+      , left: '50%' // Left position relative to parent
+      , shadow: false // Whether to render a shadow
+      , hwaccel: false // Whether to use hardware acceleration
+      , position: 'absolute' // Element positioning
+      };
+
+        return{
+            restrict:'A',
+            link:function(scope,elem,attr){
+                scope.$watch(attr.mySmallSpin, function(value) {
+                    if(value=='send_going'){
+                        scope.spin=new Spinner(opts).spin(elem[0]);
+                    }else if(scope.spin){
+                        scope.spin.stop();
+                        scope.spin=null;
+                    }
+                  });
+            }
+        }
+    }])
 //隐藏tab栏，建议在所有二级页面上都使用
 //XJZ
 .directive('hideTabs',function($rootScope){ 
@@ -114,7 +212,7 @@ angular.module('kidney.directives', ['kidney.services'])
 
 // 写评论的五角星
 .directive('ionicRatings',ionicRatings)
-;
+
 
 function ionicRatings() {
     return {
@@ -194,4 +292,3 @@ function ionicRatings() {
     }
 }
 
-  

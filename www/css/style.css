@@ -54,7 +54,7 @@
   /*line-height: 20px;*/
   padding-top: 0;
   padding-bottom: 0;
-  transition: 0.09s all linear;
+  transition: 0.08s all linear;
 }
 .hide-animate.ng-hide {
   line-height: 0px;
@@ -67,78 +67,102 @@
     .msgbox {
         /*display: list-item;*/
         /*position: relative;*/
-        float: left;
+        /*float: left;*/
         width: 100%;
-        margin-top: 1em ;
+        margin-top: 1em;
+        padding:0 0.6em;
     }
     .msg-time{
         /*padding:2px 4px;*/
         width:100%;
         text-align: center;
-        margin:2px;
+        margin-bottom:4px;
     }
-    .msg-time div{
-        font-size:0.7em;
+    .msg-time span{
+        /*word-break: */
+        font-size:0.85em;
         color:#FFF;
-        background-color: #F1F1F1;
-        display: inline-block;
+        background-color: #DDD;
+        /*display: inline-block;*/
         border-radius: 3px;
-        padding:0px 2px;
+        padding:2px 4px;
     }
-    /*left:receive*/
-    /*right:send*/
+    .msg-fail{
+        width:100%;
+        float:right;
+        text-align: right;
+        padding-right:3.7em;
+    }
+    .msg-fail span{
+        font-size:0.9em;
+        color:#B71C1C;
+    }
+    .status{
+        position:relative;
+        float:inherit;
+        margin:0 -0.7em;
+        height:3em;
+        width:2.5em;
+    }
     .msgbox .avatar {
-        /*float: left;*/
-        /*display: block;*/
-        /*display:inline;*/
-        vertical-align: top;
-        display: inline-block;
-        width: 3em;
-        height: 3em;
-    }
-    /*.float-left {
-        float: left;
-    }
-    .float-right {
-        float: right;
-    }*/
-    .msgbox-left .avatar {
-        float: left;
-    }
+    /*float: left;*/
+    /*display: block;*/
+    /*display:inline;*/
+    vertical-align: top;
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+}
+/*.float-left {
+    float: left;
+}
+.float-right {
+    float: right;
+}*/
+.msgbox-receive{
+    float: left;
+}
 
-    .msgbox-right .avatar {
-        float: right;
-    }
-    /*msg-body：消息气泡*/
-    .msg-body {
-        position: relative;
-        display: table;
-        box-shadow:  inset 0px -1.5px 0px #d7d7d7;
-        vertical-align: middle;
-        /*width: 250px;*/
-        min-height: 3em;
-        margin: 0px 1em;
-        border-width: 0px;
-        -webkit-border-radius: 0.3em;
-        -moz-border-radius: 0.3em;
-        border-radius: 0.3em;
-        max-width: 75%;
-        word-break: normal;
-        word-wrap: break-word;
-    }
+.msgbox-send{
+    float: right;
+}
+.msgbox-receive .avatar {
+    float: left;
+}
 
-    .msgbox-left .msg-body {
-        float: left;
-        background: #FFF;
-    }
-    .no-bubble-color .msg-body{
-        background: #FFF!important;
-    }
-    .msgbox-right .msg-body {
-        float: right;
-        background: #26C6DA;
-    }
-    /*小三角*/
+.msgbox-send .avatar {
+    float: right;
+}
+/*msg-body：消息气泡*/
+.msg-body {
+    position: relative;
+    display: table;
+    box-shadow:  inset 0px -1.5px 0px #d7d7d7;
+    vertical-align: middle;
+    /*width: 250px;*/
+    min-height: 3em;
+    margin: 0px 0.7em;
+    border-width: 0px;
+    -webkit-border-radius: 0.3em;
+    -moz-border-radius: 0.3em;
+    border-radius: 0.3em;
+    max-width: 66%;
+    word-break: normal;
+    word-wrap: break-word;
+}
+
+.msgbox-receive .msg-body {
+    float: left;
+    background: #FFF;
+}
+.no-bubble-color .msg-body{
+    background: #FFF!important;
+}
+.msgbox-send .msg-body {
+    float: right;
+    background: #26C6DA;
+}
+/*小三角*/
     .msg-body:after{
         content: '';
         position: absolute;
@@ -148,19 +172,19 @@
         display: block;
         width: 0;
         z-index: 1;
-        margin-top: -0.6em;
+        margin-top: -0.5em;
         /*left: -0.55em;*/
         top: 1.5em;
     }
-    .msgbox-left .msg-body:after {
-        border-width: 0.6em 0.6em 0.6em 0;
+    .msgbox-receive .msg-body:after {
+        border-width: 0.5em 0.5em 0.5em 0;
         border-color: transparent #FFF;
-        left: -0.55em;
+        left: -0.45em;
     }
-    .msgbox-right .msg-body:after {
-        border-width: 0.6em 0 0.6em 0.6em;
+    .msgbox-send .msg-body:after {
+        border-width: 0.5em 0 0.5em 0.5em;
         border-color: transparent #26C6DA;
-        right: -0.55em;
+        right: -0.45em;
     }
     .no-bubble-color .msg-body:after{
         border-color: transparent #FFF!important;
@@ -195,16 +219,17 @@
     /*contact type*/
     .media-contact{
         padding:0.4em 0.6em;
-        width:15em;
+        width:16em;
+        
     }
     .media-contact img{
-        height:3em;
-        width:3em;
+        height:2.5em;
+        width:2.5em;
     }
     .media-contact div{
         display:inline-block;
-        max-width:10em;
-        padding-left:0.7em;
+        max-width:11.5em;
+        padding-left:0.3em;
         vertical-align: top;
         white-space:nowrap; 
         overflow:hidden;
@@ -212,15 +237,18 @@
         /*word-wrap: white-space;*/
 
     }
-    .media-contact div .name{
+    .media-contact .name{
         margin:0px;
         font-size:1.1em;
     }
-    .media-contact div .info{
+    .media-contact .info{
         text-overflow:ellipsis;
-        margin-top:2px;
-        margin:0px;
-        font-size:1.1em;
+        overflow: hidden;
+        /*text-overflow:ellipsis;*/
+        margin-bottom:2px;
+        /*margin:0px;*/
+        color:#666;
+        font-size:0.8em;
     }
     .media-contact hr{
         border-color:#C7C7C7;
@@ -275,24 +303,7 @@
         /*margin: 3px 0px 2px 0px;*/
     }
 
-
-
-    /*
-    .msgbox mediabox {
-        position: relative;
-        background: #b7dcfe;
-        color: #317787;
-        display: inline-block;
-        border-radius: 0;
-        padding: 0.4em 20px;
-    }*/
-
-    /*image viewer ----------------------------------------------------------------------------*/
-    /*.image-list-thumb {
-        padding: 2px 2px 2px 2px;
-        height: 150px;
-    }*/
-     
+/*image viewer ----------------------------------------------------------------------------*/    
     .image-modal {
         width: 100% !important;
         height: 100%;
@@ -300,10 +311,6 @@
         left: 0 !important;
         background: rgba(0,0,0,1);
     }
-     
-    /*.transparent {
-      background: rgba(0,0,0,1);
-    }*/
      
     .slider {
         width: 100%;
@@ -330,9 +337,8 @@
 
 
     .picBox {  
-        height: 100vh; /*can be anything*/
-        width: 100%; /*can be anything*/
-        /*position: relative;*/
+        height: 100vh;
+        width: 100%;
         text-align: center;
     }
     .picBox span{
@@ -455,8 +461,8 @@
     }
     .qr-code div:first-child {
         width:100%;
-        margin-left:12px;
-        text-align: left;
+        padding-right:30px;
+        text-align: center;
         margin-bottom:15px;
     }
     .qr-code .title {
