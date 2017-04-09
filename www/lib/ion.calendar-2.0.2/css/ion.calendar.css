@@ -129,42 +129,26 @@
 
         border: 1px solid #ebebeb;
         color: #757575;
-        font-size: 13px; line-height: 1.333;
+        font-size: 9px; line-height: 1.333;
         text-transform: uppercase;
     }
     .ic__days .ic__day {
         background: #fff;
         cursor: pointer;
     }
-    .ic__days .ic__day_done {
-        background: #6AD58E;
-        cursor: pointer;
-    }
-    .ic__days .ic__day_undone {
-        background: #FFA500;
-        cursor: pointer;
-    }
     .ic__days .ic__day:hover {
-        background: #267AD6;
-        color: #fff;
-    }
-    .ic__days .ic__day_done:hover {
-        background: #267AD6;
-        color: #fff;
-    }
-    .ic__days .ic__day_undone:hover {
-        background: #267AD6;
+        background: #d35746;
         color: #fff;
     }
     .ic__days .ic__day-empty {
         background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAMAAAC6sdbXAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF7u7u////KNOqmgAAABlJREFUeNpiYGRkZABCCGIA8UAEI4QACDAAAUoAFV5+ydgAAAAASUVORK5CYII=');
     }
     .ic__days .ic__day_state_current {
-        background: #FAF714;
+        background: #f4f4f4;
         color: #000;
     }
     .ic__days .ic__day_state_selected {
-        background: #267AD6;
+        background: #f4f4f4;
         color: #000;
     }
 

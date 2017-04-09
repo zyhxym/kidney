@@ -219,19 +219,10 @@
                             // current day
                             if(moment(timeNowLocal).date(i).format("D.M.YYYY") === timeNow.format("D.M.YYYY")) {
                                 html += '<td class="ic__day ic__day_state_current">' + i + '</td>';
-                                // console.log('current');
                             } else if(timeSelected && moment(timeNowLocal).date(i).format("D.M.YYYY") === timeSelected.format("D.M.YYYY")) {
                                 html += '<td class="ic__day ic__day_state_selected">' + i + '</td>';
-                                // console.log('select');
                             } else {
-                                // console.log(doneflag[i]);
-                                if(doneflag[i] != undefined)
-                                    if(doneflag[i].Compliance==1)
-                                        html += '<td class="ic__day ic__day_done">' + i + '</td>';
-                                    else
-                                        html += '<td class="ic__day ic__day_undone">' + i + '</td>';
-                                else
-                                    html += '<td class="ic__day">' + i + '</td>';
+                                html += '<td class="ic__day">' + i + '</td>';
                             }
 
                             // new week - new line
@@ -274,38 +265,6 @@
                             if(parseInt(timeNowLocal.format("YYYY")) < fromYear) {
                                 timeNowLocal.add("months", 1);
                             }
-                            var nextmonth = new Date(timeNowLocal);
-                            nextmonth.setDate(1);
-                            nextmonth.setMonth(nextmonth.getMonth()+1);
-                            nextmonth.setDate(nextmonth.getDate()-1);
-                            var m_year = nextmonth.getFullYear().toString();
-                            var m_month = nextmonth.getMonth()+1;
-                            if(m_month<10)m_month = '0'+m_month;
-                            var m_monthlastday = nextmonth.getDate();
-                            if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-                            // console.log(m_year+m_month+m_monthlastday);
-
-                            m_data.StartDate = m_year+m_month+'01';
-                            m_data.EndDate = m_year+m_month+m_monthlastday;
-                            // console.log(m_data);
-                            doneflag = [];
-                            mzbtest.GetComplianceListInC(m_data).then(function(s){
-                                // console.log(s);
-                                doneflag_a = s;
-                                if(doneflag_a.length == 0)
-                                {
-                                    doneflag = [];
-                                }else{
-                                   for(var i=0;i<doneflag_a.length;i++)
-                                    {
-                                        doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-                                    } 
-                                }
-                                console.log(doneflag);
-                                removeHTML();
-                            },function(e){
-                                console.log(e);
-                            });
                             removeHTML();
                         });
                         $next.on("click", function(e){
@@ -314,38 +273,6 @@
                             if(parseInt(timeNowLocal.format("YYYY")) > toYear) {
                                 timeNowLocal.subtract("months", 1);
                             }
-                            var nextmonth = new Date(timeNowLocal);
-                            nextmonth.setDate(1);
-                            nextmonth.setMonth(nextmonth.getMonth()+1);
-                            nextmonth.setDate(nextmonth.getDate()-1);
-                            var m_year = nextmonth.getFullYear().toString();
-                            var m_month = nextmonth.getMonth()+1;
-                            if(m_month<10)m_month = '0'+m_month;
-                            var m_monthlastday = nextmonth.getDate();
-                            if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-                            // console.log(m_year+m_month+m_monthlastday);
-
-                            m_data.StartDate = m_year+m_month+'01';
-                            m_data.EndDate = m_year+m_month+m_monthlastday;
-                            // console.log(m_data);
-                            doneflag = [];
-                            mzbtest.GetComplianceListInC(m_data).then(function(s){
-                                // console.log(s);
-                                doneflag_a = s;
-                                if(doneflag_a.length == 0)
-                                {
-                                    doneflag = [];
-                                }else{
-                                   for(var i=0;i<doneflag_a.length;i++)
-                                    {
-                                        doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-                                    } 
-                                }
-                                // console.log(doneflag);
-                                removeHTML();
-                            },function(e){
-                                console.log(e);
-                            });
                             removeHTML();
                         });
                     }
@@ -354,87 +281,18 @@
                         e.preventDefault();
                         var toMonth = $(this).prop("value");
                         timeNowLocal.month(parseInt(toMonth));
-
-                        var nextmonth = new Date(timeNowLocal);
-                        nextmonth.setDate(1);
-                        nextmonth.setMonth(nextmonth.getMonth()+1);
-                        nextmonth.setDate(nextmonth.getDate()-1);
-                        var m_year = nextmonth.getFullYear().toString();
-                        var m_month = nextmonth.getMonth()+1;
-                        if(m_month<10)m_month = '0'+m_month;
-                        var m_monthlastday = nextmonth.getDate();
-                        if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-                        // console.log(m_year+m_month+m_monthlastday);
-
-                        m_data.StartDate = m_year+m_month+'01';
-                        m_data.EndDate = m_year+m_month+m_monthlastday;
-                        // console.log(m_data);
-                        mzbtest.GetComplianceListInC(m_data).then(function(s){
-                            // console.log(s);
-                            doneflag_a = s;
-                            if(doneflag_a.length == 0)
-                            {
-                                doneflag = [];
-                            }else{
-                               for(var i=0;i<doneflag_a.length;i++)
-                                {
-                                    doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-                                } 
-                            }
-                            // console.log(doneflag);
-                            removeHTML();
-                        },function(e){
-                            console.log(e);
-                        });
-
                         removeHTML();
-                        // console.log(toMonth);
                     });
                     $year.on("change", function(e){
                         e.preventDefault();
                         var toYear = $(this).prop("value");
                         timeNowLocal.year(parseInt(toYear));
-
-                        var nextmonth = new Date(timeNowLocal);
-                        nextmonth.setDate(1);
-                        nextmonth.setMonth(nextmonth.getMonth()+1);
-                        nextmonth.setDate(nextmonth.getDate()-1);
-                        var m_year = nextmonth.getFullYear().toString();
-                        var m_month = nextmonth.getMonth()+1;
-                        if(m_month<10)m_month = '0'+m_month;
-                        var m_monthlastday = nextmonth.getDate();
-                        if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-                        // console.log(m_year+m_month+m_monthlastday);
-
-                        m_data.StartDate = m_year+m_month+'01';
-                        m_data.EndDate = m_year+m_month+m_monthlastday;
-                        // console.log(m_data);
-                        mzbtest.GetComplianceListInC(m_data).then(function(s){
-                            // console.log(s);
-                            doneflag_a = s;
-                            if(doneflag_a.length == 0)
-                            {
-                                doneflag = [];
-                            }else{
-                               for(var i=0;i<doneflag_a.length;i++)
-                                {
-                                    doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-                                } 
-                            }
-                            // console.log(doneflag);
-                            removeHTML();
-                        },function(e){
-                            console.log(e);
-                        });
-
-
                         removeHTML();
                     });
 
                     if(settings.clickable) {
                         $day.on("click", function(e){
                             e.preventDefault();
-                            // console.log("select");
                             var toDay = $(this).text();
                             timeNowLocal.date(parseInt(toDay));
                             timeSelected = moment(timeNowLocal);
@@ -448,12 +306,12 @@
                             if(typeof settings.onClick === "function") {
                                 if(settings.format) {
                                     if(settings.format === "moment") {
-                                        settings.onClick.call(this, {optiondata:doneflag[parseInt(timeSelected.slice(8,10))],timeSelected:timeSelected});
+                                        settings.onClick.call(this, timeSelected);
                                     } else {
-                                        settings.onClick.call(this, {optiondata:doneflag[parseInt(timeSelected.toString().slice(8,10))],timeSelected:timeSelected.format(settings.format)});
+                                        settings.onClick.call(this, timeSelected.format(settings.format));
                                     }
                                 } else {
-                                    settings.onClick.call(this, {optiondata:doneflag[parseInt(timeSelected.slice(8,10))],timeSelected:timeSelected.format()});
+                                    settings.onClick.call(this, timeSelected.format());
                                 }
                             }
 
@@ -488,39 +346,6 @@
                 // yarrr!
                 prepareData();
                 prepareCalendar();
-                // console.log(m_data);//以下代码初次进来时调用
-                var nm = new Date();
-                nm.setDate(1);
-                nm.setMonth(nm.getMonth()+1);
-                nm.setDate(nm.getDate()-1);
-                var m_year = nm.getFullYear().toString();
-                var m_month = nm.getMonth()+1;
-                if(m_month<10)m_month = '0'+m_month;
-                var m_monthlastday = nm.getDate();
-                if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-                console.log(m_year+m_month+m_monthlastday);
-
-                m_data.StartDate = m_year+m_month+'01';
-                m_data.EndDate = m_year+m_month+m_monthlastday;
-                console.log(m_data);
-                mzbtest.GetComplianceListInC(m_data).then(function(s){
-                    console.log(s);
-                    doneflag_a = s;
-                    if(doneflag_a.length == 0)
-                    {
-                        doneflag = [];
-                    }else{
-                       for(var i=0;i<doneflag_a.length;i++)
-                        {
-                            doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-                        } 
-                    }
-                    console.log(doneflag);
-                    removeHTML();
-                },function(e){
-                    console.log(e);
-                });
-                ////以上代码初次进来时调用
             });
         },
         update: function(options){
@@ -529,53 +354,8 @@
             });
         }
     };
-    var mzbtest;
-    var m_data = {
-      PatientId:'',
-      StartDate:'',
-      EndDate:'',
-      Module:'M1'
-    };
-    var doneflag = [];
-    var doneflag_a = [];
-    $.fn.ionCalendar = function(method,v,d,data){
-        // console.log(v);
-        mzbtest = v;
-        doneflag = d;
-        m_data.PatientId = data.PatientId;
-        // console.log(m_data);
-        // var nm = new Date();
-        // nm.setDate(1);
-        // nm.setMonth(nm.getMonth()+1);
-        // nm.setDate(nm.getDate()-1);
-        // var m_year = nm.getFullYear().toString();
-        // var m_month = nm.getMonth()+1;
-        // if(m_month<10)m_month = '0'+m_month;
-        // var m_monthlastday = nm.getDate();
-        // if(m_monthlastday<10)m_monthlastday = '0'+m_monthlastday;
-        // console.log(m_year+m_month+m_monthlastday);
 
-        // m_data.StartDate = m_year+m_month+'01';
-        // m_data.EndDate = m_year+m_month+m_monthlastday;
-        // // console.log(m_data);
-        // mzbtest.GetComplianceListInC(m_data).then(function(s){
-        //     // console.log(s);
-        //     doneflag_a = s;
-        //     if(doneflag_a.length == 0)
-        //     {
-        //         doneflag = [];
-        //     }else{
-        //        for(var i=0;i<doneflag_a.length;i++)
-        //         {
-        //             doneflag[doneflag_a[i].Date%100] = doneflag_a[i];
-        //         } 
-        //     }
-        //     // console.log(doneflag);
-        //     removeHTML();
-        // },function(e){
-        //     console.log(e);
-        // });
-
+    $.fn.ionCalendar = function(method){
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
@@ -583,7 +363,6 @@
         } else {
             $.error('Method ' + method + ' does not exist for jQuery.ionCalendar');
         }
-
     };
 })(jQuery);
 

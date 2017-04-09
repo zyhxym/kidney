@@ -461,7 +461,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
         $scope.goChats = function() {
             $ionicHistory.nextViewOptions({
-                disableBack: true
+                disableBack: false
             });
             $state.go('tab.doing');
         }

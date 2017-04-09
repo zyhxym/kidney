@@ -1,7 +1,8 @@
 <ion-view view-title="done" show-tabs>
-    <ion-nav-bar class="bar-positive">
+    <ion-nav-bar class="bar-positive" align-title="center">
       <ion-nav-back-button class="button-clear">
-        <i class="ion-arrow-left-c"></i>
+        <i class="ion-chevron-left"></i>
+        
       </ion-nav-back-button>
     </ion-nav-bar>
     <ion-content>
@@ -10,7 +11,7 @@
 		</div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail" ng-repeat="p in patients">
-                <img src="img/{{p.head}}">
+                <img src="img/default_user.png">
 				<div>
                 <span>{{p.name}}</span><span>{{p.gender}}</span><span>{{p.age}}</span>
 				</div>

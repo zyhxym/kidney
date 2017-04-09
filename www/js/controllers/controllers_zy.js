@@ -459,3 +459,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.type = $stateParams.type;
   
 }])
+
+//"我”设置内容页
+.controller('schedualCtrl', ['$scope', function($scope) {
+    $("#myCalendar-schedual").ionCalendar({
+        lang: "ch"
+    });
+}])
