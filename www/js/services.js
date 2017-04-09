@@ -1,4 +1,4 @@
-angular.module('kidney.services', ['ionic'])
+angular.module('kidney.services', ['ionic','ngResource'])
 
 // 本地存储函数
 .factory('Storage', ['$window', function ($window) {
@@ -45,7 +45,8 @@ angular.module('kidney.services', ['ionic'])
         base: 'media/b4ad7a831d5f3273acca5025/',
         img: 'images/thumbnails/',
         voice: 'voice/'
-    }
+    },
+    baseUrl: 'http://121.43.107.106:4050/'
 })
 
 //自定义函数
@@ -629,4 +630,108 @@ angular.module('kidney.services', ['ionic'])
       })
     }
   }
+}])
+
+.factory('Data',['$resource', '$q','$interval' ,'CONFIG' , function($resource,$q,$interval ,CONFIG){
+    var serve={};
+    var abort = $q.defer();
+
+    var Counsels = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
+            getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000}
+        });
+    };
+
+    var Patients =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'patient'},{
+            getPatientDetail:{method:'GET', params:{route: 'getPatientDetail'}, timeout: 100000}
+        });
+    }
+
+    var Doctors =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'doctor'},{
+            createDoc:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000}
+        });
+    }
+
+    serve.abort = function ($scope) {
+        abort.resolve();
+        $interval(function () {
+            abort = $q.defer();
+            serve.Counsels = Counsels();
+            serve.Patients = Patients();
+            serve.Doctors = Doctors();
+        }, 0, 1);
+    };
+    serve.Counsels = Counsels();
+    serve.Patients = Patients();
+    serve.Doctors = Doctors();
+    return serve;
+}])
+.factory('Patients', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{userId:'p01'}
+    self.getPatientDetail = function(params){
+        var deferred = $q.defer();
+        Data.Patients.getPatientDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('Doctors', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+           //   userId:'docpostTest',//unique
+           //   name:'姓名',
+           //   birthday:'1956-05-22',
+           //   gender:1,
+           //   workUnit:'浙江省人民医院',
+           //   department:'肾内科',
+           //   title:'副主任医师',
+           //   major:'慢性肾炎',
+           //   description:'经验丰富',
+           //   photoUrl:'http://photo/docpost3.jpg',
+           //   charge1:150,
+           //   charge2:50
+           // }
+    self.createDoctor = function(params){
+        var deferred = $q.defer();
+        Data.Doctors.createDoc(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('Counsels', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{userId:'doc01',status:1}
+    //        1:{userId:'doc01'}
+    //        1:{userId:'doc01',type:1}
+    //        1:{userId:'doc01',status:1,type:1}
+    self.getCounsels = function(params){
+        var deferred = $q.defer();
+        Data.Counsels.getCounsel(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
 }])

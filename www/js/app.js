@@ -162,7 +162,17 @@ angular.module('kidney',[
         }
     })
 
-    
+    //tuandui
+    .state('tab.groups', {
+        // cache: false,
+        url: '/groups',
+        views: {
+            'tab-groups':{
+                controller: 'groupsCtrl',
+                templateUrl: 'partials/group/groups.html'
+            }
+        }
+    })
 
     //"我"页面
     .state('tab.me', {
@@ -239,16 +249,6 @@ angular.module('kidney',[
     })
 
     // views-tab-groups
-    .state('tab.groups', {
-        // cache: false,
-        url: '/groups',
-        views: {
-            'tab-groups':{
-                controller: 'groupsCtrl',
-                templateUrl: 'partials/group/groups.html'
-            }
-        }
-    })
     .state('tab.new-group', {
         url: '/newgroup',
         views: {
@@ -326,6 +326,17 @@ angular.module('kidney',[
 
     // views-tab-me
 
+    //schedual
+    .state('tab.schedual', {
+        // cache: false,
+        url: '/schedual',
+        views: {
+            'tab-me':{
+                controller: 'schedualCtrl',
+                templateUrl: 'partials/me/schedual.html'
+            }
+        }
+    })
     //我的二维码
     .state('tab.QRcode', {
         // cache: false,

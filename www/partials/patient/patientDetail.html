@@ -1,12 +1,22 @@
-<!-- <ion-header-bar align-title="center" class="bar-stable">
-    <div class="buttons">
-        <button class="button button-icon ion-ios-arrow-left" ng-click="$ionicGoBack()">
-        </button>
-    </div>
-    <div class="h1 title login-title" >患者详情</div>
-</ion-header-bar> -->
 <ion-view view-title="患者详情">
-    <ion-content class="has-header">
+	<ion-nav-bar class="bar-positive" align-title="center">
+		<ion-nav-back-button class="button-clear">
+			<i class="ion-chevron-left"></i>
+
+		</ion-nav-back-button>
+    </ion-nav-bar>
+    <div class="button-bar bar-positive" style="margin-top: 40px;">
+		<a class="button" href="#/tab/DoctorDiagnose">
+			<span style="vertical-align: sub">医生诊断</span>
+		</a>
+		<a class="button" href="">
+			<span style="vertical-align: sub">治疗方案</span>
+		</a>
+		<a class="button" href="">
+			<span style="vertical-align: sub">测量记录</span>
+		</a>
+	</div>
+    <ion-content class="has-header" style="margin-top: 44px;">
         <div class="list card">  
             <ion-item class="item item-avatar" href="#/tab/detail">
 				<img src="img/{{p.head}}">
@@ -16,8 +26,6 @@
 				<p>是否VIP {{p.VIP}}</p>
 				<p>是否有高血压 {{p.hypertension}}</p>
 			</ion-item>	
-
-			<button class="button button-block" ng-click="goToDiagnose()">Diagnose</button>		
 				
             <ion-item>
 			     最近就诊信息

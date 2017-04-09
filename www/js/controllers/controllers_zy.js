@@ -127,20 +127,22 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //首页
-.controller('homeCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$http','$sce',  function($scope, $state,$interval,$rootScope,Storage,$http,$sce) {
+.controller('homeCtrl', [
+    'Doctors','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce',
+     function(Doctors,$scope, $state,$interval,$rootScope,Storage,$http,$sce) {
   $scope.barwidth="width:0%";
   $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
   console.log(123)
   ionic.DomUtil.ready(function(){
-        $http({
-          method  : 'POST',
-          url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-          params    : {'username':'admin','password':'bme319'},  // pass in data as strings
-          headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-        }).success(function(data) {
-              //console.log(data);
-        });
-    })
+      $http({
+        method  : 'POST',
+        url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
+        params    : {'username':'admin','password':'bme319'},  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+      }).success(function(data) {
+            //console.log(data);
+      });
+  })
 }])
 
 //咨询
@@ -456,4 +458,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.hideTabs = true; 
   $scope.type = $stateParams.type;
   
+}])
+
+//"我”设置内容页
+.controller('schedualCtrl', ['$scope', function($scope) {
+    $("#myCalendar-schedual").ionCalendar({
+        lang: "ch"
+    });
 }])
