@@ -9,10 +9,21 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.logOn={username:Storage.get('USERNAME'),password:""};
 
   }else{
-    $scope.logOn={username:"",password:""};
+    $scope.logOn={username:"",password:"123"};
   }
   $scope.signIn = function(logOn) {  
     $scope.logStatus='';
+
+    // //暂时写在这，交流用 XJZ
+    // window.JMessage.login(logOn.username, logOn.username,
+    //     function(response) {
+    //         window.JMessage.username = user
+    //         //gotoConversation();
+    //     },
+    //     function(err) {
+    //         console.log(err);
+    //         // JM.register($scope.useruserID, $scope.passwd);
+    //     });
   
    //记录登录状态
    var flag=false;
@@ -164,7 +175,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.patients=[
     {
       head:"default_user.png",
-      name:"王大头",
+      name:"赵大头",
+      id:18868800011,
       gender:"男",
       age:"32",
       time:"2017/3/27 9:32",
@@ -172,7 +184,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     },
     {
       head:"default_user.png",
-      name:"王二头",
+      name:"钱二头",
+      id:18868800012,
       gender:"男",
       age:"32",
       time:"2017/3/28 10:32",
@@ -180,7 +193,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     },
     {
       head:"default_user.png",
-      name:"王三头",
+      name:"孙三头",
+      id:18868800013,
       gender:"男",
       age:"29",
       time:"2017/3/28 10:32",
@@ -195,6 +209,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
       head:"default_user.png",
       name:"王大头",
+      id:18868800001,
       gender:"男",
       age:"32",
       time:"2017/3/27 9:32",
@@ -203,6 +218,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
       head:"default_user.png",
       name:"王二头",
+      id:18868800002,
       gender:"男",
       age:"32",
       time:"2017/3/28 10:32",
@@ -211,6 +227,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
       head:"default_user.png",
       name:"王三头",
+      id:18868800003,
       gender:"男",
       age:"29",
       time:"2017/3/28 10:32",
