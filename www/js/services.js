@@ -188,7 +188,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                     fs.mvMedia('voice', audio.src, '.amr')
                         .then(function(fileUrl) {
                             console.log(fileUrl);
-                            esolve(fileUrl);
+                            resolve(fileUrl);
                             // window.JMessage.sendSingleVoiceMessage(receiver, fileUrl, CONFIG.appKey,
                             //     function(res) {
                             //         resolve(res);
