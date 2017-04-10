@@ -11,11 +11,8 @@
     <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
   </div>
   <!-- <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div> -->
-  <ion-content class="has-subheader content-item-list">
-<!--     <div ng-if="searchflag">
-      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.groupname}}<span></a>
-      <hr class="list" />
-    </div> -->
+  <ion-content class="gray-back has-subheader content-item-list">
+
     <ion-list>
   
       <ion-item ng-repeat="mygroup in mygroups" collection-item-height="94px" class="item-avatar" type="item-text-wrap"  ng-click="itemClick($event,mygroup.groupID)">
