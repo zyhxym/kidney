@@ -317,6 +317,25 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
   
 }])
 
+//任务设置--GL
+.controller('TaskSetCtrl', ['$scope', '$state', function ($scope, $state) {
+  $scope.Units = ["天", "周", "年", "月"];
+  $scope.Times = ["1", "2", "3", "4", "5"];
+  $scope.Tasks = [{Name: "体温", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "体重", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units},  
+                  {Name: "血压", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "心率", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "血管通路情况", Freq:{Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "复诊", Freq: {Time1:"1", Unit:"月", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "化验", Freq: {Time1:"2", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "特殊评估", Freq: {Time1:"1", Unit:"年", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}];
+
+  $scope.SetFreq = function()
+  {
+      
+      $state.go('tab.patientDetail');
+  }
+}])
 
 // .controller('groupQRCodeCtrl', ['$scope', 'Storage', function ($scope, Storage) {
 //   $scope.groupQRCodedata = "www.baidu.com"
