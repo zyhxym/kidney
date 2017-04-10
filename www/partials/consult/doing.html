@@ -2,22 +2,24 @@
     <ion-nav-bar class="bar-positive" align-title="center">
       <ion-nav-buttons side="left">
             <a class="button button-icon icon ion-chevron-left" href="#/tab/consult"></a>
-        </ion-nav-buttons>
+      </ion-nav-buttons>
+      <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
+         <button class="button button-clear"  ng-click="reorder()">筛选<i class="icon ion-navicon"></i></button>
+      </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>
-	    <div>
-		等待患者：{{patients.length}}
-		</div>
+        <div>
+        等待患者：{{patients.length}}
+        </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.id}}" ng-repeat="p in patients">
                 <img src="img/default_user.png">
-				<div>
+                <div>
                 <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
-				<span class="mine-msg-right">{{p.time}}</span>
+                <span class="mine-msg-right">{{p.time}}</span>
                 <p class="friend-detail-p" style="white-space:nowrap;">{{p.qs}}</p>
-				</div>
+                </div>
             </a>      
         </div>
     </ion-content>
 </ion-view>
-

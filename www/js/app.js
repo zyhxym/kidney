@@ -12,7 +12,8 @@ angular.module('kidney',[
     'kidney.services',
     'kidney.filters',
     'kidney.directives',
-    'monospaced.qrcode'
+    'monospaced.qrcode',
+    'ionic-datepicker'
 ])
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
@@ -120,6 +121,18 @@ angular.module('kidney',[
         cache: false,
         templateUrl: 'partials/others/phonevalid.html',
         controller: 'phonevalidCtrl'
+    })
+    .state('setpassword', {
+      cache:false,
+      url: '/setpassword',
+      templateUrl: 'partials/others/setPassword.html',
+      controller: 'setPasswordCtrl'
+    })
+    .state('userdetail',{
+      cache:false,
+      url:'/userdetail',
+      templateUrl:'partials/others/userdetail.html',
+      controller:'userdetailCtrl'
     })
 
     .state('messages',{
