@@ -257,6 +257,17 @@ angular.module('kidney',[
         }
     })
 
+    .state('tab.TaskSet', {
+        // cache: false,
+        url: '/TaskSet',
+        views: {
+            'tab-patient':{
+                controller: 'TaskSetCtrl',
+                templateUrl: 'partials/patient/TaskSet.html'
+            }
+        }
+    })
+
     // views-tab-groups
     .state('tab.new-group', {
         url: '/newgroup',

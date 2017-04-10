@@ -1,0 +1,22 @@
+<ion-view view-title='任务设置'>  
+  <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
+    <ion-content class="padding">
+        <div class="list">
+            <a class="item item-icon-right" ng-repeat = "item in Tasks">
+                {{item.Name}}
+                <i class="icon ion-android-alarm-clock">
+                    <select>
+                        <option ng-repeat="time in item.Time" ng-model ="item.Freq.Time1">{{time}}</option>
+                    </select>  
+                    <select>
+                        <option ng-repeat="unit in item.Unit" ng-model ="item.Freq.Unit">{{unit}}</option>
+                    </select>  
+                    <select >
+                        <option ng-repeat="time in item.Time" ng-model ="item.Freq.Time2">{{time}}次</option>
+                    </select>                  
+                </i>
+            </a>   
+        </div>
+        <button style="margin-top:0" class="button button-block button-balanced" class="button button-clear" ng-click="SetFreq()">确定</button>
+    </ion-content> 
+</ion-view>
