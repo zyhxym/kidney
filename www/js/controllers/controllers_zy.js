@@ -503,8 +503,45 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”设置内容页
-.controller('schedualCtrl', ['$scope', function($scope) {
-    $("#myCalendar-schedual").ionCalendar({
-        lang: "ch"
-    });
+.controller('schedualCtrl', ['$scope','$ionicPopover','ionicDatePicker', function($scope,$ionicPopover,ionicDatePicker) {
+    var ipObj1 = {
+        callback: function (val) {  //Mandatory
+            console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            if($scope.flag==1)
+            {
+                console.log(1)
+                var date=new Date(val)
+                $scope.begin=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            }
+            else
+            {
+                console.log(2);
+                var date=new Date(val)
+                $scope.end=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            }
+        },
+        titleLabel: '停诊开始',
+        inputDate: new Date(),
+        mondayFirst: true,
+        closeOnSelect: false,
+        templateType: 'popup',
+        setLabel: '确定',
+        todayLabel: '今天',
+        closeLabel: '取消',
+        showTodayButton: true,
+        dateFormat: 'yyyy MMMM dd',
+        weeksList: ["周日","周一","周二","周三","周四","周五","周六"],
+        monthsList:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
+    };
+
+    $scope.openDatePicker = function(params){
+        ionicDatePicker.openDatePicker(ipObj1);
+        $scope.flag=params;
+    };
+
+    $scope.showSchedual=true;
+    $scope.showSch=function()
+    {
+        $scope.showSchedual=!$scope.showSchedual;
+    }
 }])

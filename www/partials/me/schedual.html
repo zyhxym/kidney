@@ -6,12 +6,20 @@
 				<h2>正常/停诊</h2>
 				<div class="button-bar bar-positive" style="margin-top: 10px;">
 					<a class="button button-small">编辑</a>
-					<a class="button button-small">停诊设置</a>
+					<a class="button button-small" ng-click="showSch()">停诊设置</a>
 				</div>
 			</div>
 
+			<div class="item" ng-hide="showSchedual">
+				<button class="button button-block button-positive button-outline" ng-click="openDatePicker(1)">
+					停诊开始:{{begin}}
+				</button>
+				<button class="button button-block button-positive button-outline" ng-click="openDatePicker(2)">
+					停诊结束:{{end}}
+				</button>
+			</div>
+
 			<div class="item">
-				<!-- <div class="myCalendar" id="myCalendar-schedual"></div> -->
 				<div class="row">
 					<div class="col" style="border-left:solid;border-top:solid;border-color: green"><span style="opacity:0">上午</span></div>
 					<div class="col" style="border-left:solid;border-top:solid;border-color: green">一</div>
