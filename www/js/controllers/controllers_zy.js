@@ -529,45 +529,74 @@ initUserDetail();
 //"患者”页
 .controller('patientCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
   $scope.barwidth="width:0%";
+  $scope.order="VIP";
+  $scope.abc=false;
+  $scope.index=0;
+  $scope.turn=0;
+  $scope.orderGroup=new Array("VIP","class");
+  $scope.reorder = function() { 
+  
+     if(($scope.turn%2)==0)
+   {
+     $scope.abc=!$scope.abc;
+     $scope.turn=$scope.turn+1;
+     console.log('index:'+$scope.index);
+     console.log('turn:'+$scope.turn);
+     console.log('abc:'+$scope.abc);
+   }
+   else{
+     $scope.index=($scope.index+1)%2;
+     $scope.turn=$scope.turn+1;
+     $scope.order=$scope.orderGroup[$scope.index];
+     console.log('index:'+$scope.index);
+     console.log('turn:'+$scope.turn);
+     console.log('order:'+$scope.order);
+   }
+    
+  };
+
   $scope.patients=[
     {
-      head:"default_user.png",
+      head:"max.png",
       name:"王大头",
       gender:"男",
       age:"32",
       time:"2017/3/27 9:32",
-      appoint:"3/29 10:00-11:00",
+      //appoint:"3/29 10:00-11:00",
       qs:"问题1" ,
       labels:"高血压、糖尿病",
       symptom:"肾内科障碍",
       type:"肾内科",
+      VIP:"1",
       class:"danger"
     },
     {
-      head:"default_user.png",
+      head:"mike.png",
       name:"王二头",
       gender:"男",
       age:"32",
       time:"2017/3/28 10:32",
-      appoint:"3/29 10:00-11:00",
+      //appoint:"3/29 10:00-11:00",
       qs:"问题2" ,
       labels:"高血压、糖尿病",
       symptom:"肾内科障碍",
       type:"肾内科",
+      VIP:"2",
       class:"danger"
     },
     {
-      head:"default_user.png",
+      head:"adam.jpg",
       name:"王三头",
       gender:"男",
       age:"29",
       time:"2017/3/28 10:32",
-      appoint:"3/29 10:00-11:00",
+      //appoint:"3/29 10:00-11:00",
       qs:"问题2" ,
       labels:"高血压、糖尿病",
       symptom:"肾内科障碍",
       type:"肾内科",
-      class:"danger"
+      VIP:"3",
+      class:""
     }
     ];
 }])
@@ -714,13 +743,15 @@ initUserDetail();
     content : "温柔亲切我喜欢", 
     PatientId:"P201703240012",
     patient:"患者甲",
-    time:"2017-03-22"
+    time:"2017-03-22",
+    score:"9.7"
   },
   {
     content : "还耐心", 
     PatientId:"P201703240015",
     patient:"患者乙",
-    time:"2017-03-24"
+    time:"2017-03-24",
+    score:"9.5"
   }
   ];
 }])

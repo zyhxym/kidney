@@ -114,7 +114,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         title:"主任医生",
         workUnit:"浙江XXX医院",
         department:"泌尿科",
-        major:"肾上腺分泌失调"
+        major:"肾上腺分泌失调",
+        Numberroduction:"从医多年"
           },
       {
         photoUrl:"ben.png",
@@ -124,7 +125,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         title:"主任医生",
         workUnit:"浙江XXX医院",
         department:"泌尿科2",
-        major:"慢性肾炎、肾小管疾病"
+        major:"慢性肾炎、肾小管疾病",
+        Numberroduction:"从医十年"
           }
       ];
       for(var i=0;i<doctors.length;i++){
