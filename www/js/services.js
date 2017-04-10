@@ -153,14 +153,6 @@ angular.module('kidney.services', ['ionic','ngResource'])
                   .then(function (success) {
                     // console.log(success);
                     resolve(success.nativeURL);
-                    // $cordovaFile.checkFile(cordova.file.dataDirectory,newName)
-                    // .then(function(res){
-                    //     resolve(success.nativeURL);
-                    // },function(err){
-                    //     console.log(err);
-                    // })
-                    
-                    // success
                   }, function (error) {
                     console.log(error);
                     reject(error);
@@ -191,7 +183,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                     fs.mvMedia('voice', audio.src, '.amr')
                         .then(function(fileUrl) {
                             console.log(fileUrl);
-                            esolve(fileUrl);
+                            resolve(fileUrl);
                             // window.JMessage.sendSingleVoiceMessage(receiver, fileUrl, CONFIG.appKey,
                             //     function(res) {
                             //         resolve(res);
@@ -1034,3 +1026,29 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
+.factory('QRScan', ['$cordovaBarcodeScanner', '$ionicLoading', '$q', function($cordovaBarcodeScanner, $ionicLoading, $q) {
+    return {
+        getCode: function() {
+            return $q(function(resolve, reject) {
+                $cordovaBarcodeScanner
+                .scan()
+                .then(function(data) {
+                    // Success! Barcode data is here
+                    // var s = "Result: " + data.text + "<br/>" +
+                    // "Format: " + data.format + "<br/>" +
+                    // "Cancelled: " + data.cancelled;
+                    if (data.cancelled != true) {
+                        resolve(data.text);
+                    } else {
+                        $ionicLoading.show({ template: '请重试', duration: 1500 });
+                        reject('cancel');
+                    }
+                }, function(error) {
+                    $ionicLoading.show({ template: '请重试', duration: 1500 });
+                    reject('fail');
+                });
+            });
+        }
+    }
+
+}]);

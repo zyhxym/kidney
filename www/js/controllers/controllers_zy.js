@@ -170,10 +170,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //咨询
-.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
+.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','QRScan',  function($scope, $state,$interval,$rootScope,Storage,QRScan) {
   $scope.barwidth="width:0%";
   //变量a 等待患者数量 变量b 已完成咨询患者数量
   $scope.doctor={a:3,b:3};
+  $scope.qrscan= function(){
+    QRScan.getCode()
+    .then(function(data){
+      console.log(data);
+    },function(err){
+      console.log(err);
+    })
+  }
   var now=new Date();
   var year=now.getYear();
   var month=now.getMonth()+1;

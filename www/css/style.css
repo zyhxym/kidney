@@ -105,64 +105,64 @@
         width:2.5em;
     }
     .msgbox .avatar {
-    /*float: left;*/
-    /*display: block;*/
-    /*display:inline;*/
-    vertical-align: top;
-    display: inline-block;
-    width: 3em;
-    height: 3em;
-}
-/*.float-left {
-    float: left;
-}
-.float-right {
-    float: right;
-}*/
-.msgbox-receive{
-    float: left;
-}
+        /*float: left;*/
+        /*display: block;*/
+        /*display:inline;*/
+        vertical-align: top;
+        display: inline-block;
+        width: 3em;
+        height: 3em;
+    }
+    /*.float-left {
+        float: left;
+    }
+    .float-right {
+        float: right;
+    }*/
+    .msgbox-receive{
+        float: left;
+    }
 
-.msgbox-send{
-    float: right;
-}
-.msgbox-receive .avatar {
-    float: left;
-}
+    .msgbox-send{
+        float: right;
+    }
+    .msgbox-receive .avatar {
+        float: left;
+    }
 
-.msgbox-send .avatar {
-    float: right;
-}
-/*msg-body：消息气泡*/
-.msg-body {
-    position: relative;
-    display: table;
-    box-shadow:  inset 0px -1.5px 0px #d7d7d7;
-    vertical-align: middle;
-    /*width: 250px;*/
-    min-height: 3em;
-    margin: 0px 0.7em;
-    border-width: 0px;
-    -webkit-border-radius: 0.3em;
-    -moz-border-radius: 0.3em;
-    border-radius: 0.3em;
-    max-width: 66%;
-    word-break: normal;
-    word-wrap: break-word;
-}
+    .msgbox-send .avatar {
+        float: right;
+    }
+    /*msg-body：消息气泡*/
+    .msg-body {
+        position: relative;
+        display: table;
+        box-shadow:  inset 0px -1.5px 0px #d7d7d7;
+        vertical-align: middle;
+        /*width: 250px;*/
+        min-height: 3em;
+        margin: 0px 0.7em;
+        border-width: 0px;
+        -webkit-border-radius: 0.3em;
+        -moz-border-radius: 0.3em;
+        border-radius: 0.3em;
+        max-width: 66%;
+        word-break: normal;
+        word-wrap: break-word;
+    }
 
-.msgbox-receive .msg-body {
-    float: left;
-    background: #FFF;
-}
-.no-bubble-color .msg-body{
-    background: #FFF!important;
-}
-.msgbox-send .msg-body {
-    float: right;
-    background: #26C6DA;
-}
-/*小三角*/
+    .msgbox-receive .msg-body {
+        float: left;
+        background: #FFF;
+    }
+    .no-bubble-color .msg-body{
+        background: #FFF!important;
+    }
+    .msgbox-send .msg-body {
+        float: right;
+        background: #26C6DA;
+    }
+    /*小三角*/
     .msg-body:after{
         content: '';
         position: absolute;
