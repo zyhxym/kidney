@@ -636,21 +636,61 @@ angular.module('kidney.services', ['ionic','ngResource'])
     var serve={};
     var abort = $q.defer();
 
-    var Counsels = function(){
+    var Counsel = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
-            getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000}
+            getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
+            questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000}
         });
     };
 
-    var Patients =function(){
+    var Patient =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'patient'},{
-            getPatientDetail:{method:'GET', params:{route: 'getPatientDetail'}, timeout: 100000}
+            getPatientDetail:{method:'GET', params:{route: 'getPatientDetail'}, timeout: 100000},
+            getMyDoctors:{method:'GET',params:{route:'getMyDoctors'},timeout:10000},
+            getDoctorLists:{method:'GET',params:{route:'getDoctorLists'},timeout:10000},
+            getCounselRecords:{method:'GET',params:{route:'getCounselRecords'},timeout:10000},
+            insertDiagnosis:{method:'POST',params:{route:'insertDiagnosis'},timeout:10000},
+            newPatientDetail:{method:'POST',params:{route:'newPatientDetail'},timeout:10000},
+            editPatientDetail:{method:'POST',params:{route:'editPatientDetail'},timeout:10000}
         });
     }
 
-    var Doctors =function(){
+    var Doctor =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'doctor'},{
-            createDoc:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000}
+            postDocBasic:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000}
+        });
+    }
+
+    var Comment =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'comment'},{
+            getComments:{method:'GET', params:{route: 'getComments'}, timeout: 100000}
+        });
+    }
+
+    var VitalSign =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'vitalSign'},{
+            getVitalSigns:{method:'GET', params:{route: 'getVitalSigns'}, timeout: 100000}
+        });
+    }
+
+    var Account =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'account'},{
+            getAccountInfo:{method:'GET', params:{route: 'getAccountInfo'}, timeout: 100000}
+        });
+    }
+
+    var Message =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'message'},{
+            getMessages:{method:'GET', params:{route: 'getMessages'}, timeout: 100000}
+        });
+    }
+
+    var Communication =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
+            getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
+            getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
+            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
         });
     }
 
@@ -658,22 +698,100 @@ angular.module('kidney.services', ['ionic','ngResource'])
         abort.resolve();
         $interval(function () {
             abort = $q.defer();
-            serve.Counsels = Counsels();
-            serve.Patients = Patients();
-            serve.Doctors = Doctors();
+            serve.Counsel = Counsel();
+            serve.Patient = Patient();
+            serve.Doctor = Doctor();
+            serve.Comment = Comment();
+            serve.VitalSign = VitalSign();
+            serve.Account = Account();
+            serve.Message = Message();
+            serve.Communication = Communication();
         }, 0, 1);
     };
-    serve.Counsels = Counsels();
-    serve.Patients = Patients();
-    serve.Doctors = Doctors();
+    serve.Counsel = Counsel();
+    serve.Patient = Patient();
+    serve.Doctor = Doctor();
+    serve.Comment = Comment();
+    serve.VitalSign = VitalSign();
+    serve.Account = Account();
+    serve.Message = Message();
+    serve.Communication = Communication();
     return serve;
 }])
-.factory('Patients', ['$q', 'Data', function($q, Data){
+
+.factory('Communication', ['$q', 'Data', function($q, Data){
     var self = this;
-    //params->0:{userId:'p01'}
-    self.getPatientDetail = function(params){
+    //params->0:{counselId:'counsel01'}
+    self.getCounselReport = function(params){
         var deferred = $q.defer();
-        Data.Patients.getPatientDetail(
+        Data.Communication.getCounselReport(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{teamId:'team1'}
+    self.getTeam = function(params){
+        var deferred = $q.defer();
+        Data.Communication.getTeam(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+            //      teamId:'teampost2',
+            //      membersuserId:'id1',
+            //      membersname:'name2'
+            //  }
+    self.insertMember = function(params){
+        var deferred = $q.defer();
+        Data.Communication.insertMember(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+            //      teamId:'teampost2',
+            //      membersuserId:'id2'
+            //  }
+    self.removeMember = function(params){
+        var deferred = $q.defer();
+        Data.Communication.removeMember(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    return self;
+}])
+.factory('Message', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{type:1}
+    self.getMessages = function(params){
+        var deferred = $q.defer();
+        Data.Message.getMessages(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -685,9 +803,197 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
-.factory('Doctors', ['$q', 'Data', function($q, Data){
+.factory('Account', ['$q', 'Data', function($q, Data){
     var self = this;
-    //params->{
+    //params->0:{userId:'p01'}
+    self.getAccountInfo = function(params){
+        var deferred = $q.defer();
+        Data.Account.getAccountInfo(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('VitalSign', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{userId:'p01',type:'type1'}
+    self.getVitalSigns = function(params){
+        var deferred = $q.defer();
+        Data.VitalSign.getVitalSigns(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('Comment', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{userId:'doc01'}
+    self.getComments = function(params){
+        var deferred = $q.defer();
+        Data.Comment.getComments(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('Patient', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{userId:'p01'}
+    self.getPatientDetail = function(params){
+        var deferred = $q.defer();
+        Data.Patient.getPatientDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{userId:'p01'}
+    self.getMyDoctors = function(params){
+        var deferred = $q.defer();
+        Data.Patient.getMyDoctors(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{workUnit:'浙江省人民医院'}
+    //        1:{workUnit:'浙江省人民医院',name:'医生01'}
+    self.getDoctorLists = function(params){
+        var deferred = $q.defer();
+        Data.Patient.getDoctorLists(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{userId:'p01'}
+    self.getCounselRecords = function(params){
+        var deferred = $q.defer();
+        Data.Patient.getCounselRecords(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+            //     patientId:'ppost01',
+            //     doctorId:'doc01',
+            //     diagname:'慢性肾炎',
+            //     diagtime:'2017-04-06',
+            //     diagprogress:'吃药',
+            //     diagcontent:'blabla啥啥啥的'
+            // }
+    self.insertDiagnosis = function(params){
+        var deferred = $q.defer();
+        Data.Patient.insertDiagnosis(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+            //     userId:'ppost01',
+            //     name:'患者xx',
+            //     birthday:'1987-03-25',
+            //     gender:2,
+            //     IDNo:123456123456781234,
+            //     height:183,
+            //     weight:70,
+            //     bloodType:2,
+            //     class:'class1',
+            //     class_info:'info_1',
+            //     operationTime:'2017-04-05',
+            //     hypertension:1,
+            //     photoUrl:'http://photo/ppost01.jpg'
+            // }
+    self.newPatientDetail = function(params){
+        var deferred = $q.defer();
+        Data.Patient.newPatientDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+                // userId:'ppost01',
+                // name:'新名字2',
+                // birthday:1987-03-03,
+                // gender:1,
+                // IDNo:123456123456781234,
+                // height:183,
+                // weight:70,
+                // bloodType:2,
+                // class:'class1',
+                // class_info:'info3',
+                // hypertension:1,
+                // photoUrl:'http://photo/ppost01.jpg'
+            // }
+    self.editPatientDetail = function(params){
+        var deferred = $q.defer();
+        Data.Patient.editPatientDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    return self;
+}])
+.factory('Doctor', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->0:{
            //   userId:'docpostTest',//unique
            //   name:'姓名',
            //   birthday:'1956-05-22',
@@ -701,9 +1007,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
            //   charge1:150,
            //   charge2:50
            // }
-    self.createDoctor = function(params){
+    self.postDocBasic = function(params){
         var deferred = $q.defer();
-        Data.Doctors.createDoc(
+        Data.Doctor.postDocBasic(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -715,15 +1021,36 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
-.factory('Counsels', ['$q', 'Data', function($q, Data){
+.factory('Counsel', ['$q', 'Data', function($q, Data){
     var self = this;
     //params->0:{userId:'doc01',status:1}
     //        1:{userId:'doc01'}
-    //        1:{userId:'doc01',type:1}
-    //        1:{userId:'doc01',status:1,type:1}
+    //        2:{userId:'doc01',type:1}
+    //        3:{userId:'doc01',status:1,type:1}
     self.getCounsels = function(params){
         var deferred = $q.defer();
-        Data.Counsels.getCounsel(
+        Data.Counsel.getCounsel(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+    //              counselId:'counselpost02',
+    //              patientId:'p01',
+    //              doctorId:'doc01',
+    //              sickTime:'3天',
+    //              symptom:'腹痛',
+    //              symptomPhotoUrl:'http://photo/symptom1',
+    //              help:'帮助'
+    //          }
+    self.questionaire = function(params){
+        var deferred = $q.defer();
+        Data.Counsel.questionaire(
             params,
             function(data, headers){
                 deferred.resolve(data);
