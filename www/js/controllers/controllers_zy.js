@@ -154,7 +154,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 //console.log(data);
         });
     })
-
+    $scope.options = {
+        loop: false,
+        effect: 'fade',
+        speed: 500,
+    }
     // $scope.testRestful=function()
     // {
     //     Communication.removeMember({
