@@ -10,23 +10,27 @@ angular.module('kidney',[
     'xjz.controllers',
     'zy.controllers',
     'kidney.services',
+    'kidney.filters',
     'kidney.directives',
     'monospaced.qrcode'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage','JM', function($ionicPlatform, $state, Storage,JM) {
+.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
     $ionicPlatform.ready(function() {
 
         //是否登陆
-        var isSignIN=Storage.get("isSignIN");
-        if(isSignIN=='YES'){
+        var isSignIN = Storage.get("isSignIN");
+        if (isSignIN == 'YES') {
             $state.go('tabs.home');
-        }     
-      
+        }
+
         //用户ID
-        var userid='';
-       
-        if(window.cordova && window.cordova.plugins.Keyboard) {
+        var userid = '';
+        $rootScope.conversation = {
+            type: null,
+            id: ''
+        }
+        if (window.cordova && window.cordova.plugins.Keyboard) {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -36,60 +40,55 @@ angular.module('kidney',[
             // a much nicer keyboard experience.
             cordova.plugins.Keyboard.disableScroll(true);
         }
-        if(window.StatusBar) {
+        if (window.StatusBar) {
             StatusBar.styleDefault();
         }
         if (window.JPush) {
             window.JPush.init();
         }
-        if(window.JMessage){
+        if (window.JMessage) {
             // window.Jmessage.init();
             JM.init();
-            $rootScope.conversation = {
-                type:null,
-                id:''
-            }
-          document.addEventListener('jmessage.onOpenMessage', function(msg) {
-            console.info('[jmessage.onOpenMessage]:');
-            console.log(msg);
-            $state.go('tab.chat-detail',{chatId:msg.fromName,fromUser:msg.fromUser});
-          }, false);
-          document.addEventListener('jmessage.onReceiveMessage', function(msg) {
-            console.info('[jmessage.onReceiveMessage]:');
-            console.log(msg);
-            $rootScope.$broadcast('receiveMessage',msg);
-            if (device.platform == "Android") {
-                // message = window.JMessage.message;
-                // console.log(JSON.stringify(message));
-            }
-          }, false);
-          document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
-            console.log('[jmessage.onReceiveCustomMessage]: '+msg);
-            // $rootScope.$broadcast('receiveMessage',msg);
-            if(msg.targetType=='single' && msg.fromID!=$rootScope.conversation.id){
-              if (device.platform == "Android") {
-                window.plugins.jPushPlugin.addLocalNotification(1, '本地推送内容test', msg.content.contentStringMap.type, 111, 0, null)
-                  // message = window.JMessage.message;
-                  // console.log(JSON.stringify(message));
-              }else{
-                window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.type+'本地推送内容test', 1, 111, null)
-              }
-            }
-            
-          }, false);
+
+            document.addEventListener('jmessage.onOpenMessage', function(msg) {
+                console.info('[jmessage.onOpenMessage]:');
+                console.log(msg);
+                $state.go('tab.chat-detail', { chatId: msg.fromName, fromUser: msg.fromUser });
+            }, false);
+            document.addEventListener('jmessage.onReceiveMessage', function(msg) {
+                console.info('[jmessage.onReceiveMessage]:');
+                console.log(msg);
+                $rootScope.$broadcast('receiveMessage', msg);
+                if (device.platform == "Android") {
+                    // message = window.JMessage.message;
+                    // console.log(JSON.stringify(message));
+                }
+            }, false);
+            document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
+                console.log('[jmessage.onReceiveCustomMessage]: ' + msg);
+                // $rootScope.$broadcast('receiveMessage',msg);
+                if (msg.targetType == 'single' && msg.fromID != $rootScope.conversation.id) {
+                    if (device.platform == "Android") {
+                        window.plugins.jPushPlugin.addLocalNotification(1, '本地推送内容test', msg.content.contentStringMap.type, 111, 0, null)
+                            // message = window.JMessage.message;
+                            // console.log(JSON.stringify(message));
+                    } else {
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.type + '本地推送内容test', 1, 111, null)
+                    }
+                }
+
+            }, false);
 
         }
-            if(window.cordova && window.cordova.file){
-              console.log(window.cordova.file);
-            }
-            window.addEventListener('native.keyboardshow', function(e){
-              $rootScope.$broadcast('keyboardshow',e.keyboardHeight);
-            });
-            window.addEventListener('native.keyboardhide', function(e){
-              $rootScope.$broadcast('keyboardhide');
-            });
+        window.addEventListener('native.keyboardshow', function(e) {
+            $rootScope.$broadcast('keyboardshow', e.keyboardHeight);
+        });
+        window.addEventListener('native.keyboardhide', function(e) {
+            $rootScope.$broadcast('keyboardhide');
+        });
     });
 }])
+
 // --------路由, url模式设置----------------
 .config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 
@@ -204,7 +203,7 @@ angular.module('kidney',[
     //进行中详情
     .state('tab.detail', {
         // cache: false,
-        url: '/detail',
+        url: '/detail/:type/:chatId',
         views: {
             'tab-consult':{
                 controller: 'detailCtrl',
@@ -309,6 +308,16 @@ angular.module('kidney',[
                 'tab-groups': {
                     templateUrl: 'partials/group/group-chat.html',
                     controller: 'GroupChatCtrl'
+                }
+            }
+
+        })
+    .state('tab.group-conclusion', {
+            url: '/groups/conclusion/:type/:teamId/:groupId',
+            views: {
+                'tab-groups': {
+                    templateUrl: 'partials/group/conclusion.html',
+                    controller: 'GroupConclusionCtrl'
                 }
             }
 

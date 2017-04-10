@@ -1,16 +1,19 @@
-<ion-view view-title="done" show-tabs>
+<ion-view view-title="done" hide-tabs>
     <ion-nav-bar class="bar-positive" align-title="center">
-      <ion-nav-back-button class="button-clear">
+        <ion-nav-buttons side="left">
+            <a class="button button-icon icon ion-chevron-left" href="#/tab/consult"></a>
+        </ion-nav-buttons>
+     <!--  <ion-nav-back-button class="button-clear">
         <i class="ion-chevron-left"></i>
         
-      </ion-nav-back-button>
+      </ion-nav-back-button> -->
     </ion-nav-bar>
     <ion-content>
 		<div>
 		已完成：{{patients.length}}
 		</div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail" ng-repeat="p in patients">
+            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.id}}" ng-repeat="p in patients">
                 <img src="img/default_user.png">
 				<div>
                 <span>{{p.name}}</span><span>{{p.gender}}</span><span>{{p.age}}</span>

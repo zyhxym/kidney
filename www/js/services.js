@@ -18,6 +18,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
   };
 }])
 .constant('CONFIG', {
+    appKey: 'cf32b94444c4eaacef86903e',
+    baseUrl: 'http://121.43.107.106:4050/',
     cameraOptions: {
         cam: {
             quality: 60,
@@ -39,14 +41,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             targetWidth: 1000,
             targetHeight: 1000
         }
-    },
-    appKey: 'b4ad7a831d5f3273acca5025',
-    path: {
-        base: 'media/b4ad7a831d5f3273acca5025/',
-        img: 'images/thumbnails/',
-        voice: 'voice/'
-    },
-    baseUrl: 'http://121.43.107.106:4050/'
+    }
 })
 
 //自定义函数
@@ -70,6 +65,27 @@ angular.module('kidney.services', ['ionic','ngResource'])
       Storage.set('userid',userid);//存储全局变量userid,通过本地存储
       flag=true;
     }
+    if(user=="18868800021"&&pwd=="123") 
+    {
+      userid="D201703240091";
+      Storage.set('userid',userid);//存储全局变量userid,通过本地存储
+      flag=true;
+    }
+    if(user=="18868800022"&&pwd=="123") 
+    {
+      userid="D201703240092";
+      Storage.set('userid',userid);//存储全局变量userid,通过本地存储
+      flag=true;
+    }
+    window.JMessage.login(user, user,
+        function(response) {
+            window.JMessage.username = user
+            //gotoConversation();
+        },
+        function(err) {
+            console.log(err);
+            // JM.register($scope.useruserID, $scope.passwd);
+        });
     return flag;
   }
   
@@ -120,29 +136,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
   }
   return service;
 })
+//media文件操作 XJZ
 .factory('fs',['$q','$cordovaFile','$filter',function($q,$cordovaFile,$filter){
     return {
-        // createDir:function(){
-        //     // $cordovaFile.checkDir(cordova.file.dataDirectory, "sourceimgs")
-        //     //   .then(function (success) {
-
-        //     //     // success
-        //     //   }, function (err) {
-        //     //     // error
-        //     //   });
-        //     $cordovaFile.createDir(cordova.file.dataDirectory,'voices')
-        //     .then(function(success){
-        //         console.log(res);
-        //     },function(err){
-        //         console.log(err);
-        //     })
-        //     $cordovaFile.createDir(cordova.file.dataDirectory,'sourceimgs')
-        //     .then(function(success){
-        //         console.log(res);
-        //     },function(err){
-        //         console.log(err);
-        //     })
-        // },
         mvMedia:function(type,fileName,ext){
             return $q(function(resolve, reject) {
                 if(type=='voice') var path=cordova.file.externalRootDirectory;
@@ -171,115 +167,92 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
 
 }])
-.factory('voice',['$filter','$q','$ionicLoading','$cordovaFile','CONFIG','Storage','fs',function($filter,$q,$ionicLoading,$cordovaFile,CONFIG,Storage,fs){
-  //funtion audio(){};
-  var audio={};
-    audio.src='';
-    // audio.length=0;
-    // audio.recTime=0;
-    audio.media={};
+//voice recorder XJZ
+.factory('voice', ['$filter', '$q', '$ionicLoading', '$cordovaFile', 'CONFIG', 'Storage', 'fs', function($filter, $q, $ionicLoading, $cordovaFile, CONFIG, Storage, fs) {
+    //funtion audio(){};
+    var audio = {};
+    audio.src = '';
+    audio.media = {};
 
-  audio.record = function(receiver,onSuccess,onError){
-        return $q(function(resolve, reject){
-            if(audio.media.src)audio.media.release();
-            console.log(this);
-            var time=new Date();
-            audio.src = $filter('date')(time,'yyyyMMddHHmmss')+'.amr';
+    audio.record = function(receiver, onSuccess, onError) {
+        return $q(function(resolve, reject) {
+            if (audio.media.src) audio.media.release();
+            var time = new Date();
+            audio.src = $filter('date')(time, 'yyyyMMddHHmmss') + '.amr';
             audio.media = new Media(audio.src,
-              function(){
-                // audio.length=audio.media.getDuration();
-                console.info("recordAudio():Audio Success");
-                // console.log(success);
-                console.log(audio.media);
-                clearInterval(audio.mediaTimer);
-                $ionicLoading.hide();
-                // var url=cordova.file.externalRootDirectory + audio.src;
+                function() {
+                    console.info("recordAudio():Audio Success");
+                    console.log(audio.media);
+                    $ionicLoading.hide();
 
-                // resolve(url);
-                // resolve(audio.src);
-                fs.mvMedia('voice',audio.src,'.amr')
-                .then(function(fileUrl){
-                    console.log(fileUrl);
-                    // window.JMessage.sendSingleVoiceMessage(receiver,fileUrl,CONFIG.appKey,onSuccess,onError);
-                    window.JMessage.sendSingleVoiceMessage(receiver,fileUrl,CONFIG.appKey,
-                        function(res){
-                            resolve(res);
-                        }
-                        ,function(err){
-                            reject(err)
+                    fs.mvMedia('voice', audio.src, '.amr')
+                        .then(function(fileUrl) {
+                            console.log(fileUrl);
+                            esolve(fileUrl);
+                            // window.JMessage.sendSingleVoiceMessage(receiver, fileUrl, CONFIG.appKey,
+                            //     function(res) {
+                            //         resolve(res);
+                            //     },
+                            //     function(err) {
+                            //         reject(err)
+                            //     });
+                            // resolve(fileUrl.substr(fileUrl.lastIndexOf('/')+1));
+                        }, function(err) {
+                            console.log(err);
+                            reject(err);
                         });
-                    // resolve(fileUrl.substr(fileUrl.lastIndexOf('/')+1));
-                },function(err){
+                },
+                function(err) {
+                    console.error("recordAudio():Audio Error");
                     console.log(err);
                     reject(err);
                 });
-              },function(err){
-                console.error("recordAudio():Audio Error");
-                console.log(err);
-                reject(err);
-              });
             audio.media.startRecord();
-            $ionicLoading.show({ template: 'recording'});
+            $ionicLoading.show({ template: 'recording' });
+        });
+    }
+    audio.stopRec = function() {
+        audio.media.stopRecord();
+    }
+    audio.open = function(fileUrl) {
+        if(audio.media.src)audio.media.release();
+        return $q(function(resolve, reject) {
+            audio.media = new Media(fileUrl,
+                function(success) {
+                    resolve(audio.media)
+                },
+                function(err) {
+                    reject(err);
+                })
         });
 
-    
-    // audio.mediaTimer = setInterval(function() {
-    //     audio.recTime = audio.recTime + 1;
-    // }, 1000);
-  }
-  audio.stopRec = function(){
-    audio.media.stopRecord();
-  }
-  audio.open = function(fileUrl){
-    // if(audio.media.src)audio.media.release();
-    return $q(function(resolve,reject){
-        audio.media = new Media(fileUrl,
-          function(success){
-            resolve(audio.media)
-          },function(err){
-            reject(err);
-          })
-    });
-    
-  }
-  audio.play = function(src){
-
-    // if(audio.media.src){
-      // audio.media.release();
-      // audio.media = new Media(src,
-        // function(res){
-          // console.log(res);
-        // },function(err){
-          // console.log(err);
-        // })
-      audio.media.play();
-      // $ionicLoading.show({ template: 'playing',duration:1000});
-    // }
-    // else
-      // console.warn("open audio resource first");
-  }
-  audio.stop = function(){
-    audio.media.stop();
-  }
-  audio.sendAudio = function(fileUrl,receiver){
-    // return $q(function(resolve, reject) {
-      window.JMessage.sendSingleVoiceMessage(receiver,cordova.file.externalRootDirectory+fileUrl,CONFIG.appKey,
-        function(response){
-          console.log("audio.send():OK");
-          console.log(response);
-          //$ionicLoading.show({ template: 'audio.send():[OK] '+response,duration:1500});
-          // resolve(response);
-        },
-        function(err){
-          //$ionicLoading.show({ template: 'audio.send():[failed] '+err,duration:1500});
-          console.log("audio.send():failed");
-          console.log(err);
-          // reject(err);
-        });
-    // });
-  }
-  return audio;
+    }
+    audio.play = function(src) {
+        audio.media.play();
+    }
+    audio.stop = function() {
+        audio.media.stop();
+    }
+    audio.sendAudio = function(fileUrl, receiver) {
+        // return $q(function(resolve, reject) {
+        window.JMessage.sendSingleVoiceMessage(receiver, cordova.file.externalRootDirectory + fileUrl, CONFIG.appKey,
+            function(response) {
+                console.log("audio.send():OK");
+                console.log(response);
+                //$ionicLoading.show({ template: 'audio.send():[OK] '+response,duration:1500});
+                // resolve(response);
+            },
+            function(err) {
+                //$ionicLoading.show({ template: 'audio.send():[failed] '+err,duration:1500});
+                console.log("audio.send():failed");
+                console.log(err);
+                // reject(err);
+            });
+        // });
+    }
+    return audio;
 }])
+
 .factory('Chats', function() {
     // Might use a resource here that returns a JSON array
 
@@ -328,7 +301,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     };
 })
-
+//jmessage XJZ
 .factory('JM', ['Storage', function(Storage) {
     var ConversationList = [];
     var messageLIsts = {};
@@ -600,24 +573,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 }])
+//获取图片，拍照or相册，见CONFIG.cameraOptions。return promise。xjz
 .factory('Camera', ['$q','$cordovaCamera','CONFIG','fs',function($q,$cordovaCamera,CONFIG,fs) { 
-    
   return {
     getPicture: function(type){
         return $q(function(resolve, reject) {
             $cordovaCamera.getPicture(CONFIG.cameraOptions[type]).then(function(imageUrl) {
-              console.log(imageUrl);
-              // resolve(imageUrl);
-
               // file manipulation
-              // var fileName='.Pic.jpg';
               var tail=imageUrl.lastIndexOf('?');
               if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
               else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
-              // fileName.
               fs.mvMedia('image',fileName,'.jpg')
               .then(function(res){
                 console.log(res);
+                //res: file URL
                 resolve(res);
               },function(err){
                 console.log(err);
@@ -625,7 +594,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
               })
           }, function(err) {
             console.log(err);
-              reject('fail to get image url');
+              reject('fail to get image');
           });
       })
     }
