@@ -116,6 +116,18 @@ angular.module('kidney',[
         templateUrl: 'partials/others/phonevalid.html',
         controller: 'phonevalidCtrl'
     })
+    .state('setpassword', {
+      cache:false,
+      url: '/setpassword',
+      templateUrl: 'partials/others/setPassword.html',
+      controller: 'setPasswordCtrl'
+    })
+    .state('userdetail',{
+      cache:false,
+      url:'/userdetail',
+      templateUrl:'partials/others/userdetail.html',
+      controller:'userdetailCtrl'
+    })
 
     .state('messages',{
       cache:false,
