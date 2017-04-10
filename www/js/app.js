@@ -246,6 +246,16 @@ angular.module('kidney',[
             }
         }
     })
+    .state('tab.TestRecord', {
+        // cache: false,
+        url: '/TestRecord',
+        views: {
+            'tab-patient':{
+                controller: 'TestRecordCtrl',
+                templateUrl: 'partials/patient/testrecord.html'
+            }
+        }
+    })
 
     // views-tab-groups
     .state('tab.new-group', {

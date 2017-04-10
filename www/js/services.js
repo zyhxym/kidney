@@ -77,7 +77,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
       Storage.set('userid',userid);//存储全局变量userid,通过本地存储
       flag=true;
     }
-    window.JMessage.login(user, user,
+    if(window.jmessage)
+    {
+        window.JMessage.login(user, user,
         function(response) {
             window.JMessage.username = user
             //gotoConversation();
@@ -86,6 +88,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             console.log(err);
             // JM.register($scope.useruserID, $scope.passwd);
         });
+    }
     return flag;
   }
   

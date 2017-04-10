@@ -172,7 +172,150 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
     }
   }
 }])
+.controller('TestRecordCtrl', ['$scope', '$http','Storage', function ($scope,$http, Storage) {
+  // $scope.$on('$ionicView.afterEnter', function() {  
 
+//                 console.log('afterEnter');  
+
+// }, false);  
+ // console.log("mmb");
+ //  $scope.$on('$ionicView.enter', function() 
+ //  {
+ //    console.log("mmb");
+     $http.get("../data/pressure.json").success(function(data) {
+         $scope.pressuredata = data;
+         console.log($scope.pressuredata)
+         createStockChart($scope.pressuredata,"血压","mmHg");
+     });
+  // })
+
+  $scope.title="血压"
+  $scope.unit="mmHg"
+  $scope.chart = createStockChart($scope.data1,$scope.title,$scope.unit);
+  ////提振参数选择下拉框选项 默认收缩压selected
+  //下拉选择不同体征类型
+  $scope.options = [{"SignName":"血压"},
+    {"SignName":"体重"},
+    {"SignName":"体温"},
+    {"SignName":"尿量"},
+    {"SignName":"心率"}
+  ];  
+  $scope.vitalInfo=$scope.options[0].SignName
+
+  //切换体征
+  $scope.changeVitalInfo = function(option) 
+    {
+       $scope.selectedname=option;
+       console.log($scope.selectedname)
+       drawcharts($scope.selectedname);
+    };
+    //根据体征类型画图
+    var drawcharts=function(param){
+    if (param=="血压") {
+      $http.get("../data/pressure.json").success(function(data) {
+         $scope.pressuredata = data;
+         console.log($scope.pressuredata)
+         createStockChart($scope.pressuredata,"血压","mmHg");
+     });
+      
+      
+    }
+    if(param=="体温"){
+      $http.get("../data/temperature.json").success(function(data) {
+         $scope.temperature = data.dahjvhjkhs;
+         console.log($scope.temperature)
+         createStockChart($scope.temperature,"体温","℃");
+     });
+      
+      
+    }
+  }
+  //传参绘图
+  function createStockChart(ChartData,title,unit) {
+
+    chart="";
+    var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "light",
+    "marginTop":0,
+    "marginRight": 80,
+    "dataProvider": ChartData,
+    "valueAxes": [{
+        "axisAlpha": 0,
+        "position": "left"
+    }],
+    // "graphs": [{
+    //       "balloonText": "[[category]]: <p>[[title]]：[[value]] [[unit]]</p>",
+    //       "bullet": "round",
+    //       "bulletSize": 8,
+    //       "lineThickness": 2,
+    //       "lineColor": "#d1655d",
+    //       "type": "smoothedLine",
+    //       "valueField": "Value",
+    //       "title":title,
+    //       "fillAlphas": 0
+    //     }],
+    "graphs": [{
+        "id":"g1",
+        "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "lineColor": "#d1655d",
+        "lineThickness": 2,
+        "negativeLineColor": "#637bb6",
+        "type": "smoothedLine",
+        "valueField": "value"
+    }],
+    "chartScrollbar": {
+        "graph":"g1",
+        "gridAlpha":0,
+        "color":"#888888",
+        "scrollbarHeight":55,
+        "backgroundAlpha":0,
+        "selectedBackgroundAlpha":0.1,
+        "selectedBackgroundColor":"#888888",
+        "graphFillAlpha":0,
+        "autoGridCount":true,
+        "selectedGraphFillAlpha":0,
+        "graphLineAlpha":0.2,
+        "graphLineColor":"#c2c2c2",
+        "selectedGraphLineColor":"#888888",
+        "selectedGraphLineAlpha":1
+
+    },
+    "chartCursor": {
+        "categoryBalloonDateFormat": "YYYY",
+        "cursorAlpha": 0,
+        "valueLineEnabled":true,
+        "valueLineBalloonEnabled":true,
+        "valueLineAlpha":0.5,
+        "fullWidth":true
+    },
+    "dataDateFormat": "YYYY",
+    "categoryField": "year",
+    "categoryAxis": {
+        "minPeriod": "YYYY",
+        "parseDates": true,
+        "minorGridAlpha": 0.1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    }
+});
+
+
+// chart.addListener("rendered", zoomChart);
+// if(chart.zoomChart){
+//   chart.zoomChart();
+// }
+
+// function zoomChart(){
+//     chart.zoomToIndexes(Math.round(chart.dataProvider.length * 0.4), Math.round(chart.dataProvider.length * 0.55));
+// }
+}
+  
+}])
 
 
 // .controller('groupQRCodeCtrl', ['$scope', 'Storage', function ($scope, Storage) {
