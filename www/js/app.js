@@ -116,6 +116,19 @@ angular.module('kidney',[
         templateUrl: 'partials/others/phonevalid.html',
         controller: 'phonevalidCtrl'
     })
+
+    .state('messages',{
+      cache:false,
+      url:'/messages',
+      templateUrl:'partials/others/AllMessage.html',
+      controller:'messageCtrl'
+    })
+    .state('messagesDetail',{
+      cache:false,
+      url:'/messagesDetail',
+      templateUrl:'partials/others/VaryMessage.html',
+      controller:'VaryMessageCtrl'
+    })
     
     
     //选项卡
