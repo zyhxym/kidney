@@ -116,6 +116,19 @@ angular.module('kidney',[
         templateUrl: 'partials/others/phonevalid.html',
         controller: 'phonevalidCtrl'
     })
+
+    .state('messages',{
+      cache:false,
+      url:'/messages',
+      templateUrl:'partials/others/AllMessage.html',
+      controller:'messageCtrl'
+    })
+    .state('messagesDetail',{
+      cache:false,
+      url:'/messagesDetail',
+      templateUrl:'partials/others/VaryMessage.html',
+      controller:'VaryMessageCtrl'
+    })
     
     
     //选项卡
@@ -243,6 +256,27 @@ angular.module('kidney',[
             'tab-patient':{
                 controller: 'DoctorDiagnoseCtrl',
                 templateUrl: 'partials/patient/DoctorDiagnose.html'
+            }
+        }
+    })
+    .state('tab.TestRecord', {
+        // cache: false,
+        url: '/TestRecord',
+        views: {
+            'tab-patient':{
+                controller: 'TestRecordCtrl',
+                templateUrl: 'partials/patient/testrecord.html'
+            }
+        }
+    })
+
+    .state('tab.TaskSet', {
+        // cache: false,
+        url: '/TaskSet',
+        views: {
+            'tab-patient':{
+                controller: 'TaskSetCtrl',
+                templateUrl: 'partials/patient/TaskSet.html'
             }
         }
     })
