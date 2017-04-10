@@ -12,7 +12,8 @@ angular.module('kidney',[
     'kidney.services',
     'kidney.filters',
     'kidney.directives',
-    'monospaced.qrcode'
+    'monospaced.qrcode',
+    'ionic-datepicker'
 ])
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
