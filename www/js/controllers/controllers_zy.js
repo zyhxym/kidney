@@ -87,11 +87,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //手机号码验证
-.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
+.controller('phonevalidCtrl', ['$scope','$state','$interval', 'Storage',  function($scope, $state,$interval,Storage) {
   $scope.barwidth="width:0%";
-  
-  $scope.veriusername="" 
-  $scope.verifyCode="";
+  $scope.Verify={Phone:"",Code:""};
   $scope.veritext="获取验证码";
   $scope.isable=false;
   var unablebutton = function(){      
@@ -116,26 +114,289 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   var sendSMS = function(){
       //结果分为1、验证码发送失败;2、发送成功，获取稍后
     $scope.logStatus="您的验证码已发送，重新获取请稍后";
+    unablebutton();
   }
   //点击获取验证码
-  $scope.getcode=function(veriusername){
+  $scope.getcode=function(Verify){
      $scope.logStatus='';
-     if ($scope.veriusername=="") {$scope.logStatus="手机号码不能为空！";return;}
+    
+     if (Verify.Phone=="") {
+      
+      $scope.logStatus="手机号码不能为空！";
+      return;
+    }
      var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       //手机正则表达式验证
-     if(!phoneReg.test(logOn.veriusername)){$scope.logStatus="手机号验证失败！";return;}
-     //先判断用户是否注册过
-     var usernames = Storage.get('usernames');
-      if (usernames.indexOf($scope.veriusername)>=0) {$scope.logStatus = "该手机号码已经注册！";return;}
-     
-  
-
-
+     if(!phoneReg.test(Verify.Phone)){$scope.logStatus="手机号验证失败！";return;}
+     //如果为注册，注册过的用户不能获取验证码；如果为重置密码，没注册过的用户不能获取验证码
+      var usernames = Storage.get('usernames').split(",");
+      if(Storage.get('setPasswordState')=='register'){
+        if(usernames.indexOf(Verify.Phone)>=0){
+          $scope.logStatus = "该手机号码已经注册！";
+        }
+        else{sendSMS();}
+      }
+      else if(Storage.get('setPasswordState')=='reset'){
+        if(usernames.indexOf(Verify.Phone)<0){
+          $scope.logStatus = "该手机号码尚未注册！";
+        }
+        else{sendSMS();}
+      }
   }
 
- 
+  //判断验证码和手机号是否正确
+  $scope.gotoReset = function(Verify){
+    $scope.logStatus = '';
+    if(Verify.Phone!="" && Verify.Code!=""){
+      var tempVerify = 123;
+      //结果分为三种：(手机号验证失败)1验证成功；2验证码错误；3连接超时，验证失败
+      var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      //手机正则表达式验证
+      if(phoneReg.test(Verify.Phone)){ 
+        if (Verify.Code == tempVerify) {
+        logStatus = "验证成功！";
+        Storage.set('USERNAME',Verify.Phone);
+        $state.go('setpassword');
+        }
+        else{$scope.logStatus = "验证码错误！";}
+      }
+      else{$scope.logStatus="手机号验证失败！";}
+        
+    }
+    else{$scope.logStatus = "请输入完整信息！";}
+  }
   
 }])
+
+
+
+//设置密码
+.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage',function($scope,$state,$rootScope,$timeout,Storage) {
+  $scope.barwidth="width:0%";
+  // var setPassState=Storage.get('setPasswordState');
+  // if(setPassState=='reset'){
+  //   $scope.headerText="重置密码";
+  //   $scope.buttonText="确认修改";
+  // }else{
+    $scope.headerText="设置密码";
+    $scope.buttonText="下一步";
+  // }
+  $scope.setPassword = function(){
+    $state.go('userdetail');
+    //Storage.set('setPasswordState','sign');
+  }
+  //$scope.setPassword={newPass:"" , confirm:""};
+  // $scope.resetPassword=function(setPassword){
+  //   $scope.logStatus='';
+  //   if((setPassword.newPass!="") && (setPassword.confirm!="")){
+  //     if(setPassword.newPass == setPassword.confirm){
+  //       var username = Storage.get('USERNAME');
+  //       //如果是注册
+  //       if(setPassState=='register'){
+  //         //结果分为连接超时或者注册成功
+  //         $rootScope.password=setPassword.newPass;
+          
+  //         //把新用户和密码写入
+  //         var usernames = Storage.get('usernames');
+  //         var passwords = Storage.get('passwords');
+  //         if(usernames == "" || usernames == null){
+  //           usernames = new Array();
+  //           passwords = new Array();            
+  //         }else{
+  //           usernames = usernames.split(",");
+  //           passwords = passwords.split(",");}
+                    
+  //         usernames.push(username);          
+  //         passwords.push(setPassword.newPass);
+  //         Storage.set('usernames',usernames);
+  //         Storage.set('passwords',passwords);
+  //         $scope.logStatus ="注册成功！";
+  //         $timeout(function(){$state.go('userdetail');} , 100);
+  //       }
+  //       else if(setPasswordState== 'reset'){
+  //         //如果是重置密码
+
+          
+  //         //结果分为连接超时或者修改成功
+  //          $scope.logStatus ="重置密码成功！";
+  //         //把新用户和密码写入
+  //         var usernames = Storage.get('usernames').split(",");
+  //         var index = usernames.indexOf(username);
+  //         var passwords = Storage.get('passwords').split(",");
+  //         passwords[index] = setPassword.newPass;
+         
+  //         Storage.set('passwords',passwords);
+  //         $timeout(function(){$state.go('signin');} , 100);
+          
+  //       }
+  //     }else{
+  //       $scope.logStatus="两次输入的密码不一致";
+  //     }
+  //   }else{
+  //     $scope.logStatus="请输入两遍新密码"
+  //   }
+  // }
+
+}])
+
+
+
+
+//注册时填写医生个人信息
+.controller('userdetailCtrl',['$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover',function($scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover){
+  $scope.barwidth="width:0%";
+//注册时可跳过个人信息
+  // $scope.CanSkip = function(){
+  //   if(Storage.get('setPasswordState')=='register'){
+  //     return true;
+  //   }
+  //   else{
+  //     return false;}
+  // }
+
+  $scope.Skip = function(){
+    $state.go('signin');
+    //Storage.set('setPasswordState','sign');
+  }
+
+
+  $scope.Goback = function(){
+    $ionicHistory.goBack();
+  }
+  
+     //初始待选项出现一条空白
+      // 获取性别类型
+      $scope.Genders = {};// 初始化
+      $scope.Genders =
+        [
+        {Name:"男",Type:1},
+        {Name:"女",Type:2}
+        ]
+      ; 
+
+
+
+
+var initUserDetail = function(){
+  $ionicLoading.show({
+          template: '<ion-spinner style="height:2em;width:2em"></ion-spinner>'
+         });
+
+
+    $scope.User={
+    Name:"",
+    Gender:{Name:"男",Type:1},//默认选项
+    workUnit:"",
+    department:"",
+    title:"",
+    birthday:"",
+    IDCard:"",
+    major:"",
+    Numberroduction:""};
+
+  
+
+  setTimeout(function(){$ionicLoading.hide();},400);
+
+}
+
+initUserDetail();
+  
+
+  // --------datepicker设置----------------
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+
+  // --------出生日期----------------
+  var BirthdatePickerCallback = function (val) {
+    if (typeof(val) === 'undefined') {
+      console.log('No date selected');
+    } else {
+      $scope.datepickerObject3.inputDate=val;
+      var dd=val.getDate();
+      var mm=val.getMonth()+1;
+      var yyyy=val.getFullYear();
+      var d=dd<10?('0'+String(dd)):String(dd);
+      var m=mm<10?('0'+String(mm)):String(mm);
+      //日期的存储格式和显示格式不一致
+      $scope.User.Birthday=yyyy+'/'+m+'/'+d;
+    }
+  };
+  $scope.datepickerObject3 = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(1900, 1, 1),   //Optional
+    to: new Date(),    //Optional
+    callback: function (val) {    //Mandatory
+      BirthdatePickerCallback(val);
+    }
+  };  
+  // --------datepicker设置结束----------------
+
+
+   //////////////////////////////////////////////////////////////////////////
+      $scope.change = function(d)
+      {
+        console.log(d);
+      }
+
+      
+      // 修改信息后的保存
+  var InsertUserDetail = function(User){
+    // console.log(User.BloodType);
+    Storage.set("user.name",User.Name);
+    Storage.set("user.gender",JSON.stringify(User.Gender));
+    Storage.set("user.workUnit",User.workUnit);
+    Storage.set("user.department",User.department);
+    Storage.set("user.title",User.title);
+    Storage.set("user.birthday",User.Birthday);
+    Storage.set("user.idcard",User.IDCard);
+    Storage.set("user.major" ,User.major);
+    Storage.set("user.Numberroduction",User.Numberroduction);
+
+    $ionicPopup.alert({
+      title: '保存成功',
+      template: '个人信息修改完成！'
+    })
+    
+  }
+     
+
+
+  $scope.infoSetup = function(User){
+    console.log($scope.User);
+    //Storage.set("isSignIN")="YES";
+    //console.log($state);
+    $state.go('tab.home');
+  }
+
+}])
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //首页
 .controller('homeCtrl', [
