@@ -735,7 +735,8 @@ initUserDetail();
   
   $scope.doctor={
     charge1:20,
-    charge2:100
+    charge2:100,
+    sum:1000
   };
   
     $scope.save = function() {
@@ -749,6 +750,9 @@ initUserDetail();
 //"我”的评价
 .controller('feedbackCtrl', ['$scope','$ionicPopup','$state', function($scope, $ionicPopup,$state) {
   $scope.hideTabs = true;
+  $scope.doctor={
+    score:9.6
+  };
   
   $scope.feedbacks=[
   {

@@ -22,7 +22,7 @@ angular.module('kidney',[
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
-            $state.go('tabs.home');
+            $state.go('tab.home');
         }
 
         //用户ID
@@ -120,13 +120,13 @@ angular.module('kidney',[
     .state('setpassword', {
       cache:false,
       url: '/setpassword',
-      templateUrl: 'partials/others/setPassword.html',
+      templateUrl: 'partials/others/setpassword.html',
       controller: 'setPasswordCtrl'
     })
     .state('userdetail',{
       cache:false,
       url:'/userdetail',
-      templateUrl:'partials/others/userdetail.html',
+      templateUrl:'partials/others/userDetail.html',
       controller:'userdetailCtrl'
     })
 
