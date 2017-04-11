@@ -65,7 +65,7 @@
   /*line-height: 20px;*/
   padding-top: 0;
   padding-bottom: 0;
-  transition: 0.08s all linear;
+  transition: 0.1s all linear;
 }
 .hide-animate.ng-hide {
   line-height: 0px;
@@ -73,6 +73,10 @@
 .hide-animate.ng-hide-add,
 .hide-animate.ng-hide-remove {
   display: block !important;
+}
+.high-light{
+    font-size:1.25em;
+    color: #0288D1 !important;
 }
 /*message box -------------------------------------------------------------------------------*/
     .msgbox {
