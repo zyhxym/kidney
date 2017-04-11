@@ -113,7 +113,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     var options = [{
         name: '搜索团队',
-        href: '#/tab/groups/search'
+        href: '#/tab/groupsearch'
     }, {
         name: '新建团队',
         href: '#/tab/newgroup'
@@ -121,6 +121,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.beforeEnter', function() {
         console.log($state.params.type);
         $scope.params.isTeam = $state.params.type=='0';
+        $scope.params.showSearch = false;
     })
     $scope.$on('$ionicView.enter', function() {
         
@@ -154,7 +155,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 
     $scope.itemClick = function(ele, id) {
-        if (ele.target.innerHTML == '会诊') $state.go("tab.group-patient", { teamId: id });
+        if (ele.target.innerHTML == '讨论') $state.go("tab.group-patient", { teamId: id });
         else $state.go('tab.group-chat', { type: '0', groupId: id, teamId: id });
     }
 
@@ -218,8 +219,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     // }
 }])
 
-.controller('GroupAddCtrl', ['$scope', '$state', function($scope, $state) {
+.controller('GroupAddCtrl', ['$scope', '$state','$ionicHistory', function($scope, $state,$ionicHistory) {
     console.log($state);
+    $scope.request =function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.groups',{type:'0'});
+    }
     $scope.group = {
         id: $state.params.groupId,
         name: '折翼肾病管家联盟',
@@ -642,8 +649,45 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //添加成员
-.controller('GroupAddMemberCtrl', ['$scope', '$state', function() {
+.controller('GroupAddMemberCtrl', ['$scope', '$state', function($scope,$state) {
     //get groupId via $state.params.groupId
+    $scope.doctors=[
+          {
+              photoUrl:"img/avatar.png",
+              userId:"D201703240001",
+              name:"小丁",
+              gender:"男",
+              title:"主任医生",
+              workUnit:"浙江XXX医院",
+              department:"泌尿科",
+              major:"肾上腺分泌失调",
+              score:'9.5',
+              num:2313
+          },
+          {
+              photoUrl:"img/max.png",
+              userId:"D201703240002",
+              name:"小李",
+              gender:"女",
+              title:"主任医生",
+              workUnit:"浙江XXX医院",
+              department:"泌尿科2",
+              major:"慢性肾炎、肾小管疾病",
+              score:'9.1',
+              num:525
+          },
+           {
+              photoUrl:"img/default_user.png",
+              userId:"wds",
+              name:"小P",
+              gender:"男",
+              title:"主任医生",
+              workUnit:"浙江XXX医院",
+              department:"泌尿科3",
+              major:"肾小管疾病、间质性肾炎",
+              score:'8.8',
+              num:2546
+          }];
 
 }])
 //团队聊天
@@ -784,7 +828,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $ionicHistory.nextViewOptions({
             disableBack: true
         });
-        if ($scope.params.type == '0') $state.go('tab.groups');
+        if ($scope.params.type == '0') $state.go('tab.groups',{type:'0'});
         else $state.go('tab.group-patient', { teamId: $scope.params.teamId });
     }
 
