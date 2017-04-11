@@ -318,23 +318,74 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
 }])
 
 //任务设置--GL
-.controller('TaskSetCtrl', ['$scope', '$state', function ($scope, $state) {
+.controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', function ($scope, $state, $ionicPopup) {
   $scope.Units = ["天", "周", "年", "月"];
   $scope.Times = ["1", "2", "3", "4", "5"];
-  $scope.Tasks = [{Name: "体温", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "体重", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units},  
-                  {Name: "血压", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "心率", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "血管通路情况", Freq:{Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "复诊", Freq: {Time1:"1", Unit:"月", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "化验", Freq: {Time1:"2", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
-                  {Name: "特殊评估", Freq: {Time1:"1", Unit:"年", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}];
+  $scope.Tasks = [{Name: "体温", Description:"", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "体重", Description:"", Freq: {Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units},  
+                  {Name: "血压", Description:"每天晨起或睡前安静状态下测量血压2次", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "心率", Description:"", Freq: {Time1:"1", Unit:"天", Time2:"2"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "血管通路情况", Description:"", Freq:{Time1:"1", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "复诊", Description:"", Freq: {Time1:"1", Unit:"月", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "化验", Description:"b2微球蛋白，转铁蛋白，前白蛋白，饮食记录，营养评估，sga评估，换管记录", Freq: {Time1:"2", Unit:"天", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}, 
+                  {Name: "腹透方案", Description:"", Freq: {Time1:"1", Unit:"天", Time2:"3"}, Time:$scope.Times, Unit:$scope.Units},
+                  {Name: "特殊评估", Description:"心电图、肺Ct、心脏B超、腹部B超，血管B超", Freq: {Time1:"1", Unit:"年", Time2:"1"}, Time:$scope.Times, Unit:$scope.Units}];
 
   $scope.SetFreq = function()
   {
       
       $state.go('tab.patientDetail');
   }
+  
+  //编辑任务描述
+  $scope.showPopup = function(name) {
+    $scope.data = {};
+    for(var i=0;i<$scope.Tasks.length;i++)
+    {
+        if($scope.Tasks[i].Name == name)
+        {
+             $scope.data.value = $scope.Tasks[i].Description;
+             break;
+        }
+    }   
+           
+    var myPopup = $ionicPopup.show({
+       template: '<textarea style="height:150px;" ng-model="data.value"></textarea>',     
+       title: '请填写'+ name + '备注',
+       scope: $scope,
+       buttons: [
+         { text: '取消' },
+         {
+           text: '<b>保存</b>',
+           type: 'button-positive',
+           onTap: function(e) {
+             if (!$scope.data.value) {
+               // 不允许用户关闭，除非输入内容
+               e.preventDefault();
+             } else {
+              return $scope.data.value;
+             }  
+          }
+         },
+         ]
+     });
+     myPopup.then(function(res) {
+      //console.log(res);
+      if(res)
+      {        
+        for(var i=0;i<$scope.Tasks.length;i++)
+        {
+            if($scope.Tasks[i].Name == name)
+            {
+                $scope.Tasks[i].Description = res;
+                break;
+            }
+        } 
+      }  
+    });
+  };
+
+
 }])
 //消息类型--PXY
 .controller('VaryMessageCtrl', ['$scope','$state','$ionicHistory',function($scope, $state,$ionicHistory) {
