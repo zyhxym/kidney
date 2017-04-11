@@ -18,6 +18,11 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
     $ionicPlatform.ready(function() {
+        $rootScope.goConclusion =function(){
+            alert('aaa');
+        // if(params.type=='2') location.hash = "#conclusion";
+        // else $state.go('tab.group-conclusion',{teamId:params.teamId,groupId:params.groupId,type:params.type});
+    }
 
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
@@ -229,11 +234,42 @@ angular.module('kidney',[
     //进行中详情
     .state('tab.detail', {
         // cache: false,
+        //[type]:0=已结束;1=进行中;2=医生
         url: '/detail/:type/:chatId',
         views: {
             'tab-consult':{
                 controller: 'detailCtrl',
                 templateUrl: 'partials/consult/detail.html'
+            }
+        }
+    })
+    .state('tab.consult-detail', {
+        // cache: false,
+        url: '/consult/detail/:consultId',
+        views: {
+            'tab-consult':{
+                controller: 'consultDetailCtrl',
+                templateUrl: 'partials/consult/consult-detail.html'
+            }
+        }
+    })
+    .state('tab.selectDoc', {
+        // cache: false,
+        url: '/selectdoc',
+        views: {
+            'tab-consult':{
+                controller: 'selectDocCtrl',
+                templateUrl: 'partials/consult/select-doctor.html'
+            }
+        }
+    })
+    .state('tab.selectTeam', {
+        // cache: false,
+        url: '/selectteam',
+        views: {
+            'tab-consult':{
+                controller: 'selectTeamCtrl',
+                templateUrl: 'partials/consult/select-team.html'
             }
         }
     })
@@ -350,6 +386,7 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-chat', {
+        //'0':团队交流  '1': 未结束病历  '2':已结束病历
             url: '/groups/chat/:type/:teamId/:groupId',
             views: {
                 'tab-groups': {

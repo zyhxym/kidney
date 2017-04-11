@@ -4,7 +4,7 @@
 	<!-- avatar -->
 	<img class="avatar" ng-src="{{msg.fromUser.avatarPath || 'img/max.png'}}" ng-click="emitEvent('profile',msg.fromID)"/>
 	<!-- chat bubble -->
-	<div class="msg-body">
+	<div class="msg-body"  on-hold="emitEvent('holdmsg',msg._id,$event)">
 		<!-- text content -->
 		<div class="media-text">{{msg.content.text}}</div>
 	</div>

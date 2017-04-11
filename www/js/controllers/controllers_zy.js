@@ -539,7 +539,7 @@ initUserDetail();
 // }])
 
 //"患者”页
-.controller('patientCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
+.controller('patientCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
   $scope.barwidth="width:0%";
   $scope.order="VIP";
   $scope.abc=false;
@@ -611,6 +611,17 @@ initUserDetail();
       class:""
     }
     ];
+
+    $ionicPopover.fromTemplateUrl('partials/others/sort_popover.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+    $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+      $scope.testt=12345
+    };
+    $scope.isChecked1=true;
 }])
 
 //"患者”详情子页
