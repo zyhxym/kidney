@@ -457,7 +457,7 @@ initUserDetail();
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
+.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
   $scope.patients=[
     {
       head:"default_user.png",
@@ -487,10 +487,21 @@ initUserDetail();
       qs:"问题2" 
     }
     ];
+    $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+    $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+      //$scope.testt=12345
+    };
+    //$scope.isChecked1=true;
+
 }])
 
 //"咨询”已完成
-.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',  function($scope, $state,$interval,$rootScope,Storage) {
+.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
   $scope.patients=[
     {
       head:"default_user.png",
@@ -520,6 +531,16 @@ initUserDetail();
       qs:"问题2" 
     }
     ];
+    $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+    $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+      //$scope.testt=12345
+    };
+    //$scope.isChecked1=true;
 }])
 
 
