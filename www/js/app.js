@@ -193,7 +193,7 @@ angular.module('kidney',[
         }
     })
 
-    //tuandui
+    //交流
     .state('tab.groups', {
         // cache: false,
         //type:   '0'=team  '1'=doctor

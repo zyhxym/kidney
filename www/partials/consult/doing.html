@@ -12,12 +12,14 @@
         等待患者：{{patients.length}}
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.id}}" ng-repeat="p in patients">
-                <img src="img/default_user.png">
+            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients">
+                <img src="p.patientId.photoUrl">
                 <div>
-                <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
-                <span class="mine-msg-right">{{p.time}}</span>
-                <p class="friend-detail-p" style="white-space:nowrap;">{{p.qs}}</p>
+                <span>{{p.patientId.name}}</span>
+                <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>
+                <span style="margin-left:5px;">{{p.patientId.birthday|filterAge}}岁</span>
+                <span class="mine-msg-right">{{p.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
+                <p class="friend-detail-p" style="white-space:nowrap;">{{p.topic}}</p>
                 </div>
             </a>      
         </div>

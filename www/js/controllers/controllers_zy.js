@@ -2,14 +2,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying////////////////////////
 //登录
-.controller('SignInCtrl', ['$scope','$timeout','$state','Storage','loginFactory','$ionicHistory', function($scope, $timeout,$state,Storage,loginFactory,$ionicHistory) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory) {
 //.controller('SignInCtrl', ['$scope','$timeout','$state','Storage','loginFactory','$ionicHistory', function($scope, $timeout,$state,Storage,loginFactory,$ionicHistory) {
   $scope.barwidth="width:0%";
   if(Storage.get('USERNAME')!=null){
     $scope.logOn={username:Storage.get('USERNAME'),password:""};
 
   }else{
-    $scope.logOn={username:"",password:"123"};
+    $scope.logOn={username:"",password:""};
   }
   $scope.signIn = function(logOn) {  
     $scope.logStatus='';
@@ -24,63 +24,61 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //         console.log(err);
     //         // JM.register($scope.useruserID, $scope.passwd);
     //     });
-  
-   //记录登录状态
-   var flag=false;
-    if((logOn.username!="") && (logOn.password!="")){
+
+if((logOn.username!="") && (logOn.password!="")){
       var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       //手机正则表达式验证
-      if(!phoneReg.test(logOn.username)){$scope.logStatus="手机号验证失败！";}
+      if(!phoneReg.test(logOn.username)){
+            $scope.logStatus="手机号验证失败！";
+            return;
+        }
       else{
-        var usernames = Storage.get('usernames');
-      usernames="13709553333,18366113563,18366113564";
-      passwords="123,111,111";
-        var index = usernames.indexOf(logOn.username);
-        console.log(index);
-      //测试
-        if(index>=0){//查找手机号是否注册过，是否在数据库里
-          //判断密码是否正确
-          console.log(usernames[index]);
-          console.log(passwords[index]);
-          var passwords = Storage.get('passwords');
-          //if(logOn.password != passwords[index]){$scope.logStatus = "密码错误！";}
-        //if(logOn.username!="18366113562"||logOn.password!="123") {$scope.logStatus = "密码错误！";}//登录名写死
-        //if(loginFactory.isLogin()==false){$scope.logStatus = "密码错误！";}
-        if(loginFactory.isLogin(logOn.username,logOn.password)==false){$scope.logStatus = "密码错误！";}
-          else{
-          Storage.set('USERNAME',logOn.username);
-          Storage.set('IsSignIn','YES');
-          $scope.logStatus = "登录成功";
-          $ionicHistory.clearCache();
-          $ionicHistory.clearHistory();
-          $timeout(function(){$state.go('tab.home');},500);
-          flag=true;//登录成功
-          }
-        }
-        else{
-          $scope.logStatus = "手机号未激活，请注册！"
-        }
-      }
-      
+        var logPromise = User.logIn({username:logOn.username,password:logOn.password,role:"doctor"});
+            logPromise.then(function(data){
+                if(data.results==1){
+                    if(data.mesg== "User doesn't Exist!"){
+                        $scope.logStatus="账号不存在！";
+                    }
+                    else if(data.mesg== "User password isn't correct!"){
+                        $scope.logStatus = "账号或密码错误！";
+                    }
+                }
+                else if(data.results.mesg=="login success!"){
+                    $scope.logStatus = "登录成功！";
+                    $ionicHistory.clearCache();
+                    $ionicHistory.clearHistory();
+                    Storage.set('TOKEN',data.results.token);//token作用目前还不明确
+                    Storage.set('isSignIn',true);
+                    Storage.set('UID',data.results.userId);
+                    $timeout(function(){$state.go('tab.home');},500);
 
+                }
+
+            },function(data){
+                if(data.results==null && data.status==0){
+                    $scope.logStatus = "网络错误！";
+                    return;
+                }
+                if(data.status==404){
+                    $scope.logStatus = "连接服务器失败！";
+                    return;
+                }
+
+            });
+      }     
     }
     else{
       $scope.logStatus="请输入完整信息！";
     }
-  
-  //Storage.set("isSignIN")="YES";
-  console.log($state);
-  //$state.go('tab.home');
-    if(flag==true)$state.go('tab.home');    
   }
+
   $scope.toRegister = function(){
     console.log($state);
-    $state.go('phonevalid');   
-   
+    $state.go('phonevalid');     
   }
+
   $scope.toReset = function(){
-    $state.go('phonevalid');
-   
+    $state.go('phonevalid');   
   } 
   
 }])
@@ -435,10 +433,10 @@ initUserDetail();
 }])
 
 //咨询
-.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','QRScan',  function($scope, $state,$interval,$rootScope,Storage,QRScan) {
+.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','QRScan','Counsel',  function($scope, $state,$interval,$rootScope,Storage,QRScan,Counsel) {
   $scope.barwidth="width:0%";
   //变量a 等待患者数量 变量b 已完成咨询患者数量
-  $scope.doctor={a:3,b:3};
+  $scope.doctor={a:0,b:0};
   $scope.qrscan= function(){
     QRScan.getCode()
     .then(function(data){
@@ -454,83 +452,89 @@ initUserDetail();
   var date1=month+"月"+day+"日";
   //var date1=new Date().format("MM月dd日");
   $scope.riqi=date1;
+
+  //获取在等待
+  Counsel.getCounsels({
+    userId:'doc01',
+    status:0
+  })
+  .then(
+    function(data)
+    {
+      // console.log(data)
+      Storage.set("consulted",angular.toJson(data.results))
+      // console.log(angular.fromJson(Storage.get("consulted",data.results)))
+      $scope.doctor.b=data.results.length;
+    },
+    function(err)
+    {
+      console.log(err)
+    }
+  )
+  //获取进行中
+  Counsel.getCounsels({
+    userId:'doc01',
+    status:1
+  })
+  .then(
+    function(data)
+    {
+      console.log(data)
+      Storage.set("consulting",angular.toJson(data.results))
+      // console.log(angular.fromJson(Storage.get("consulting",data.results)))
+      $scope.doctor.a=data.results.length;
+    },
+    function(err)
+    {
+      console.log(err)
+    }
+  )
+
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
-  $scope.patients=[
-    {
-      head:"default_user.png",
-      name:"赵大头",
-      id:18868800011,
-      gender:"男",
-      age:"32",
-      time:"2017/3/27 9:32",
-      qs:"问题1" 
-    },
-    {
-      head:"default_user.png",
-      name:"钱二头",
-      id:18868800012,
-      gender:"男",
-      age:"32",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    },
-    {
-      head:"default_user.png",
-      name:"孙三头",
-      id:18868800013,
-      gender:"男",
-      age:"29",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    }
-    ];
-    $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
-      scope: $scope
-    }).then(function(popover) {
-      $scope.popover = popover;
-    });
-    $scope.openPopover = function($event) {
-      $scope.popover.show($event);
-      //$scope.testt=12345
-    };
-    //$scope.isChecked1=true;
+.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel) {
+  // $scope.patients=[
+  //   {
+  //     head:"default_user.png",
+  //     name:"赵大头",
+  //     id:18868800011,
+  //     gender:"男",
+  //     age:"32",
+  //     time:"2017/3/27 9:32",
+  //     qs:"问题1" 
+  //   }
+  // ];
+  $scope.patients=angular.fromJson(Storage.get("consulting"));
+
+  $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
+    scope: $scope
+  }).then(function(popover) {
+    $scope.popover = popover;
+  });
+  $scope.openPopover = function($event) {
+    $scope.popover.show($event);
+    //$scope.testt=12345
+  };
+  //$scope.isChecked1=true;
 
 }])
 
 //"咨询”已完成
 .controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
-  $scope.patients=[
-    {
-      head:"default_user.png",
-      name:"王大头",
-      id:18868800001,
-      gender:"男",
-      age:"32",
-      time:"2017/3/27 9:32",
-      qs:"问题1" 
-    },
-    {
-      head:"default_user.png",
-      name:"王二头",
-      id:18868800002,
-      gender:"男",
-      age:"32",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    },
-    {
-      head:"default_user.png",
-      name:"王三头",
-      id:18868800003,
-      gender:"男",
-      age:"29",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    }
-    ];
+  // $scope.patients=[
+  //   {
+  //     head:"default_user.png",
+  //     name:"王大头",
+  //     id:18868800001,
+  //     gender:"男",
+  //     age:"32",
+  //     time:"2017/3/27 9:32",
+  //     qs:"问题1" 
+  //   }
+  // ];
+  $scope.patients=angular.fromJson(Storage.get("consulted"));
+  
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
       scope: $scope
     }).then(function(popover) {
