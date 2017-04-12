@@ -204,7 +204,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $ionicHistory.nextViewOptions({
                 disableBack: true
             });
-            $state.go('tab.groups');
+            $state.go('tab.groups',{type:'0'});
         }
         // $scope.addgroup = function(){
         //   // $state.go()
@@ -834,21 +834,82 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //病历结论
-.controller('GroupConclusionCtrl',['$state','$scope',function($state,$scope){
+.controller('GroupConclusionCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate',function($state,$scope,$ionicModal,$ionicScrollDelegate){
     $scope.params = {
         type: '',
         groupId: '',
-        teamId: '',
-        hidePanel:true
+        teamId: ''
+    }
+    $scope.content = {
+        pics: [
+            'img/avatar.png',
+            'img/ben.png',
+            'img/mike.png'
+        ]
+    }
+    $scope.patient = {
+        name: '李峰',
+        age: '23',
+        teamId: 'team111',
+        groupId:'group111',
+        undergo: true,
+        gender: '男',
+        time: '4/9/17 12:17',
+        discription: '现在口服药有，早上拜新同两片，中午47.5mg的倍他乐克一片'
     }
     $scope.$on('$ionicView.beforeEnter', function() {
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
         $scope.params.teamId = $state.params.teamId;
     })
-    $scope.togglePanel = function() {
-        $scope.params.hidePanel = !$scope.params.hidePanel;
+    // $scope.save = function() {
+    //     var confirmPopup = $ionicPopup.confirm({
+    //         title: '确定要结束此次咨询吗?',
+    //         // template: '确定要结束此次咨询吗?'
+    //         okText:'确定',
+    //         cancelText:'取消'
+    //     });
+    //     confirmPopup.then(function(res) {
+    //         if (res) {
+    //             console.log('You are sure');
+    //         } else {
+    //             console.log('You are not sure');
+    //         }
+    //     });
+    // }
+    //view image
+    $scope.zoomMin = 1;
+    $scope.imageUrl = '';
+    $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal = modal;
+        $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
+    });
+    $scope.closeModal = function() {
+        $scope.imageHandle.zoomTo(1, true);
+        $scope.modal.hide();
+        // $scope.modal.remove()
+    };
+    $scope.viewPic = function(src) {
+        $scope.imageUrl = src;
+        $scope.modal.show();
+        // $scope.modal.remove()
+    };
+    $scope.switchZoomLevel = function() {
+        if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin)
+            $scope.imageHandle.zoomTo(1, true);
+        else {
+            $scope.imageHandle.zoomTo(3, true);
+        }
     }
+    $scope.save = function(){
+        $state.go('tab.groups',{type:'0'});
+    }
+    
+    $scope.$on('$ionicView.leave', function() {
+        if($scope.modal) $scope.modal.remove();
+    })
 }])
 .controller('selectDocCtrl',['$state','$scope',function($state,$scope){
     $scope.doctors=[
