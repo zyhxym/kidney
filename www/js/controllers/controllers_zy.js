@@ -433,10 +433,10 @@ initUserDetail();
 }])
 
 //咨询
-.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','QRScan',  function($scope, $state,$interval,$rootScope,Storage,QRScan) {
+.controller('consultCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','QRScan','Counsel',  function($scope, $state,$interval,$rootScope,Storage,QRScan,Counsel) {
   $scope.barwidth="width:0%";
   //变量a 等待患者数量 变量b 已完成咨询患者数量
-  $scope.doctor={a:3,b:3};
+  $scope.doctor={a:0,b:0};
   $scope.qrscan= function(){
     QRScan.getCode()
     .then(function(data){
@@ -452,83 +452,89 @@ initUserDetail();
   var date1=month+"月"+day+"日";
   //var date1=new Date().format("MM月dd日");
   $scope.riqi=date1;
+
+  //获取在等待
+  Counsel.getCounsels({
+    userId:'doc01',
+    status:0
+  })
+  .then(
+    function(data)
+    {
+      // console.log(data)
+      Storage.set("consulted",angular.toJson(data.results))
+      // console.log(angular.fromJson(Storage.get("consulted",data.results)))
+      $scope.doctor.b=data.results.length;
+    },
+    function(err)
+    {
+      console.log(err)
+    }
+  )
+  //获取进行中
+  Counsel.getCounsels({
+    userId:'doc01',
+    status:1
+  })
+  .then(
+    function(data)
+    {
+      console.log(data)
+      Storage.set("consulting",angular.toJson(data.results))
+      // console.log(angular.fromJson(Storage.get("consulting",data.results)))
+      $scope.doctor.a=data.results.length;
+    },
+    function(err)
+    {
+      console.log(err)
+    }
+  )
+
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
-  $scope.patients=[
-    {
-      head:"default_user.png",
-      name:"赵大头",
-      id:18868800011,
-      gender:"男",
-      age:"32",
-      time:"2017/3/27 9:32",
-      qs:"问题1" 
-    },
-    {
-      head:"default_user.png",
-      name:"钱二头",
-      id:18868800012,
-      gender:"男",
-      age:"32",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    },
-    {
-      head:"default_user.png",
-      name:"孙三头",
-      id:18868800013,
-      gender:"男",
-      age:"29",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    }
-    ];
-    $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
-      scope: $scope
-    }).then(function(popover) {
-      $scope.popover = popover;
-    });
-    $scope.openPopover = function($event) {
-      $scope.popover.show($event);
-      //$scope.testt=12345
-    };
-    //$scope.isChecked1=true;
+.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel) {
+  // $scope.patients=[
+  //   {
+  //     head:"default_user.png",
+  //     name:"赵大头",
+  //     id:18868800011,
+  //     gender:"男",
+  //     age:"32",
+  //     time:"2017/3/27 9:32",
+  //     qs:"问题1" 
+  //   }
+  // ];
+  $scope.patients=angular.fromJson(Storage.get("consulting"));
+
+  $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
+    scope: $scope
+  }).then(function(popover) {
+    $scope.popover = popover;
+  });
+  $scope.openPopover = function($event) {
+    $scope.popover.show($event);
+    //$scope.testt=12345
+  };
+  //$scope.isChecked1=true;
 
 }])
 
 //"咨询”已完成
 .controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
-  $scope.patients=[
-    {
-      head:"default_user.png",
-      name:"王大头",
-      id:18868800001,
-      gender:"男",
-      age:"32",
-      time:"2017/3/27 9:32",
-      qs:"问题1" 
-    },
-    {
-      head:"default_user.png",
-      name:"王二头",
-      id:18868800002,
-      gender:"男",
-      age:"32",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    },
-    {
-      head:"default_user.png",
-      name:"王三头",
-      id:18868800003,
-      gender:"男",
-      age:"29",
-      time:"2017/3/28 10:32",
-      qs:"问题2" 
-    }
-    ];
+  // $scope.patients=[
+  //   {
+  //     head:"default_user.png",
+  //     name:"王大头",
+  //     id:18868800001,
+  //     gender:"男",
+  //     age:"32",
+  //     time:"2017/3/27 9:32",
+  //     qs:"问题1" 
+  //   }
+  // ];
+  $scope.patients=angular.fromJson(Storage.get("consulted"));
+  
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
       scope: $scope
     }).then(function(popover) {
