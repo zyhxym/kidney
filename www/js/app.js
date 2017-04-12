@@ -418,6 +418,16 @@ angular.module('kidney',[
             }
         }
     })
+    .state('tab.group-profile', {
+        // cache: false,
+        url: '/group/doctor/:id',
+        views: {
+            'tab-groups':{
+                controller: 'doctorProfileCtrl',
+                templateUrl: 'partials/group/profile.html'
+            }
+        }
+    })
 
     // views-tab-me
 
