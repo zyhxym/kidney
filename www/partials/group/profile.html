@@ -1,0 +1,44 @@
+<ion-view  hide-tabs view-title="医生信息">
+    <!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+    <!--    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons> -->
+    <ion-content class=" gray-back">
+    <div class="list">
+            <a ng-repeat="team in teams" class="item item-avatar" href="#tab/groups/add/{{team.groupId}}">
+                <img ng-src="img/avatar.png">
+                <h2 style="display:inline-block;">李东田</h2>
+                <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i></div>
+            </a>
+        </div>
+
+<div class="list margin-list">
+            <div class="item" href="#">
+                设置备注
+
+            </div>
+
+        </div>
+        <div class="list margin-list">
+            <div class="item" href="#">
+                职称
+                <span class="item-note">主任医师</span>
+
+            </div>
+            <a class="item" ng-click="showQRCode()">
+                医院
+                <span class="item-note">浙江XXX医院</span>
+
+
+            </a>
+            <a class="item" ng-click="showQRCode()">
+                科室
+                <span class="item-note">泌尿科</span>
+
+            </a>
+        </div>
+        <!-- </div> -->
+    </ion-content>
+</ion-view>
