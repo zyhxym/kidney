@@ -602,6 +602,34 @@ angular.module('kidney.services', ['ionic','ngResource'])
     var serve={};
     var abort = $q.defer();
 
+    var Dict = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'dict'},{
+            getDiseaseType:{method:'GET', params:{route: 'typeTWO'}, timeout: 100000},
+            getDistrict:{method:'GET', params:{route: 'district'}, timeout: 100000},
+            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000}
+        });
+    };
+
+    var Task1 = function(){
+        return $resource(CONFIG.baseUrl + ':path',{path:'tasks'},{
+            getTask:{method:'GET', params:{}, timeout: 100000}
+        });
+    };
+
+    var Task2 = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'tasks'},{
+            changeTaskstatus:{method:'GET', params:{route: 'status'}, timeout: 100000},
+            changeTasktime:{method:'GET', params:{route: 'time'}, timeout: 100000}
+        });
+    };
+
+    var Compliance = function(){
+        return $resource(CONFIG.baseUrl + ':path',{path:'compliance'},{
+            postcompliance:{method:'POST', params:{}, timeout: 100000},
+            getcompliance:{method:'GET', params:{}, timeout: 100000}
+        });
+    };
+
     var Counsel = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
             getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
@@ -623,7 +651,17 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Doctor =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'doctor'},{
-            postDocBasic:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000}
+            postDocBasic:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000},
+            getPatientList:{method:'GET', params:{route: 'getPatientList'}, timeout: 100000},
+            getDoctorInfo:{method:'GET', params:{route: 'getDoctorInfo'}, timeout: 100000},
+            getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
+            getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000}
+        });
+    }
+
+    var Health = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'healthInfo'},{
+            createHealth:{method:'POST', params:{route: 'insertHealthInfo'}, timeout: 100000}
         });
     }
 
@@ -664,9 +702,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         abort.resolve();
         $interval(function () {
             abort = $q.defer();
+            serve.Dict = Dict();
+            serve.Task1 = Task1();
+            serve.Task2 = Task2();
+            serve.Compliance = Compliance();
             serve.Counsel = Counsel();
             serve.Patient = Patient();
             serve.Doctor = Doctor();
+            serve.Health = Health();
             serve.Comment = Comment();
             serve.VitalSign = VitalSign();
             serve.Account = Account();
@@ -674,9 +717,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Communication = Communication();
         }, 0, 1);
     };
+    serve.Dict = Dict();
+    serve.Task1 = Task1();
+    serve.Task2 = Task2();
+    serve.Compliance = Compliance();
     serve.Counsel = Counsel();
     serve.Patient = Patient();
     serve.Doctor = Doctor();
+    serve.Health = Health();
     serve.Comment = Comment();
     serve.VitalSign = VitalSign();
     serve.Account = Account();
@@ -684,7 +732,158 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Communication = Communication();
     return serve;
 }])
+.factory('Dict', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+            //  category:'patient_class'
+           // }
+    self.getDiseaseType = function(params){
+        var deferred = $q.defer();
+        Data.Dict.getDiseaseType(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+            //  level:'3',//1获取省份，2获取城市，3获取区县
+            //  province:"33", //定位到某个具体省份时需要输入
+            //  city:'01',  //定位到某个具体城市时需要输入
+            //  district:'02' //定位到某个具体区县时需要输入
+           // }
+    self.getDistrict = function(params){
+        var deferred = $q.defer();
+        Data.Dict.getDistrict(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+            //  locationCode:'330103',//输入全部为空时获取全部医院信息，需要定位到某个具体地区时需要输入locationCode，定位到某个具体医院时需要输入hospitalCode
+            //  hostipalCode:"001"
+           // }
+    self.getHospital = function(params){
+        var deferred = $q.defer();
+        Data.Dict.getHospital(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
 
+    return self;
+}])
+.factory('Task', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+            //  userId:'U201704050002',//usderId="Admin"，sortNo为空时获取系统全部任务模板，sortNo="1"时获取指定任务模板，userId为用户ID时获取指定用户的任务信息
+            //  sortNo:'1'
+           // }
+    self.getTask = function(params){
+        var deferred = $q.defer();
+        Data.Task1.getTask(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+            //  userId:'U201704050002',//unique
+            //  sortNo:1,
+            //  type:'Measure',
+            //  code:'BloodPressure',
+            //  status:'0'
+           // }
+    self.changeTaskstatus = function(params){
+        var deferred = $q.defer();
+        Data.Task2.changeTaskstatus(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+            //  userId:'U201704050002',//unique
+            //  sortNo:1,
+            //  type:'Measure',
+            //  code:'BloodPressure',
+            //  startTime:'2017-12-12'
+           // }
+    self.changeTasktime = function(params){
+        var deferred = $q.defer();
+        Data.Task2.changeTasktime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+.factory('Compliance', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+            // "userId": "U201704050002",
+            // "type": "Measure",
+            // "code": "Weight",
+            // "date": "2017-12-13",
+            // "status": 0,
+            // "description": ""
+           // }
+    self.postcompliance = function(params){
+        var deferred = $q.defer();
+        Data.Compliance.postcompliance(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+            //  userId:'U201704050002',//date为空时获取指定用户的全部任务执行记录，date不为空时获取指定用户某一天的任务执行记录
+            //  date:'2017-12-13'
+           // }
+    self.getcompliance = function(params){
+        var deferred = $q.defer();
+        Data.Compliance.getcompliance(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
 .factory('Communication', ['$q', 'Data', function($q, Data){
     var self = this;
     //params->0:{counselId:'counsel01'}
@@ -750,6 +949,31 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return deferred.promise;
     };
 
+    return self;
+}])
+.factory('Health', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+            //  userId:'U201704010003',//unique
+            //  type:1,
+            //  time:'2014/02/22 11:03:37',
+            //  url:'c:/wf/img.jpg',
+            //  label:'abc',
+            //  description:'wf',
+            //  comments:''
+           // }
+    self.createHealth = function(params){
+        var deferred = $q.defer();
+        Data.Health.createHealth(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
     return self;
 }])
 .factory('Message', ['$q', 'Data', function($q, Data){
@@ -976,6 +1200,68 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.postDocBasic = function(params){
         var deferred = $q.defer();
         Data.Doctor.postDocBasic(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+       //   userId:'doc01'
+       // }
+    self.getPatientList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getPatientList(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+           //   userId:'doc01'
+           // }
+    self.getDoctorInfo = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getDoctorInfo(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+           //   userId:'doc01'
+           // }
+    self.getMyGroupList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getMyGroupList(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+           //   teamId:'team1',
+           //   status:1
+           // }
+    self.getGroupPatientList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getGroupPatientList(
             params,
             function(data, headers){
                 deferred.resolve(data);
