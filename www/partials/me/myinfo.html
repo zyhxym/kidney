@@ -1,4 +1,15 @@
 <ion-view view-title="个人资料">
+<ion-nav-bar class="bar-positive" align-title="center">
+
+		<ion-nav-back-button class="button-clear">
+			<i class="ion-chevron-left"></i>
+		</ion-nav-back-button>
+
+       <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
+           <button class="button ion-edit button-stable" ng-click="toggle()">编辑</button>
+      </ion-nav-buttons>
+ </ion-nav-bar>
+
     <ion-content>
         <div class="blank-h12"></div>
 		
@@ -6,15 +17,14 @@
         <ion-item>
             <span class="msg">姓名</span>
 			<p class="myinfo-msg-right">{{doctor.name}}</p>
-       
+   
         </ion-item>
         <ion-item>
             <span class="msg">我的头像</span>
-			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/head/{{doctor.photoUrl}}"></p>
-
+			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/default_user.png"></p>
         </ion-item>
         <ion-item>
-            <span class="msg">我的职位</span>
+            <span class="msg">我的职称</span>
 			<p class="myinfo-msg-right">{{doctor.title}}</p>
 
         </ion-item>
@@ -33,6 +43,11 @@
 			<p class="myinfo-msg-right">{{doctor.major}}</p>
 
         </ion-item>
+         <ion-item>
+            <span class="msg">我的简介</span>
+			<p class="myinfo-msg-right">{{doctor.Numberroduction}}</p>
+
+        </ion-item>
 		</div>
 		
 		<div ng-show="updateDiv">
@@ -44,10 +59,10 @@
 			<ion-item>
 				<span class="msg">我的头像</span>
 				<i class="icon  ion-edit"></i>
-				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/{{user.photoUrl}}"></p>
+				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/default_user.png"></p>
 			</ion-item>
 			<ion-item>
-				<span class="msg">我的职位</span>
+				<span class="msg">我的职称</span>
 				<i class="icon  ion-edit"></i>
 				<p class="myinfo-msg-right"><input type=text ng-model="doctor.title"></p>
 			</ion-item>
@@ -65,6 +80,11 @@
 				<span class="msg">我的擅长</span>
 				<i class="icon  ion-edit"></i>
 				<p class="myinfo-msg-right"><input type=text ng-model="doctor.major"></p>
+			</ion-item>
+ 			<ion-item>
+				<span class="msg">我的简介</span>
+				<i class="icon  ion-edit"></i>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.Numberroduction"></p>
 			</ion-item>
 			
 			<ion-item>

@@ -42,14 +42,14 @@
 				    <div class="item item-icon-left my-icon-item my-photo-item" href="#">
 				        <i class="icon ion-android-pin"></i>
 				        <span style="position:relative;bottom:16px;">群成员<span>
-							    <img ng-repeat="member in group.members | limitTo:3" ng-src="{{member.url}}"/>
+							    <img ng-repeat="member in group.members | limitTo:3" src="{{member.url}}"/>
 						    <span style="margin-top:16px" class="item-note">
 						      {{group.number}} 人
 						    </span>
 				    </div>
 				</div>
 
-        <a style="width:120px;text-align:center;box-shadow: 1px 1.5px 3px #aaa;font-size:1.1em;padding:10px 16px;margin-top:20px auto" class="item">
+        <a style="width:120px;text-align:center;box-shadow: 1px 1.5px 3px #aaa;font-size:1.1em;padding:10px 16px;margin:20px auto" class="item" ng-click="request()">
             申请加入
         </a>
     </ion-content>

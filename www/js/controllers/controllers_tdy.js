@@ -387,7 +387,93 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
 
 
 }])
+//消息类型--PXY
+.controller('VaryMessageCtrl', ['$scope','$state','$ionicHistory',function($scope, $state,$ionicHistory) {
+  $scope.barwidth="width:0%";
 
+  $scope.Goback = function(){
+    $ionicHistory.goBack();
+  }
+  $scope.messages =[
+  
+  {
+    img:"img/default_user.png",
+    time:"2017/03/21",
+    response:"今天还没有测量血压，请及时完成！"
+
+  },
+  {
+    img:"img/default_user.png",
+    time:"2017/03/11",
+    response:"今天建议运动半小时，建议以散步或慢跑的形式！"
+
+  }]
+
+  
+}])
+//消息中心--PXY
+.controller('messageCtrl', ['$scope','$state','$ionicHistory',function($scope, $state,$ionicHistory) {
+  $scope.barwidth="width:0%";
+
+  $scope.Goback = function(){
+    $ionicHistory.goBack();
+  }
+
+  $scope.getMessageDetail = function(type){
+    if(type == 2){
+      $state.go('messagesDetail');
+    }
+
+  }
+  //查询余额等等。。。。。
+  $scope.messages =[
+  {
+    img:"img/default_user.png",
+    name:"支付消息",
+    type:1,
+    time:"2017/04/01",
+    response:"恭喜你！成功充值50元，交易账号为0093842345."
+  },
+  {
+    img:"img/default_user.png",
+    name:"任务消息",
+    type:2,
+    time:"2017/03/21",
+    response:"今天还没有测量血压，请及时完成！"
+
+  },
+  {
+    img:"img/default_user.png",
+    name:"警报消息",
+    type:3,
+    time:"2017/03/11",
+    response:"你的血压值已超出控制范围！"
+
+  }]
+
+
+  $scope.consults =[
+  {
+    img:"img/default_user.png",
+    name:"李芳",
+    time:"2017/03/04",
+    response:"您好,糖尿病患者出现肾病的,一般会出现低蛋白血症.低蛋白血症患者一般会出现浮肿.治疗浮肿时就需要适当的补充蛋白,但我们一般提倡使用优质蛋白,我不知道您的蛋白粉是不是植物蛋白,所以您还是慎重一点好."
+
+  },
+  {
+    img:"img/default_user.png",
+    name:"张三",
+    time:"2017/03/01",
+    response:"糖尿病肾损害的发生发展分5期.Ⅰ期,为糖尿病初期,肾体积增大,肾小球滤过滤增高,肾小球入球小动脉扩张,肾小球内压升高.Ⅱ期,肾小球毛细血管基底膜增厚,尿白蛋白排泄率多正常,或间歇性升高。"
+
+  }
+  
+
+  ]
+    
+
+  
+}])
 // .controller('groupQRCodeCtrl', ['$scope', 'Storage', function ($scope, Storage) {
 //   $scope.groupQRCodedata = "www.baidu.com"
 // }])

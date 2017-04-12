@@ -12,16 +12,22 @@ angular.module('kidney',[
     'kidney.services',
     'kidney.filters',
     'kidney.directives',
-    'monospaced.qrcode'
+    'monospaced.qrcode',
+    'ionic-datepicker'
 ])
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
     $ionicPlatform.ready(function() {
+        $rootScope.goConclusion =function(){
+            alert('aaa');
+        // if(params.type=='2') location.hash = "#conclusion";
+        // else $state.go('tab.group-conclusion',{teamId:params.teamId,groupId:params.groupId,type:params.type});
+    }
 
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
-            $state.go('tabs.home');
+            $state.go('tab.home');
         }
 
         //用户ID
@@ -116,13 +122,39 @@ angular.module('kidney',[
         templateUrl: 'partials/others/phonevalid.html',
         controller: 'phonevalidCtrl'
     })
+    .state('setpassword', {
+      cache:false,
+      url: '/setpassword',
+      templateUrl: 'partials/others/setpassword.html',
+      controller: 'setPasswordCtrl'
+    })
+    .state('userdetail',{
+      cache:false,
+      url:'/userdetail',
+      templateUrl:'partials/others/userDetail.html',
+      controller:'userdetailCtrl'
+    })
+
+    .state('messages',{
+      cache:false,
+      url:'/messages',
+      templateUrl:'partials/others/AllMessage.html',
+      controller:'messageCtrl'
+    })
+    .state('messagesDetail',{
+      cache:false,
+      url:'/messagesDetail',
+      templateUrl:'partials/others/VaryMessage.html',
+      controller:'VaryMessageCtrl'
+    })
     
     
     //选项卡
     .state('tab', {
         url: '/tab',
         abstract: true,
-        templateUrl: 'partials/tabs.html'
+        templateUrl: 'partials/tabs.html',
+        controller: 'tabCtrl'
     }) 
     
     //主页面
@@ -164,7 +196,8 @@ angular.module('kidney',[
     //tuandui
     .state('tab.groups', {
         // cache: false,
-        url: '/groups',
+        //type:   '0'=team  '1'=doctor
+        url: '/groups/type/:type',
         views: {
             'tab-groups':{
                 controller: 'groupsCtrl',
@@ -203,11 +236,42 @@ angular.module('kidney',[
     //进行中详情
     .state('tab.detail', {
         // cache: false,
+        //[type]:0=已结束;1=进行中;2=医生
         url: '/detail/:type/:chatId',
         views: {
             'tab-consult':{
                 controller: 'detailCtrl',
                 templateUrl: 'partials/consult/detail.html'
+            }
+        }
+    })
+    .state('tab.consult-detail', {
+        // cache: false,
+        url: '/consult/detail/:consultId',
+        views: {
+            'tab-consult':{
+                controller: 'consultDetailCtrl',
+                templateUrl: 'partials/consult/consult-detail.html'
+            }
+        }
+    })
+    .state('tab.selectDoc', {
+        // cache: false,
+        url: '/selectdoc',
+        views: {
+            'tab-consult':{
+                controller: 'selectDocCtrl',
+                templateUrl: 'partials/consult/select-doctor.html'
+            }
+        }
+    })
+    .state('tab.selectTeam', {
+        // cache: false,
+        url: '/selectteam',
+        views: {
+            'tab-consult':{
+                controller: 'selectTeamCtrl',
+                templateUrl: 'partials/consult/select-team.html'
             }
         }
     })
@@ -279,7 +343,7 @@ angular.module('kidney',[
         }
     })
     .state('tab.groups-search', {
-        url: '/groups/search',
+        url: '/groupsearch',
         views: {
             'tab-groups': {
                 templateUrl: 'partials/group/groups-search.html',
@@ -324,6 +388,7 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-chat', {
+        //'0':团队交流  '1': 未结束病历  '2':已结束病历
             url: '/groups/chat/:type/:teamId/:groupId',
             views: {
                 'tab-groups': {
@@ -452,4 +517,16 @@ angular.module('kidney',[
 
     $urlRouterProvider.otherwise('/signin');
 
-});   
+})
+.controller('tabCtrl',['$state','$scope',function($state,$scope){
+    $scope.goConsult = function(){
+        setTimeout(function() {
+        $state.go('tab.consult', {});
+      },20);
+    }
+    $scope.goGroups = function(){
+        setTimeout(function() {
+        $state.go('tab.groups', {type:'0'});
+      },20);
+    }
+}])

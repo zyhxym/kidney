@@ -1,11 +1,29 @@
 <ion-view view-title="我的评价">
+
+<!--       <ion-nav-buttons side="left">
+            <a class="button button-icon icon ion-chevron-left" href="#/tab/me"></a>
+      </ion-nav-buttons> -->
+      <ion-nav-bar class="bar-positive nav-title-slide-ios7" align-title="center">
+          <ion-nav-back-button class="button-clear">
+            <i class="ion-chevron-left"></i>
+        </ion-nav-back-button>
+        </ion-nav-bar>
     <ion-content>
+        <ion-item>
+            <span class="msg">我的评分</span>
+            <p class="myinfo-msg-right" style="color:red;">{{doctor.score}}</p>
+        </ion-item>
+        <ion-item>
+        <span class="input-label" style="margin-left:10px;color:#0066FF;"><i class="icon ion-ios-star" style="margin-right:5px;font-size:20px" ></i>我的评价</span>
+        </ion-item>
         <div class="list">
 			<a class="item item-thumbnail-left" ng-repeat="fb in feedbacks">
-				<img src="img/message.png">
+				<img src="img/default_user.png">
                 <h2>{{fb.patient}}</h2>
+                <p class="friend-detail-p">评分：{{fb.score}}</p>
                 <p class="friend-detail-p">{{fb.content}}</p>
 				<p class="friend-detail-p">评论时间：{{fb.time}}</p>
+
 			</a>
         </div>
     </ion-content>

@@ -1,18 +1,34 @@
 <ion-view show-tabs view-title="患者列表">
     <ion-nav-bar class="bar-positive" align-title="center">
 
+     <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
+         <button class="button button-clear"  ng-click="openPopover($event)"><i class="icon ion-android-funnel"></i></button>
+      </ion-nav-buttons>
+
     </ion-nav-bar>
     <ion-content>
+        <div class="bar bar-header item-input-inset" style="height:40px;">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="搜索">
+            </label>
+            <button class="button button-clear button-positive">
+                取消
+            </button>
+        </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients">
+            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc">
                 <img src="img/default_user.png">
 				<div>
                 <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
 				<span class="mine-msg-right">{{p.symptom}}</span>
-                <p class="friend-detail-p">预约时间{{p.appoint}}</p>
+                <p class="friend-detail-p">是否VIP{{p.VIP}}</p>
+                <p class="friend-detail-p">危机程度{{p.class}}</p>
 				</div>
             </a>      
         </div>
     </ion-content>
 </ion-view>
+
+
 
