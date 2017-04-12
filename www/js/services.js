@@ -659,9 +659,27 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
     }
 
+    var User = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'user'},{
+            register:{method:'POST', params:{route: 'register',phoneNo:'@phoneNo',password:'@password',role:'@role'}, timeout: 100000},
+            changePassword:{method:'POST', params:{route: 'reset',phoneNo:'@phoneNo',password:'@password'}, timeout: 100000},
+            logIn:{method:'POST', params:{route: 'login'}, timeout: 100000},
+            logOut:{method:'POST', params:{route: 'logout',userId:'@userId'}, timeout: 100000},
+            getUserId:{method:'GET', params:{route: 'getUserID',phoneNo:'@phoneNo'}, timeout: 100000},
+            sendSMS:{method:'POST', params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType'}, timeout: 100000},//第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
+            verifySMS:{method:'GET', params:{route: 'verifySMS',mobile:'@mobile',smsType:'@smsType',smsCode:'@smsCode'}, timeout: 100000},
+
+        });
+    }
+
     var Health = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'healthInfo'},{
-            createHealth:{method:'POST', params:{route: 'insertHealthInfo'}, timeout: 100000}
+            createHealth:{method:'POST', params:{route: 'insertHealthInfo',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments'}, timeout: 100000},
+            modifyHealth:{method:'POST', params:{route:'modifyHealthDetail',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments',insertTime:'@insertTime'},timeout:100000},
+            getHealthDetail:{method:'GET', params:{route:'getHealthDetail',userId:'@userId',insertTime:'@insertTime'},timeout:100000},
+            getAllHealths:{method:'GET', params:{route:'getAllHealthInfo',userId:'@userId'},timeout:100000},
+            deleteHealth:{method:'POST', params:{route:'deleteHealthDetail',userId:'@userId',insertTime:'@insertTime'},timeout:100000}
+
         });
     }
 
@@ -715,6 +733,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Account = Account();
             serve.Message = Message();
             serve.Communication = Communication();
+            serve.User = User();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -730,6 +749,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Account = Account();
     serve.Message = Message();
     serve.Communication = Communication();
+    serve.User = User();
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -951,6 +971,134 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     return self;
 }])
+.factory('User', ['$q', 'Data', function($q, Data){
+    var self = this;
+    //params->{
+        // phoneNo:"18768113669",
+        // password:"123456",
+        // role:"patient"
+        //}
+        //000
+    self.register = function(params){
+        var deferred = $q.defer();
+        Data.User.register(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    //params->{
+        // phoneNo:"18768113669",
+        // password:"123",
+        //}
+        //001
+    self.changePassword = function(params){
+        var deferred = $q.defer();
+        Data.User.changePassword(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    //params->{
+        // username:"18768113669",
+        // password:"123456",
+        // role:"patient"
+        //}
+        //002
+    self.logIn = function(params){
+        var deferred = $q.defer();
+        Data.User.logIn(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+
+    //params->{userId:"U201704010002"}
+    //003
+    self.logOut = function(params){
+        var deferred = $q.defer();
+        Data.User.logOut(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    //params->{phoneNo:"18768113668"}
+    //004
+    self.getUserId = function(params){
+        var deferred = $q.defer();
+        Data.User.getUserId(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    //params->{
+        //mobile:"18768113660",
+        //smsType:1}
+    //005
+    self.sendSMS = function(params){
+        var deferred = $q.defer();
+        Data.User.sendSMS(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    //params->{
+        //mobile:"18868186038",
+        //smsType:1
+        //smsCode:234523}
+    //006
+    self.verifySMS = function(params){
+        var deferred = $q.defer();
+        Data.User.verifySMS(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+
+    
+    return self;
+}])
+
 .factory('Health', ['$q', 'Data', function($q, Data){
     var self = this;
     //params->{
@@ -974,6 +1122,78 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    //params->{
+        // userId:"U201704010003",
+        //}
+        //011
+    self.getAllHealths = function(params){
+        var deferred = $q.defer();
+        Data.Health.getAllHealths(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    //params->{
+        // userId:"U201704010003",
+        // insertTime:"2017-04-11T05:43:36.965Z",
+        //}
+        //012
+    self.getHealthDetail = function(params){
+        var deferred = $q.defer();
+        Data.Health.getHealthDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    //params->{
+        // userId:"U201704010003",
+        // insertTime:"2017-04-11T05:43:36.965Z",
+        // type:3,
+        // time:"2014/02/22",
+        // url:"c:/wf/img.jpg",
+        // description:"修改晕厥入院，在医院住了3天，双侧颈动脉无异常搏动，双侧颈静脉怒张，肝颈静脉回流征阳性，气管居中，甲状腺不肿大，未触及结节无压痛、震颤，上下均为闻及血管杂音。",
+        // }
+        //014
+    self.modifyHealth = function(params){
+    var deferred = $q.defer();
+        Data.Health.modifyHealth(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    //params->{
+        // userId:"U201704010003",
+        // insertTime:"2017-04-11T05:43:36.965Z",
+        //}
+        //015
+    self. deleteHealth = function(params){
+        var deferred = $q.defer();
+        Data.Health. deleteHealth(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
     return self;
 }])
 .factory('Message', ['$q', 'Data', function($q, Data){
