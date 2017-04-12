@@ -153,7 +153,8 @@ angular.module('kidney',[
     .state('tab', {
         url: '/tab',
         abstract: true,
-        templateUrl: 'partials/tabs.html'
+        templateUrl: 'partials/tabs.html',
+        controller: 'tabCtrl'
     }) 
     
     //主页面
@@ -195,7 +196,8 @@ angular.module('kidney',[
     //tuandui
     .state('tab.groups', {
         // cache: false,
-        url: '/groups',
+        //type:   '0'=team  '1'=doctor
+        url: '/groups/type/:type',
         views: {
             'tab-groups':{
                 controller: 'groupsCtrl',
@@ -341,7 +343,7 @@ angular.module('kidney',[
         }
     })
     .state('tab.groups-search', {
-        url: '/groups/search',
+        url: '/groupsearch',
         views: {
             'tab-groups': {
                 templateUrl: 'partials/group/groups-search.html',
@@ -515,4 +517,16 @@ angular.module('kidney',[
 
     $urlRouterProvider.otherwise('/signin');
 
-});   
+})
+.controller('tabCtrl',['$state','$scope',function($state,$scope){
+    $scope.goConsult = function(){
+        setTimeout(function() {
+        $state.go('tab.consult', {});
+      },20);
+    }
+    $scope.goGroups = function(){
+        setTimeout(function() {
+        $state.go('tab.groups', {type:'0'});
+      },20);
+    }
+}])

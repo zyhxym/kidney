@@ -2,7 +2,7 @@
     <!-- display time -->
     <!-- <my-time></my-time> -->
     <div ng-if="msg.diff" class="msg-time"><span>{{msg.createTimeInMillis | msgdate}}</span></div>
-    <div class="media-card" on-hold="emitEvent('holdmsg',msg._id,$event)" ng-click="emitEvent('viewcard',msg.content.contentStringMap.consultId)">
+    <div class="media-card" on-hold="emitEvent('holdmsg',msg._id,$event)" ng-click="emitEvent('viewcard',msg.content.contentStringMap.consultId,$event)">
         <div class="title">患者使用在线咨询服务</div>
         <hr/>
         <div class="info">
@@ -13,7 +13,8 @@
         </div>
         <hr/>
         <div class="img-info">资料照片（3）</div>
-        <img ng-repeat="url in picurl" ng-src="{{url.src}}" ng-click="emitEvent('image','',url.src,url.hiRes)" />
+        <img ng-repeat="url in picurl" hiRes="{{url.hiRes}}" ng-src="{{url.src}}"/>
+        <!-- <img ng-repeat="url in picurl" ng-src="{{url.src}}" ng-click="emitEvent('image','',url.src,url.hiRes)" /> -->
     </div>
 	<!-- <div my-small-spin="msg.status" class="status"></div> -->
     <div ng-if="msg.status=='send_fail'" class="msg-fail"><span><i class="icon ion-android-warning"></i>发送失败</span></div>

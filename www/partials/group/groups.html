@@ -1,32 +1,58 @@
 <ion-view show-tabs title="我的团队">
-  <ion-nav-buttons side="right">
-      <a class="button button-icon icon ion-android-add" ng-click="popover.show($event)"></a>
+    <ion-nav-buttons side="right">
+        <a class="button button-icon icon ion-android-search" ng-hide="params.showSearch" ng-click="search()"></a>
+        <a class="button button-icon icon ion-android-add" ng-click="popover.show($event)"></a>
     </ion-nav-buttons>
-  <div class="bar bar-subheader item-input-inset bar-light">
-    <div class="item-input-wrapper">
-      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
-      <input type="search" ng-blur="doResume()" ng-model="query.groupname" ng-change="startSearch(query)" placeholder="搜索团队名称">
-      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
-    </div>
-    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
-  </div>
-  <!-- <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div> -->
-  <ion-content class="gray-back has-subheader content-item-list">
-
-    <ion-list>
-  
-      <ion-item ng-repeat="mygroup in mygroups" collection-item-height="94px" class="item-avatar" type="item-text-wrap"  ng-click="itemClick($event,mygroup.groupID)">
-        <img ng-src="img/default_user.png">
-        <div style="display:inline-block;width:70%;">
-        <h2>{{mygroup.groupname}}</h2>
-        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{mygroup.membercounts}}</span></div>
-        <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{mygroup.groupowner}}</div>
-        <p>使用扫一扫或者群号搜索功能加入团队</p>
+    <div ng-show="params.showSearch" class="bar item-input-inset bar-light ng-hide" style="position:absolute;top:44px;z-index:999">
+        <div class="item-input-wrapper">
+            <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+            <input type="search" ng-blur="doResume()" ng-model="query.name" ng-change="startSearch(query)" placeholder="搜索团队或医生">
+            <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
         </div>
-        <a style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
-      
-      </ion-item>
-    </ion-list>
-  </ion-content>
-          
+        <button class="button button-clear button-positive" ng-click="closeSearch()">
+            取消
+        </button>
+    </div>
+    <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
+        <a ng-class="{'high-light':params.isTeam}" class="item col-50 " ng-click="showTeams()">团队</a>
+        <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px" ng-click="showDocs()">医生</a>
+    </div>
+    <!-- <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div> -->
+    <ion-content class="gray-back has-subheader content-item-list">
+        <div class="list">
+            <!-- 团队 -->
+            <div ng-if="!params.showSearch && params.isTeam" ng-repeat="mygroup in mygroups" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,mygroup.groupID)">
+                <img ng-src="img/default_user.png">
+                <div style="display:inline-block;width:70%;">
+                    <h2>{{mygroup.groupname}}</h2>
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{mygroup.membercounts}}</span></div>
+                    <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{mygroup.groupowner}}</div>
+                    <p>使用扫一扫或者群号搜索功能加入团队</p>
+                </div>
+                <a style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
+            </div>
+            <!-- 医生 -->
+            <a ng-if="!params.showSearch && !params.isTeam" class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.userId}}">
+                <img src="{{d.photoUrl}}">
+                <div class="doctor-msg-left balanced balanced-border">专家团队</div>
+                <div>
+                    <span>{{d.name}}</span> {{d.title}}
+                    <p><span>{{d.workUnit}}</span> <span>{{d.department}}</span> </p>
+                    <p><span>评分{{d.score}}</span> 问诊量：{{d.num}} </p>
+                    <p>擅长：{{d.major}}</p>
+                </div>
+            </a>
+        </div>
+        <div ng-if="params.showSearch" class="list">
+            <a class="item">
+    搜索团队 <span style="color:#EF473A">{{query.name}}<span>
+  </a>
+            <a class="item" href="#">
+    搜索医生 <span style="color:#EF473A">{{query.name}}<span>
+  </a>
+        </div>
+
+
+    </ion-content>
 </ion-view>
+
