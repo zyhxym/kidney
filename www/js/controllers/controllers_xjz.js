@@ -1077,7 +1077,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if($scope.modal)$scope.modal.remove();
     })
 }])
-.controller('doctorProfileCtrl',['$scope',function($scope){
+.controller('doctorProfileCtrl',['$scope','$state',function($scope,$state){
+    $scope.goChat = function(){
+        $state.go('tab.detail',{type:'2',chatId:$state.params.id});
+    }
     $scope.teams=[
           {
               photoUrl:"img/avatar.png",
