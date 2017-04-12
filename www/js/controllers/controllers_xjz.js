@@ -77,9 +77,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             console.log(data)
             $scope.teams.data;
         });
-        // Patient.getDoctorLists(){
-
-        // }
+        Patient.getDoctorLists()
 
     }
 
@@ -852,6 +850,20 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         // $scope.imageUrl=imageUrl;
         // $scope.showModal('templates/msg/imageViewer.html');
     })
+    $scope.$on('viewcard', function(event, args) {
+        console.log(args[2]);
+        event.stopPropagation();
+        if(args[2].target.tagName=="IMG"){
+            $scope.imageHandle.zoomTo(1, true);
+            $scope.imageUrl = args[2].target.currentSrc;
+            console.log(args[2].target.attributes.hires.nodeValue);
+            $scope.modal.show();
+        }
+        // else{
+        //     $state.go('tab.consult-detail',{consultId:args[1]});
+        // }
+        // $state.go('tab.consult-detail',{consultId:args[1]});
+    })
     $scope.closeModal = function() {
         $scope.imageHandle.zoomTo(1, true);
         $scope.modal.hide();
@@ -863,6 +875,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         else {
             $scope.imageHandle.zoomTo(5, true);
         }
+    }
+    $scope.viewPic=function(src){
+        $scope.imageUrl = src;
+        $scope.modal.show();
     }
     $scope.goChats = function() {
         console.log($ionicHistory);
