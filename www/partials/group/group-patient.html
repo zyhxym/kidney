@@ -11,7 +11,7 @@
             <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 进行中：{{grouppatients1.length}}
         </div>
     </div>
-    <a ng-repeat="grouppatient in grouppatients1" class="item item-avatar" href="#/tab/groups/chat/1/{{params.teamId}}/{{grouppatient.patientID}}">
+    <a ng-repeat="grouppatient in grouppatients1" class="item item-avatar" ng-click="enterChat(1,grouppatient)">
         <img ng-src="{{grouppatient.photoAdd}}">
         <div>
             <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.name}}</div>
@@ -25,7 +25,7 @@
             <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 已处理：{{grouppatients2.length}}
         </div>
     </div>
-    <a ng-repeat="grouppatient in grouppatients2" class="item item-avatar" href="#/tab/groups/chat/2/{{params.teamId}}/{{grouppatient.patientID}}">
+    <a ng-repeat="grouppatient in grouppatients2" class="item item-avatar" ng-click="enterChat(2,grouppatient)">
         <img ng-src="{{grouppatient.photoAdd}}">
         <div>
             <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.name}}</div>
