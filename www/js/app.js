@@ -59,7 +59,7 @@ angular.module('kidney',[
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
                 console.log(msg);
-                $state.go('tab.chat-detail', { chatId: msg.fromName, fromUser: msg.fromUser });
+                $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
             document.addEventListener('jmessage.onReceiveMessage', function(msg) {
                 console.info('[jmessage.onReceiveMessage]:');

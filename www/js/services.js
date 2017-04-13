@@ -547,12 +547,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
     return {
         init: function() {
             window.JPush.init();
-            checkIsLogin()
-            .then(function(data){
+            // checkIsLogin()
+            // .then(function(data){
 
-            },function(err){
-                if(Storage.get('UID')) login(Storage.get('UID'));
-            })
+            // },function(err){
+            //     if(Storage.get('UID')) login(Storage.get('UID'));
+            // })
             getPushRegistrationID();
             // document.addEventListener("jmessage.onReceiveMessage", onReceiveMessage, false);
             // document.addEventListener("deviceready", onDeviceReady, false);

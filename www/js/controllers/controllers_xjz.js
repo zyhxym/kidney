@@ -143,7 +143,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.doctors=[
           {
               photoUrl:"img/avatar.png",
-              userId:"D201703240005",
+              userId:"U201704130006",
               name:"小丁",
               gender:"男",
               title:"主任医生",
@@ -155,7 +155,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           },
           {
               photoUrl:"img/max.png",
-              userId:"D201703240006",
+              userId:"U201704120006",
               name:"小李",
               gender:"女",
               title:"主任医生",
@@ -188,7 +188,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     
     $scope.$on('$ionicView.beforeEnter', function() {
-        console.log($state.params.type);
         $scope.params.isTeam = $state.params.type=='0';
         $scope.params.showSearch = false;
     })
@@ -342,13 +341,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
     //render msgs 
     $scope.$on('$ionicView.beforeEnter', function() {
-        // if (window.JMessage) {
-        //     window.JMessage.enterSingleConversation($state.params.chatId, "");
-        //     getMsg(30);
-        // }
+        $scope.params.msgCount=0;
+        if (window.JMessage) {
+            window.JMessage.enterSingleConversation($state.params.chatId, "");
+            getMsg(20);
+        }
         $scope.params.chatId=$state.params.chatId;
         $scope.params.type=$state.params.type;
-        console.log($state.params);
         if($scope.params.type=='2') $scope.params.title="医生交流";
         else if($scope.params.type=='1') $scope.params.title="咨询-进行中";
         else $scope.params.title="咨询详情";
@@ -387,17 +386,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //         first++;
     //     }
     // }
-    function msgsRender(first,last){
-        while(first!=last){
-            $scope.msgs[first+1].diff=($scope.msgs[first+1].createTimeInMillis-$scope.msgs[first].createTimeInMillis)>300000?true:false;
-            first++;
-        }
-    }
-    $http.get("data/sampleMsgsShort.json").success(function(data) {
-        $scope.msgs = data;
-        if($scope.msgs[0]) $scope.msgs[0].diff=true;
-        msgsRender(0,data.length-1);
-    });
+    // function msgsRender(first,last){
+    //     while(first!=last){
+    //         $scope.msgs[first+1].diff=($scope.msgs[first+1].createTimeInMillis-$scope.msgs[first].createTimeInMillis)>300000?true:false;
+    //         first++;
+    //     }
+    // }
+    // $http.get("data/sampleMsgsShort.json").success(function(data) {
+    //     $scope.msgs = data;
+    //     if($scope.msgs[0]) $scope.msgs[0].diff=true;
+    //     msgsRender(0,data.length-1);
+    // });
     function getMsg(num){
         window.JMessage.getHistoryMessages("single",$state.params.chatId,"",$scope.params.msgCount,num,
             function(response){
@@ -406,7 +405,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 if(!response) $scope.params.moreMsgs=false;
                 else{
                     var res=JSON.parse(response);
-                    // console.log(res);
+                    console.log(res);
                     $scope.$apply(function(){
                         if($scope.msgs[0]) $scope.msgs[0].diff=($scope.msgs[0].createTimeInMillis-res[0].createTimeInMillis)>300000?true:false;
                         for(var i=0;i<res.length-1;++i){
@@ -416,7 +415,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         $scope.msgs.unshift(res[i]);
                         $scope.msgs[0].diff=true;
                     });
-                    console.log($scope.msgs);
                     setTimeout(function(){
                         $scope.scrollHandle.scrollBottom(true);
                     },100);
@@ -431,13 +429,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 
     function viewUpdate(length,scroll){
-        if($scope.params.msgCount==0) getMsg(1);
+        if($scope.params.msgCount==0) return getMsg(1);
         var num = $scope.params.msgCount<length?$scope.params.msgCount:length;
         if(num==0) return;
          window.JMessage.getHistoryMessages("single",$state.params.chatId,"",0,num,
             function(response){
 
                 var res=JSON.parse(response);
+                console.log(res);
                 $scope.$apply(function(){
                     for(var i=res.length-1,j=$scope.params.msgCount-res.length;i>=0;){
                         if(j==$scope.params.msgCount){
