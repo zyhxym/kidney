@@ -21,25 +21,25 @@
     <ion-content class="gray-back has-subheader content-item-list">
         <div class="list">
             <!-- 团队 -->
-            <div ng-if="!params.showSearch && params.isTeam" ng-repeat="mygroup in mygroups" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,mygroup.groupID)">
+            <div ng-if="!params.showSearch && params.isTeam" ng-repeat="mygroup in mygroups" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,mygroup.teamId)">
                 <img ng-src="img/default_user.png">
                 <div style="display:inline-block;width:70%;">
-                    <h2>{{mygroup.groupname}}</h2>
-                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{mygroup.membercounts}}</span></div>
-                    <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{mygroup.groupowner}}</div>
+                    <h2>{{mygroup.name}}</h2>
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{mygroup.members.length}}</span></div>
+                    <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{mygroup.sponsorName}}</div>
                     <p>使用扫一扫或者群号搜索功能加入团队</p>
                 </div>
                 <a style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
             </div>
             <!-- 医生 -->
-            <a ng-if="!params.showSearch && !params.isTeam" class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.userId}}">
-                <img src="{{d.photoUrl}}">
+            <a ng-if="!params.showSearch && !params.isTeam" class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.doctorId.userId}}">
+                <img src="img/default_user.png">
                 <div class="doctor-msg-left balanced balanced-border">专家团队</div>
                 <div>
-                    <span>{{d.name}}</span> {{d.title}}
-                    <p><span>{{d.workUnit}}</span> <span>{{d.department}}</span> </p>
-                    <p><span>评分{{d.score}}</span> 问诊量：{{d.num}} </p>
-                    <p>擅长：{{d.major}}</p>
+                    <span>{{d.doctorId.name}}</span> {{d.doctorId.title}}
+                    <p><span>{{d.doctorId.workUnit}}</span> <span>{{d.doctorId.department}}</span> </p>
+                    <p><span>评分{{d.doctorId.score}}</span> 问诊量：{{d.doctorId.count2}} </p>
+                    <p>擅长：{{d.doctorId.major}}</p>
                 </div>
             </a>
         </div>
