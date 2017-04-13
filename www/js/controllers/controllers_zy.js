@@ -855,4 +855,5 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
         $scope.showSchedual=!$scope.showSchedual;
     }
+    
 }])
