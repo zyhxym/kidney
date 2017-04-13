@@ -731,24 +731,29 @@ initUserDetail();
 }])
 
 //"我”页
-.controller('meCtrl', ['$scope','$state','$interval','$rootScope', 'Storage',"meFactory", function($scope, $state,$interval,$rootScope,Storage,meFactory) {
+.controller('meCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage',"meFactory", function(Doctor,$scope, $state,$interval,$rootScope,Storage,meFactory) {
   $scope.barwidth="width:0%";
    
-   $scope.userid=Storage.get('userid');
-   $scope.doctor=meFactory.GetDoctorInfo($scope.userid);
+   //$scope.userid=Storage.get('userid');
+   //$scope.doctor=meFactory.GetDoctorInfo($scope.userid);
    //$scope.doctor=meFactory.GetDoctorInfo('D201703240001');
-   /*{
-      name:"小丁",
-      gender:"男",
-      title:"主任医生",
-      workUnit:"浙江XXX医院",
-      department:"泌尿科"
-    };*/
- 
-    $scope.user={
-    photoUrl:"default_user.png"
-  };
   
+  Doctor.getDoctorInfo({
+    userId:'doc01'
+  })
+  .then(
+    function(data)
+    {
+      // console.log(data)
+      $scope.doctor=data.result;
+    },
+    function(err)
+    {
+      console.log(err)
+    }
+  )
+
+
 }])
 
 //"我”二维码页
@@ -771,22 +776,27 @@ initUserDetail();
 
 
 //"我”个人资料页
-.controller('myinfoCtrl', ['$scope','Storage',"meFactory", function($scope, Storage,meFactory) {
+.controller('myinfoCtrl', ['Doctor','$scope','Storage',"meFactory", function(Doctor,$scope, Storage,meFactory) {
   $scope.hideTabs = true;
-  $scope.userid=Storage.get('userid');
-    $scope.doctor=meFactory.GetDoctorInfo($scope.userid);
-  /*$scope.doctor={
-      name:"小丁",
-      gender:"男",
-      title:"主任医生",
-      workUnit:"浙江XXX医院",
-      department:"肾内科",
-      major:"肾小管疾病、间质性肾炎"
-    };
-  */
-  $scope.user={
-    photoUrl:"default.png"
-  };
+  //$scope.userid=Storage.get('userid');
+  //$scope.doctor=meFactory.GetDoctorInfo($scope.userid);
+
+    Doctor.getDoctorInfo({
+      userId:'doc01'
+    })
+   .then(
+      function(data)
+      {
+      // console.log(data)
+        $scope.doctor=data.result;
+      },
+      function(err)
+      {
+        console.log(err)
+      }
+    )
+
+
   
   $scope.updateDiv=false;
   $scope.myDiv=true;
@@ -798,14 +808,23 @@ initUserDetail();
 }])
 
 //"我”个人收费页
-.controller('myfeeCtrl', ['$scope','$ionicPopup','$state', function($scope, $ionicPopup,$state) {
+.controller('myfeeCtrl', ['Doctor','$scope','$ionicPopup','$state', function(Doctor,$scope, $ionicPopup,$state) {
   $scope.hideTabs = true;
   
-  $scope.doctor={
-    charge1:20,
-    charge2:100,
-    sum:1000
-  };
+  Doctor.getDoctorInfo({
+      userId:'doc01'
+    })
+   .then(
+      function(data)
+      {
+      // console.log(data)
+        $scope.doctor=data.result;
+      },
+      function(err)
+      {
+        console.log(err)
+      }
+    )
   
     $scope.save = function() {
     $state.go('tab.me');  
@@ -816,28 +835,50 @@ initUserDetail();
 
 
 //"我”的评价
-.controller('feedbackCtrl', ['$scope','$ionicPopup','$state', function($scope, $ionicPopup,$state) {
+.controller('feedbackCtrl', ['Patient','Comment','$scope','$ionicPopup','$state', function(Patient,Comment,$scope, $ionicPopup,$state) {
   $scope.hideTabs = true;
-  $scope.doctor={
-    score:9.6
-  };
-  
-  $scope.feedbacks=[
-  {
-    content : "温柔亲切我喜欢", 
-    PatientId:"P201703240012",
-    patient:"患者甲",
-    time:"2017-03-22",
-    score:"9.7"
-  },
-  {
-    content : "还耐心", 
-    PatientId:"P201703240015",
-    patient:"患者乙",
-    time:"2017-03-24",
-    score:"9.5"
-  }
-  ];
+  var commentlength='';
+  var commentlist=[];
+
+  Comment.getComments({
+      userId:'doc01'
+    })
+   .then(
+      function(data)
+      {
+      // console.log(data)
+        $scope.feedbacks=data.results;
+        //console.log($scope.feedbacks.length)
+        commentlength=data.results.length;
+      //   for (var i=0; i<commentlength; i++){
+      //       commentlist[i]=$scope.feedbacks[i].pateintId.userId;
+      //   };
+       },
+      function(err)
+      {
+        console.log(err)
+      }
+    );
+
+   for (var i=0; i<commentlength; i++){
+       Patient.getPatientDetail({
+       userId:$scope.feedbacks[i].pateintId.userId
+    })
+   .then(
+      function(data)
+      {
+      // console.log(data)
+        $scope.feedbacks[i].photoUrl=data.results.photoUrl;
+      },
+      function(err)
+      {
+        console.log(err)
+      }
+    );
+   }
+   
+    
+
 }])
 
 
@@ -866,7 +907,7 @@ initUserDetail();
   
 }])
 
-//"我”设置内容页
+//"我”排班页
 .controller('schedualCtrl', ['$scope','$ionicPopover','ionicDatePicker', function($scope,$ionicPopover,ionicDatePicker) {
     var ipObj1 = {
         callback: function (val) {  //Mandatory
