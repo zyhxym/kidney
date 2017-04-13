@@ -52,14 +52,33 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
 }])
 //我的团队
-.controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover', function($scope, $http, $state, $ionicPopover) {
+.controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover','Doctor','Storage','Patient', function($scope, $http, $state, $ionicPopover,Doctor,Storage,Patient) {
     $scope.mygroups = ""
     $scope.query={
         name:'测试'
     }
     $scope.params={
         isTeam:null,
-        showSearch:false
+        showSearch:false,
+        updateTime:0
+    }
+    function load(force){
+        var time= Date.now();
+        if(!force && time-$scope.params.updateTime<21600000) return;
+        $scope.params.updateTime=time;
+        // Doctor.getMyGroupList({userId:Storage.get('userid')})
+        Doctor.getMyGroupList({userId:'doc01'})
+        .then(function(data){
+            console.log(data)
+            $scope.teams.data;
+        });
+        Doctor.getMyGroupList({userId:'doc01'})
+        .then(function(data){
+            console.log(data)
+            $scope.teams.data;
+        });
+        Patient.getDoctorLists()
+
     }
 
     // $scope.test = function(k){
@@ -621,22 +640,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         description: 'Material takes cues from contemporary architecture, road signs, pavement marking tape, and athletic courts. Color should be unexpected and vibrant.',
         members: [
             { url: 'img/avatar.png', name: 'Green' },
-            { url: 'img/perry.png', name: 'Gray' },
-            { url: 'img/adam.jpg', name: 'White' },
+            { url: 'img/max.png', name: 'Gray' },
+            { url: 'img/avatar.jpg', name: 'White' },
             { url: 'img/max.png', name: 'Blue' },
-            { url: 'img/ben.png', name: 'Black' },
-            { url: 'img/ben.png', name: 'Green' },
-            { url: 'img/perry.png', name: 'Gray' },
-            { url: 'img/adam.jpg', name: 'White' },
+            { url: 'img/max.png', name: 'Black' },
+            { url: 'img/avatar.png', name: 'Green' },
+            { url: 'img/max.png', name: 'Gray' },
             { url: 'img/max.png', name: 'Blue' },
-            { url: 'img/ben.png', name: 'Black' },
-            { url: 'img/ben.png', name: 'Green' },
-            { url: 'img/perry.png', name: 'Gray' },
-            { url: 'img/adam.jpg', name: 'White' },
+            { url: 'img/max.png', name: 'Black' },
+            { url: 'img/max.png', name: 'Green' },
+            { url: 'img/max.png', name: 'Gray' },
             { url: 'img/max.png', name: 'Blue' },
-            { url: 'img/adam.jpg', name: 'White' },
-            { url: 'img/max.png', name: 'Blue' },
-            { url: 'img/ben.png', name: 'Nat King Cole' }
+            { url: 'img/max.png', name: 'Nat King Cole' }
         ]
     }
 }])
@@ -649,8 +664,23 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //添加成员
-.controller('GroupAddMemberCtrl', ['$scope', '$state', function($scope,$state) {
+.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory', function($scope,$state,$ionicHistory) {
     //get groupId via $state.params.groupId
+    $scope.group = {
+        members: [
+            { url: 'img/avatar.png', name: 'Green' },
+            { url: 'img/max.png', name: 'Gray' },
+            { url: 'img/avatar.png', name: 'White' },
+            { url: 'img/max.png', name: 'Blue' },
+            { url: 'img/max.png', name: 'Black' },
+          
+            { url: 'img/max.png', name: 'Nat King Cole' }
+        ]
+    }
+    $scope.update = function(id){
+        if($scope.doctors[id].check) $scope.group.members.push({ url: 'img/max.png', name: 'Black' });
+        else $scope.group.members.splice(0,1);
+    }
     $scope.doctors=[
           {
               photoUrl:"img/avatar.png",
@@ -662,7 +692,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               department:"泌尿科",
               major:"肾上腺分泌失调",
               score:'9.5',
-              num:2313
+              num:2313,
+              check:true
           },
           {
               photoUrl:"img/max.png",
@@ -674,7 +705,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               department:"泌尿科2",
               major:"慢性肾炎、肾小管疾病",
               score:'9.1',
-              num:525
+              num:525,
+              check:false
           },
            {
               photoUrl:"img/default_user.png",
@@ -686,9 +718,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               department:"泌尿科3",
               major:"肾小管疾病、间质性肾炎",
               score:'8.8',
-              num:2546
+              num:2546,
+              check:false
           }];
 
+          $scope.comfirmAdd=function(){
+            $ionicHistory.goBack();
+          }
 }])
 //团队聊天
 .controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory','$http','$ionicModal','$ionicScrollDelegate','$rootScope', function($scope, $state, $rootScope, $ionicHistory,$http,$ionicModal,$ionicScrollDelegate,$rootScope) {
@@ -737,6 +773,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //     getMsg();
         // }
     })
+    $scope.$on('profile', function(event, args) {
+            console.log(args)
+            event.stopPropagation();
+            $state.go('tab.group-profile',{id:args[1]});
+        })
     function msgsRender(first,last){
         while(first!=last){
             $scope.msgs[first+1].diff=($scope.msgs[first+1].createTimeInMillis-$scope.msgs[first].createTimeInMillis)>300000?true:false;
@@ -809,6 +850,20 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         // $scope.imageUrl=imageUrl;
         // $scope.showModal('templates/msg/imageViewer.html');
     })
+    $scope.$on('viewcard', function(event, args) {
+        console.log(args[2]);
+        event.stopPropagation();
+        if(args[2].target.tagName=="IMG"){
+            $scope.imageHandle.zoomTo(1, true);
+            $scope.imageUrl = args[2].target.currentSrc;
+            console.log(args[2].target.attributes.hires.nodeValue);
+            $scope.modal.show();
+        }
+        // else{
+        //     $state.go('tab.consult-detail',{consultId:args[1]});
+        // }
+        // $state.go('tab.consult-detail',{consultId:args[1]});
+    })
     $scope.closeModal = function() {
         $scope.imageHandle.zoomTo(1, true);
         $scope.modal.hide();
@@ -820,6 +875,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         else {
             $scope.imageHandle.zoomTo(5, true);
         }
+    }
+    $scope.viewPic=function(src){
+        $scope.imageUrl = src;
+        $scope.modal.show();
     }
     $scope.goChats = function() {
         console.log($ionicHistory);
@@ -1033,4 +1092,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.leave',function(){
         if($scope.modal)$scope.modal.remove();
     })
+}])
+.controller('doctorProfileCtrl',['$scope','$state',function($scope,$state){
+    $scope.goChat = function(){
+        $state.go('tab.detail',{type:'2',chatId:$state.params.id});
+    }
+    $scope.teams=[
+          {
+              photoUrl:"img/avatar.png",
+              groupId:"D201703240001",
+              name:"浙一肾病管理团队",
+              workUnit:"浙江XXX医院",
+              major:"肾上腺分泌失调",
+              num:31
+          }];
 }])

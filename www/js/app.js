@@ -193,7 +193,7 @@ angular.module('kidney',[
         }
     })
 
-    //tuandui
+    //交流
     .state('tab.groups', {
         // cache: false,
         //type:   '0'=team  '1'=doctor
@@ -415,6 +415,16 @@ angular.module('kidney',[
             'tab-groups':{
                 controller: 'groupPatientCtrl',
                 templateUrl: 'partials/group/group-patient.html'
+            }
+        }
+    })
+    .state('tab.group-profile', {
+        // cache: false,
+        url: '/group/doctor/:id',
+        views: {
+            'tab-groups':{
+                controller: 'doctorProfileCtrl',
+                templateUrl: 'partials/group/profile.html'
             }
         }
     })
