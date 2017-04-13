@@ -47,6 +47,7 @@ if((logOn.username!="") && (logOn.password!="")){
                     $scope.logStatus = "登录成功！";
                     $ionicHistory.clearCache();
                     $ionicHistory.clearHistory();
+                    Storage.set('USERNAME',$scope.logOn.username);
                     Storage.set('TOKEN',data.results.token);//token作用目前还不明确
                     Storage.set('isSignIn',true);
                     Storage.set('UID',data.results.userId);
@@ -74,10 +75,12 @@ if((logOn.username!="") && (logOn.password!="")){
 
   $scope.toRegister = function(){
     console.log($state);
+    Storage.set('validMode',0);//注册
     $state.go('phonevalid');     
   }
 
   $scope.toReset = function(){
+    Storage.set('validMode',1);//修改密码
     $state.go('phonevalid');   
   } 
   
@@ -85,7 +88,7 @@ if((logOn.username!="") && (logOn.password!="")){
 
 
 //手机号码验证
-.controller('phonevalidCtrl', ['$scope','$state','$interval', 'Storage',  function($scope, $state,$interval,Storage) {
+.controller('phonevalidCtrl', ['$scope','$state','$interval', 'Storage','User',  function($scope, $state,$interval,Storage,User) {
   $scope.barwidth="width:0%";
   $scope.Verify={Phone:"",Code:""};
   $scope.veritext="获取验证码";
@@ -93,6 +96,7 @@ if((logOn.username!="") && (logOn.password!="")){
   var unablebutton = function(){      
      //验证码BUTTON效果
     $scope.isable=true;
+    console.log($scope.isable)
     $scope.veritext="180S再次发送"; 
     var time = 179;
     var timer;
@@ -108,38 +112,66 @@ if((logOn.username!="") && (logOn.password!="")){
       }
     },1000);
   }
-  //发送验证码
-  var sendSMS = function(){
-      //结果分为1、验证码发送失败;2、发送成功，获取稍后
-    $scope.logStatus="您的验证码已发送，重新获取请稍后";
-    unablebutton();
-  }
   //点击获取验证码
   $scope.getcode=function(Verify){
-     $scope.logStatus='';
+    $scope.logStatus='';
     
-     if (Verify.Phone=="") {
+    if (Verify.Phone=="") {
       
       $scope.logStatus="手机号码不能为空！";
       return;
     }
-     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-      //手机正则表达式验证
-     if(!phoneReg.test(Verify.Phone)){$scope.logStatus="手机号验证失败！";return;}
-     //如果为注册，注册过的用户不能获取验证码；如果为重置密码，没注册过的用户不能获取验证码
-      var usernames = Storage.get('usernames').split(",");
-      if(Storage.get('setPasswordState')=='register'){
-        if(usernames.indexOf(Verify.Phone)>=0){
-          $scope.logStatus = "该手机号码已经注册！";
+    var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+    //手机正则表达式验证
+    if(!phoneReg.test(Verify.Phone))
+    {
+      $scope.logStatus="请输入正确的手机号码！";
+      return;
+    }
+    else//通过基本验证-正确的手机号
+    {
+      console.log(Verify.Phone)
+      //验证手机号是否注册，没有注册的手机号不允许重置密码
+      User.logIn({
+        username:Verify.Phone,
+        password:' ',
+        role:'doctor'
+      })
+      .then(function(succ)
+      {
+        console.log(succ)
+        if(succ.mesg=="User password isn't correct!")//存在的用户
+        {
+          User.sendSMS({
+            mobile:Verify.Phone,
+            smsType:1
+          })
+          .then(function(validCode)
+          {
+            console.log(validCode)
+            if(validCode.results==0)
+            {
+              unablebutton()
+            }
+            else
+            {
+              $scope.logStatus="验证码发送失败！";
+            }
+          },function(err)
+          {
+            $scope.logStatus="验证码发送失败！";
+          })
         }
-        else{sendSMS();}
-      }
-      else if(Storage.get('setPasswordState')=='reset'){
-        if(usernames.indexOf(Verify.Phone)<0){
-          $scope.logStatus = "该手机号码尚未注册！";
+        else
+        {
+          $scope.logStatus="您还没有注册呢！";
         }
-        else{sendSMS();}
-      }
+      },function(err)
+      {
+        console.log(err)
+        $scope.logStatus="网络错误！";
+      })
+    }
   }
 
   //判断验证码和手机号是否正确
@@ -151,12 +183,28 @@ if((logOn.username!="") && (logOn.password!="")){
       var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       //手机正则表达式验证
       if(phoneReg.test(Verify.Phone)){ 
-        if (Verify.Code == tempVerify) {
-        logStatus = "验证成功！";
-        Storage.set('USERNAME',Verify.Phone);
-        $state.go('setpassword');
-        }
-        else{$scope.logStatus = "验证码错误！";}
+        User.verifySMS({
+          mobile:Verify.Phone,
+          smsType:1,
+          smsCode:Verify.Code
+        })
+        .then(function(succ)
+        {
+          console.log(succ)
+          if(succ.results==0)//验证成功
+          {
+            Storage.set('phoneNumber',Verify.Phone);
+            $state.go('setpassword');
+          }
+          else//验证码错误
+          {
+            $scope.logStatus="请输入正确的验证码！";
+          }
+        },function(err)
+        {
+          console.log(err)
+          $scope.logStatus="网络错误！";
+        })
       }
       else{$scope.logStatus="手机号验证失败！";}
         
@@ -169,72 +217,56 @@ if((logOn.username!="") && (logOn.password!="")){
 
 
 //设置密码
-.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage',function($scope,$state,$rootScope,$timeout,Storage) {
+.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User',function($scope,$state,$rootScope,$timeout,Storage,User) {
   $scope.barwidth="width:0%";
-  // var setPassState=Storage.get('setPasswordState');
-  // if(setPassState=='reset'){
-  //   $scope.headerText="重置密码";
-  //   $scope.buttonText="确认修改";
-  // }else{
-    $scope.headerText="设置密码";
+  var validMode=Storage.get('validMode');//0->set;1->reset
+  var phoneNumber=Storage.get('phoneNumber');
+  $scope.headerText="设置密码";
+  $scope.buttonText="";
+  $scope.logStatus='';
+
+  if(validMode==0)
     $scope.buttonText="下一步";
-  // }
-  $scope.setPassword = function(){
-    $state.go('userdetail');
-    //Storage.set('setPasswordState','sign');
+  else
+    $scope.buttonText="完成";
+  $scope.setPassword = function(password){
+    if(password.newPass!=""&&password.confirm!="")
+    {
+      if(password.newPass==password.confirm)
+      {
+        if(password.newPass.length<6)//此处要验证密码格式，//先简单的
+        {
+          $scope.logStatus='密码太短了！';
+        }
+        else
+        {
+          User.changePassword({
+            phoneNo:phoneNumber,
+            password:password.newPass
+          })
+          .then(function(succ)
+          {
+            console.log(succ)
+            if(validMode==0)
+              $state.go('userdetail');
+            else
+              $state.go('signin')
+          },function(err)
+          {
+            console.log(err)
+          })
+        }
+      }
+      else
+      {
+        $scope.logStatus='两次输入的密码不一致';
+      }
+    }
+    else
+    {
+      $scope.logStatus='输入不正确!';
+    }
   }
-  //$scope.setPassword={newPass:"" , confirm:""};
-  // $scope.resetPassword=function(setPassword){
-  //   $scope.logStatus='';
-  //   if((setPassword.newPass!="") && (setPassword.confirm!="")){
-  //     if(setPassword.newPass == setPassword.confirm){
-  //       var username = Storage.get('USERNAME');
-  //       //如果是注册
-  //       if(setPassState=='register'){
-  //         //结果分为连接超时或者注册成功
-  //         $rootScope.password=setPassword.newPass;
-          
-  //         //把新用户和密码写入
-  //         var usernames = Storage.get('usernames');
-  //         var passwords = Storage.get('passwords');
-  //         if(usernames == "" || usernames == null){
-  //           usernames = new Array();
-  //           passwords = new Array();            
-  //         }else{
-  //           usernames = usernames.split(",");
-  //           passwords = passwords.split(",");}
-                    
-  //         usernames.push(username);          
-  //         passwords.push(setPassword.newPass);
-  //         Storage.set('usernames',usernames);
-  //         Storage.set('passwords',passwords);
-  //         $scope.logStatus ="注册成功！";
-  //         $timeout(function(){$state.go('userdetail');} , 100);
-  //       }
-  //       else if(setPasswordState== 'reset'){
-  //         //如果是重置密码
-
-          
-  //         //结果分为连接超时或者修改成功
-  //          $scope.logStatus ="重置密码成功！";
-  //         //把新用户和密码写入
-  //         var usernames = Storage.get('usernames').split(",");
-  //         var index = usernames.indexOf(username);
-  //         var passwords = Storage.get('passwords').split(",");
-  //         passwords[index] = setPassword.newPass;
-         
-  //         Storage.set('passwords',passwords);
-  //         $timeout(function(){$state.go('signin');} , 100);
-          
-  //       }
-  //     }else{
-  //       $scope.logStatus="两次输入的密码不一致";
-  //     }
-  //   }else{
-  //     $scope.logStatus="请输入两遍新密码"
-  //   }
-  // }
-
 }])
 
 
