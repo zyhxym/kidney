@@ -742,21 +742,22 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”的评价
-.controller('feedbackCtrl', ['Patient','Comment','$scope','$ionicPopup','$state', function(Patient,Comment,$scope, $ionicPopup,$state) {
+.controller('feedbackCtrl', ['Patient','Doctor','$scope','$ionicPopup','$state', function(Patient,Doctor,$scope, $ionicPopup,$state) {
     $scope.hideTabs = true;
     var commentlength='';
     var commentlist=[];
 
-    Comment.getComments({
+    Doctor.getDoctorInfo({
         userId:'doc01'
     })
     .then(
         function(data)
         {
             // console.log(data)
-            $scope.feedbacks=data.results;
+            $scope.feedbacks=data.comments;
+            $scope.doctor=data.result;
             //console.log($scope.feedbacks.length)
-            commentlength=data.results.length;
+            commentlength=data.comments.length;
             //   for (var i=0; i<commentlength; i++){
             //       commentlist[i]=$scope.feedbacks[i].pateintId.userId;
         },
@@ -765,6 +766,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     );
+
+
+
 
     for (var i=0; i<commentlength; i++){
         Patient.getPatientDetail({
@@ -855,5 +859,5 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
         $scope.showSchedual=!$scope.showSchedual;
     }   
-     
+
 }])
