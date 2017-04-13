@@ -115,7 +115,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 //我的团队
 .controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover','Doctor','Storage','Patient', function($scope, $http, $state, $ionicPopover,Doctor,Storage,Patient) {
-    $scope.mygroups = ""
+    $scope.mygroups = "";
+    $scope.doctors=""
     $scope.query={
         name:'测试'
     }
@@ -124,6 +125,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         showSearch:false,
         updateTime:0
     }
+
     function load(force){
         var time= Date.now();
         if(!force && time-$scope.params.updateTime<21600000) return;
@@ -179,14 +181,22 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
           $scope.showTeams= function(){
 
-          }
-          $scope.showDocs= function(){
-            
-          }
-    $http.get("data/grouplist.json").success(function(data) {
-        $scope.mygroups = data
+
+    Doctor.getMyGroupList({userId:'doc01'})//Storage.get('UID')
+    .then(function(data){
+        console.log(data)
+        $scope.mygroups = data.results
+    });
+    Doctor.getRecentDoctorList({userId:'doc01'})
+    .then(function(data)
+    {
+        console.log(data.results[0].doctors)
+        $scope.doctors=data.results[0].doctors
+    },function(err)
+    {
+        console.log(err)
     })
-    
+
     $scope.$on('$ionicView.beforeEnter', function() {
         $scope.params.isTeam = $state.params.type=='0';
         $scope.params.showSearch = false;
@@ -209,6 +219,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.clearSearch = function(){
         $scope.query.name='';
     }
+
     //popover option
     var options = [{
         name: '搜索团队',
@@ -217,12 +228,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         name: '新建团队',
         href: '#/tab/newgroup'
     }];
+
     $ionicPopover.fromTemplateUrl('partials/group/pop-menu.html', {
         scope: $scope,
     }).then(function(popover) {
         $scope.options = options;
         $scope.popover = popover;
     });
+
 
     // $scope.enterChat = function(id) {
     //     $state.go('tab.group-chat', { groupId: id });
@@ -249,12 +262,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.beforeLeave', function() {
         if($scope.popover) $scope.popover.hide();
     })
+
 }])
 //团队病历
-.controller('groupPatientCtrl', ['$scope', '$http', '$state', 'Storage', '$ionicHistory', function($scope, $http, $state, Storage, $ionicHistory) {
+.controller('groupPatientCtrl', ['$scope', '$http', '$state', 'Storage', '$ionicHistory','Doctor', function($scope, $http, $state, Storage, $ionicHistory,Doctor) {
 
+    $scope.grouppatients0 = "";
     $scope.grouppatients1 = "";
-    $scope.grouppatients2 = "";
+
 
     $scope.params = {
         team:{}
@@ -268,35 +283,27 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $scope.grouppatients1 = data
         })
 
-        $http.get("data/grouppatient2.json").success(function(data) {
-            $scope.grouppatients2 = data
-        })
+
+    Doctor.getGroupPatientList({teamId:$scope.teamId,status:1})//1->进行中
+    .then(function(data)
+    {
+        console.log(data)
+        $scope.grouppatients1 = data.results
+    },function(err)
+    {
+        console.log(err)
     })
 
- // href="#/tab/groups/chat/2/{{params.teamId}}/{{grouppatient.patientID}}"
     $scope.enterChat = function(type,patient){
         $state.go('tab.group-chat',{type:type,team:$state.params.team,groupId:patient.patientID});
     }
-    // $scope.goChat = function(groupId) {
-    //     $state.go('tab.group-chat', { type: 2, groupId: groupId, teamId: $scope.params.teamId });
-    // }
+
     $scope.backToGroups = function() {
-            $ionicHistory.nextViewOptions({
-                disableBack: true
-            });
-            $state.go('tab.groups',{type:'0'});
-        }
-        // $scope.addgroup = function(){
-        //   // $state.go()
-        // }
-
-    // $scope.groupcommunication = function(grouppatient){
-    //   $state.go('tab.group-chat',{groupId:grouppatient.patientID,type:2});
-    //   // Storage.set("grouppatientID",grouppatient.patientID)
-    //   // $state.go()
-
-    //   // alert(goruppatient.patientID)
-    // }
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.groups',{type:'0'});
+    }
 }])
 
 .controller('GroupAddCtrl', ['$scope', '$state','$ionicHistory', function($scope, $state,$ionicHistory) {

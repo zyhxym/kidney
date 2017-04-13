@@ -656,7 +656,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getPatientList:{method:'GET', params:{route: 'getPatientList'}, timeout: 100000},
             getDoctorInfo:{method:'GET', params:{route: 'getDoctorInfo'}, timeout: 100000},
             getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
-            getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000}
+            getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000},
+            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000}
         });
     }
 
@@ -1466,6 +1467,23 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+       //   userId:'doc01'
+       // }
+    self.getRecentDoctorList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getRecentDoctorList(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
     //params->0:{
            //   userId:'doc01'
            // }
