@@ -370,33 +370,38 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-detail', {
-            url: '/groups/:groupId',
+            url: '/groups/detail',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-detail.html',
                     controller: 'GroupDetailCtrl'
                 }
-            }
+            },
+            params:{team:null}
         })
     .state('tab.group-qrcode', {
-            url: '/groups/qrcode/:groupId',
+            url: '/groups/qrcode',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-qrcode.html',
                     controller: 'GroupQrcodeCtrl'
                 }
-            }
+            },
+            params:{team:null}
         })
     .state('tab.group-chat', {
         //'0':团队交流  '1': 未结束病历  '2':已结束病历
-            url: '/groups/chat/:type/:teamId/:groupId',
+            url: '/groups/chat',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-chat.html',
                     controller: 'GroupChatCtrl'
-                }
-            }
-
+                    // params:{'group':null,'type':'0','groupId':null}
+                },
+                // params:['group','typr','groupId']
+            },
+            params:{'type':'0','team':null,'groupId':null}
+            // params:['group','typr','groupId']
         })
     .state('tab.group-conclusion', {
             url: '/groups/conclusion/:type/:teamId/:groupId',
@@ -410,23 +415,26 @@ angular.module('kidney',[
         })
     .state('tab.group-patient', {
         // cache: false,
-        url: '/group/:teamId/patients',
+        url: '/group/patients',
         views: {
             'tab-groups':{
                 controller: 'groupPatientCtrl',
                 templateUrl: 'partials/group/group-patient.html'
             }
-        }
+        },
+        params:{team:null}
     })
     .state('tab.group-profile', {
         // cache: false,
-        url: '/group/doctor/:id',
+        url: '/group/doctor/profile',
         views: {
             'tab-groups':{
                 controller: 'doctorProfileCtrl',
                 templateUrl: 'partials/group/profile.html'
             }
-        }
+        },
+        params:{'member':null}
+
     })
 
     // views-tab-me
