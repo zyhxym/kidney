@@ -17,13 +17,14 @@
             </button>
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc">
-                <img src="img/default_user.png">
+<!--             <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc"> -->
+                <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients">
+                <img ng-src="p.patientId.photoUrl">
 				<div>
-                <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
-				<span class="mine-msg-right">{{p.symptom}}</span>
-                <p class="friend-detail-p">是否VIP{{p.VIP}}</p>
-                <p class="friend-detail-p">危机程度{{p.class}}</p>
+                <span>{{p.patientId.name}}</span><span>{{p.patientId.gender}}</span><span>{{p.patientId.birthday}}岁</span>
+				<span class="mine-msg-right">{{p.patientId.diagnosisInfo[0].name}}</span>
+                <p class="friend-detail-p">是否VIP{{p.patientId.VIP}}</p>
+                <p class="friend-detail-p">危机程度{{p.patientId.class}}</p>
 				</div>
             </a>      
         </div>

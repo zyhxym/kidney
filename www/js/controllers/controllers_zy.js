@@ -480,77 +480,51 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 // }])
 
 //"患者”页
-.controller('patientCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
+.controller('patientCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function(Doctor,$scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
     $scope.barwidth="width:0%";
-    $scope.order="VIP";
-    $scope.abc=false;
-    $scope.index=0;
-    $scope.turn=0;
-    $scope.orderGroup=new Array("VIP","class");
-    $scope.reorder = function() { 
+    //$scope.order="VIP";
+    //$scope.abc=false;
+    //$scope.index=0;
+    //$scope.turn=0;
+    //$scope.orderGroup=new Array("VIP","class");
+    // $scope.reorder = function() { 
   
-        if(($scope.turn%2)==0)
-        {
-            $scope.abc=!$scope.abc;
-            $scope.turn=$scope.turn+1;
-            console.log('index:'+$scope.index);
-            console.log('turn:'+$scope.turn);
-            console.log('abc:'+$scope.abc);
-        }
-        else{
-            $scope.index=($scope.index+1)%2;
-            $scope.turn=$scope.turn+1;
-            $scope.order=$scope.orderGroup[$scope.index];
-            console.log('index:'+$scope.index);
-            console.log('turn:'+$scope.turn);
-            console.log('order:'+$scope.order);
-        }   
-    };
+    //     if(($scope.turn%2)==0)
+    //     {
+    //         $scope.abc=!$scope.abc;
+    //         $scope.turn=$scope.turn+1;
+    //         console.log('index:'+$scope.index);
+    //         console.log('turn:'+$scope.turn);
+    //         console.log('abc:'+$scope.abc);
+    //     }
+    //     else{
+    //         $scope.index=($scope.index+1)%2;
+    //         $scope.turn=$scope.turn+1;
+    //         $scope.order=$scope.orderGroup[$scope.index];
+    //         console.log('index:'+$scope.index);
+    //         console.log('turn:'+$scope.turn);
+    //         console.log('order:'+$scope.order);
+    //     }   
+    // };
+    var patientlength='';
+    //var patientlist=[];
 
-    $scope.patients=[
-    {
-        head:"max.png",
-        name:"王大头",
-        gender:"男",
-        age:"32",
-        time:"2017/3/27 9:32",
-        //appoint:"3/29 10:00-11:00",
-        qs:"问题1" ,
-        labels:"高血压、糖尿病",
-        symptom:"肾内科障碍",
-        type:"肾内科",
-        VIP:"1",
-        class:"danger"
-    },
-    {
-        head:"mike.png",
-        name:"王二头",
-        gender:"男",
-        age:"32",
-        time:"2017/3/28 10:32",
-        //appoint:"3/29 10:00-11:00",
-        qs:"问题2" ,
-        labels:"高血压、糖尿病",
-        symptom:"肾内科障碍",
-        type:"肾内科",
-        VIP:"2",
-        class:"danger"
-    },
-    {
-        head:"adam.jpg",
-        name:"王三头",
-        gender:"男",
-        age:"29",
-        time:"2017/3/28 10:32",
-        //appoint:"3/29 10:00-11:00",
-        qs:"问题2" ,
-        labels:"高血压、糖尿病",
-        symptom:"肾内科障碍",
-        type:"肾内科",
-        VIP:"3",
-        class:""
-    }
-    ];
+    Doctor.getPatientList({
+        userId:'doc01'
+    })
+    .then(
+        function(data)
+        {
+            // console.log(data)
+            $scope.patients=data.results[0].patients;
+            //console.log(data.results[0].patients);
+            patientlength=data.results[0].patients.length;
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    );
 
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover.html', {
         scope: $scope
@@ -745,7 +719,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('feedbackCtrl', ['Patient','Doctor','$scope','$ionicPopup','$state', function(Patient,Doctor,$scope, $ionicPopup,$state) {
     $scope.hideTabs = true;
     var commentlength='';
-    var commentlist=[];
+    //var commentlist=[];
 
     Doctor.getDoctorInfo({
         userId:'doc01'
@@ -766,8 +740,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     );
-
-
 
 
     for (var i=0; i<commentlength; i++){
