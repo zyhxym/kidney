@@ -143,7 +143,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.doctors=[
           {
               photoUrl:"img/avatar.png",
-              userId:"D201703240001",
+              userId:"D201703240005",
               name:"小丁",
               gender:"男",
               title:"主任医生",
@@ -155,7 +155,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           },
           {
               photoUrl:"img/max.png",
-              userId:"D201703240002",
+              userId:"D201703240006",
               name:"小李",
               gender:"女",
               title:"主任医生",

@@ -44,6 +44,8 @@ if((logOn.username!="") && (logOn.password!="")){
                     }
                 }
                 else if(data.results.mesg=="login success!"){
+                  console.log(data.results);
+                  console.log(md5(data.results.userId,"kidney"));
                     $scope.logStatus = "登录成功！";
                     $ionicHistory.clearCache();
                     $ionicHistory.clearHistory();

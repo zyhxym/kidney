@@ -367,6 +367,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     function login(user) {
         return $q(function(resolve,reject){
+            console.log(user);
+            console.log(pGen(user));
             window.JMessage.login(user, pGen(user),
                 function(response) {
                     window.JMessage.username = user;
@@ -549,7 +551,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             .then(function(data){
 
             },function(err){
-                login(Storage.get('UID'));
+                if(Storage.get('UID')) login(Storage.get('UID'));
             })
             getPushRegistrationID();
             // document.addEventListener("jmessage.onReceiveMessage", onReceiveMessage, false);
