@@ -115,8 +115,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 //我的团队
 .controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover','Doctor','Storage','Patient', function($scope, $http, $state, $ionicPopover,Doctor,Storage,Patient) {
-    $scope.mygroups = "";
-    $scope.doctors=""
+    $scope.mygroups = ""
     $scope.query={
         name:'测试'
     }
@@ -125,7 +124,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         showSearch:false,
         updateTime:0
     }
-
     function load(force){
         var time= Date.now();
         if(!force && time-$scope.params.updateTime<21600000) return;
@@ -181,22 +179,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
           $scope.showTeams= function(){
 
-
-    Doctor.getMyGroupList({userId:'doc01'})//Storage.get('UID')
-    .then(function(data){
-        console.log(data)
-        $scope.mygroups = data.results
-    });
-    Doctor.getRecentDoctorList({userId:'doc01'})
-    .then(function(data)
-    {
-        console.log(data.results[0].doctors)
-        $scope.doctors=data.results[0].doctors
-    },function(err)
-    {
-        console.log(err)
+          }
+          $scope.showDocs= function(){
+            
+          }
+    $http.get("data/grouplist.json").success(function(data) {
+        $scope.mygroups = data
     })
-
+    
     $scope.$on('$ionicView.beforeEnter', function() {
         $scope.params.isTeam = $state.params.type=='0';
         $scope.params.showSearch = false;
@@ -219,7 +209,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.clearSearch = function(){
         $scope.query.name='';
     }
-
     //popover option
     var options = [{
         name: '搜索团队',
@@ -228,14 +217,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         name: '新建团队',
         href: '#/tab/newgroup'
     }];
-
     $ionicPopover.fromTemplateUrl('partials/group/pop-menu.html', {
         scope: $scope,
     }).then(function(popover) {
         $scope.options = options;
         $scope.popover = popover;
     });
-
 
     // $scope.enterChat = function(id) {
     //     $state.go('tab.group-chat', { groupId: id });
@@ -262,7 +249,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.beforeLeave', function() {
         if($scope.popover) $scope.popover.hide();
     })
-
 }])
 //团队病历
 .controller('groupPatientCtrl', ['$scope', '$http', '$state', 'Storage', '$ionicHistory','Doctor', function($scope, $http, $state, Storage, $ionicHistory,Doctor) {
@@ -282,7 +268,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $http.get("data/grouppatient1.json").success(function(data) {
             $scope.grouppatients1 = data
         })
-
+    });
 
     Doctor.getGroupPatientList({teamId:$scope.teamId,status:1})//1->进行中
     .then(function(data)
