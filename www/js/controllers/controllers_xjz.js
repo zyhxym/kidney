@@ -264,21 +264,27 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.grouppatients1 = "";
         $scope.grouppatients2 = "";
         $scope.params.team = $state.params.team;
-        // console.log($scope.params);
         $http.get("data/grouppatient1.json").success(function(data) {
             $scope.grouppatients1 = data
         })
+
+        $http.get("data/grouppatient2.json").success(function(data) {
+            $scope.grouppatients2 = data
+        })
+        // $http.get("data/grouppatient1.json").success(function(data) {
+        //     $scope.grouppatients1 = data
+        // })
     });
 
-    Doctor.getGroupPatientList({teamId:$scope.teamId,status:1})//1->进行中
-    .then(function(data)
-    {
-        console.log(data)
-        $scope.grouppatients1 = data.results
-    },function(err)
-    {
-        console.log(err)
-    })
+    // Doctor.getGroupPatientList({teamId:$scope.teamId,status:1})//1->进行中
+    // .then(function(data)
+    // {
+    //     console.log(data)
+    //     $scope.grouppatients1 = data.results
+    // },function(err)
+    // {
+    //     console.log(err)
+    // })
 
     $scope.enterChat = function(type,patient){
         $state.go('tab.group-chat',{type:type,team:$state.params.team,groupId:patient.patientID});
@@ -954,7 +960,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             disableBack: true
         });
         if ($scope.params.type == '0') $state.go('tab.groups',{type:'0'});
-        else $state.go('tab.group-patient', { teamId: $scope.params.team.teamId });
+        else $state.go('tab.group-patient', { team: $scope.params.team});
     }
 
 }])
