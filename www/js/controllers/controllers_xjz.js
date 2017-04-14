@@ -330,10 +330,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         helpDivHeight: 30,
         moreMsgs:true
     }
-    $scope.msgs = [];
+    // $scope.msgs = [];
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
     //render msgs 
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.msgs = [];
         $scope.params.msgCount=0;
         if (window.JMessage) {
             window.JMessage.enterSingleConversation($state.params.chatId, "");
@@ -439,12 +440,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             $scope.msgs.push(res[i]);
                             i--;
                         }
+                        console.log(i);
+                        break;
                             // for(var k=0;k<i)
                             // $scope.msgs=$scope.msgs.concat(res.slice(0,i+1));
                             // msgsRender($scope.msgs.length-res.length,$scope.msgs.length-1);
                             // break;
                         }else if($scope.msgs[j]['_id']==res[i]['_id']){
-                            $scope.msgs[j].status=res[i].status;
+                            $scope.msgs[j]=res[i];
+                            // $scope.
+                            // $scope.msgs[j].status=res[i].status;
                             ++j;--i;
                         }else{
                              ++j;
