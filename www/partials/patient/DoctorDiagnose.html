@@ -21,11 +21,9 @@
           <span class="input-label" style="margin-left:8px "><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>疾病进程</span>
           <input  ng-model="Diagnose.DiseaseDetail"  type="text">
         </label>
-
-        <ionic-datepicker input-obj="datepickerObject2" class="item item-input"  ng-if="showOperationTime()">
-          <span class="input-label" style="margin-left:8px "><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>手术日期</span>
-          <input  ng-model="Diagnose.OperationDate"  type="text">
-        </ionic-datepicker>
+        <button class="button button-block button-positive button-outline" ng-click="openDatePicker(1)" ng-if="showOperationTime()">
+          手术日期:{{dateD|dateFormat:"YYYY-MM-DD"}}
+        </button>
         <label  class="item item-input item-select">
         <div class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>是否高血压</div>
         <select ng-model="Diagnose.Hypertension">
@@ -39,7 +37,7 @@
         <input  ng-model="Diagnose.DetailDiagnose"  type="text">
       </label>
     </div>
-      <button style="margin-top:0" class="button button-block button-balanced" ng-click ="Submit()">
+      <button style="margin-top:0" class="button button-block button-balanced" ng-click ="saveDiagnose({diagname:Diagnose.KidneyDisease,diagtime:dateD,diagprogress:Diagnose.DiseaseDetail,diagcontent:Diagnose.DetailDiagnose})">
             提交
       </button>
       <button style="margin-top:0" class="button button-block button-balanced" class="button button-clear" ng-click="reset()">重置

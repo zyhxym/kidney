@@ -369,14 +369,17 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $q(function(resolve,reject){
             console.log(user);
             console.log(pGen(user));
-            window.JMessage.login(user, pGen(user),
-                function(response) {
-                    window.JMessage.username = user;
-                    resolve(user);
-                }, function(err){
-                    console.log(err);
-                    reject(err);
-                });
+            // console.log(ionic.Platform)
+            // console.log(ionic.Platform.platforms[0]=="browser")
+            if(ionic.Platform.platforms[0]!="browser")
+                window.JMessage.login(user, pGen(user),
+                    function(response) {
+                        window.JMessage.username = user;
+                        resolve(user);
+                    }, function(err){
+                        console.log(err);
+                        reject(err);
+                    });
         });
     }
 

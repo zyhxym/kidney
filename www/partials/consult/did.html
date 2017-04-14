@@ -17,7 +17,7 @@
         </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.counselId}}" ng-repeat="p in patients">
-                <img src="p.patientId.photoUrl">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>{{p.patientId.name}}</span>
                 <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>

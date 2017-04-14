@@ -430,7 +430,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   //   }
   // ];
     $scope.patients=angular.fromJson(Storage.get("consulting"));
-
+    console.log($scope.patients)
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
     scope: $scope
     }).then(function(popover) {
@@ -633,7 +633,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-              // console.log(data)
+              console.log(data)
             $scope.doctor=data.result;
         },
         function(err)

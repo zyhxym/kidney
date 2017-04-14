@@ -18,7 +18,7 @@
         </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc">
-                <img src="img/default_user.png">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
 				<div>
                 <span>{{p.name}}</span><span>{{p.sex}}</span><span>{{p.age}}岁</span>
 				<span class="mine-msg-right">{{p.symptom}}</span>
