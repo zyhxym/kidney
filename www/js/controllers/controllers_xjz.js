@@ -162,52 +162,28 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     // $scope.test = function(k){
     //   console.log(k.target);
     // }
-    $scope.doctors=[
-          {
-              photoUrl:"img/avatar.png",
-              userId:"U201704130006",
-              name:"小丁",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科",
-              major:"肾上腺分泌失调",
-              score:'9.5',
-              num:2313
-          },
-          {
-              photoUrl:"img/max.png",
-              userId:"U201704120006",
-              name:"小李",
-              gender:"女",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科2",
-              major:"慢性肾炎、肾小管疾病",
-              score:'9.1',
-              num:525
-          },
-           {
-              photoUrl:"img/default_user.png",
-              userId:"wds",
-              name:"小P",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科3",
-              major:"肾小管疾病、间质性肾炎",
-              score:'8.8',
-              num:2546
-          }];
-          $scope.showTeams= function(){
+    // $scope.doctors=[
+    //       {
+    //           photoUrl:"img/avatar.png",
+    //           userId:"U201704130006",
+    //           name:"小丁",
+    //           gender:"男",
+    //           title:"主任医生",
+    //           workUnit:"浙江XXX医院",
+    //           department:"泌尿科",
+    //           major:"肾上腺分泌失调",
+    //           score:'9.5',
+    //           num:2313
+    //       }];
+          // $scope.showTeams= function(){
 
-          }
-          $scope.showDocs= function(){
+          // }
+          // $scope.showDocs= function(){
             
-          }
-    $http.get("data/grouplist.json").success(function(data) {
-        $scope.mygroups = data
-    })
+          // }
+    // $http.get("data/grouplist.json").success(function(data) {
+    //     $scope.mygroups = data
+    // })
     
     $scope.$on('$ionicView.beforeEnter', function() {
         $scope.params.isTeam = $state.params.type=='0';
@@ -294,7 +270,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
     //在外面时序不对， 比'$ionicView.beforeEnter'先执行
     function load(){
-        Doctor.getGroupPatientList({teamId:$scope.params.team.teamId,status:1})//1->进行中
+        Doctor.getGroupPatientList({teamId:$scope.params.team.teamId,status:0})//0->进行中
+        .then(function(data)
+        {
+            console.log(data)
+            $scope.grouppatients0 = data.results
+        },function(err)
+        {
+            console.log(err)
+        })
+        Doctor.getGroupPatientList({teamId:$scope.params.team.teamId,status:1})//1->已处理
         .then(function(data)
         {
             console.log(data)
