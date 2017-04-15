@@ -1009,8 +1009,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     .then(
         function(data)
         {
-            //console.log(data)
-            $scope.team=data.results;
+            
+            $scope.teams=data.results
         },
         function(err)
         {
