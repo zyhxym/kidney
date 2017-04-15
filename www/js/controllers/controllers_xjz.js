@@ -836,15 +836,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
         $scope.params.team = $state.params.team;
-        if ($scope.params.type !='0') {
-            $scope.params.isDiscuss = true;
+        if ($scope.params.type =='0') {
+            // $scope.params.isDiscuss = true;
+            $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
+        }else if($scope.params.type =='1'){
             $scope.params.hidePanel = false;
             $scope.params.title = '病历讨论';
-        }else{
-            $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
             $scope.params.isDiscuss = true;
-        }
-        if ($scope.params.type =='2'){
+        }else if($scope.params.type =='2'){
+            $scope.params.hidePanel = false;
+            $scope.params.title = '病历讨论';
+            $scope.params.isDiscuss = true;
             $rootScope.patient.undergo=false;
             $scope.params.isOver = true;
         }
