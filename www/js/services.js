@@ -1613,6 +1613,25 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+           //   userId:'doc01'
+           // }
+    self.getRecentDoctorList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getRecentDoctorList(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
+
     //params->0:{
            //   teamId:'team1',
            //   status:1
