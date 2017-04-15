@@ -17,9 +17,8 @@
             </button>
         </div>
         <div class="list">
-<!--             <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc"> -->
-                <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients">
-                <img ng-src="p.patientId.photoUrl">
+            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
 				<div>
                 <span>{{p.patientId.name}}</span><span>{{p.patientId.gender}}</span><span>{{p.patientId.birthday}}岁</span>
 				<span class="mine-msg-right">{{p.patientId.diagnosisInfo[0].name}}</span>

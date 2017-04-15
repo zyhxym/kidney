@@ -1,6 +1,6 @@
 <ion-view hide-tabs view-title="选择医生">
 <ion-nav-buttons side="right">
-      <button class="button button-icon" ng-click="comfirmAdd()">添加</button>
+      <button class="button button-icon" ng-click="confirmAdd()">添加</button>
     </ion-nav-buttons>
 
 <div class="bar item-input-inset bar-light" style="position:absolute;top:44px;z-index:999">
@@ -10,20 +10,20 @@
             <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
         </div>
     </div>
-<div style="padding:4px;position:absolute;top:88px;width:100%;margin:0;max-height:30vh;overflow-y: scroll;" ng-hide="params.hidePanel" class="item">
+<div style="padding:4px;position:absolute;top:88px;height:44px;width:100%;margin:0;max-height:30vh;overflow-y: scroll;" ng-hide="params.hidePanel" class="item">
     <!-- <div style="display:block-inline;width:2em;height:2em;position:relative;margin:2px 4px 2px 0" ng-repeat="member in group.members"> -->
             <img style="height:2em;width:2em;margin:3px" ng-repeat="member in group.members" src="{{member.url}}" />
         <!-- </div> -->
   </div>
 
-  <ion-content style="" class="has-subheader gray-back">
-  <div class="bar item-input-inset bar-light">
+  <ion-content style="padding-top:44px" class="has-subheader gray-back">
+<!--   <div class="bar item-input-inset bar-light">
     <div class="item-input-wrapper">
       <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
       <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索医生">
       <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
-  </div> 
+  </div>  -->
 <div class="list">
     <div class="item item-avatar" ng-repeat="d in doctors">
         <img src="{{d.photoUrl}}">

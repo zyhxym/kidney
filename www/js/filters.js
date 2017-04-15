@@ -26,6 +26,16 @@ angular.module('kidney.filters', [])
     }
 }])
 
+.filter('imgUrl',[function(){
+    return function(date,type){
+        var url="http://121.43.107.106:8052/photos/doctor.png"
+        if(type=="doctor")
+            url="img/doctor.png"
+        else if(type=="group")
+            url="img/doctor_group.png"
+        return url;
+    }
+}])
 .filter('dateFormat',[function(){
     return function(date,format){
         var d=new Date(date)

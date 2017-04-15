@@ -2,7 +2,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying////////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM) {
     $scope.barwidth="width:0%";
     if(Storage.get('USERNAME')!=null){
         $scope.logOn={username:Storage.get('USERNAME'),password:""};
@@ -43,6 +43,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
+                        //jmessage
+                        JM.login(data.results.userId)
+                        .then(function(data){
+                          console.log(data+" is login");
+                        },function(err){
+                          console.log('login fail');
+                        })
+
                         $scope.logStatus = "登录成功！";
                         $ionicHistory.clearCache();
                         $ionicHistory.clearHistory();
@@ -422,7 +430,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   //   }
   // ];
     $scope.patients=angular.fromJson(Storage.get("consulting"));
-
+    console.log($scope.patients)
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
     scope: $scope
     }).then(function(popover) {
@@ -599,7 +607,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-              // console.log(data)
+              console.log(data)
             $scope.doctor=data.result;
         },
         function(err)

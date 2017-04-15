@@ -4,10 +4,10 @@
   <div class="qr-code">
     <div >
       <img src="img/ionic.png"/>
-      <div class="title">肾病管理医学团队</div>
+      <div class="title">{{team.name}}</div>
     </div>
     <div>
-      <qrcode  version=3 error-correction-level="M" size="230" data="{{params.groupId}}" download></qrcode>
+      <qrcode  version=3 error-correction-level="M" size="230" data="{{team.teamId}}"></qrcode>
       <div style="color:#888;margin-top:10px">扫一扫，加入群聊</div>
     </div>
   </div>

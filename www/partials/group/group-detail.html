@@ -7,8 +7,9 @@
     </ion-nav-buttons> -->
     <ion-content class=" gray-back">
         <div style="background-color: #FFF" class="padding">
-        <div class="avatar-item" ng-repeat="member in group.members">
-            <img src="{{member.url}}" />
+        <div class="avatar-item" ng-repeat="member in team.members" ng-click="viewProfile(member)">
+            <!-- <img src="{{member.url}}" /> -->
+            <img src="img/avatar.png" />
             <div>{{member.name}}</div>
         </div>
         <div style="vertical-align: top" class="avatar-item" ng-click="addMember()">
