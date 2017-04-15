@@ -138,40 +138,40 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         console.log(Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
         User.logIn({
-        username:Verify.Phone,
-        password:' ',
-        role:'doctor'
-    })
-    .then(function(succ)
-    {
-        console.log(succ)
-        if(succ.mesg=="User password isn't correct!")//存在的用户
-        {
-            User.sendSMS({
-            mobile:Verify.Phone,
-            smsType:1
+            username:Verify.Phone,
+            password:' ',
+            role:'doctor'
         })
-        .then(function(validCode)
+        .then(function(succ)
         {
-            console.log(validCode)
-            if(validCode.results==0)
+            console.log(succ)
+            if(succ.mesg=="User password isn't correct!")//存在的用户
             {
-                unablebutton()
+                User.sendSMS({
+                    mobile:Verify.Phone,
+                    smsType:1
+                })
+                .then(function(validCode)
+                {
+                    console.log(validCode)
+                    if(validCode.results==0)
+                    {
+                        unablebutton()
+                    }
+                    else
+                    {
+                        $scope.logStatus="验证码发送失败！";
+                    }
+                },function(err)
+                {
+                    $scope.logStatus="验证码发送失败！";
+                })
             }
             else
             {
-                $scope.logStatus="验证码发送失败！";
+                $scope.logStatus="您还没有注册呢！";
             }
         },function(err)
-        {
-            $scope.logStatus="验证码发送失败！";
-            })
-        }
-        else
-        {
-            $scope.logStatus="您还没有注册呢！";
-        }
-    },function(err)
         {
             console.log(err)
             $scope.logStatus="网络错误！";
@@ -244,21 +244,63 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 }
                 else
                 {
-                    User.changePassword({
-                    phoneNo:phoneNumber,
-                    password:password.newPass
-                })
-                .then(function(succ)
-                {
-                    console.log(succ)
                     if(validMode==0)
-                    $state.go('userdetail');
+                    {
+                        User.register({
+                            'phoneNo':phoneNumber,
+                            'password':password.newPass,
+                            'role':'doctor'
+                        })
+                        .then(function(succ)
+                        {
+                            console.log(succ)
+                            Storage.set('UID',succ.userNo);
+
+                            //注册论坛
+
+                            $http({
+                                method  : 'POST',
+                                url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+                                params    :{
+                                    'regsubmit':'yes',
+                                    'formhash':'',
+                                    'D2T9s9':phoneNumber,
+                                    'O9Wi2H':password.newPass,
+                                    'hWhtcM':password.newPass,
+                                    'qSMA7S':phoneNumber+'@qq.com'
+                                },  // pass in data as strings
+                                headers : {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'Accept':'application/xml, text/xml, */*'
+                                }  // set the headers so angular passing info as form data (not request payload)
+                            }).success(function(data) {
+                                // console.log(data);
+                            });
+
+                            Storage.set("lt",'bme319');
+
+                            $state.go('userdetail');
+                        },function(err)
+                        {
+                            console.log(err)
+                        })
+                    }
                     else
-                    $state.go('signin')
-                },function(err)
-                {
-                    console.log(err)
-                })
+                    { 
+                        User.changePassword({
+                            phoneNo:phoneNumber,
+                            password:password.newPass
+                        })
+                        .then(function(succ)
+                        {
+                            console.log(succ)
+
+                            $state.go('signin')
+                        },function(err)
+                        {
+                            console.log(err)
+                        })
+                    }
                 }
             }
             else
@@ -335,19 +377,40 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
 
     ionic.DomUtil.ready(function(){
-        $http({
-            method  : 'POST',
-            url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-            params    : {'username':'admin','password':'bme319'},  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-            }).success(function(data) {
-                //console.log(data);
-        });
+        // $http({
+        //     method  : 'POST',
+        //     url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
+        //     params    : {'username':'admin','password':"bme319"},  // pass in data as strings
+        //     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+        //     }).success(function(data) {
+        //         //console.log(data);
+        // });
     })
     $scope.options = {
         loop: false,
         effect: 'fade',
         speed: 500,
+    }
+    $scope.testregis=function()
+    {
+        $http({
+            method  : 'POST',
+            url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+            params    :{
+                'regsubmit':'yes',
+                'formhash':'',
+                'D2T9s9':'test9',
+                'O9Wi2H':"123456",
+                'hWhtcM':'123456',
+                'qSMA7S':'qw@qq.com'
+            },  // pass in data as strings
+            headers : {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept':'application/xml, text/xml, */*'
+            }  // set the headers so angular passing info as form data (not request payload)
+        }).success(function(data) {
+                // console.log(data);
+        });
     }
     // $scope.testRestful=function()
     // {
