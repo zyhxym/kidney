@@ -16,7 +16,7 @@ angular.module('kidney',[
     'ionic-datepicker'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
+.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG) {
     $ionicPlatform.ready(function() {
         $rootScope.goConclusion =function(){
             alert('aaa');
@@ -59,6 +59,15 @@ angular.module('kidney',[
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
                 console.log(msg);
+                if(msg.targetType=='group'){
+                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
+                }else{
+                    if(msg.fromAppkey==CONFIG.appKey){
+                        $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                    }else{
+                        $state.go('tab.detail', { type:'1',chatId: msg.fromName});
+                    }
+                }
                 $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
             document.addEventListener('jmessage.onReceiveMessage', function(msg) {
@@ -71,7 +80,9 @@ angular.module('kidney',[
                 }
             }, false);
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
-                console.log('[jmessage.onReceiveCustomMessage]: ' + msg);
+                console.info('[jmessage.onReceiveCustomMessage]:' );
+                console.log(msg);
+
                 // $rootScope.$broadcast('receiveMessage',msg);
                 if (msg.targetType == 'single' && msg.fromID != $rootScope.conversation.id) {
                     if (device.platform == "Android") {
