@@ -10,26 +10,51 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
   
   $scope.Diseases =
   [
-    {Name:"肾移植",Type:1},
     {Name:"CKD1-2期",Type:2},
     {Name:"CKD3-4期",Type:3},
     {Name:"CDK5期未透析",Type:4},
     {Name:"腹透",Type:5},
-    {Name:"血透",Type:6}
+    {Name:"血透",Type:6},
+    {Name:"肾移植",Type:1}
   ]
+  $scope.progressSelect =
+  [
+    [
+      "疾病活跃期",
+      "稳定期",
+      ">3年"
+    ],
+    [
+      "疾病活跃期",
+      "稳定期"
+    ]
+  ]
+  $scope.showDateTitle=function(type)
+  {
+    // console.log(type)
+    var title="";
+    if(type==1)
+      title="手术日期"
+    else if(type==5)
+      title="插管日期"
+    else if(type==6)
+      title="开始日期"
+    return title
+  }
 
   $scope.Diagnose = 
   {
-    "KidneyDisease": null,
-    "DiseaseDetail": null,
-    "OperationDate": null,
-    "Hypertension": null,
-    "DetailDiagnose": null
+    "diagname": null,
+    "diagtime": null,
+    "operationTime": null,
+    "hypertension": null,
+    "diagprogress": '稳定期',
+    "diagcontent":""
   }
   var datepickerD = {
         callback: function (val) {  //Mandatory
             console.log('Return value from the datepicker popup is : ' + val, new Date(val));
-            $scope.dateD=new Date(val);
+            $scope.Diagnose.operationTime=new Date(val);
         },
         titleLabel: '手术日期',
         inputDate: new Date(),
@@ -47,30 +72,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
     $scope.openDatePicker = function(){
         ionicDatePicker.openDatePicker(datepickerD);
     };
-  // --------datepicker设置结束----------------
-  $scope.showProgress = function(){
-    // console.log(2);
-    if($scope.Diagnose.KidneyDisease == 1 || $scope.Diagnose.KidneyDisease == null || $scope.Diagnose.KidneyDisease == "" )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
-  }
 
-  $scope.showOperationTime = function(){
-    // console.log(1);
-    if($scope.Diagnose.KidneyDisease == 1)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
   // {
   //     patientId:'',
   //     doctorId:'',
@@ -79,12 +81,18 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
   //     diagprogress:'',
   //     diagcontent:''
   //   }
-  $scope.saveDiagnose=function(post)
+  $scope.saveDiagnose=function()
   {
-    console.log(post)
-    // Patient.insertDiagnosis({
-
-    // })
+    $scope.Diagnose.patientId='330175147528475189';
+    $scope.Diagnose.doctorId=Storage.get('UID');
+    console.log($scope.Diagnose)
+    Patient.insertDiagnosis($scope.Diagnose)
+    .then(function(data){
+      console.log(data)
+    },function(err)
+    {
+      console.log(err)
+    })
   }
 
   $scope.reset =function(){
@@ -93,7 +101,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
       "KidneyDisease": null,
       "DiseaseDetail": null,
       "OperationDate": null,
-      "Hypertension": null,
+      "Hypertension": '稳定期',
       "DetailDiagnose": null
     }
   }

@@ -28,7 +28,7 @@ angular.module('kidney.filters', [])
 
 .filter('imgUrl',[function(){
     return function(date,type){
-        var url=""
+        var url="http://121.43.107.106:8052/photos/doctor.png"
         if(type=="doctor")
             url="img/doctor.png"
         else if(type=="group")

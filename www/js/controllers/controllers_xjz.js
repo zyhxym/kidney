@@ -128,13 +128,22 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         var time= Date.now();
         if(!force && time-$scope.params.updateTime<21600000) return;
         $scope.params.updateTime=time;
-        // Doctor.getMyGroupList({userId:Storage.get('userid')})
+        // Doctor.getMyGroupList({userId:Storage.get('UID')})
         Doctor.getMyGroupList({userId:'doc01'})
         .then(function(data){
             console.log(data)
             $scope.teams=data;
         });
-        // Patient.getDoctorLists()
+        // Doctor.getRecentDoctorList({userId:Storage.get('UID')})
+        Doctor.getRecentDoctorList({userId:'doc01'})
+        .then(function(data)
+        {
+            console.log(data)
+            $scope.doctors=data.results;
+        },function(err)
+        {
+            console.log(err)
+        })
     }
 
     // $scope.test = function(k){
