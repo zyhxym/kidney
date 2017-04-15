@@ -1,18 +1,68 @@
-<ion-view title="个人信息" >
+<ion-view view-title="个人信息" >
 
-  <ion-nav-bar class="bar-positive nav-title-slide-ios7" style="" >
-      <!-- <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="left" >
-         <button class="button button-clear" ng-if="!CanSkip()" ng-click="Goback()"><i class="icon ion-chevron-left"></i>返回</button>
-      </ion-nav-buttons> -->
-      <ion-nav-back-button class="button-icon ion-arrow-left-c">
-          </ion-nav-back-button>
+    <ion-nav-bar class="bar-positive nav-title-slide-ios7" align-title="center">
+        <ion-nav-back-button class="button-clear">
+            <i class="ion-chevron-left"></i>
+        </ion-nav-back-button>
     </ion-nav-bar>
 
 
+    <ion-content>
+        <ion-item>
+            <span class="msg">姓名</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.name">{{doctor.name}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+<!--         <ion-item>
+            <span class="msg">性别</span>
+            <p class="myinfo-msg-right"><input type=text ng-model="doctor.gender">{{doctor.gender}}</p>
+            <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item> -->
+        <ion-item>
+            <span class="msg">医院</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.workUnit">{{doctor.workUnit}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">科室</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.department">{{doctor.department}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">职称</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.title">{{doctor.title}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">身份证号</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.IDNo">{{doctor.IDNo}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">擅长</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.major">{{doctor.major}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+        <ion-item>
+            <span class="msg">简介</span>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.description">{{doctor.description}}</p>
+                <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
 
 
 
-  <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
+
+        <div class="blank-h12"></div>
+        <button  style="margin-top:0" class="button button-block button-positive" ng-click ="infoSetup()">
+        保存信息
+        </button>
+
+    </ion-content>
+
+</ion-view>
+
+
+ <!--  <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
   <ion-content padding="true" style="">
     
     <div  class="list">
@@ -43,16 +93,16 @@
        <label class="item item-input">
         <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>职称</span>
         <input  ng-model="User.title"  type="text" style="width:100%">
-      </label>
+      </label> -->
 
     
 
-      <ionic-datepicker input-obj="datepickerObject3" class="item item-input">
+<!--       <ionic-datepicker input-obj="datepickerObject3" class="item item-input">
         <span class="input-label" style="margin-left:8px ">出生日期</span>
         <input  ng-model="User.Birthday"  type="text">
-      </ionic-datepicker>
+      </ionic-datepicker> -->
 
-      <label class="item item-input">
+<!--       <label class="item item-input">
         <span class="input-label" style="margin-left:8px ">身份证号</span>
         <span class="error" ng-show="IDCard.$error.pattern" style="color:red"></span>
         <input  ng-model="User.IDCard"  type="text"    style="width:100%" >
@@ -78,10 +128,10 @@
    
 
     </div>
-      <!-- <button style="margin-top:10px" class="button button-block button-positive" ng-click ="infoSetup(User)">
+      <!<button style="margin-top:10px" class="button button-block button-positive" ng-click ="infoSetup(User)">
             保存
       </button> -->
-     <button  style="margin-top:0" class="button button-block button-positive" ng-click ="Skip()">
+<!--      <button  style="margin-top:0" class="button button-block button-positive" ng-click ="infoSetup()">
         保存信息
       </button>
     
@@ -90,4 +140,4 @@
            
   </ion-content>
           
-</ion-view>
+</ion-view> --> -->
