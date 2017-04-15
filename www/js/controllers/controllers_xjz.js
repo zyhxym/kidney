@@ -1259,7 +1259,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if($scope.modal) $scope.modal.remove();
     })
 }])
-.controller('selectDocCtrl',['$state','$scope','JM','$ionicPopup',function($state,$scope,JM,$ionicPopup){
+.controller('selectDocCtrl',['$state','$scope','JM','$ionicPopup','Patient',function($state,$scope,JM,$ionicPopup,Patient){
   Patient.getDoctorLists()
     .then(
         function(data)
@@ -1335,7 +1335,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 //           }];
 
 }])
-.controller('selectTeamCtrl',['$state','$scope','JM','$ionicPopup',function($state,$scope,JM,$ionicPopup){
+.controller('selectTeamCtrl',['$state','$scope','JM','$ionicPopup','Doctor',function($state,$scope,JM,$ionicPopup,Doctor){
   Doctor.getMyGroupList({
         userId:'doc01'
     })
