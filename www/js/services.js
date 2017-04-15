@@ -96,52 +96,6 @@ angular.module('kidney.services', ['ionic','ngResource'])
   //return service;
 })
 
-//我
-.factory("meFactory",function(){
-  var service={};
-  // var flag=false;
-  // var userid;//用户ID
-  // if(Storage.get('userid')!=null){
-    // userid=Storage.get('userid');
-  // }; 
-  service.GetDoctorInfo=function(uid){
-      var  result;//待返回json
-      var doctors=[
-      {
-        photoUrl:"max.png",
-        userId:"D201703240001",
-        name:"小丁",
-        gender:"男",
-        title:"主任医生",
-        workUnit:"浙江XXX医院",
-        department:"泌尿科",
-        major:"肾上腺分泌失调",
-        Numberroduction:"从医多年"
-          },
-      {
-        photoUrl:"ben.png",
-        userId:"D201703240002",
-        name:"小李",
-        gender:"女",
-        title:"主任医生",
-        workUnit:"浙江XXX医院",
-        department:"泌尿科2",
-        major:"慢性肾炎、肾小管疾病",
-        Numberroduction:"从医十年"
-          }
-      ];
-      for(var i=0;i<doctors.length;i++){
-        var doctor=doctors[i];
-        if(doctors[i].userId==uid)
-        {
-          result=doctor;
-          break;
-        }
-      }
-      return result;
-  }
-  return service;
-})
 //media文件操作 XJZ
 .factory('fs',['$q','$cordovaFile','$filter',function($q,$cordovaFile,$filter){
     return {
@@ -755,7 +709,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getDoctorInfo:{method:'GET', params:{route: 'getDoctorInfo'}, timeout: 100000},
             getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
             getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000},
-            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000}
+            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000},
+            editDoctorDetail:{method:'POST',params:{route:'editDoctorDetail'},timeout:10000}
         });
     }
 
@@ -1648,6 +1603,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    self.editDoctorDetail = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.editDoctorDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+  
     return self;
 }])
 .factory('Counsel', ['$q', 'Data', function($q, Data){

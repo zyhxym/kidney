@@ -16,19 +16,21 @@
                 取消
             </button>
         </div>
-        <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/patientDetail" ng-repeat="p in patients | orderBy:order:abc">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
-				<div>
-                <span>{{p.patientId.name}}</span><span>{{p.patientId.gender}}</span><span>{{p.patientId.birthday}}岁</span>
-				<span class="mine-msg-right">{{p.patientId.diagnosisInfo[0].name}}</span>
-                <p class="friend-detail-p">是否VIP{{p.patientId.VIP}}</p>
+        
+        <ion-list>
+        <ion-item ng-repeat="p in patients" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)">
+        <img ng-src="p.patientId.photoUrl">
+        <div>
+                <span>{{p.patientId.name}}</span><span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
+                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span>
+                <p class="friend-detail-p">是否VIP{{p.patientId.VIP | filterVIP}}</p>
                 <p class="friend-detail-p">危机程度{{p.patientId.class}}</p>
-				</div>
-            </a>      
-        </div>
+                </div>
+
+      </ion-item>
+    </ion-list>
+
+
+
     </ion-content>
 </ion-view>
-
-
-

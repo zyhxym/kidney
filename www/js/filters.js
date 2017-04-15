@@ -26,6 +26,27 @@ angular.module('kidney.filters', [])
     }
 }])
 
+.filter('filterVIP',[function(){
+    return function(VIP){
+        var g="未知";
+        if(VIP==1)
+            g='是'
+        if(VIP==0)
+            g='否'
+        return g;
+    }
+}])
+.filter('filterhypertension',[function(){
+    return function(hypertension){
+        var g="未知";
+        if(hypertension==1)
+            g='是'
+        if(hypertension==0)
+            g='否'
+        return g;
+    }
+}])
+
 .filter('imgUrl',[function(){
     return function(date,type){
         var url="http://121.43.107.106:8052/uploads/photos/"
