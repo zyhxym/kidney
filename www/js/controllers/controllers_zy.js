@@ -45,7 +45,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     else if(data.results.mesg=="login success!"){
                         //jmessage
                         JM.login(data.results.userId)
-                        .then(function(data){
+                        .then(function(data){ 
                           console.log(data+" is login");
                         },function(err){
                           console.log('login fail');
@@ -319,53 +319,34 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //注册时填写医生个人信息
-.controller('userdetailCtrl',['$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover',function($scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover){
+.controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover){
     $scope.barwidth="width:0%";
-    //注册时可跳过个人信息
-    // $scope.CanSkip = function(){
-    //   if(Storage.get('setPasswordState')=='register'){
-    //     return true;
-    //   }
-    //   else{
-    //     return false;}
-    // }
-
-    $scope.Skip = function(){
-        $state.go('signin');
-    //Storage.set('setPasswordState','sign');
-    }
-
-    $scope.Goback = function(){
-        $ionicHistory.goBack();
-    }
-  
-     //初始待选项出现一条空白
-      // 获取性别类型
-    $scope.Genders = {};// 初始化
-    $scope.Genders =
-        [
-        {Name:"男",Type:1},
-        {Name:"女",Type:2}
-        ]; 
-
-    var initUserDetail = function(){
-        $ionicLoading.show({
-            template: '<ion-spinner style="height:2em;width:2em"></ion-spinner>'
-        });
-
-    $scope.User={
-        Name:"",
-        Gender:{Name:"男",Type:1},//默认选项
+    $scope.doctor={
+        userId:"d007",
+        name:"",
         workUnit:"",
         department:"",
         title:"",
-        birthday:"",
-        IDCard:"",
+        IDNo:"",
         major:"",
-        Numberroduction:""};
+        description:""};
 
-    setTimeout(function(){$ionicLoading.hide();},400);
-    }
+    $scope.infoSetup = function() 
+    {
+        console.log($scope.doctor)
+        Doctor.postDocBasic($scope.doctor)
+        .then(
+            function(data)
+            {
+                console.log(data)
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+        $state.go('signin');
+    };
 
 }])
 
@@ -657,7 +638,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
             // console.log(data)
-            $scope.doctor=data.result;
+            $scope.doctor=data.results;
         },
         function(err)
         {
@@ -702,7 +683,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
             // console.log(data)
-            $scope.doctor=data.result;
+            $scope.doctor=data.results;
         },
         function(err)
         {
@@ -728,7 +709,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
           // console.log(data)
-            $scope.doctor=data.result;
+            $scope.doctor=data.results;
         },
         function(err)
         {
@@ -780,7 +761,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
           // console.log(data)
-            $scope.doctor=data.result;
+            $scope.doctor=data.results;
         },
         function(err)
         {
@@ -789,9 +770,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     )
   
     $scope.savefee = function() {
-        Doctor.editDoctorDetail({
-        userId:'doc01',charge1:$scope.doctor.charge1,charge2:$scope.doctor.charge2
-        })
+        Doctor.editDoctorDetail($scope.doctor)
     .then(
         function(data)
         {
@@ -826,7 +805,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             // console.log(data)
             $scope.feedbacks=data.comments;
-            $scope.doctor=data.result;
+            $scope.doctor=data.results;
             //console.log($scope.feedbacks.length)
             commentlength=data.comments.length;
             //   for (var i=0; i<commentlength; i++){
