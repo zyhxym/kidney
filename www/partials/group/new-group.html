@@ -9,11 +9,11 @@
         <div style="background-color: #FFF" class="list">
             <label class="item item-input item-stacked-label">
                 <span class="input-label">团队名</span>
-                <input type="text" ng-model="group.name" placeholder="请输入">
+                <input type="text" ng-model="team.name" placeholder="请输入">
             </label>
             <label class="item item-input item-stacked-label">
                 <span class="input-label">团队介绍</span>
-                <input type="text" ng-model="group.description" placeholder="请输入">
+                <input type="text" ng-model="team.description" placeholder="请输入">
             </label>
    <!--          <label class="item item-input item-stacked-label">
                 <span class="input-label">key2</span>
@@ -22,7 +22,7 @@
         </div>
         <div class="item">添加成员</div>
         <div style="background-color: #FFF;border-bottom: 1px #ccc solid" class="padding">
-            <div class="avatar-item" ng-repeat="member in group.members">
+            <div class="avatar-item" ng-repeat="member in members">
                 <img src="{{member.url}}" />
                 <div>{{member.name}}</div>
             </div>
