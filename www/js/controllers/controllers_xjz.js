@@ -830,15 +830,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
         $scope.params.team = $state.params.team;
-        if ($scope.params.type !='0') {
-            $scope.params.isDiscuss = true;
+        if ($scope.params.type =='0') {
+            // $scope.params.isDiscuss = true;
+            $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
+        }else if($scope.params.type =='1'){
             $scope.params.hidePanel = false;
             $scope.params.title = '病历讨论';
-        }else{
-            $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
             $scope.params.isDiscuss = true;
-        }
-        if ($scope.params.type =='2'){
+        }else if($scope.params.type =='2'){
+            $scope.params.hidePanel = false;
+            $scope.params.title = '病历讨论';
+            $scope.params.isDiscuss = true;
             $rootScope.patient.undergo=false;
             $scope.params.isOver = true;
         }
@@ -1052,6 +1054,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 }])
 .controller('selectDocCtrl',['$state','$scope','JM','$ionicPopup',function($state,$scope,JM,$ionicPopup){
+  Patient.getDoctorLists()
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            $scope.doctors=data.results;
+            console.log(data.results);
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    );
     
     $scope.sendTo = function(doc){
         var confirmPopup = $ionicPopup.confirm({
@@ -1075,46 +1090,60 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         });
     }
-    $scope.doctors=[
-          {
-              photoUrl:"img/avatar.png",
-              userId:"D201703240001",
-              name:"小丁",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科",
-              major:"肾上腺分泌失调",
-              score:'9.5',
-              num:2313
-          },
-          {
-              photoUrl:"img/max.png",
-              userId:"D201703240002",
-              name:"小李",
-              gender:"女",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科2",
-              major:"慢性肾炎、肾小管疾病",
-              score:'9.1',
-              num:525
-          },
-           {
-              photoUrl:"img/default_user.png",
-              userId:"wds",
-              name:"小P",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科3",
-              major:"肾小管疾病、间质性肾炎",
-              score:'8.8',
-              num:2546
-          }];
+//     $scope.doctors=[
+//           {
+//               photoUrl:"img/avatar.png",
+//               userId:"D201703240001",
+//               name:"小丁",
+//               gender:"男",
+//               title:"主任医生",
+//               workUnit:"浙江XXX医院",
+//               department:"泌尿科",
+//               major:"肾上腺分泌失调",
+//               score:'9.5',
+//               num:2313
+//           },
+//           {
+//               photoUrl:"img/max.png",
+//               userId:"D201703240002",
+//               name:"小李",
+//               gender:"女",
+//               title:"主任医生",
+//               workUnit:"浙江XXX医院",
+//               department:"泌尿科2",
+//               major:"慢性肾炎、肾小管疾病",
+//               score:'9.1',
+//               num:525
+//           },
+//            {
+//               photoUrl:"img/default_user.png",
+//               userId:"wds",
+//               name:"小P",
+//               gender:"男",
+//               title:"主任医生",
+//               workUnit:"浙江XXX医院",
+//               department:"泌尿科3",
+//               major:"肾小管疾病、间质性肾炎",
+//               score:'8.8',
+//               num:2546
+//           }];
 
 }])
 .controller('selectTeamCtrl',['$state','$scope','JM','$ionicPopup',function($state,$scope,JM,$ionicPopup){
+  Doctor.getMyGroupList({
+        userId:'doc01'
+    })
+    .then(
+        function(data)
+        {
+            
+            $scope.teams=data.results
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    )
     $scope.sendTo = function(team){
         var confirmPopup = $ionicPopup.confirm({
             title: '装发给：'+ team.name,
@@ -1144,31 +1173,31 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         });
     }
-    $scope.teams=[
-          {
-              photoUrl:"img/avatar.png",
-              groupId:"D201703240001",
-              name:"浙一肾病管理团队",
-              workUnit:"浙江XXX医院",
-              major:"肾上腺分泌失调",
-              num:31
-          },
-          {
-              photoUrl:"img/avatar.png",
-              groupId:"D201703240002",
-              name:"浙一间质性肾炎讨论小组",
-              workUnit:"浙江XXX医院",
-              major:"慢性肾炎、肾小管疾病",
-              num:12
-          },
-           {
-              photoUrl:"img/default_user.png",
-              groupId:"D201703240004",
-              name:"BME319小组",
-              workUnit:"浙江XXX医院",
-              major:"HIT",
-              num:16
-          }];
+//     $scope.teams=[
+//           {
+//               photoUrl:"img/avatar.png",
+//               groupId:"D201703240001",
+//               name:"浙一肾病管理团队",
+//               workUnit:"浙江XXX医院",
+//               major:"肾上腺分泌失调",
+//               num:31
+//           },
+//           {
+//               photoUrl:"img/avatar.png",
+//               groupId:"D201703240002",
+//               name:"浙一间质性肾炎讨论小组",
+//               workUnit:"浙江XXX医院",
+//               major:"慢性肾炎、肾小管疾病",
+//               num:12
+//           },
+//            {
+//               photoUrl:"img/default_user.png",
+//               groupId:"D201703240004",
+//               name:"BME319小组",
+//               workUnit:"浙江XXX医院",
+//               major:"HIT",
+//               num:16
+//           }];
 
 }])
 .controller('consultDetailCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate',function($state,$scope,$ionicModal,$ionicScrollDelegate){
