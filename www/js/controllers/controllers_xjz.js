@@ -970,72 +970,80 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if($scope.modal) $scope.modal.remove();
     })
 }])
-.controller('selectDocCtrl',['$state','$scope',function($state,$scope){
-    $scope.doctors=[
-          {
-              photoUrl:"img/avatar.png",
-              userId:"D201703240001",
-              name:"小丁",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科",
-              major:"肾上腺分泌失调",
-              score:'9.5',
-              num:2313
-          },
-          {
-              photoUrl:"img/max.png",
-              userId:"D201703240002",
-              name:"小李",
-              gender:"女",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科2",
-              major:"慢性肾炎、肾小管疾病",
-              score:'9.1',
-              num:525
-          },
-           {
-              photoUrl:"img/default_user.png",
-              userId:"wds",
-              name:"小P",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科3",
-              major:"肾小管疾病、间质性肾炎",
-              score:'8.8',
-              num:2546
-          }];
+.controller('selectDocCtrl',['Doctor','Patient','$state','$scope',function(Doctor,Patient,$state,$scope){
+    // Doctor.getRecentDoctorList({
+    //     userId:'doc01'
+    // })
+    // .then(
+    //     function(data)
+    //     {
+    //         //console.log(data)
+    //         $scope.doctors=data.results;
+    //         //console.log(data.results);
+    //     },
+    //     function(err)
+    //     {
+    //         console.log(err)
+    //     }
+    // );
+    Patient.getDoctorLists()
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            $scope.doctors=data.results;
+            console.log(data.results);
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    );
+
 
 }])
-.controller('selectTeamCtrl',['$state','$scope',function($state,$scope){
-    $scope.teams=[
-          {
-              photoUrl:"img/avatar.png",
-              groupId:"D201703240001",
-              name:"浙一肾病管理团队",
-              workUnit:"浙江XXX医院",
-              major:"肾上腺分泌失调",
-              num:31
-          },
-          {
-              photoUrl:"img/avatar.png",
-              groupId:"D201703240002",
-              name:"浙一间质性肾炎讨论小组",
-              workUnit:"浙江XXX医院",
-              major:"慢性肾炎、肾小管疾病",
-              num:12
-          },
-           {
-              photoUrl:"img/default_user.png",
-              groupId:"D201703240004",
-              name:"BME319小组",
-              workUnit:"浙江XXX医院",
-              major:"HIT",
-              num:16
-          }];
+.controller('selectTeamCtrl',['Doctor','$state','$scope',function(Doctor,$state,$scope){
+    Doctor.getMyGroupList({
+        userId:'doc01'
+    })
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            $scope.team=data.results;
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    )
+
+
+    // $scope.teams=[
+    //       {
+    //           photoUrl:"img/avatar.png",
+    //           groupId:"D201703240001",
+    //           name:"浙一肾病管理团队",
+    //           workUnit:"浙江XXX医院",
+    //           major:"肾上腺分泌失调",
+    //           num:31
+    //       },
+    //       {
+    //           photoUrl:"img/avatar.png",
+    //           groupId:"D201703240002",
+    //           name:"浙一间质性肾炎讨论小组",
+    //           workUnit:"浙江XXX医院",
+    //           major:"慢性肾炎、肾小管疾病",
+    //           num:12
+    //       },
+    //        {
+    //           photoUrl:"img/default_user.png",
+    //           groupId:"D201703240004",
+    //           name:"BME319小组",
+    //           workUnit:"浙江XXX医院",
+    //           major:"HIT",
+    //           num:16
+    //       }];
 
 }])
 .controller('consultDetailCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate',function($state,$scope,$ionicModal,$ionicScrollDelegate){
