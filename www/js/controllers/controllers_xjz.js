@@ -1,6 +1,6 @@
 angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 //新建团队
-.controller('NewGroupCtrl', ['$scope', '$state', '$ionicLoading','Communication','Storage',function($scope, $state,$ionicLoading,Communication,Storage) {
+.controller('NewGroupCtrl', ['$scope', '$state', '$ionicLoading','$rootScope','Communication','Storage',function($scope, $state,$ionicLoading,$rootScope,Communication,Storage) {
     $scope.$on('$ionicView.beforeEnter',function(){
         $scope.team = {
             teamId: '',
@@ -9,9 +9,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             sponsorName: '',
             description: ''
         }
-        $scope.members=[];
     });
+    var members=[];
     $scope.confirm = function(){
+        console.log($rootScope.newMember);
+        return;
         if($scope.team.name=='' || $scope.team.description){
             $ionicLoading.show({ template: '请完整填写信息', duration: 1500 });
         }else if(!$scope.member){
@@ -20,6 +22,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             window.JMessage.createGroup($scope.team.name,$scope.team.description,
                 function(data){
                     console.log(data);
+                    // members=$rootScope.newMember;
                     var idStr=[];
                     for(var i in members) idStr.push(members[i].userId);
                     idStr.join(',');
@@ -724,22 +727,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 }])
 //添加成员
-.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory', function($scope,$state,$ionicHistory) {
+.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory','arrTool','Communication','$ionicLoading', function($scope,$state,$ionicHistory,arrTool,Communication,$ionicLoading) {
     //get groupId via $state.params.groupId
     $scope.group = {
         members: [
-            { url: 'img/avatar.png', name: 'Green' },
-            { url: 'img/max.png', name: 'Gray' },
-            { url: 'img/avatar.png', name: 'White' },
-            { url: 'img/max.png', name: 'Blue' },
-            { url: 'img/max.png', name: 'Black' },
-          
-            { url: 'img/max.png', name: 'Nat King Cole' }
         ]
     }
     $scope.update = function(id){
         if($scope.doctors[id].check) $scope.group.members.push({ url: 'img/max.png', name: 'Black' });
-        else $scope.group.members.splice(0,1);
+        else $scope.group.members.splice(arrTool.indexOf($scope.group.members,'userId',$scope.doctors[id].userId),1);
     }
     $scope.doctors=[
           {
@@ -753,7 +749,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               major:"肾上腺分泌失调",
               score:'9.5',
               num:2313,
-              check:true
+              check:false
           },
           {
               photoUrl:"img/max.png",
@@ -783,6 +779,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
 
           $scope.confirmAdd=function(){
+            if($state.params.groupId=='new'){
+                $rootScope.newMember=$scope.group.members;
+            }else{
+                for(var i in $scope.group.members){
+                    communication.insertMember({teamId:$state.params.groupId,membersuserId:$scope.group.members[i].userId,membersname:$scope.group.members[i].name})
+                    .then(function(data){
+                        $ionicLoading.show({ template: '添加成功', duration: 1500 });
+                        setTimeout(function(){ionicHistory.goBack();},1500);
+                    })
+                }
+            }
             $ionicHistory.goBack();
           }
 }])
