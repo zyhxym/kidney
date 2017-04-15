@@ -28,11 +28,13 @@ angular.module('kidney.filters', [])
 
 .filter('imgUrl',[function(){
     return function(date,type){
-        var url="http://121.43.107.106:8052/photos/doctor.png"
+        var url="http://121.43.107.106:8052/uploads/photos/"
         if(type=="doctor")
-            url="img/doctor.png"
+            url+="doctor.png"
         else if(type=="group")
             url="img/doctor_group.png"
+        else if(type=="patient")
+            url+="patient.png"
         return url;
     }
 }])
