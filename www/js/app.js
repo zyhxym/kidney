@@ -263,7 +263,8 @@ angular.module('kidney',[
                 controller: 'selectDocCtrl',
                 templateUrl: 'partials/consult/select-doctor.html'
             }
-        }
+        },
+        params:{counsel:null}
     })
     .state('tab.selectTeam', {
         // cache: false,
@@ -273,7 +274,8 @@ angular.module('kidney',[
                 controller: 'selectTeamCtrl',
                 templateUrl: 'partials/consult/select-team.html'
             }
-        }
+        },
+        params:{counsel:null}
     })
     //已完成
     .state('tab.did', {

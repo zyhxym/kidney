@@ -20,7 +20,7 @@
 			<a class="item item-thumbnail-left" ng-repeat="fb in feedbacks">
 				<img ng-src="fb.photoUrl">
                 <h2>{{fb.patientId.name}}</h2>
-<!--                 <p class="friend-detail-p">评分：{{fb.score}}</p> -->
+                <p class="friend-detail-p">评分：{{fb.totalScore}}</p>
                 <p class="friend-detail-p">{{fb.content}}</p>
 				<p class="friend-detail-p">评论时间：{{fb.time}}</p>
 

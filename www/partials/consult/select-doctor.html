@@ -8,7 +8,7 @@
     </div>
   </div> 
 <div class="list">
-    <a class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.userId}}">
+    <a class="item item-avatar" ng-repeat="d in doctors" ng-click="sendTo(d)">
         <img src="{{d.photoUrl}}">
         <div class="doctor-msg-left balanced balanced-border">专家团队</div>
         <div>
