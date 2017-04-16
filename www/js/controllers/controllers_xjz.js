@@ -226,13 +226,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //     $state.go('tab.group-chat', { groupId: id });
     // }
     
-    $scope.team1={
-        teamId:"22820011",
-        name:'测试',
-        number:2,
-        sponsorName:'小丁',
-        description:'4.15测试'
-    }
+    // $scope.team1={
+    //     teamId:"22820011",
+    //     name:'测试',
+    //     number:2,
+    //     sponsorName:'小丁',
+    //     description:'4.15测试'
+    // }
     $scope.itemClick = function(ele, team) {
         if (ele.target.id == 'discuss') $state.go("tab.group-patient", { team: team });
         else $state.go('tab.group-chat', { type: '0', groupId: team.teamId, team:team});

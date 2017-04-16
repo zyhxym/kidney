@@ -83,12 +83,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
   //   }
   $scope.saveDiagnose=function()
   {
-    $scope.Diagnose.patientId='330175147528475189';
+    $scope.Diagnose.patientId=Storage.get('getpatientId');
     $scope.Diagnose.doctorId=Storage.get('UID');
     console.log($scope.Diagnose)
     Patient.insertDiagnosis($scope.Diagnose)
     .then(function(data){
       console.log(data)
+      $state.go('tab.patientDetail');
     },function(err)
     {
       console.log(err)

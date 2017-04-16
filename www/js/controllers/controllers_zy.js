@@ -98,6 +98,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.Verify={Phone:"",Code:""};
     $scope.veritext="获取验证码";
     $scope.isable=false;
+    var validMode=Storage.get('validMode');//0->set;1->reset
     var unablebutton = function(){      
      //验证码BUTTON效果
         $scope.isable=true;
@@ -145,7 +146,15 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(function(succ)
         {
             console.log(succ)
-            if(succ.mesg=="User password isn't correct!")//存在的用户
+            if(validMode==0&&succ.mesg=="User password isn't correct!")
+            {
+                $scope.logStatus="您已经注册过了";
+            }
+            else if(validMode==1&&succ.mesg!="User password isn't correct!")
+            {
+                $scope.logStatus="您还没有注册呢！";
+            }
+            else
             {
                 User.sendSMS({
                     mobile:Verify.Phone,
@@ -157,6 +166,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     if(validCode.results==0)
                     {
                         unablebutton()
+                        if(validCode.mesg.match("您的邀请码")=="您的邀请码")
+                        {
+                            $scope.logStatus="请稍后获取验证码";
+                        }
                     }
                     else
                     {
@@ -166,10 +179,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 {
                     $scope.logStatus="验证码发送失败！";
                 })
-            }
-            else
-            {
-                $scope.logStatus="您还没有注册呢！";
             }
         },function(err)
         {
@@ -221,7 +230,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //设置密码
-.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User',function($scope,$state,$rootScope,$timeout,Storage,User) {
+.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User','$http',function($scope,$state,$rootScope,$timeout,Storage,User,$http) {
     $scope.barwidth="width:0%";
     var validMode=Storage.get('validMode');//0->set;1->reset
     var phoneNumber=Storage.get('phoneNumber');
@@ -322,7 +331,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover){
     $scope.barwidth="width:0%";
     $scope.doctor={
-        userId:"d007",
+        userId:Storage.get('UID'),
         name:"",
         workUnit:"",
         department:"",
@@ -552,7 +561,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             console.log(data)
             $scope.patients=data.results[0].patients;
-            //console.log(data.results[0].patients);
+            angular.forEach($scope.patients,
+                function(value,key)
+                {
+                    $scope.patients[key].show=true;
+                }
+            )
+            $scope.patients[1].patientId.VIP=0;
+            // console.log($scope.patients);
             patientlength=data.results[0].patients.length;
         },
         function(err)
@@ -560,8 +576,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     );
-   // Storage.set('getpatientId','NO');
-
+    // Storage.set('getpatientId','NO');
     // console.log(Storage.get('getpatientId'))
 
     $scope.getPatientDetail = function(id) {
@@ -579,9 +594,45 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     });
     $scope.openPopover = function($event) {
         $scope.popover.show($event);
-        $scope.testt=12345
     };
-    $scope.isChecked1=true;
+
+    $scope.filter={
+        propertyName:'-patientId.VIP',
+        choose:{
+            isChecked1:true,
+            isChecked2:true,
+            isChecked3:true,
+            isChecked4:true,
+            isChecked5:true,
+            isChecked6:true,
+            isChecked7:true,
+            isChecked8:true,
+            isChecked9:false,
+        }
+    }
+    $scope.filterShow=function () {
+        angular.forEach($scope.patients,
+            function(value,key)
+            {
+                $scope.patients[key].show=true;
+                if(!$scope.filter.choose.isChecked7)
+                {
+                    if(value.patientId.gender==1)
+                        $scope.patients[key].show=false;
+                }
+                if(!$scope.filter.choose.isChecked8)
+                {
+                    if(value.patientId.gender==0)
+                        $scope.patients[key].show=false;
+                }
+                if($scope.filter.choose.isChecked9)
+                {
+                    if(value.patientId.VIP==0)
+                        $scope.patients[key].show=false;
+                }
+            }
+        )
+    }
 }])
 
 //"患者”详情子页
