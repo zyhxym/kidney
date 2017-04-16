@@ -7,9 +7,10 @@
         "contentStringMap": {
 			"patientId" : "U201702071766",
 			"symptomPhotoUrl" : "[]",
-			"help" : "帮我看看该怎么处理",
+			"help" : "赵老师，您好！这是我妈妈的检查结果，您看还有没有什么好办法可以降肌酐？现在口服药有，早上拜新同两片，中午47.5mg的倍他乐克一片，晚上盐酸特拉唑嗪片一粒！早中晚各吃开同4粒，白令胶囊2片，尿毒清颗粒两袋！",
 			"doctorId" : "U201702070041",
 			"diagnosisPhotoUrl" : "[]",
+            "discription": "现在口服药有，早上拜新同两片，中午47.5mg的倍他乐克一片",
 			"counselId" : "CL201704150015",
 			"diagnosis" : "",
 			"visitDate" : "",

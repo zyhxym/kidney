@@ -393,7 +393,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     
 
     $scope.enterChat = function(type,patient){
-        $state.go('tab.group-chat',{type:type,team:$scope.params.team,groupId:patient.patientID});
+        $state.go('tab.group-chat',{type:type,team:$scope.params.team,groupId:patient.id});
     }
 
     $scope.backToGroups = function() {
@@ -402,6 +402,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
         $state.go('tab.groups',{type:'0'});
     }
+    $scope.grouppatients01 = [{
+        'id':'22827955',
+        'patientId':{
+            name:'卢兴芳',
+        }
+    }]
 }])
 
 .controller('GroupAddCtrl', ['$scope', '$state','$ionicHistory', function($scope, $state,$ionicHistory) {
@@ -926,7 +932,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }
 }])
 //团队聊天
-.controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory','$http','$ionicModal','$ionicScrollDelegate','$rootScope','$stateParams','$ionicPopover','$ionicPopup','Camera','voice', function($scope, $state, $rootScope, $ionicHistory,$http,$ionicModal,$ionicScrollDelegate,$rootScope,$stateParams,$ionicPopover,$ionicPopup,Camera, voice) {
+.controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory','$http','$ionicModal','$ionicScrollDelegate','$rootScope','$stateParams','$ionicPopover','$ionicPopup','Camera','voice','Communication', function($scope, $state, $rootScope, $ionicHistory,$http,$ionicModal,$ionicScrollDelegate,$rootScope,$stateParams,$ionicPopover,$ionicPopup,Camera, voice,Communication) {
     $scope.input = {
         text: ''
     }
@@ -951,7 +957,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.beforeEnter', function() {
         console.log()
         $rootScope.patient = {
-            name: '李峰',
+            name: '卢兴芳',
             age: '23',
             teamId: 'team111',
             groupId:'group111',
