@@ -322,9 +322,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
    var UserId = Storage.get('UID'); 
     $scope.$on('$ionicView.enter', function() {
         Temp();
-  }); 
+    }); 
   //任务先写死
-  $scope.Tasks = [
+    $scope.Tasks = [
         {
           "type": "Measure",
           "details": [

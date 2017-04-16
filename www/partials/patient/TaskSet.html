@@ -7,9 +7,10 @@
                 {{item.Name}}  
                 <p>{{item.content}}</p>              
                 <i class="icon ion-android-alarm-clock" style="font-size:16px">
-                    1天
-                    <select ng-model="item.times" ng-options="item1 for item1 in Times" ></select> 
-                    次                 
+                    <select ng-model="item.frequencyTimes" ng-options="item1 for item1 in Times" ></select>
+                    <select ng-model="item.frequencyUnits" ng-options="item1 for item1 in Units" ></select>
+                    <select ng-model="item.times" ng-options="item1 for item1 in Times" ></select>
+                    次                     
                 </i>
             </a>   
             <a class="item item-icon-right item-icon-left" ng-repeat = "item in Tasks.Other">
