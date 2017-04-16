@@ -263,6 +263,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //     $state.go('tab.group-chat', { groupId: id });
     // }
     
+
     $scope.team1=[
           {
               photoUrl:"img/avatar.png",
@@ -282,6 +283,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               major:"慢性肾炎、肾小管疾病",
               number:12
           }];
+
     // $scope.team1={
     //     teamId:"22820011",
     //     name:'测试',
