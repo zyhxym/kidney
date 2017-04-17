@@ -343,28 +343,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 }
             },function(err){
                 reject(err);
-            })
-            
-
-            // console.log(ionic.Platform)
-            // console.log(ionic.Platform.platforms[0]=="browser")
-            // if(ionic.Platform.platforms[0]!="browser")
-            // if(window.JMessage){
-            //     window.JMessage.login(user, pGen(user),
-            //         function(response) {
-            //             window.JMessage.updateMyInfo('nickname',nick)
-            //             window.JMessage.nickname = nick;
-            //             window.JMessage.username = user;
-            //             resolve(user);
-            //         }, function(err){
-            //             console.log(err);
-            //             register(user,nick);
-            //             // reject(err);
-            //         });
-
-
-            // }
-
+            })            
         });
     }
 
@@ -374,7 +353,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 function(response) {
                     window.JMessage.login(user, pGen(user),
                     function(response) {
-                        window.JMessage.updateMyInfo('nickname',nick)
+                        //真实姓名
+                        window.JMessage.updateMyInfo('nickname',nick);
                         window.JMessage.username = user;
                         window.JMessage.nickname = nick;
                         resolve(user);
