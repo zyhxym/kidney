@@ -1483,7 +1483,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 .controller('selectTeamCtrl',['$state','$scope','JM','$ionicPopup','Doctor','Communication',function($state,$scope,JM,$ionicPopup,Doctor,Communication){
     $scope.counsel=$state.params.counsel;
-  Doctor.getMyGroupList({
+    Doctor.getMyGroupList({
         userId:'doc01'
     })
     .then(
