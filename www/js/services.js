@@ -660,11 +660,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //     onReceivePushMessage, false);
         },
         login:login,
-<<<<<<< HEAD
         pGen:pGen,
-=======
         sendCustom:sendCustom,
->>>>>>> refs/remotes/BME319/master
         newGroup:newGroup,
         register: register,
         pGen:pGen,
