@@ -16,7 +16,7 @@ angular.module('kidney',[
     'ionic-datepicker'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
+.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG) {
     $ionicPlatform.ready(function() {
         $rootScope.goConclusion =function(){
             alert('aaa');
@@ -59,8 +59,22 @@ angular.module('kidney',[
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
                 console.log(msg);
-                $state.go('tab.chat-detail', { chatId: msg.fromName, fromUser: msg.fromUser });
+                if(msg.targetType=='group'){
+                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
+                }else{
+                    if(msg.fromAppkey==CONFIG.appKey){
+                        $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                    }else{
+                        $state.go('tab.detail', { type:'1',chatId: msg.fromName});
+                    }
+                }
+                // $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
+            document.addEventListener('jmessage.onReceiveCustomMessage',function(msg){
+                console.info('[jmessage.onReceiveCustomMessage]:');
+                console.log(msg);
+
+            });
             document.addEventListener('jmessage.onReceiveMessage', function(msg) {
                 console.info('[jmessage.onReceiveMessage]:');
                 console.log(msg);
@@ -71,15 +85,32 @@ angular.module('kidney',[
                 }
             }, false);
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
-                console.log('[jmessage.onReceiveCustomMessage]: ' + msg);
+                console.info('[jmessage.onReceiveCustomMessage]:' );
+                console.log(msg);
+
                 // $rootScope.$broadcast('receiveMessage',msg);
                 if (msg.targetType == 'single' && msg.fromID != $rootScope.conversation.id) {
                     if (device.platform == "Android") {
-                        window.plugins.jPushPlugin.addLocalNotification(1, '本地推送内容test', msg.content.contentStringMap.type, 111, 0, null)
+                        window.plugins.jPushPlugin.addLocalNotification(1, msg.content.contentStringMap.help, msg.content.contentStringMap.doctorId, 111, 0, null)
                             // message = window.JMessage.message;
                             // console.log(JSON.stringify(message));
                     } else {
-                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.type + '本地推送内容test', 1, 111, null)
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
+                    }
+                }
+                if (msg.targetType == 'group' && msg.targetID != $rootScope.conversation.id) {
+                    if (device.platform == "Android") {
+                        if(msg.content.contentType=='text'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, msg.content.text, msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='image'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[图片]', msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='voice'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[语音]', msg.fromNickname, 111, 0, null)
+                        }
+                            // message = window.JMessage.message;
+                            // console.log(JSON.stringify(message));
+                    } else {
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
                     }
                 }
 
@@ -193,7 +224,7 @@ angular.module('kidney',[
         }
     })
 
-    //tuandui
+    //交流
     .state('tab.groups', {
         // cache: false,
         //type:   '0'=team  '1'=doctor
@@ -208,7 +239,7 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        // cache: false,
+         cache: false,
         url: '/me',
         views: {
             'tab-me':{
@@ -263,7 +294,8 @@ angular.module('kidney',[
                 controller: 'selectDocCtrl',
                 templateUrl: 'partials/consult/select-doctor.html'
             }
-        }
+        },
+        params:{counsel:null}
     })
     .state('tab.selectTeam', {
         // cache: false,
@@ -273,7 +305,8 @@ angular.module('kidney',[
                 controller: 'selectTeamCtrl',
                 templateUrl: 'partials/consult/select-team.html'
             }
-        }
+        },
+        params:{counsel:null}
     })
     //已完成
     .state('tab.did', {
@@ -370,33 +403,38 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-detail', {
-            url: '/groups/:groupId',
+            url: '/groups/detail',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-detail.html',
                     controller: 'GroupDetailCtrl'
                 }
-            }
+            },
+            params:{team:null}
         })
     .state('tab.group-qrcode', {
-            url: '/groups/qrcode/:groupId',
+            url: '/groups/qrcode',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-qrcode.html',
                     controller: 'GroupQrcodeCtrl'
                 }
-            }
+            },
+            params:{team:null}
         })
     .state('tab.group-chat', {
         //'0':团队交流  '1': 未结束病历  '2':已结束病历
-            url: '/groups/chat/:type/:teamId/:groupId',
+            url: '/groups/chat',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-chat.html',
                     controller: 'GroupChatCtrl'
-                }
-            }
-
+                    // params:{'group':null,'type':'0','groupId':null}
+                },
+                // params:['group','typr','groupId']
+            },
+            params:{'type':'0','team':null,'groupId':null}
+            // params:['group','typr','groupId']
         })
     .state('tab.group-conclusion', {
             url: '/groups/conclusion/:type/:teamId/:groupId',
@@ -410,13 +448,26 @@ angular.module('kidney',[
         })
     .state('tab.group-patient', {
         // cache: false,
-        url: '/group/:teamId/patients',
+        url: '/group/patients',
         views: {
             'tab-groups':{
                 controller: 'groupPatientCtrl',
                 templateUrl: 'partials/group/group-patient.html'
             }
-        }
+        },
+        params:{team:null}
+    })
+    .state('tab.group-profile', {
+        // cache: false,
+        url: '/group/doctor/profile',
+        views: {
+            'tab-groups':{
+                controller: 'doctorProfileCtrl',
+                templateUrl: 'partials/group/profile.html'
+            }
+        },
+        params:{'member':null}
+
     })
 
     // views-tab-me

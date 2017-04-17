@@ -10,7 +10,7 @@
 			<span style="vertical-align: sub">医生诊断</span>
 		</a>
 		<a class="button" href="#/tab/TaskSet">
-			<span style="vertical-align: sub">治疗方案</span>
+			<span style="vertical-align: sub">管理方案</span>
 		</a>
 		<a class="button" href="#/tab/TestRecord">
 			<span style="vertical-align: sub">测量记录</span>
@@ -18,23 +18,23 @@
 	</div>
     <ion-content class="has-header" style="margin-top: 44px;">
         <div class="list card">  
-            <ion-item class="item item-avatar" href="#/tab/detail">
-				<img src="img/{{p.head}}">
-				<span>{{p.name}}</span><span>&nbsp;&nbsp;&nbsp;{{p.gender}}</span>&nbsp;&nbsp;&nbsp;<span>{{p.birthday}}</span>
-				<p>身份证号 {{p.IDNo}}</p>
-				<p>地区 {{p.provice}} {{p.city}}</p>
-				<p>是否VIP {{p.VIP}}</p>
-				<p>是否有高血压 {{p.hypertension}}</p>
-			</ion-item>	
+            <ion-item class="item item-avatar">
+				<img ng-src={{patient.photoUrl|imgUrl:'patient'}}>
+				<span>{{patient.name}}</span><span>&nbsp;&nbsp;&nbsp;{{patient.gender | filterGender}}</span>&nbsp;&nbsp;&nbsp;<span>{{patient.birthday | filterAge}}</span>
+				<p>身份证号 {{patient.IDNo}}</p>
+				<p>地区 {{patient.address.province}} {{patient.address.city}}</p>
+				<p>是否VIP {{patient.VIP | filterVIP}}</p>
+				<p>是否有高血压 {{patient.hypertension | filterhypertension}}</p>
+			</ion-item>
 				
             <ion-item>
 			     最近就诊信息
 			</ion-item>		
 			<ion-item ng-repeat="di in diagnosisInfo">
-			     <h2>{{di.time}}</h2>
-				 <p>就诊医院 {{di.hosptial}}</p>
-				 <p>就诊科室 {{di.department}}</p>
-				 <p>就诊诊断 {{di.diagnosis}}</p>
+			     <h2>{{di.time | dateFormat:"YYYY-MM-DD"}}</h2>
+				 <p>就诊医院 {{di.doctor.workUnit}}</p>
+				 <p>就诊科室 {{di.doctor.department}}</p>
+				 <p>就诊诊断 {{di.content}}</p>
 			</ion-item>				
         </div>
     </ion-content>

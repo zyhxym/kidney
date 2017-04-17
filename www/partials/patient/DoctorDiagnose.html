@@ -1,4 +1,4 @@
-<ion-view title="要获得的帮助">
+<ion-view title="医生诊断">
   <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
     <ion-nav-back-button class="button-icon ion-arrow-left-c">
     </ion-nav-back-button>
@@ -9,37 +9,60 @@
     
     <div  class="list">
       <label  class="item item-input item-select">
-        <div class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>肾病类型</div>
-        <select ng-model="Diagnose.KidneyDisease">
-          <!-- <option selected>选择性别</option> -->
+        <div class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px">
+          </i>肾病类型</div>
+        <select ng-model="Diagnose.diagname">
           <option  value=''>请选择</option>
           <option ng-repeat="x in Diseases" value="{{x.Type}}">{{x.Name}}</option> 
         </select>
       </label>
 
-        <label class="item item-input" ng-if="showProgress()">
-          <span class="input-label" style="margin-left:8px "><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>疾病进程</span>
-          <input  ng-model="Diagnose.DiseaseDetail"  type="text">
-        </label>
+      <!-- <label class="item item-input" ng-if="showProgress()">
+        <span class="input-label" style="margin-left:8px ">
+          <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>疾病进程</span>
+        <input  ng-model="Diagnose.DiseaseDetail"  type="text">
+      </label> -->
 
-        <ionic-datepicker input-obj="datepickerObject2" class="item item-input"  ng-if="showOperationTime()">
-          <span class="input-label" style="margin-left:8px "><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>手术日期</span>
-          <input  ng-model="Diagnose.OperationDate"  type="text">
-        </ionic-datepicker>
-        <label  class="item item-input item-select">
-        <div class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>是否高血压</div>
-        <select ng-model="Diagnose.Hypertension">
-          <!-- <option selected>选择性别</option> -->
+      <button class="button button-block button-positive button-outline" ng-click="openDatePicker(1)" ng-if="Diagnose.diagname == 1||Diagnose.diagname == 5||Diagnose.diagname == 6">
+        {{showDateTitle(Diagnose.diagname)}}:{{Diagnose.operationTime|dateFormat:"YYYY-MM-DD"}}
+      </button>
+      <!-- cdk1-2 -->
+      <label  class="item item-input item-select" ng-if="Diagnose.diagname == 2">
+        <div class="input-label">
+          <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
+          疾病进程
+        </div>
+        <select ng-model="Diagnose.diagprogress">
+          <option ng-repeat="x in progressSelect[0]" value="{{x}}">{{x}}</option> 
+        </select>
+      </label>
+      <!-- cdk3-4 -->
+      <label  class="item item-input item-select" ng-if="Diagnose.diagname == 3">
+        <div class="input-label">
+          <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
+          疾病进程
+        </div>
+        <select ng-model="Diagnose.diagprogress">
+          <option ng-repeat="x in progressSelect[1]" value="{{x}}">{{x}}</option> 
+        </select>
+      </label>
+
+      <label  class="item item-input item-select">
+        <div class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px">
+          </i>是否高血压</div>
+        <select ng-model="Diagnose.hypertension">
           <option  value=''>请选择</option>
           <option ng-repeat="x in Hypers" value="{{x.Type}}">{{x.Name}}</option> 
         </select>
       </label>
+
       <label class="item item-input">
         <span class="input-label" style="margin-left:8px ">诊断</span>
-        <input  ng-model="Diagnose.DetailDiagnose"  type="text">
+        <input  ng-model="Diagnose.diagcontent"  type="text">
       </label>
+
     </div>
-      <button style="margin-top:0" class="button button-block button-balanced" ng-click ="Submit()">
+      <button style="margin-top:0" class="button button-block button-balanced" ng-click ="saveDiagnose()">
             提交
       </button>
       <button style="margin-top:0" class="button button-block button-balanced" class="button button-clear" ng-click="reset()">重置

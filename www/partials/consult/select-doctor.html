@@ -8,7 +8,17 @@
     </div>
   </div> 
 <div class="list">
-    <a class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.userId}}">
+  <a class="item item-avatar" ng-repeat="d in doctorst"  ng-click="sendTo(d)">
+        <img src="{{d.photoUrl}}">
+        <div class="doctor-msg-left balanced balanced-border">专家团队</div>
+        <div>
+            <span>{{d.name}}</span> {{d.title}}
+            <p><span>{{d.workUnit}}</span> <span>{{d.department}}</span> </p>
+            <p><span>评分{{d.score}}</span> 问诊量：{{d.num}} </p>
+            <p>擅长：{{d.major}}</p>
+        </div>
+    </a>
+    <a class="item item-avatar" ng-repeat="d in doctors" ng-click="sendTo(d)">
         <img src="{{d.photoUrl}}">
         <div class="doctor-msg-left balanced balanced-border">专家团队</div>
         <div>

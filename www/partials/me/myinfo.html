@@ -21,7 +21,7 @@
         </ion-item>
         <ion-item>
             <span class="msg">我的头像</span>
-			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/default_user.png"></p>
+			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl|imgUrl:'doctor'}}></p>
         </ion-item>
         <ion-item>
             <span class="msg">我的职称</span>
@@ -45,7 +45,7 @@
         </ion-item>
          <ion-item>
             <span class="msg">我的简介</span>
-			<p class="myinfo-msg-right">{{doctor.Numberroduction}}</p>
+			<p class="myinfo-msg-right">{{doctor.description}}</p>
 
         </ion-item>
 		</div>
@@ -59,7 +59,7 @@
 			<ion-item>
 				<span class="msg">我的头像</span>
 				<i class="icon  ion-edit"></i>
-				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="img/default_user.png"></p>
+				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl|imgUrl:'doctor'}}></p>
 			</ion-item>
 			<ion-item>
 				<span class="msg">我的职称</span>
@@ -84,11 +84,11 @@
  			<ion-item>
 				<span class="msg">我的简介</span>
 				<i class="icon  ion-edit"></i>
-				<p class="myinfo-msg-right"><input type=text ng-model="doctor.Numberroduction"></p>
+				<p class="myinfo-msg-right"><input type=text ng-model="doctor.description"></p>
 			</ion-item>
 			
 			<ion-item>
-			<button class="btn btn-success" ng-click="toggle()"><span class="glyphicon glyphicon-save"></span>修改</button>
+			<button class="btn btn-success" ng-click="editinfo()"><span class="glyphicon glyphicon-save"></span>修改</button>
 			</ion-item>
         </div>
     </ion-content>

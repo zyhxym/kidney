@@ -16,13 +16,15 @@
         已完成：{{patients.length}}
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.id}}" ng-repeat="p in patients">
-                <img src="img/default_user.png">
+            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.counselId}}" ng-repeat="p in patients">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
-                <span>{{p.name}}</span><span>{{p.gender}}</span><span>{{p.age}}</span>
+                <span>{{p.patientId.name}}</span>
+                <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>
+                <span style="margin-left:5px;">{{p.patientId.birthday|filterAge}}岁</span>
                 </div>
-                <p><i class="icon ion-android-hand"></i>{{p.qs}}</p>
-                <span class="mine-msg-right">{{p.time}}</span>
+                <p><i class="icon ion-android-hand"></i>{{p.topic}}</p>
+                <span class="mine-msg-right">{{p.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
             </a>
         </div>
     </ion-content>

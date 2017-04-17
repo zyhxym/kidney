@@ -1,7 +1,7 @@
 angular.module('tdy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////tongdanyang/////////////////
-.controller('DoctorDiagnoseCtrl', ['$scope', 'Storage', function ($scope, Storage) {
+.controller('DoctorDiagnoseCtrl', ['$scope', 'Storage','ionicDatePicker','Patient', function ($scope, Storage,ionicDatePicker,Patient) {
   $scope.Hypers =
   [
     {Name:"是",Type:1},
@@ -10,155 +10,90 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
   
   $scope.Diseases =
   [
-    {Name:"肾移植",Type:1},
     {Name:"CKD1-2期",Type:2},
     {Name:"CKD3-4期",Type:3},
     {Name:"CDK5期未透析",Type:4},
     {Name:"腹透",Type:5},
-    {Name:"血透",Type:6}
+    {Name:"血透",Type:6},
+    {Name:"肾移植",Type:1}
   ]
+  $scope.progressSelect =
+  [
+    [
+      "疾病活跃期",
+      "稳定期",
+      ">3年"
+    ],
+    [
+      "疾病活跃期",
+      "稳定期"
+    ]
+  ]
+  $scope.showDateTitle=function(type)
+  {
+    // console.log(type)
+    var title="";
+    if(type==1)
+      title="手术日期"
+    else if(type==5)
+      title="插管日期"
+    else if(type==6)
+      title="开始日期"
+    return title
+  }
 
   $scope.Diagnose = 
   {
-    "KidneyDisease": null,
-    "DiseaseDetail": null,
-    "OperationDate": null,
-    "Hypertension": null,
-    "DetailDiagnose": null
+    "diagname": null,
+    "diagtime": null,
+    "operationTime": null,
+    "hypertension": null,
+    "diagprogress": '稳定期',
+    "diagcontent":""
   }
+  var datepickerD = {
+        callback: function (val) {  //Mandatory
+            console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            $scope.Diagnose.operationTime=new Date(val);
+        },
+        titleLabel: '手术日期',
+        inputDate: new Date(),
+        mondayFirst: true,
+        closeOnSelect: false,
+        templateType: 'popup',
+        setLabel: '确定',
+        todayLabel: '今天',
+        closeLabel: '取消',
+        showTodayButton: true,
+        dateFormat: 'yyyy MMMM dd',
+        weeksList: ["周日","周一","周二","周三","周四","周五","周六"],
+        monthsList:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
+    };
+    $scope.openDatePicker = function(){
+        ionicDatePicker.openDatePicker(datepickerD);
+    };
 
-  // --------datepicker设置----------------
-  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-  var weekDaysList=["日","一","二","三","四","五","六"];
-  
-  // --------诊断日期----------------
-  var DiagnosisdatePickerCallback = function (val) {
-    if (typeof(val) === 'undefined') {
-      console.log('No date selected');
-    } else {
-      $scope.datepickerObject1.inputDate=val;
-      var dd=val.getDate();
-      var mm=val.getMonth()+1;
-      var yyyy=val.getFullYear();
-      var d=dd<10?('0'+String(dd)):String(dd);
-      var m=mm<10?('0'+String(mm)):String(mm);
-      //日期的存储格式和显示格式不一致
-      $scope.Diagnose.LastDiagnosisTime=yyyy+'/'+m+'/'+d;
-    }
-  };
-  
-  $scope.datepickerObject1 = {
-    titleLabel: '诊断日期',  //Optional
-    todayLabel: '今天',  //Optional
-    closeLabel: '取消',  //Optional
-    setLabel: '设置',  //Optional
-    setButtonType : 'button-assertive',  //Optional
-    todayButtonType : 'button-assertive',  //Optional
-    closeButtonType : 'button-assertive',  //Optional
-    inputDate: new Date(),    //Optional
-    mondayFirst: false,    //Optional
-    //disabledDates: disabledDates, //Optional
-    weekDaysList: weekDaysList,   //Optional
-    monthList: monthList, //Optional
-    templateType: 'popup', //Optional
-    showTodayButton: 'false', //Optional
-    modalHeaderColor: 'bar-positive', //Optional
-    modalFooterColor: 'bar-positive', //Optional
-    from: new Date(1900, 1, 1),   //Optional
-    to: new Date(),    //Optional
-    callback: function (val) {    //Mandatory
-      DiagnosisdatePickerCallback(val);
-    }
-  };  
-  // --------手术日期----------------
-  var OperationdatePickerCallback = function (val) {
-    if (typeof(val) === 'undefined') {
-      console.log('No date selected');
-    } else {
-      $scope.datepickerObject2.inputDate=val;
-      var dd=val.getDate();
-      var mm=val.getMonth()+1;
-      var yyyy=val.getFullYear();
-      var d=dd<10?('0'+String(dd)):String(dd);
-      var m=mm<10?('0'+String(mm)):String(mm);
-      //日期的存储格式和显示格式不一致
-      $scope.Diagnose.OperationDate=yyyy+'/'+m+'/'+d;
-    }
-  };
-  $scope.datepickerObject2 = {
-    titleLabel: '手术日期',  //Optional
-    todayLabel: '今天',  //Optional
-    closeLabel: '取消',  //Optional
-    setLabel: '设置',  //Optional
-    setButtonType : 'button-assertive',  //Optional
-    todayButtonType : 'button-assertive',  //Optional
-    closeButtonType : 'button-assertive',  //Optional
-    mondayFirst: false,    //Optional
-    //disabledDates: disabledDates, //Optional
-    weekDaysList: weekDaysList,   //Optional
-    monthList: monthList, //Optional
-    templateType: 'popup', //Optional
-    showTodayButton: 'false', //Optional
-    modalHeaderColor: 'bar-positive', //Optional
-    modalFooterColor: 'bar-positive', //Optional
-    from: new Date(1900, 1, 1),   //Optional
-    to: new Date(),    //Optional
-    callback: function (val) {    //Mandatory
-      OperationdatePickerCallback(val);
-    }
-  };  
-  // --------出生日期----------------
-  var BirthdatePickerCallback = function (val) {
-    if (typeof(val) === 'undefined') {
-      console.log('No date selected');
-    } else {
-      $scope.datepickerObject3.inputDate=val;
-      var dd=val.getDate();
-      var mm=val.getMonth()+1;
-      var yyyy=val.getFullYear();
-      var d=dd<10?('0'+String(dd)):String(dd);
-      var m=mm<10?('0'+String(mm)):String(mm);
-      //日期的存储格式和显示格式不一致
-      $scope.Diagnose.Birthday=yyyy+'/'+m+'/'+d;
-    }
-  };
-  $scope.datepickerObject3 = {
-    titleLabel: '出生日期',  //Optional
-    todayLabel: '今天',  //Optional
-    closeLabel: '取消',  //Optional
-    setLabel: '设置',  //Optional
-    setButtonType : 'button-assertive',  //Optional
-    todayButtonType : 'button-assertive',  //Optional
-    closeButtonType : 'button-assertive',  //Optional
-    mondayFirst: false,    //Optional
-    //disabledDates: disabledDates, //Optional
-    weekDaysList: weekDaysList,   //Optional
-    monthList: monthList, //Optional
-    templateType: 'popup', //Optional
-    showTodayButton: 'false', //Optional
-    modalHeaderColor: 'bar-positive', //Optional
-    modalFooterColor: 'bar-positive', //Optional
-    from: new Date(1900, 1, 1),   //Optional
-    to: new Date(),    //Optional
-    callback: function (val) {    //Mandatory
-      BirthdatePickerCallback(val);
-    }
-  };  
-  // --------datepicker设置结束----------------
-  $scope.showProgress = function(){
-    //console.log($scope.User.KidneyDisease.t.Type);
-    if($scope.Diagnose.KidneyDisease == 1 || $scope.Diagnose.KidneyDisease == null || $scope.Diagnose.KidneyDisease == "" ){
-      return false;}
-    else{
-      return true;}
-  }
-
-  $scope.showOperationTime = function(){
-    //console.log($scope.User.KidneyDisease.t.Type);
-    if($scope.Diagnose.KidneyDisease == 1){
-      return true;}
-    else{
-      return false;}
+  // {
+  //     patientId:'',
+  //     doctorId:'',
+  //     diagname:'',
+  //     diagtime:'',
+  //     diagprogress:'',
+  //     diagcontent:''
+  //   }
+  $scope.saveDiagnose=function()
+  {
+    $scope.Diagnose.patientId=Storage.get('getpatientId');
+    $scope.Diagnose.doctorId=Storage.get('UID');
+    console.log($scope.Diagnose)
+    Patient.insertDiagnosis($scope.Diagnose)
+    .then(function(data){
+      console.log(data)
+      $state.go('tab.patientDetail');
+    },function(err)
+    {
+      console.log(err)
+    })
   }
 
   $scope.reset =function(){
@@ -167,12 +102,461 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
       "KidneyDisease": null,
       "DiseaseDetail": null,
       "OperationDate": null,
-      "Hypertension": null,
+      "Hypertension": '稳定期',
       "DetailDiagnose": null
     }
   }
 }])
-.controller('TestRecordCtrl', ['$scope', '$http','Storage', function ($scope,$http, Storage) {
+.controller('TestRecordCtrl', ['$scope', '$http','Storage','VitalSign', function ($scope,$http, Storage,VitalSign) {
+  
+
+
+      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].date>="2017-04-08"&&Data.results[i].code=="舒张压"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+        AmCharts.makeChart("chartdiv", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+        // console.log($scope.ChartData);
+        // createStockChart("chartdiv",$scope.ChartData,"舒张压","mmHg");
+      }, function(e) {  
+      });
+
+      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].code=="收缩压"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+        AmCharts.makeChart("chartdiv1", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+        // console.log($scope.ChartData);
+        // createStockChart("chartdiv",$scope.ChartData,"收缩压","mmHg");
+      }, function(e) {  
+      });
+
+      VitalSign.getVitalSigns({userId:'U201702071766',type:'体温'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].code=="体温"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+
+        AmCharts.makeChart("chartdiv2", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+
+      }, function(e) {  
+      });
+VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].code=="体重"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+
+        AmCharts.makeChart("chartdiv3", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+
+      }, function(e) {  
+      });
+VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].code=="尿量"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+
+        AmCharts.makeChart("chartdiv4", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+
+      }, function(e) {  
+      });
+VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
+      function(Data){
+        $scope.ChartData=[];
+        console.log(Data.results[0])
+        console.log(Data.results.length)
+        for(var i=0;i<Data.results.length;i++){
+          if(Data.results[i].code=="心率"){
+            for(var j=0;j<Data.results[i].data.length;j++){
+              $scope.ChartData.push(Data.results[i].data[j])
+            }
+          }
+        }
+
+        AmCharts.makeChart("chartdiv5", {
+          "type": "serial",
+          "theme": "light",
+          "marginTop":0,
+          "marginRight": 80,
+          "dataProvider": $scope.ChartData,
+          "valueAxes": [{
+              "axisAlpha": 0,
+              "position": "left"
+          }],
+          "graphs": [{
+              "id":"g1",
+              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+              "bullet": "round",
+              "bulletSize": 8,
+              "lineColor": "#d1655d",
+              "lineThickness": 2,
+              "negativeLineColor": "#637bb6",
+              // "type": "smoothedLine",
+              "valueField": "value"
+          }],
+          "chartScrollbar": {
+              "graph":"g1",
+              "gridAlpha":0,
+              "color":"#888888",
+              "scrollbarHeight":55,
+              "backgroundAlpha":0,
+              "selectedBackgroundAlpha":0.1,
+              "selectedBackgroundColor":"#888888",
+              "graphFillAlpha":0,
+              "autoGridCount":true,
+              "selectedGraphFillAlpha":0,
+              "graphLineAlpha":0.2,
+              "graphLineColor":"#c2c2c2",
+              "selectedGraphLineColor":"#888888",
+              "selectedGraphLineAlpha":1
+
+          },
+          "chartCursor": {
+              "categoryBalloonDateFormat": "YYYY-MM-DD",
+              "cursorAlpha": 0,
+              "valueLineEnabled":true,
+              "valueLineBalloonEnabled":true,
+              "valueLineAlpha":0.5,
+              "fullWidth":true
+          },
+          "dataDateFormat": "YYYY-MM-DD",
+          "categoryField": "time",
+          "categoryAxis": {
+              "minPeriod": "mm",
+              "parseDates": true,
+              "minorGridAlpha": 0.1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+
+      }, function(e) {  
+      });
   // $scope.$on('$ionicView.afterEnter', function() {  
 
 //                 console.log('afterEnter');  
@@ -182,59 +566,82 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
  //  $scope.$on('$ionicView.enter', function() 
  //  {
  //    console.log("mmb");
-     $http.get("../data/pressure.json").success(function(data) {
-         $scope.pressuredata = data;
-         console.log($scope.pressuredata)
-         createStockChart($scope.pressuredata,"血压","mmHg");
-     });
+     // $http.get("../data/pressure.json").success(function(data) {
+     //     $scope.pressuredata = data;
+     //     console.log($scope.pressuredata)
+     //     createStockChart($scope.pressuredata,"血压","mmHg");
+     // });
   // })
 
-  $scope.title="血压"
-  $scope.unit="mmHg"
-  $scope.chart = createStockChart($scope.data1,$scope.title,$scope.unit);
+  // $scope.title="血压"
+  // $scope.unit="mmHg"
+  // $scope.chart = createStockChart($scope.data1,$scope.title,$scope.unit);
   ////提振参数选择下拉框选项 默认收缩压selected
   //下拉选择不同体征类型
-  $scope.options = [{"SignName":"血压"},
-    {"SignName":"体重"},
-    {"SignName":"体温"},
-    {"SignName":"尿量"},
-    {"SignName":"心率"}
-  ];  
-  $scope.vitalInfo=$scope.options[0].SignName
+  // $scope.options = [{"SignName":"血压"},
+  //   {"SignName":"体重"},
+  //   {"SignName":"体温"},
+  //   {"SignName":"尿量"},
+  //   {"SignName":"心率"}
+  // ];  
+  // $scope.vitalInfo=$scope.options[0].SignName
 
-  //切换体征
-  $scope.changeVitalInfo = function(option) 
-    {
-       $scope.selectedname=option;
-       console.log($scope.selectedname)
-       drawcharts($scope.selectedname);
-    };
-    //根据体征类型画图
-    var drawcharts=function(param){
-    if (param=="血压") {
-      $http.get("../data/pressure.json").success(function(data) {
-         $scope.pressuredata = data;
-         console.log($scope.pressuredata)
-         createStockChart($scope.pressuredata,"血压","mmHg");
-     });
+  // //切换体征
+  // $scope.changeVitalInfo = function(option) 
+  //   {
+  //      $scope.selectedname=option;
+  //      console.log($scope.selectedname)
+  //      drawcharts($scope.selectedname);
+  //   };
+  //   //根据体征类型画图
+  //   var drawcharts=function(param){
+  //   if (param=="血压") {
+  //     VitalSign.getVitalSigns({userId:'zxftest001',type:'type1'}).then(
+  //     function(Data){
+  //       $scope.ChartData=[];
+  //       console.log(Data.results[0])
+  //       console.log(Data.results.length)
+  //       for(var i=0;i<Data.results.length;i++){
+  //         if(Data.results[i].date>="2017-04-07"){
+  //           for(var j=0;j<Data.results[i].data.length;j++){
+  //             $scope.ChartData.push(Data.results[i].data[j])
+  //           }
+  //         }
+  //       }
+
+  //       console.log($scope.ChartData);
+  //       createStockChart($scope.ChartData,"舒张压","mmHg");
+  //     }, function(e) {  
+  //     });
       
       
-    }
-    if(param=="体温"){
-      $http.get("../data/temperature.json").success(function(data) {
-         $scope.temperature = data.dahjvhjkhs;
-         console.log($scope.temperature)
-         createStockChart($scope.temperature,"体温","℃");
-     });
+  //   }
+  //   if(param=="体温"){
+  //     VitalSign.getVitalSigns({userId:'zxftest001',type:'type2'}).then(
+  //     function(Data){
+  //       $scope.ChartData=[];
+  //       console.log(Data.results[0])
+  //       console.log(Data.results.length)
+  //       for(var i=0;i<Data.results.length;i++){
+  //         if(Data.results[i].date>="2017-04-07"){
+  //           for(var j=0;j<Data.results[i].data.length;j++){
+  //             $scope.ChartData.push(Data.results[i].data[j])
+  //           }
+  //         }
+  //       }
+
+  //       console.log($scope.ChartData);
+  //       createStockChart($scope.ChartData,"舒张压","mmHg");
+  //     }, function(e) {  
+  //     });
       
-      
-    }
-  }
+  //   }
+  // }
   //传参绘图
-  function createStockChart(ChartData,title,unit) {
+  function createStockChart(chartname,ChartData,title,unit) {
 
     chart="";
-    var chart = AmCharts.makeChart("chartdiv", {
+    var chart = AmCharts.makeChart("chartname", {
     "type": "serial",
     "theme": "light",
     "marginTop":0,
@@ -244,17 +651,6 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
         "axisAlpha": 0,
         "position": "left"
     }],
-    // "graphs": [{
-    //       "balloonText": "[[category]]: <p>[[title]]：[[value]] [[unit]]</p>",
-    //       "bullet": "round",
-    //       "bulletSize": 8,
-    //       "lineThickness": 2,
-    //       "lineColor": "#d1655d",
-    //       "type": "smoothedLine",
-    //       "valueField": "Value",
-    //       "title":title,
-    //       "fillAlphas": 0
-    //     }],
     "graphs": [{
         "id":"g1",
         "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
@@ -284,17 +680,17 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
 
     },
     "chartCursor": {
-        "categoryBalloonDateFormat": "YYYY",
+        "categoryBalloonDateFormat": "YYYY-MM-DD",
         "cursorAlpha": 0,
         "valueLineEnabled":true,
         "valueLineBalloonEnabled":true,
         "valueLineAlpha":0.5,
         "fullWidth":true
     },
-    "dataDateFormat": "YYYY",
-    "categoryField": "year",
+    "dataDateFormat": "YYYY-MM-DD",
+    "categoryField": "time",
     "categoryAxis": {
-        "minPeriod": "YYYY",
+        "minPeriod": "mm",
         "parseDates": true,
         "minorGridAlpha": 0.1,
         "minorGridEnabled": true
@@ -305,15 +701,15 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
 });
 
 
-// chart.addListener("rendered", zoomChart);
-// if(chart.zoomChart){
-//   chart.zoomChart();
-// }
+  // chart.addListener("rendered", zoomChart);
+  // if(chart.zoomChart){
+  //   chart.zoomChart();
+  // }
 
-// function zoomChart(){
-//     chart.zoomToIndexes(Math.round(chart.dataProvider.length * 0.4), Math.round(chart.dataProvider.length * 0.55));
-// }
-}
+  // function zoomChart(){
+  //     chart.zoomToIndexes(Math.round(chart.dataProvider.length * 0.4), Math.round(chart.dataProvider.length * 0.55));
+  // }
+  }
   
 }])
 
