@@ -394,7 +394,7 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-add-member', {
-            url: '/groups/addmember/:groupId',
+            url: '/groups/addmember/:type',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add-member.html',
