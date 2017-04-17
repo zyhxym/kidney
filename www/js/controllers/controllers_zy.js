@@ -552,24 +552,34 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //         console.log('order:'+$scope.order);
     //     }   
     // };
+    var patients=[];
     var patientlength = '';
     Doctor.getPatientList({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
         {
             console.log(data)
-            $scope.patients=data.results[0].patients;
+            if (data.results!='')
+            {
+                $scope.patients=data.results[0].patients;
+                $scope.patients[1].patientId.VIP=0;
+                patientlength=data.results[0].patients.length;
+            }
+            else
+            {
+                $scope.patients=''
+            }
             angular.forEach($scope.patients,
                 function(value,key)
                 {
                     $scope.patients[key].show=true;
                 }
             )
-            $scope.patients[1].patientId.VIP=0;
+            
             // console.log($scope.patients);
-            patientlength=data.results[0].patients.length;
+            
         },
         function(err)
         {
@@ -679,11 +689,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.barwidth="width:0%";
    
    //$scope.userid=Storage.get('userid');
-   //$scope.doctor=meFactory.GetDoctorInfo($scope.userid);
-   //$scope.doctor=meFactory.GetDoctorInfo('D201703240001');
-  
+    $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.doRefresh();
+    });
+    
     Doctor.getDoctorInfo({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
@@ -697,10 +708,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     )
 
-
+    //$scope.loadData(); 
     $scope.params = {
         // groupId:$state.params.groupId
-        userId:'doc01'
+        userId:Storage.get('UID')
     }
 }])
 
@@ -724,11 +735,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.params = {
         // groupId:$state.params.groupId
-        userId:'doc01'
+        userId:Storage.get('UID')
     }
 
     Doctor.getDoctorInfo({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
@@ -754,7 +765,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.myDiv=true;
 
     Doctor.getDoctorInfo({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
@@ -769,28 +780,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     )
 
     $scope.editinfo = function() {
-        Doctor.editDoctorDetail({
-        userId:'doc01',
-        name:$scope.doctor.name,
-        photoUrl:$scope.doctor.photoUrl,
-        title:$scope.doctor.title,
-        workUnit:$scope.doctor.workUnit,
-        department:$scope.doctor.department,
-        major:$scope.doctor.major,
-        description:$scope.doctor.description
-        })
-    .then(
-        function(data)
-        {
-            console.log(data)
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    );
-    $scope.myDiv = !$scope.myDiv;
-    $scope.updateDiv = !$scope.updateDiv;
+        Doctor.editDoctorDetail($scope.doctor)
+        .then(
+            function(data)
+            {
+                console.log(data)
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+        $scope.myDiv = !$scope.myDiv;
+        $scope.updateDiv = !$scope.updateDiv;
     };
   
 
@@ -802,16 +804,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”个人收费页
-.controller('myfeeCtrl', ['Doctor','$scope','$ionicPopup','$state', function(Doctor,$scope, $ionicPopup,$state) {
+.controller('myfeeCtrl', ['Doctor','$scope','$ionicPopup','$state','Storage' ,function(Doctor,$scope, $ionicPopup,$state,Storage) {
     $scope.hideTabs = true;
   
     Doctor.getDoctorInfo({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
         {
-          // console.log(data)
+        // console.log(data)
             $scope.doctor=data.results;
         },
         function(err)
@@ -822,18 +824,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   
     $scope.savefee = function() {
         Doctor.editDoctorDetail($scope.doctor)
-    .then(
-        function(data)
-        {
-          // console.log(data)
-           // $scope.doctor=data.result;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
-    $state.go('tab.me');  
+        .then(
+            function(data)
+            {
+                // console.log(data)
+                // $scope.doctor=data.result;
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )
+        $state.go('tab.me');  
     };
   
 
@@ -843,13 +845,13 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”的评价
-.controller('feedbackCtrl', ['Patient','Doctor','$scope','$ionicPopup','$state', function(Patient,Doctor,$scope, $ionicPopup,$state) {
+.controller('feedbackCtrl', ['Patient','Doctor','$scope','$ionicPopup','$state', 'Storage',function(Patient,Doctor,$scope, $ionicPopup,$state,Storage) {
     $scope.hideTabs = true;
     var commentlength='';
     //var commentlist=[];
 
     Doctor.getDoctorInfo({
-        userId:'doc01'
+        userId:Storage.get('UID')
     })
     .then(
         function(data)
@@ -910,7 +912,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置内容页
-.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams', function($scope, $ionicPopup,$state,$stateParams) {
+.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage', function($scope, $ionicPopup,$state,$stateParams,Storage) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
   

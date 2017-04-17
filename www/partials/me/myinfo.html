@@ -21,7 +21,7 @@
         </ion-item>
         <ion-item>
             <span class="msg">我的头像</span>
-			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="doctor.photoUrl"></p>
+			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl|imgUrl:'doctor'}}></p>
         </ion-item>
         <ion-item>
             <span class="msg">我的职称</span>
@@ -59,7 +59,7 @@
 			<ion-item>
 				<span class="msg">我的头像</span>
 				<i class="icon  ion-edit"></i>
-				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="doctor.photoUrl"></p>
+				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl|imgUrl:'doctor'}}></p>
 			</ion-item>
 			<ion-item>
 				<span class="msg">我的职称</span>

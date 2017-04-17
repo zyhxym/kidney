@@ -19,7 +19,7 @@
     <ion-content class="has-header" style="margin-top: 44px;">
         <div class="list card">  
             <ion-item class="item item-avatar">
-				<img ng-src="patient.photoUrl">
+				<img ng-src={{patient.photoUrl|imgUrl:'patient'}}>
 				<span>{{patient.name}}</span><span>&nbsp;&nbsp;&nbsp;{{patient.gender | filterGender}}</span>&nbsp;&nbsp;&nbsp;<span>{{patient.birthday | filterAge}}</span>
 				<p>身份证号 {{patient.IDNo}}</p>
 				<p>地区 {{patient.address.province}} {{patient.address.city}}</p>
