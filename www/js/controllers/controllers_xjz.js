@@ -297,8 +297,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //     description:'4.15测试'
     // }
     $scope.itemClick = function(ele, team) {
-        if (ele.target.id == 'discuss') $state.go("tab.group-patient", { team: team });
-        else $state.go('tab.group-chat', { type: '0', groupId: team.teamId, team:team});
+        if (ele.target.id == 'discuss') $state.go("tab.group-patient", { teamId: team.teamId });
+        else $state.go('tab.group-chat', { type: '0', groupId: team.teamId, teamId: team.teamId});
     }
 
     // $scope.groupcommunication = function(group){
@@ -362,12 +362,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 
     $scope.params = {
-        team:{}
+        teamId:''
     }
     $scope.$on('$ionicView.beforeEnter', function() {
         $scope.grouppatients1 = "";
         $scope.grouppatients2 = "";
-        $scope.params.team = $state.params.team;
+        $scope.params.teamId = $state.params.teamId;
         // console.log($scope.params);
         load();
         // $http.get("data/grouppatient1.json").success(function(data) {
@@ -376,7 +376,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
     //在外面时序不对， 比'$ionicView.beforeEnter'先执行
     function load(){
-        Doctor.getGroupPatientList({teamId:$scope.params.team.teamId,status:0})//0->进行中
+        Doctor.getGroupPatientList({teamId:$scope.params.teamId,status:0})//0->进行中
         .then(function(data)
         {
             console.log(data)
@@ -385,7 +385,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         {
             console.log(err)
         })
-        Doctor.getGroupPatientList({teamId:$scope.params.team.teamId,status:1})//1->已处理
+        Doctor.getGroupPatientList({teamId:$scope.params.teamId,status:1})//1->已处理
         .then(function(data)
         {
             console.log(data)
@@ -398,7 +398,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     
 
     $scope.enterChat = function(type,patient){
-        $state.go('tab.group-chat',{type:type,team:$scope.params.team,groupId:patient.id});
+        $state.go('tab.group-chat',{type:type,teamId:$scope.params.teamId,groupId:patient.id});
     }
 
     $scope.backToGroups = function() {
@@ -575,24 +575,21 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     for(var i=res.length-1,j=$scope.params.msgCount-res.length;i>=0;){
                         if(j==$scope.params.msgCount){
                             $scope.params.msgCount+=i+1;
-                        while(i>-1){
-                            if(i!=res.length-1){
-                                res[i].diff= (res[i].createTimeInMillis-res[i+1].createTimeInMillis)>300000?true:false;
-                            }else if($scope.msgs.length){
-                                res[i].diff= (res[i].createTimeInMillis-$scope.msgs[$scope.msgs.length-1].createTimeInMillis)>300000?true:false;
-                            }else{
-                                res[i].diff=true;
+                            while(i>-1){
+                                if(i!=res.length-1){
+                                    res[i].diff= (res[i].createTimeInMillis-res[i+1].createTimeInMillis)>300000?true:false;
+                                }else if($scope.msgs.length){
+                                    res[i].diff= (res[i].createTimeInMillis-$scope.msgs[$scope.msgs.length-1].createTimeInMillis)>300000?true:false;
+                                }else{
+                                    res[i].diff=true;
+                                }
+                                $scope.msgs.push(res[i]);
+                                i--;
                             }
-                            $scope.msgs.push(res[i]);
-                            i--;
-                        }
-                        console.log(i);
-                        break;
-                            // for(var k=0;k<i)
-                            // $scope.msgs=$scope.msgs.concat(res.slice(0,i+1));
-                            // msgsRender($scope.msgs.length-res.length,$scope.msgs.length-1);
-                            // break;
-                        }else if($scope.msgs[j]['_id']==res[i]['_id']){
+                            console.log(i);
+                            break;
+     
+                        }else if(j<$scope.params.msgCount && $scope.msgs[j]['_id']==res[i]['_id']){
                             $scope.msgs[j]=res[i];
                             // $scope.
                             // $scope.msgs[j].status=res[i].status;
@@ -953,6 +950,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.params = {
         type: '',//'0':团队交流  '1': 未结束病历  '2':已结束病历
         groupId: '',
+        teamId:'',
         team: {},
         msgCount: 0,
         title:'',
@@ -998,10 +996,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         // console.log($stateParams);
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
-        $scope.params.team = $state.params.team;
+        $scope.params.teamId = $state.params.teamId;
         if ($scope.params.type =='0') {
-            // $scope.params.isDiscuss = true;
-            $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
+            Communication.getTeam({teamId:$scope.params.teamId})
+            .then(function(data){
+              console.log(data)
+              $scope.params.team=data.results;
+              $scope.params.title = $scope.params.team.name +'('+$scope.params.team.number+')';
+            })
+            
         }else if($scope.params.type =='1'){
             $scope.params.hidePanel = false;
             $scope.params.title = '病历讨论';
@@ -1093,24 +1096,24 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     for(var i=res.length-1,j=$scope.params.msgCount-res.length;i>=0;){
                         if(j==$scope.params.msgCount){
                             $scope.params.msgCount+=i+1;
-                        while(i>-1){
-                            if(i!=res.length-1){
-                                res[i].diff= (res[i].createTimeInMillis-res[i+1].createTimeInMillis)>300000?true:false;
-                            }else if($scope.msgs.length){
-                                res[i].diff= (res[i].createTimeInMillis-$scope.msgs[$scope.msgs.length-1].createTimeInMillis)>300000?true:false;
-                            }else{
-                                res[i].diff=true;
+                            while(i>-1){
+                                if(i!=res.length-1){
+                                    res[i].diff= (res[i].createTimeInMillis-res[i+1].createTimeInMillis)>300000?true:false;
+                                }else if($scope.msgs.length){
+                                    res[i].diff= (res[i].createTimeInMillis-$scope.msgs[$scope.msgs.length-1].createTimeInMillis)>300000?true:false;
+                                }else{
+                                    res[i].diff=true;
+                                }
+                                $scope.msgs.push(res[i]);
+                                i--;
                             }
-                            $scope.msgs.push(res[i]);
-                            i--;
-                        }
-                        console.log(i);
-                        break;
+                            console.log(i);
+                            break;
                             // for(var k=0;k<i)
                             // $scope.msgs=$scope.msgs.concat(res.slice(0,i+1));
                             // msgsRender($scope.msgs.length-res.length,$scope.msgs.length-1);
                             // break;
-                        }else if($scope.msgs[j]['_id']==res[i]['_id']){
+                        }else if(j<$scope.params.msgCount && $scope.msgs[j]['_id']==res[i]['_id']){
                             $scope.msgs[j]=res[i];
                             // $scope.msgs[j].status=res[i].status;
                             ++j;--i;
@@ -1337,7 +1340,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             disableBack: true
         });
         if ($scope.params.type == '0') $state.go('tab.groups',{type:'0'});
-        else $state.go('tab.group-patient', { team: $scope.params.team});
+        else $state.go('tab.group-patient', { teamId: $scope.params.teamId});
     }
 
 }])
@@ -1497,7 +1500,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 .controller('selectTeamCtrl',['$state','$scope','JM','$ionicPopup','Doctor','Communication',function($state,$scope,JM,$ionicPopup,Doctor,Communication){
     $scope.counsel=$state.params.counsel;
-  Doctor.getMyGroupList({
+    Doctor.getMyGroupList({
         userId:'doc01'
     })
     .then(
@@ -1529,7 +1532,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         u=u.join(',');
                     var gn=md5($scope.counsel.counselId+team.teamId,"kidney").substr(4,8)
                         // window.JMessage.createGroup($scope.counsel.counselID+team.teamId,'',res,
-                        window.JMessage.createGroup(gn,'',u,
+                        window.JMessage.createGroup(gn,'consultatioin_open',u,
                             function(data){
                                 window.JMessage.getGroupMembers(data,
                                     function(data){
