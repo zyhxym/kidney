@@ -16,7 +16,7 @@ angular.module('kidney',[
     'ionic-datepicker'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope', function($ionicPlatform, $state, Storage, JM,$rootScope) {
+.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG) {
     $ionicPlatform.ready(function() {
         $rootScope.goConclusion =function(){
             alert('aaa');
@@ -59,8 +59,22 @@ angular.module('kidney',[
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
                 console.log(msg);
-                $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                if(msg.targetType=='group'){
+                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
+                }else{
+                    if(msg.fromAppkey==CONFIG.appKey){
+                        $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                    }else{
+                        $state.go('tab.detail', { type:'1',chatId: msg.fromName});
+                    }
+                }
+                // $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
+            document.addEventListener('jmessage.onReceiveCustomMessage',function(msg){
+                console.info('[jmessage.onReceiveCustomMessage]:');
+                console.log(msg);
+
+            });
             document.addEventListener('jmessage.onReceiveMessage', function(msg) {
                 console.info('[jmessage.onReceiveMessage]:');
                 console.log(msg);
@@ -71,15 +85,32 @@ angular.module('kidney',[
                 }
             }, false);
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
-                console.log('[jmessage.onReceiveCustomMessage]: ' + msg);
+                console.info('[jmessage.onReceiveCustomMessage]:' );
+                console.log(msg);
+
                 // $rootScope.$broadcast('receiveMessage',msg);
                 if (msg.targetType == 'single' && msg.fromID != $rootScope.conversation.id) {
                     if (device.platform == "Android") {
-                        window.plugins.jPushPlugin.addLocalNotification(1, '本地推送内容test', msg.content.contentStringMap.type, 111, 0, null)
+                        window.plugins.jPushPlugin.addLocalNotification(1, msg.content.contentStringMap.help, msg.content.contentStringMap.doctorId, 111, 0, null)
                             // message = window.JMessage.message;
                             // console.log(JSON.stringify(message));
                     } else {
-                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.type + '本地推送内容test', 1, 111, null)
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
+                    }
+                }
+                if (msg.targetType == 'group' && msg.targetID != $rootScope.conversation.id) {
+                    if (device.platform == "Android") {
+                        if(msg.content.contentType=='text'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, msg.content.text, msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='image'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[图片]', msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='voice'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[语音]', msg.fromNickname, 111, 0, null)
+                        }
+                            // message = window.JMessage.message;
+                            // console.log(JSON.stringify(message));
+                    } else {
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
                     }
                 }
 
@@ -208,7 +239,7 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        // cache: false,
+         cache: false,
         url: '/me',
         views: {
             'tab-me':{

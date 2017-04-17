@@ -96,52 +96,6 @@ angular.module('kidney.services', ['ionic','ngResource'])
   //return service;
 })
 
-//我
-.factory("meFactory",function(){
-  var service={};
-  // var flag=false;
-  // var userid;//用户ID
-  // if(Storage.get('userid')!=null){
-    // userid=Storage.get('userid');
-  // }; 
-  service.GetDoctorInfo=function(uid){
-      var  result;//待返回json
-      var doctors=[
-      {
-        photoUrl:"max.png",
-        userId:"D201703240001",
-        name:"小丁",
-        gender:"男",
-        title:"主任医生",
-        workUnit:"浙江XXX医院",
-        department:"泌尿科",
-        major:"肾上腺分泌失调",
-        Numberroduction:"从医多年"
-          },
-      {
-        photoUrl:"ben.png",
-        userId:"D201703240002",
-        name:"小李",
-        gender:"女",
-        title:"主任医生",
-        workUnit:"浙江XXX医院",
-        department:"泌尿科2",
-        major:"慢性肾炎、肾小管疾病",
-        Numberroduction:"从医十年"
-          }
-      ];
-      for(var i=0;i<doctors.length;i++){
-        var doctor=doctors[i];
-        if(doctors[i].userId==uid)
-        {
-          result=doctor;
-          break;
-        }
-      }
-      return result;
-  }
-  return service;
-})
 //media文件操作 XJZ
 .factory('fs',['$q','$cordovaFile','$filter',function($q,$cordovaFile,$filter){
     return {
@@ -206,7 +160,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                     reject(err);
                 });
             audio.media.startRecord();
-            $ionicLoading.show({ template: 'recording' });
+            $ionicLoading.show({ template: '开始说话',noBackdrop:true});
         });
     }
     audio.stopRec = function() {
@@ -300,7 +254,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
 })
 //jmessage XJZ
-.factory('JM', ['Storage','$q', function(Storage,$q) {
+.factory('JM', ['Storage','$q','Doctor', function(Storage,$q,Doctor) {
     var ConversationList = [];
     var messageLIsts = {};
     function pGen(u){
@@ -366,29 +320,70 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //     }
     // }
 
-    function login(user) {
+    function login(user,nick) {
         return $q(function(resolve,reject){
-            console.log(user);
-            console.log(pGen(user));
-            if(window.JMessage){
-                window.JMessage.login(user, pGen(user),
+            Doctor.getDoctorInfo({userId:user})
+            .then(function(data){
+                console.log(user);
+                console.log(pGen(user));
+                if(window.JMessage){
+                    window.JMessage.login(user, pGen(user),
+                        function(response) {
+                            window.JMessage.updateMyInfo('nickname',data.results.name);
+                            window.JMessage.nickname = data.results.name;
+                            window.JMessage.username = user;
+                            resolve(user);
+                        }, function(err){
+                            console.log(err);
+                            register(user,data.results.name);
+                            // reject(err);
+                        });
+
+
+                }
+            },function(err){
+                reject(err);
+            })
+            
+
+            // console.log(ionic.Platform)
+            // console.log(ionic.Platform.platforms[0]=="browser")
+            // if(ionic.Platform.platforms[0]!="browser")
+            // if(window.JMessage){
+            //     window.JMessage.login(user, pGen(user),
+            //         function(response) {
+            //             window.JMessage.updateMyInfo('nickname',nick)
+            //             window.JMessage.nickname = nick;
+            //             window.JMessage.username = user;
+            //             resolve(user);
+            //         }, function(err){
+            //             console.log(err);
+            //             register(user,nick);
+            //             // reject(err);
+            //         });
+
+
+            // }
+
+        });
+    }
+
+    function register(user,nick) {
+        return $q(function(resolve,reject){
+            window.JMessage.register(user, pGen(user),
+                function(response) {
+                    window.JMessage.login(user, pGen(user),
                     function(response) {
+                        window.JMessage.updateMyInfo('nickname',nick)
                         window.JMessage.username = user;
+                        window.JMessage.nickname = nick;
                         resolve(user);
                     }, function(err){
                         console.log(err);
                         reject(err);
                     });
-            }
-        });
-    }
-
-    function register(user) {
-        return $q(function(resolve,reject){
-            window.JMessage.register(user, pGen(user),
-                function(response) {
-                    console.log("login callback success" + response);
-                    resolve(user);
+                    // console.log("login callback success" + response);
+                    // resolve(user);
                 },
                 function(response) {
                     console.log("login callback fail" + response);
@@ -398,7 +393,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         
     }
-
+    // nickname：昵称。
+    // birthday：生日。
+    // signature：个性签名。
+    // gender：性别。
+    // region：地区。
+    // function updateMyInfo(field,value){
+    //     window.JMessage.updateMyInfo(field,value,null,null)
+    // }
     // function updateConversationList() {
     //     $('#conversationList').empty().listview('refresh');
     //     console.log("updateConversationList");
@@ -547,9 +549,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //         console.log(exception);
     //     }
     // }
-    function newGroup(name,des,members){
+    function newGroup(name,des,members,type){
         return $q(function(resolve,reject){
-            window.JMessage.createGroup('abcde','fg',
+            window.JMessage.createGroup('abcde','fg','',
             // window.JMessage.createGroup(name,des,
                 function(data){
                     console.log(data);
@@ -658,9 +660,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //     onReceivePushMessage, false);
         },
         login:login,
+<<<<<<< HEAD
         pGen:pGen,
+=======
+        sendCustom:sendCustom,
+>>>>>>> refs/remotes/BME319/master
         newGroup:newGroup,
         register: register,
+        pGen:pGen,
         checkIsLogin: checkIsLogin,
         getPushRegistrationID: getPushRegistrationID,
     }
@@ -751,7 +758,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getDoctorInfo:{method:'GET', params:{route: 'getDoctorInfo'}, timeout: 100000},
             getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
             getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000},
-            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000}
+            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000},
+            editDoctorDetail:{method:'POST',params:{route:'editDoctorDetail'},timeout:10000}
         });
     }
 
@@ -807,6 +815,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
+            newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
             insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
         });
@@ -1011,7 +1021,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //  }
     self.newTeam = function(params){
         var deferred = $q.defer();
-        Data.Communication.getCounselReport(
+        Data.Communication.newTeam(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1075,6 +1085,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.removeMember = function(params){
         var deferred = $q.defer();
         Data.Communication.removeMember(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.newConsultation = function(params){
+        var deferred = $q.defer();
+        Data.Communication.newConsultation(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1609,6 +1632,25 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+           //   userId:'doc01'
+           // }
+    self.getRecentDoctorList = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getRecentDoctorList(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
+
     //params->0:{
            //   teamId:'team1',
            //   status:1
@@ -1625,6 +1667,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    self.editDoctorDetail = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.editDoctorDetail(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+  
     return self;
 }])
 .factory('Counsel', ['$q', 'Data', function($q, Data){

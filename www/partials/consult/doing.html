@@ -13,7 +13,7 @@
         </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients">
-                <img src="p.patientId.photoUrl">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>{{p.patientId.name}}</span>
                 <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>
@@ -21,7 +21,17 @@
                 <span class="mine-msg-right">{{p.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
                 <p class="friend-detail-p" style="white-space:nowrap;">{{p.topic}}</p>
                 </div>
-            </a>      
+            </a>
+            <a class="item item-thumbnail-left" href="#/tab/detail/1/CL201704150015">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
+                <div>
+                <span>卢兴芳</span>
+                <span style="margin-left:5px;">女</span>
+                <span style="margin-left:5px;"> 47岁</span>
+                <span class="mine-msg-right">2017-4-14 8:53</span>
+                <p class="friend-detail-p" style="white-space:nowrap;"></p>
+                </div>
+            </a> 
         </div>
     </ion-content>
 </ion-view>

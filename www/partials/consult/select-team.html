@@ -8,11 +8,19 @@
             </div>
         </div>
         <div class="list">
-            <a ng-repeat="team in teams" class="item item-avatar" href="#/tab/groups/chat/0/{{team.groupId}}/{{team.groupId}}">
+            <a ng-repeat="team in teamst" class="item item-avatar" ng-click="sendTo(team)" >
+            <!-- href="#/tab/groups/chat/0/{{team.groupId}}/{{team.groupId}}" -->
                 <img ng-src="img/avatar.png">
                 <h2>{{team.name}}</h2>
                 <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{team.num}}</span></div>
                 <p>{{team.major}}</p>
+            </a>
+            <a ng-repeat="team in teams" class="item item-avatar" ng-click="sendTo(team)" >
+            <!-- href="#/tab/groups/chat/0/{{team.groupId}}/{{team.groupId}}" -->
+                <img ng-src="img/avatar.png">
+                <h2>{{team.name}}</h2>
+                <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{team.number}}</span></div>
+                <p>{{team.description}}</p>
             </a>
         </div>
     </ion-content>
