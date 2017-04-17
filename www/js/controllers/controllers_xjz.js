@@ -183,12 +183,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         var time= Date.now();
         if(!force && time-$scope.params.updateTime<21600000) return;
         $scope.params.updateTime=time;
-        // Doctor.getMyGroupList({userId:Storage.get('UID')})
+        Doctor.getMyGroupList({userId:Storage.get('UID')})
         // Doctor.getMyGroupList({userId:'doc01'})
-        // .then(function(data){
-        //     console.log(data)
-        //     $scope.teams=data;
-        // });
+        .then(function(data){
+            console.log(Storage.get('UID'))
+            console.log(data)
+            $scope.teams=data;
+        });
         // Doctor.getRecentDoctorList({userId:Storage.get('UID')})
         Doctor.getRecentDoctorList({userId:'doc01'})
         .then(function(data)
@@ -298,7 +299,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     // }
     $scope.itemClick = function(ele, team) {
         if (ele.target.id == 'discuss') $state.go("tab.group-patient", { team: team });
-        else $state.go('tab.group-chat', { type: '0', groupId: team.teamId, team:team});
+        else $state.go('tab.group-chat', { type: '0', groupId:team.teamId, team:team});
     }
 
     // $scope.groupcommunication = function(group){
@@ -814,9 +815,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //团队信息
-.controller('GroupDetailCtrl', ['$scope', '$state', '$ionicModal', function($scope, $state, $ionicModal) {
+.controller('GroupDetailCtrl', ['$scope', '$state', '$ionicModal', 'Communication',function($scope, $state, $ionicModal,Communication) {
     $scope.$on('$ionicView.beforeEnter',function(){
-        $scope.team=$state.params.team;
+        $scope.teamId=$state.params.team.teamId;
+         Communication.getTeam({teamId:$scope.teamId})
+                .then(function(data){
+                  console.log(data)
+                  $scope.team=data.results;
+                },function(err){
+                    console.log(err);
+                })
+        
         console.log($scope.team)
     })
 
@@ -934,8 +943,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 $rootScope.newMember=$scope.group.members;
                 $ionicHistory.goBack();
             }else{
-              
-                    Communication.insertMember({teamId:$state.params.groupId,members:$rootScope.newMember})
+                    console.log($state.params.groupId)
+                    Communication.insertMember({teamId:$state.params.groupId,members:$scope.group.members})
                     .then(function(data){
                         $ionicLoading.show({ template: '添加成功', duration: 1500 });
                         setTimeout(function(){$ionicHistory.goBack();},1500);
