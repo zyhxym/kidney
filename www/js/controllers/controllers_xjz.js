@@ -1,7 +1,7 @@
 angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 //新建团队
 .controller('NewGroupCtrl', ['$scope', '$state', '$ionicLoading','$rootScope','Communication','Storage','JM',function($scope, $state,$ionicLoading,$rootScope,Communication,Storage,JM) {
-    
+    $rootScope.newMember=[];
     $scope.members=[];
     $scope.team = {
         teamId: '',
@@ -16,19 +16,53 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     
     $scope.confirm = function(){
         console.log($rootScope.newMember);
-        return;
-        if($scope.team.name=='' || $scope.team.description){
+       // return;
+        if($scope.team.name=='' || $scope.team.description==''){
             $ionicLoading.show({ template: '请完整填写信息', duration: 1500 });
         }else if(!$scope.members){
             $ionicLoading.show({ template: '请至少添加一个成员', duration: 1500 });
-        }else{
-            JM.newGroup($scope.team.name,$scope.team.description,$scope.members)
-            .then(function(data){
-                console.log(data);
-                upLoad();
-            },function(err){
-                $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
-            })
+        }else{  
+            var idStr='';
+                    for(i=0;i<$rootScope.newMember.length;i++){
+                         window.JMessage.register($rootScope.newMember[i].userid, JM.pGen($rootScope.newMember[i].userid),function(data){
+                            console.log(data);
+                         },function(err){
+                            console.log(err);
+                         });
+                        if(i==0){
+                        idStr=$rootScope.newMember[i].userid}
+                        else{idStr=idStr+','+$rootScope.newMember[i].userid}
+                    }
+                    
+       
+                     console.log(idStr);
+              
+                 window.JMessage.createGroup($scope.team.name,$scope.team.description,idStr,
+                function(data){
+                    console.log(data);
+                    upload(data);
+                    // members=$rootScope.newMember;
+                    
+                    // window.JMessage.addGroupMembers(groupId,idStr,
+                    // window.JMessage.addGroupMembers('22818577','user004',
+                    //     function(data){
+                    //         console.log(data);
+                    //         upload();
+                    //     },function(err){
+                    //         $ionicLoading.show({ template: '失败addGroupMembers', duration: 1500 });
+                    //         console.log(err);
+                    //     })
+                },function(err){
+                    $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
+                    console.log(err);
+                })
+            // JM.newGroup($scope.team.name,$scope.team.description,$scope.members)
+            // .then(function(data){
+            //     console.log(data);
+            //     upLoad();
+            // },function(err){
+            //     $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
+            // })
             // window.JMessage.createGroup($scope.team.name,$scope.team.description,
             //     function(data){
             //         console.log(data);
@@ -51,16 +85,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
     }
     function upload(gid){
-        $scope.team.teamId=data.gid;
+        $scope.team.teamId=gid;
         $scope.team.sponsorId=Storage.get('UID');
         $scope.team.sponsorName=Storage.get('USERNAME');
-        communication.newTeam($scope.team)
+        Communication.newTeam($scope.team)
         .then(function(data){
             //add members
-            for(var i in members){
-                communication.insertMember({teamId:$scope.team.teamId,membersuserId:members[i].userId,membersname:members[i].name})
+            for(var i=0;i<$rootScope.newMember.length;i++){
+                Communication.insertMember({teamId:$scope.team.teamId,membersuserId:$rootScope.newMember[i].userid,membersname:$rootScope.newMember[i].name})
                 .then(function(data){
-
+                  console.log(data)
+                },function(err){
+                    console.log(err);
                 })
             }
             $ionicLoading.show({ template: '创建成功', duration: 1500 });
@@ -95,7 +131,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //     console.log(err);
     // }
     $scope.addMember = function() {
-        $state.go('tab.group-add-member');
+        
+        $state.go('tab.group-add-member',{type:'new'});
     }
 }])
 //团队查找
@@ -737,21 +774,21 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 }])
 //添加成员
-.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory','arrTool','Communication','$ionicLoading', function($scope,$state,$ionicHistory,arrTool,Communication,$ionicLoading) {
+.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory','arrTool','Communication','$ionicLoading','$rootScope', function($scope,$state,$ionicHistory,arrTool,Communication,$ionicLoading,$rootScope) {
     //get groupId via $state.params.groupId
     $scope.group = {
         members: [
         ]
     }
     $scope.update = function(id){
-        if($scope.doctors[id].check) $scope.group.members.push({ url: 'img/max.png', name: 'Black' });
+        if($scope.doctors[id].check) $scope.group.members.push({ url:$scope.doctors[id].photoUrl , name:$scope.doctors[id].name , userid:$scope.doctors[id].userId });
         else $scope.group.members.splice(arrTool.indexOf($scope.group.members,'userId',$scope.doctors[id].userId),1);
     }
     $scope.doctors=[
           {
               photoUrl:"img/avatar.png",
-              userId:"D201703240001",
-              name:"小丁",
+              userId:"doctestget01",
+              name:"新Doc01",
               gender:"男",
               title:"主任医生",
               workUnit:"浙江XXX医院",
@@ -763,8 +800,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           },
           {
               photoUrl:"img/max.png",
-              userId:"D201703240002",
-              name:"小李",
+              userId:"doc01",
+              name:"新名1",
               gender:"女",
               title:"主任医生",
               workUnit:"浙江XXX医院",
@@ -776,8 +813,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           },
            {
               photoUrl:"img/default_user.png",
-              userId:"wds",
-              name:"小P",
+              userId:"doc02",
+              name:"医生02",
               gender:"男",
               title:"主任医生",
               workUnit:"浙江XXX医院",
@@ -789,18 +826,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
 
           $scope.confirmAdd=function(){
-            if($state.params.groupId=='new'){
+            if($state.params.type=='new'){
                 $rootScope.newMember=$scope.group.members;
+                $ionicHistory.goBack();
             }else{
                 for(var i in $scope.group.members){
-                    communication.insertMember({teamId:$state.params.groupId,membersuserId:$scope.group.members[i].userId,membersname:$scope.group.members[i].name})
+                    Communication.insertMember({teamId:$state.params.groupId,membersuserId:$scope.group.members[i].userId,membersname:$scope.group.members[i].name})
                     .then(function(data){
                         $ionicLoading.show({ template: '添加成功', duration: 1500 });
                         setTimeout(function(){ionicHistory.goBack();},1500);
                     })
                 }
             }
-            $ionicHistory.goBack();
+            
           }
 }])
 //团队聊天

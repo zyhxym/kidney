@@ -572,6 +572,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 })
         })
     }
+
     function sendCustom(type,toUser,key,data){
         return $q(function(resolve,reject){
             if(type='single'){
@@ -657,6 +658,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //     onReceivePushMessage, false);
         },
         login:login,
+        pGen:pGen,
+        newGroup:newGroup,
         register: register,
         checkIsLogin: checkIsLogin,
         getPushRegistrationID: getPushRegistrationID,
