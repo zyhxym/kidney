@@ -84,9 +84,9 @@ angular.module('kidney',[
                     //         console.log(err);
                     //     })
                     if(msg.fromAppkey==CONFIG.appKey){
-                        $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                        $state.go('tab.detail', { type:'2',chatId: msg.targetID});
                     }else{
-                        $state.go('tab.detail', { type:'1',chatId: msg.fromName});
+                        $state.go('tab.detail', { type:'1',chatId: msg.targetID});
                     }
                 }
                 // $state.go('tab.detail', { type:'2',chatId: msg.fromName});
