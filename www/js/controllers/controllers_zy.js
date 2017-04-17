@@ -470,7 +470,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel) {
+.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory) {
   // $scope.patients=[
   //   {
   //     head:"default_user.png",
@@ -493,12 +493,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.popover.show($event);
     //$scope.testt=12345
     };
+    $scope.goCounsel = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.consult');
+    }
   //$scope.isChecked1=true;
 
 }])
 
 //"咨询”已完成
-.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
+.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory) {
   // $scope.patients=[
   //   {
   //     head:"default_user.png",
@@ -521,6 +527,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $scope.popover.show($event);
         //$scope.testt=12345
     };
+    $scope.goCounsel = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.consult');
+    }
     //$scope.isChecked1=true;
 }])
 
