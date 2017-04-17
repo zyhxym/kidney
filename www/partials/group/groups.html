@@ -32,7 +32,7 @@
                 <a id="discuss" style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
             </div>
 
-            <div  ng-repeat="team in team1" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
+            <div  ng-repeat="team in team" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div style="display:inline-block;width:70%;">
                     <h2>{{team.name}}</h2>
