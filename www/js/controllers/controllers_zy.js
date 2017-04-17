@@ -689,9 +689,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.barwidth="width:0%";
    
    //$scope.userid=Storage.get('userid');
-   //$scope.doctor=meFactory.GetDoctorInfo($scope.userid);
-   //$scope.doctor=meFactory.GetDoctorInfo('D201703240001');
-  
+    $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.doRefresh();
+    });
+    
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
@@ -707,7 +708,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     )
 
-
+    //$scope.loadData(); 
     $scope.params = {
         // groupId:$state.params.groupId
         userId:Storage.get('UID')
@@ -780,18 +781,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.editinfo = function() {
         Doctor.editDoctorDetail($scope.doctor)
-    .then(
-        function(data)
-        {
-            console.log(data)
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    );
-    $scope.myDiv = !$scope.myDiv;
-    $scope.updateDiv = !$scope.updateDiv;
+        .then(
+            function(data)
+            {
+                console.log(data)
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+        $scope.myDiv = !$scope.myDiv;
+        $scope.updateDiv = !$scope.updateDiv;
     };
   
 
@@ -812,7 +813,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-          // console.log(data)
+        // console.log(data)
             $scope.doctor=data.results;
         },
         function(err)
@@ -823,18 +824,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   
     $scope.savefee = function() {
         Doctor.editDoctorDetail($scope.doctor)
-    .then(
-        function(data)
-        {
-          // console.log(data)
-           // $scope.doctor=data.result;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
-    $state.go('tab.me');  
+        .then(
+            function(data)
+            {
+                // console.log(data)
+                // $scope.doctor=data.result;
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )
+        $state.go('tab.me');  
     };
   
 

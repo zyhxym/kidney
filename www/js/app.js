@@ -239,7 +239,7 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        // cache: false,
+         cache: false,
         url: '/me',
         views: {
             'tab-me':{
