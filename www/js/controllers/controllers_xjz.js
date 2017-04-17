@@ -2,6 +2,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 //新建团队
 .controller('NewGroupCtrl', ['$scope', '$state', '$ionicLoading','$rootScope','Communication','Storage','JM',function($scope, $state,$ionicLoading,$rootScope,Communication,Storage,JM) {
     $rootScope.newMember=[];
+    // $scope.group = {
+    //     members: [
+    //     ]
+    // }
     $scope.members=[];
     $scope.team = {
         teamId: '',
@@ -24,19 +28,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }else{  
             var idStr='';
                     for(i=0;i<$rootScope.newMember.length;i++){
-                         window.JMessage.register($rootScope.newMember[i].userid, JM.pGen($rootScope.newMember[i].userid),function(data){
+                         window.JMessage.register($rootScope.newMember[i].userId, JM.pGen($rootScope.newMember[i].userid),function(data){
                             console.log(data);
                          },function(err){
                             console.log(err);
                          });
                         if(i==0){
-                        idStr=$rootScope.newMember[i].userid}
-                        else{idStr=idStr+','+$rootScope.newMember[i].userid}
+                        idStr=$rootScope.newMember[i].userId}
+                        else{idStr=idStr+','+$rootScope.newMember[i].userId}
                     }
                     
        
                      console.log(idStr);
-              
+            setTimeout(function(){ 
                  window.JMessage.createGroup($scope.team.name,$scope.team.description,idStr,
                 function(data){
                     console.log(data);
@@ -56,6 +60,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
                     console.log(err);
                 })
+            },500); 
             // JM.newGroup($scope.team.name,$scope.team.description,$scope.members)
             // .then(function(data){
             //     console.log(data);
@@ -91,14 +96,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         Communication.newTeam($scope.team)
         .then(function(data){
             //add members
-            for(var i=0;i<$rootScope.newMember.length;i++){
-                Communication.insertMember({teamId:$scope.team.teamId,membersuserId:$rootScope.newMember[i].userid,membersname:$rootScope.newMember[i].name})
+        
+                Communication.insertMember({teamId:$scope.team.teamId,members:$rootScope.newMember})
                 .then(function(data){
                   console.log(data)
                 },function(err){
                     console.log(err);
                 })
-            }
+            
             $ionicLoading.show({ template: '创建成功', duration: 1500 });
             setTimeout(function(){
                 $state.go('tab.groups',{type:'0'});
@@ -864,69 +869,78 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 }])
 //添加成员
-.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory','arrTool','Communication','$ionicLoading','$rootScope', function($scope,$state,$ionicHistory,arrTool,Communication,$ionicLoading,$rootScope) {
+.controller('GroupAddMemberCtrl', ['$scope', '$state','$ionicHistory','arrTool','Communication','$ionicLoading','$rootScope','Patient', function($scope,$state,$ionicHistory,arrTool,Communication,$ionicLoading,$rootScope,Patient) {
     //get groupId via $state.params.groupId
     $scope.group = {
         members: [
         ]
     }
     $scope.update = function(id){
-        if($scope.doctors[id].check) $scope.group.members.push({ url:$scope.doctors[id].photoUrl , name:$scope.doctors[id].name , userid:$scope.doctors[id].userId });
+        if($scope.doctors[id].check) $scope.group.members.push({ photoUrl:$scope.doctors[id].photoUrl , name:$scope.doctors[id].name , userId:$scope.doctors[id].userId });
         else $scope.group.members.splice(arrTool.indexOf($scope.group.members,'userId',$scope.doctors[id].userId),1);
     }
-    $scope.doctors=[
-          {
-              photoUrl:"img/avatar.png",
-              userId:"doctestget01",
-              name:"新Doc01",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科",
-              major:"肾上腺分泌失调",
-              score:'9.5',
-              num:2313,
-              check:false
-          },
-          {
-              photoUrl:"img/max.png",
-              userId:"doc01",
-              name:"新名1",
-              gender:"女",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科2",
-              major:"慢性肾炎、肾小管疾病",
-              score:'9.1',
-              num:525,
-              check:false
-          },
-           {
-              photoUrl:"img/default_user.png",
-              userId:"doc02",
-              name:"医生02",
-              gender:"男",
-              title:"主任医生",
-              workUnit:"浙江XXX医院",
-              department:"泌尿科3",
-              major:"肾小管疾病、间质性肾炎",
-              score:'8.8',
-              num:2546,
-              check:false
-          }];
+
+     Patient.getDoctorLists({skip:2,limit:3})
+                .then(function(data){
+                  console.log(data.results)
+                  $scope.doctors=data.results;
+                },function(err){
+                    console.log(err);
+                })
+    // $scope.doctors=[
+    //       {
+    //           photoUrl:"img/avatar.png",
+    //           userId:"doctestget01",
+    //           name:"新Doc01",
+    //           gender:"男",
+    //           title:"主任医生",
+    //           workUnit:"浙江XXX医院",
+    //           department:"泌尿科",
+    //           major:"肾上腺分泌失调",
+    //           score:'9.5',
+    //           num:2313,
+    //           check:true
+    //       },
+    //       {
+    //           photoUrl:"img/max.png",
+    //           userId:"doc01",
+    //           name:"新名1",
+    //           gender:"女",
+    //           title:"主任医生",
+    //           workUnit:"浙江XXX医院",
+    //           department:"泌尿科2",
+    //           major:"慢性肾炎、肾小管疾病",
+    //           score:'9.1',
+    //           num:525,
+    //           check:false
+    //       },
+    //        {
+    //           photoUrl:"img/default_user.png",
+    //           userId:"doc02",
+    //           name:"医生02",
+    //           gender:"男",
+    //           title:"主任医生",
+    //           workUnit:"浙江XXX医院",
+    //           department:"泌尿科3",
+    //           major:"肾小管疾病、间质性肾炎",
+    //           score:'8.8',
+    //           num:2546,
+    //           check:false
+    //       }
+    //       ];
 
           $scope.confirmAdd=function(){
             if($state.params.type=='new'){
                 $rootScope.newMember=$scope.group.members;
                 $ionicHistory.goBack();
             }else{
-                for(var i in $scope.group.members){
-                    Communication.insertMember({teamId:$state.params.groupId,membersuserId:$scope.group.members[i].userId,membersname:$scope.group.members[i].name})
+              
+                    Communication.insertMember({teamId:$state.params.groupId,members:$rootScope.newMember})
                     .then(function(data){
                         $ionicLoading.show({ template: '添加成功', duration: 1500 });
-                        setTimeout(function(){ionicHistory.goBack();},1500);
+                        setTimeout(function(){$ionicHistory.goBack();},1500);
                     })
-                }
+                
             }
             
           }
