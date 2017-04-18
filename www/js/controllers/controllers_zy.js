@@ -931,21 +931,83 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”排班页
-.controller('schedualCtrl', ['$scope','$ionicPopover','ionicDatePicker', function($scope,$ionicPopover,ionicDatePicker) {
-    var ipObj1 = {
-        callback: function (val) {  //Mandatory
-            console.log('Return value from the datepicker popup is : ' + val, new Date(val));
-            if($scope.flag==1)
+.controller('schedualCtrl', ['$scope','ionicDatePicker','$ionicPopup','Doctor','Storage', function($scope,ionicDatePicker,$ionicPopup,Doctor,Storage) {
+    var getSchedual=function()
+    {
+        Doctor.getSchedules({userId:Storage.get('UID')})
+        .then(function(data)
+        {
+            // console.log(data)
+            angular.forEach(data.results.schedules,function(value,key)
             {
-                console.log(1)
-                var date=new Date(val)
-                $scope.begin=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                // console.log(value)
+                var index=value.day-'0';
+                if(value.time==1)
+                    index+=7;
+                $scope.workStatus[index].status=1;
+                $scope.workStatus[index].style={'background-color':'red'};
+            })
+        },function(err)
+        {
+            console.log(err)
+        })
+        Doctor.getSuspendTime({userId:Storage.get('UID')})
+        .then(function(data)
+        {
+            console.log(data.results.suspendTime)
+            if(data.results.suspendTime.length==0)
+            {
+                $scope.stausText="接诊中..."
+                $scope.stausButtontText="停诊"
             }
             else
             {
-                console.log(2);
-                var date=new Date(val)
-                $scope.end=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                $scope.stausText="停诊中..."
+                $scope.stausButtontText="接诊"
+                $scope.begin=data.results.suspendTime[0].start;
+                $scope.end=data.results.suspendTime[0].end;
+            }
+        },function(err)
+        {
+            console.log(err)
+        })
+    }
+    $scope.workStatus=[
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+    ]
+    $scope.stausButtontText="停诊"
+    $scope.stausText="接诊中..."
+    $scope.showSchedual=true;
+    getSchedual();
+    var ipObj1 = {
+        callback: function (val) {  //Mandatory
+            // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            if($scope.flag==1)
+            {
+                $scope.begin=val;
+                // console.log(1)
+                // var date=new Date(val)
+                // $scope.begin=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            }
+            else
+            {
+                $scope.end=val;
+                // console.log(2);
+                // var date=new Date(val)
+                // $scope.end=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
             }
         },
         titleLabel: '停诊开始',
@@ -964,13 +1026,127 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.openDatePicker = function(params){
         ionicDatePicker.openDatePicker(ipObj1);
-        $scope.flag=params;
+        $scope.flag=params;//标识选定时间用于开始时间还是结束时间
     };
 
-    $scope.showSchedual=true;
     $scope.showSch=function()
     {
-        $scope.showSchedual=!$scope.showSchedual;
-    }   
+        if($scope.stausButtontText=="停诊")
+        {
+            $scope.showSchedual=false;
+        }
+        else
+        {
+            var param={
+                userId:Storage.get('UID'),
+                start:$scope.begin,
+                end:$scope.end
+            }
+            console.log(param)
+            Doctor.deleteSuspendTime(param)
+            .then(function(data)
+            {
+                console.log(data)
+                $scope.stausButtontText="停诊"
+                $scope.stausText="接诊中..."
+            },function(err)
+            {
+                console.log(err)
+            })
+        }
+    }
+    $scope.stopWork=function(cancel)
+    {
+        if(cancel)
+        {
+            $scope.showSchedual=true;
+            return;
+        }
+        if($scope.begin!=undefined&&$scope.end!=undefined)
+        {
+            var param={
+                userId:Storage.get('UID'),
+                start:$scope.begin,
+                end:$scope.end
+            }
+            console.log(param)
+            Doctor.insertSuspendTime(param)
+            .then(function(data)
+            {
+                console.log(data)
+                $scope.stausButtontText="接诊"
+                $scope.stausText="停诊中..."
+                $scope.showSchedual=true;
+            },function(err)
+            {
+                console.log(err)
+            })
+        }
+    }
+    $scope.changeWorkStatus=function(index)
+    {
+        console.log("changeWorkStatus"+index)
+        var text=''
+        if($scope.workStatus[index].status==0)
+        {
+            text = '此时间段将更改为工作状态！'
+        }
+        else
+        {
+            text = '此时间段将更改为空闲状态！'
+        }
+        var confirmPopup = $ionicPopup.confirm({
+            title: '修改工作状态',
+            template: text,
+            cancelText:'取消',
+            okText:'确定'
+        });
+
+        confirmPopup.then(function(res) {
+            if(res) {
+                // console.log('You are sure');
+                var param={
+                    userId:Storage.get('UID'),
+                    day:index.toString(),
+                    time:'0'
+                }
+                if(index>6)
+                {
+                    param.time='1';
+                    param.day=(index-7).toString();
+                }
+                // console.log(param)
+                if($scope.workStatus[index].status==0)
+                {
+                    Doctor.insertSchedule(param)
+                    .then(function(data)
+                    {
+                        // console.log(data)
+                        $scope.workStatus[index].status=1;
+                        $scope.workStatus[index].style={'background-color':'red'};
+                    },function(err)
+                    {
+                        console.log(err)
+                    })
+                }
+                else
+                {
+                    Doctor.deleteSchedule(param)
+                    .then(function(data)
+                    {
+                        // console.log(data)
+                        $scope.workStatus[index].status=0;
+                        $scope.workStatus[index].style={'background-color':'white'};
+                    },function(err)
+                    {
+                        console.log(err)
+                    })
+                }
+            }
+            else {
+                // console.log('You are not sure');
+            }
+        });
+    }
 
 }])
