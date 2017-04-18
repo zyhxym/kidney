@@ -8,11 +8,20 @@
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>
+        <div class="bar bar-header item-input-inset" style="height:40px;">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="搜索" ng-model="DoingSearch">
+            </label>
+            <button class="button button-clear button-positive">
+                取消
+            </button>
+        </div>
         <div>
         等待患者：{{patients.length}}
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients">
+            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:DoingSearch">
                 <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>{{p.patientId.name}}</span>

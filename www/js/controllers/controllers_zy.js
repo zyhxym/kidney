@@ -567,7 +567,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var patients=[];
     var patientlength = '';
     Doctor.getPatientList({
-        userId:Storage.get('UID')
+        userId:'doc01'
     })
     .then(
         function(data)
