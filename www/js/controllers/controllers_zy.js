@@ -924,9 +924,63 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置内容页
-.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage', function($scope, $ionicPopup,$state,$stateParams,Storage) {
+.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage','User', function($scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
+    $scope.resetPassword=function(oldPW,newPW,confirmPW)
+    {
+        // console.log("resetpw")
+        // console.log(oldPW)
+        // console.log(newPW)
+        // console.log(confirmPW)
+        if(oldPW==undefined)
+        {
+            $scope.changePasswordStatus="请输入旧密码"
+            return;
+        }
+        if(oldPW==newPW)
+        {
+            $scope.changePasswordStatus="不能重置为之前的密码"
+            return;
+        }
+        if(newPW==undefined||newPW.length<6)
+        {
+            $scope.changePasswordStatus="新密码不能为空且必须大于6位"
+            return;
+        }
+        if(newPW!=confirmPW)
+        {
+            $scope.changePasswordStatus="两次输入不一致"
+            return;
+        }
+        User.logIn({username:Storage.get('USERNAME'),password:oldPW,role:'doctor'})
+        .then(function(succ)
+        {
+            // console.log(Storage.get('USERNAME'))
+            if(succ.results.mesg=="login success!")
+            {
+                User.changePassword({phoneNo:Storage.get('USERNAME'),password:newPW})
+                .then(function(succ)
+                {
+                    // console.log(succ)
+                    var phoneNo=Storage.get('USERNAME')
+                    Storage.clear();
+                    Storage.set('USERNAME',phoneNo)
+                    $state.go('signin');
+                },function(err)
+                {
+                    console.log(err)
+                })
+            }
+            else
+            { 
+                $scope.changePasswordStatus="旧密码不正确"
+            }
+        },function(err)
+        {
+            console.log(err)
+        })
+    }
   
 }])
 
