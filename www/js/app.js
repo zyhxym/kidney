@@ -16,7 +16,7 @@ angular.module('kidney',[
     'ionic-datepicker'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG) {
+.run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
     $ionicPlatform.ready(function() {
         $rootScope.goConclusion =function(){
             alert('aaa');
@@ -55,21 +55,64 @@ angular.module('kidney',[
         if (window.JMessage) {
             // window.Jmessage.init();
             JM.init();
-
+            //打开通知栏消息，属于jmessage
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
                 console.log(msg);
                 if(msg.targetType=='group'){
-                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
+                    window.JMessage.getGroupInfo(msg.targetID,
+                        function(response){
+                            //'0':团队交流  '1': 未结束病历  '2':已结束病历
+                            var res=JSON.stringify(response);
+                            if(res.groupDescription=="consultation_open"){
+                                $state.go('tab.group-chat', { type:'1',chatId: msg.targetID,teamId:null});
+                            }else if(res.groupDescription=="consultation_close"){
+                                $state.go('tab.group-chat', { type:'2',chatId: msg.targetID,teamId:null});
+                            }else{
+                                Communication.getTeam()
+                                $state.go('tab.group-chat', { type:'0',chatId: msg.targetID,teamId:null});
+                            }
+                            console.log(res);
+                        },function(err){
+                            console.log(err);
+                        })
                 }else{
+                    // window.JMessage.getUserInfo(msg.fromID,msg.fromAppkey,
+                    //     function(response){
+                    //         console.log(response);
+                    //     },function(err){
+                    //         console.log(err);
+                    //     })
                     if(msg.fromAppkey==CONFIG.appKey){
                         $state.go('tab.detail', { type:'2',chatId: msg.fromName});
                     }else{
                         $state.go('tab.detail', { type:'1',chatId: msg.fromName});
                     }
                 }
-                $state.go('tab.detail', { type:'2',chatId: msg.fromName});
+                // $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
+            //打开通知栏Notification,属于jpush
+            document.addEventListener("jpush.openNotification", function (msg) {
+                console.info('[jpush.openNotification]:');
+                console.log(msg);
+                // var alertContent
+                if(device.platform == "Android") {
+                    if(msg.targetType=='group'){
+                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
+                    }else{
+                        if(msg.fromAppkey==CONFIG.appKey){
+                            $state.go('tab.detail', { type:'2',chatId: msg.extras.fromName});
+                        }else{
+                            $state.go('tab.detail', { type:'1',chatId: msg.extras.fromName});
+                        }
+                    }
+                  // alertContent = event.alert
+                } else {
+                  // lertContent = event.aps.alert
+                }
+            }, false)
+
+            //广播'receiveMessage'
             document.addEventListener('jmessage.onReceiveMessage', function(msg) {
                 console.info('[jmessage.onReceiveMessage]:');
                 console.log(msg);
@@ -79,24 +122,40 @@ angular.module('kidney',[
                     // console.log(JSON.stringify(message));
                 }
             }, false);
+
+            //显示通知栏消息
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
                 console.info('[jmessage.onReceiveCustomMessage]:' );
                 console.log(msg);
 
                 // $rootScope.$broadcast('receiveMessage',msg);
-                if (msg.targetType == 'single' && msg.fromID != $rootScope.conversation.id) {
+                if (msg.targetType == 'single' && msg.fromName != $rootScope.conversation.id) {
                     if (device.platform == "Android") {
-                        window.plugins.jPushPlugin.addLocalNotification(1, '本地推送内容test', msg.content.contentStringMap.type, 111, 0, null)
+                        window.plugins.jPushPlugin.addLocalNotification(1, msg.content.contentStringMap.help, msg.targetName, msg.serverMessageId, 0, msg);
                             // message = window.JMessage.message;
                             // console.log(JSON.stringify(message));
                     } else {
-                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.type + '本地推送内容test', 1, 111, null)
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, msg.content.contentStringMap)
+                    }
+                }
+                if (msg.targetType == 'group' && msg.targetID != $rootScope.conversation.id) {
+                    if (device.platform == "Android") {
+                        if(msg.content.contentType=='text'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, msg.content.text, msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='image'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[图片]', msg.fromNickname, 111, 0, null)
+                        }else if(msg.content.contentType=='voice'){
+                            window.plugins.jPushPlugin.addLocalNotification(1, '[语音]', msg.fromNickname, 111, 0, null)
+                        }
+                    } else {
+                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
                     }
                 }
 
             }, false);
-
         }
+
+        //聊天用，防止消息被keyboard遮挡
         window.addEventListener('native.keyboardshow', function(e) {
             $rootScope.$broadcast('keyboardshow', e.keyboardHeight);
         });
@@ -219,7 +278,7 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        // cache: false,
+         cache: false,
         url: '/me',
         views: {
             'tab-me':{
@@ -374,7 +433,7 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-add-member', {
-            url: '/groups/addmember/:groupId',
+            url: '/groups/addmember/:type',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add-member.html',
@@ -413,7 +472,7 @@ angular.module('kidney',[
                 },
                 // params:['group','typr','groupId']
             },
-            params:{'type':'0','team':null,'groupId':null}
+            params:{'type':'0','teamId':null,'groupId':null}
             // params:['group','typr','groupId']
         })
     .state('tab.group-conclusion', {

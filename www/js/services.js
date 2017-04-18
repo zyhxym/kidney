@@ -160,7 +160,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                     reject(err);
                 });
             audio.media.startRecord();
-            $ionicLoading.show({ template: 'recording' });
+            $ionicLoading.show({ template: '开始说话',noBackdrop:true});
         });
     }
     audio.stopRec = function() {
@@ -254,7 +254,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
 })
 //jmessage XJZ
-.factory('JM', ['Storage','$q', function(Storage,$q) {
+.factory('JM', ['Storage','$q','Doctor', function(Storage,$q,Doctor) {
     var ConversationList = [];
     var messageLIsts = {};
     function pGen(u){
@@ -320,36 +320,50 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //     }
     // }
 
-    function login(user) {
+    function login(user,nick) {
         return $q(function(resolve,reject){
-            console.log(user);
-            console.log(pGen(user));
+            Doctor.getDoctorInfo({userId:user})
+            .then(function(data){
+                console.log(user);
+                console.log(pGen(user));
+                if(window.JMessage){
+                    window.JMessage.login(user, pGen(user),
+                        function(response) {
+                            window.JMessage.updateMyInfo('nickname',data.results.name);
+                            window.JMessage.nickname = data.results.name;
+                            window.JMessage.username = user;
+                            resolve(user);
+                        }, function(err){
+                            console.log(err);
+                            register(user,data.results.name);
+                            // reject(err);
+                        });
 
-            // console.log(ionic.Platform)
-            // console.log(ionic.Platform.platforms[0]=="browser")
-            if(ionic.Platform.platforms[0]!="browser")
-            if(window.JMessage){
-                window.JMessage.login(user, pGen(user),
+
+                }
+            },function(err){
+                reject(err);
+            })            
+        });
+    }
+
+    function register(user,nick) {
+        return $q(function(resolve,reject){
+            window.JMessage.register(user, pGen(user),
+                function(response) {
+                    window.JMessage.login(user, pGen(user),
                     function(response) {
+                        //真实姓名
+                        window.JMessage.updateMyInfo('nickname',nick);
                         window.JMessage.username = user;
+                        window.JMessage.nickname = nick;
                         resolve(user);
                     }, function(err){
                         console.log(err);
                         reject(err);
                     });
-
-
-            }
-
-        });
-    }
-
-    function register(user) {
-        return $q(function(resolve,reject){
-            window.JMessage.register(user, pGen(user),
-                function(response) {
-                    console.log("login callback success" + response);
-                    resolve(user);
+                    // console.log("login callback success" + response);
+                    // resolve(user);
                 },
                 function(response) {
                     console.log("login callback fail" + response);
@@ -359,7 +373,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         
     }
-
+    // nickname：昵称。
+    // birthday：生日。
+    // signature：个性签名。
+    // gender：性别。
+    // region：地区。
+    // function updateMyInfo(field,value){
+    //     window.JMessage.updateMyInfo(field,value,null,null)
+    // }
     // function updateConversationList() {
     //     $('#conversationList').empty().listview('refresh');
     //     console.log("updateConversationList");
@@ -508,9 +529,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //         console.log(exception);
     //     }
     // }
-    function newGroup(name,des,members){
+    function newGroup(name,des,members,type){
         return $q(function(resolve,reject){
-            window.JMessage.createGroup('abcde','fg',
+            window.JMessage.createGroup('abcde','fg','',
             // window.JMessage.createGroup(name,des,
                 function(data){
                     console.log(data);
@@ -533,6 +554,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 })
         })
     }
+
     function sendCustom(type,toUser,key,data){
         return $q(function(resolve,reject){
             if(type='single'){
@@ -618,7 +640,11 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //     onReceivePushMessage, false);
         },
         login:login,
+        pGen:pGen,
+        sendCustom:sendCustom,
+        newGroup:newGroup,
         register: register,
+        pGen:pGen,
         checkIsLogin: checkIsLogin,
         getPushRegistrationID: getPushRegistrationID,
     }
@@ -772,6 +798,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
+            newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
             insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
         });
@@ -976,7 +1004,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //  }
     self.newTeam = function(params){
         var deferred = $q.defer();
-        Data.Communication.getCounselReport(
+        Data.Communication.newTeam(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1040,6 +1068,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.removeMember = function(params){
         var deferred = $q.defer();
         Data.Communication.removeMember(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.newConsultation = function(params){
+        var deferred = $q.defer();
+        Data.Communication.newConsultation(
             params,
             function(data, headers){
                 deferred.resolve(data);

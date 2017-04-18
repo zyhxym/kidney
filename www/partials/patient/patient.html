@@ -10,7 +10,7 @@
         <div class="bar bar-header item-input-inset" style="height:40px;">
             <label class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon"></i>
-                <input type="search" placeholder="搜索">
+                <input type="search" placeholder="搜索" ng-model="PatientSearch">
             </label>
             <button class="button button-clear button-positive">
                 取消
@@ -18,13 +18,14 @@
         </div>
         
         <ion-list>
-        <ion-item ng-repeat="p in patients|orderBy:filter.propertyName" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)" ng-show="p.show">
-        <img ng-src="p.patientId.photoUrl">
+        <ion-item ng-repeat="p in patients | filter:PatientSearch |orderBy:filter.propertyName" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)" ng-show="p.show">
+        <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
         <div>
-                <span>{{p.patientId.name}}</span><span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
-                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span>
+                <span>{{p.patientId.name}}</span>
+ <!--                <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
+                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->
                 <p class="friend-detail-p">是否VIP{{p.patientId.VIP | filterVIP}}</p>
-                <p class="friend-detail-p">危机程度{{p.patientId.class}}</p>
+<!--                 <p class="friend-detail-p">危机程度{{p.patientId.class}}</p> -->
                 </div>
 
       </ion-item>
