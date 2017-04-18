@@ -10,7 +10,7 @@
             <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
         </div>
         <button class="button button-clear button-positive" ng-click="closeSearch()">
-            取消
+            确认
         </button>
     </div>
     <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
@@ -20,7 +20,7 @@
     <ion-content class="gray-back has-subheader content-item-list">
         <div ng-if="!params.showSearch && params.isTeam" class="list">
             <!-- 团队 -->
-            <div  ng-repeat="team in teams" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
+            <div  ng-repeat="team in teams |filter:query" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div style="display:inline-block;width:70%;">
                     <h2>{{team.name}}</h2>
@@ -32,7 +32,7 @@
                 <a id="discuss" style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
             </div>
 
-            <div  ng-repeat="team in team" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
+            <div  ng-repeat="team in team|filter:query" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div style="display:inline-block;width:70%;">
                     <h2>{{team.name}}</h2>
@@ -47,7 +47,7 @@
         </div>
         <!-- 医生 -->
         <div ng-if="!params.showSearch && !params.isTeam" class="list">
-            <a class="item item-avatar" ng-repeat="d in doctorst" href="#/tab/detail/2/{{d.userId}}">
+            <a class="item item-avatar" ng-repeat="d in doctorst|filter:query" href="#/tab/detail/2/{{d.userId}}">
                 <img src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div class="doctor-msg-left balanced balanced-border">专家团队</div>
                 <div>
@@ -59,7 +59,7 @@
             </a>
         </div>
         <div ng-if="!params.showSearch && !params.isTeam" class="list">
-            <a class="item item-avatar" ng-repeat="d in doctors" href="#/tab/detail/2/{{d.doctorId.userId}}">
+            <a class="item item-avatar" ng-repeat="d in doctors|filter:query" href="#/tab/detail/2/{{d.doctorId.userId}}">
                 <img src="{{d.doctorId.photoUrl|imgUrl:'doctor'}}">
                 <div class="doctor-msg-left balanced balanced-border">专家团队</div>
                 <div>
