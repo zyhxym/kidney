@@ -18,33 +18,40 @@
 
         </div>
 
-        <div>
+        
         <span>全部患者：</span><span>{{patients.length}}</span>
 
-<!--         <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
+   <!--      <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
         <a ng-class="{'high-light':params.isTeam}" class="item col-50 " ng-click="showTeams()">全部患者：{{}}</a>
-        <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px" ng-click="showDocs()">今日新增：</a>
-        </div> -->
-
-
-        </div>
-
-        <ion-list>
-
+        <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px" ng-click="showDocs()">今日新增：</a> -->
         
-        <ion-item ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)" ng-show="p.show" style="height:10px">
-        <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
-        <div>
-                <span>{{p.patientId.name}}</span>
- <!--                <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
-                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->
-                <p class="friend-detail-p">是否VIP：{{p.patientId.VIP | filterVIP}}</p>
-<!--                 <p class="friend-detail-p">危机程度{{p.patientId.class}}</p> -->
+
+
         </div>
 
-      </ion-item>
+        <div  ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(p.patientId.userId)">
+            <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
+                <div style="display:inline-block;width:70%;">
+                    <h2>{{p.patientId.name}}</h2>
+ <!--                <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
+                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->                    
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-star"></i>
+                    </div>
 
-    </ion-list>
+
+
+
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-ios-flame"></i>
+                    </div>                    
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-hand"></i>
+                    </div>
+                    <div style="display:inline-block;background-color:#FFFF66;border-radius: 0.3em;color:#FF0000;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i>
+                    </div>
+                    <div style="display:inline-block;background-color: #FF0000;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon icon ion-android-favorite"></i>
+                    </div>     
+<!--                     <p>是否VIP：{{p.patientId.VIP | filterVIP}}</p> -->
+                </div>
+        </div>
 
 
 
