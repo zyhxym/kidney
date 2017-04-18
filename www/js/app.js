@@ -55,6 +55,10 @@ angular.module('kidney',[
         if (window.JMessage) {
             // window.Jmessage.init();
             JM.init();
+            document.addEventListener('jmessage.onUserLogout',function(data){
+              console.error(Storage.get(UID) +' log out');
+              alert('jmessage user log out: '+Storage.get(UID));
+            })
             //打开通知栏消息，属于jmessage
             document.addEventListener('jmessage.onOpenMessage', function(msg) {
                 console.info('[jmessage.onOpenMessage]:');
@@ -65,12 +69,11 @@ angular.module('kidney',[
                             //'0':团队交流  '1': 未结束病历  '2':已结束病历
                             var res=JSON.stringify(response);
                             if(res.groupDescription=="consultation_open"){
-                                $state.go('tab.group-chat', { type:'1',chatId: msg.targetID,teamId:null});
+                                $state.go('tab.group-chat', { type:'1',groupId: msg.targetID,teamId:msg.content.stringExtras.teamId});
                             }else if(res.groupDescription=="consultation_close"){
-                                $state.go('tab.group-chat', { type:'2',chatId: msg.targetID,teamId:null});
+                                $state.go('tab.group-chat', { type:'2',groupId: msg.targetID,teamId:msg.content.stringExtras.teamId});
                             }else{
-                                Communication.getTeam()
-                                $state.go('tab.group-chat', { type:'0',chatId: msg.targetID,teamId:null});
+                                $state.go('tab.group-chat', { type:'0',groupId: msg.targetID,teamId:msg.content.stringExtras.teamId});
                             }
                             console.log(res);
                         },function(err){
@@ -89,7 +92,6 @@ angular.module('kidney',[
                         $state.go('tab.detail', { type:'1',chatId: msg.targetID});
                     }
                 }
-                // $state.go('tab.detail', { type:'2',chatId: msg.fromName});
             }, false);
             //打开通知栏Notification,属于jpush
             document.addEventListener("jpush.openNotification", function (msg) {
@@ -97,7 +99,16 @@ angular.module('kidney',[
                 console.log(msg);
                 // var alertContent
                 if(device.platform == "Android") {
-                    if(msg.targetType=='group'){
+                    if(msg.extras.targetType=='group'){
+
+                        var content = JSON.stringify(msg.extras.content);
+                            groupId = content.contentStringMap.consultationId;
+                            teamId = content.contentStringMap.targetId;
+                        if(groupId!=teamId){
+                            $state.go('tab.group-chat', { type:'1',groupId: groupId,teamId:teamId});
+                        }else{
+                            $state.go('tab.group-chat', { type:'0',groupId: groupId,teamId:teamId});
+                        }
                     // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
                     }else{
                         if(msg.fromAppkey==CONFIG.appKey){
@@ -106,9 +117,7 @@ angular.module('kidney',[
                             $state.go('tab.detail', { type:'1',chatId: msg.extras.fromName});
                         }
                     }
-                  // alertContent = event.alert
                 } else {
-                  // lertContent = event.aps.alert
                 }
             }, false)
 
@@ -118,37 +127,75 @@ angular.module('kidney',[
                 console.log(msg);
                 $rootScope.$broadcast('receiveMessage', msg);
                 if (device.platform == "Android") {
-                    // message = window.JMessage.message;
-                    // console.log(JSON.stringify(message));
                 }
             }, false);
 
             //显示通知栏消息
+            // custom消息内容
+            // 患者发送咨询：{
+            //     counsel:data.results,
+            //     type:'card',
+            //     patientId:patientId,
+            //     doctorId:DoctorId,
+            //     //转发信息
+            //     fromId:
+            //     targetId:
+            // }
+            // 咨询转发医生：{
+            //     counsel:data.results,
+            //     type:'card',
+            //     patientId:patientId,
+            //     doctorId:DoctorId,
+            //     //转发信息
+            //     targetId:DoctorId,
+            //     fromId
+            // }
+            // 咨询转发团队：{
+            //     counsel:data.results,
+            //     type:'card',
+            //     patientId:patientId,
+            //     doctorId:DoctorId,
+            //     //转发信息
+            //     targetId:teamId,
+            //     fromId:doctorId,
+            //     //consultation info
+            //     consultationId:
+            // }
+            // 名片{
+            //     type:'contact',
+            //     doctorInfo:{},
+            //     //转发信息
+            //     fromId:
+            //     targetId:
+            // }
+            //显示通知栏消息
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
                 console.info('[jmessage.onReceiveCustomMessage]:' );
                 console.log(msg);
-
+                var counsel=JSON.parse(msg.content.contentStringMap.counsel);
                 // $rootScope.$broadcast('receiveMessage',msg);
                 if (msg.targetType == 'single' && msg.fromName != $rootScope.conversation.id) {
-                    if (device.platform == "Android") {
-                        window.plugins.jPushPlugin.addLocalNotification(1, msg.content.contentStringMap.help, msg.targetName, msg.serverMessageId, 0, msg);
-                            // message = window.JMessage.message;
-                            // console.log(JSON.stringify(message));
-                    } else {
-                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, msg.content.contentStringMap)
+                    if(msg.content.contentStringMap.doctorId==msg.content.contentStringMap.targetId) prefix='[咨询]';
+                    else prefix='[咨询转发]';
+                    if(msg.content.contentStringMap.type=='card'){
+                        if (device.platform == "Android") {
+                            window.plugins.jPushPlugin.addLocalNotification(1, prefix+counsel.help, msg.targetName, msg.serverMessageId, 0, msg);
+                        } else {
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, msg.content.contentStringMap)
+                        }
+                    }else if(msg.content.contentStringMap.type=='contact'){
+
                     }
+                    
                 }
                 if (msg.targetType == 'group' && msg.targetID != $rootScope.conversation.id) {
-                    if (device.platform == "Android") {
-                        if(msg.content.contentType=='text'){
-                            window.plugins.jPushPlugin.addLocalNotification(1, msg.content.text, msg.fromNickname, 111, 0, null)
-                        }else if(msg.content.contentType=='image'){
-                            window.plugins.jPushPlugin.addLocalNotification(1, '[图片]', msg.fromNickname, 111, 0, null)
-                        }else if(msg.content.contentType=='voice'){
-                            window.plugins.jPushPlugin.addLocalNotification(1, '[语音]', msg.fromNickname, 111, 0, null)
+                    if(msg.content.contentStringMap.type=='card'){
+                        if (device.platform == "Android") {
+                                window.plugins.jPushPlugin.addLocalNotification(1, '[团队咨询]', msg.fromNickname, msg.serverMessageId, 0, msg);
+                        } else {
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
                         }
-                    } else {
-                        window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
+                    }else if(msg.content.contentStringMap.type=='contact'){
                     }
                 }
 
@@ -334,7 +381,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/consult/select-doctor.html'
             }
         },
-        params:{counsel:null}
+        params:{msg:null}
     })
     .state('tab.selectTeam', {
         // cache: false,
@@ -345,7 +392,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/consult/select-team.html'
             }
         },
-        params:{counsel:null}
+        params:{msg:null}
     })
     //已完成
     .state('tab.did', {
