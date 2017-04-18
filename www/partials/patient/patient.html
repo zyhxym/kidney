@@ -6,29 +6,44 @@
       </ion-nav-buttons>
 
     </ion-nav-bar>
-    <ion-content>
+    <ion-content padding="fasle">
         <div class="bar bar-header item-input-inset" style="height:40px;">
             <label class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon"></i>
-                <input type="search" placeholder="搜索" ng-model="PatientSearch">
+                <input type="search" placeholder="搜索" ng-model="query.name">
             </label>
-            <button class="button button-clear button-positive">
+            <button class="button button-clear button-positive" ng-click="clearSearch()">
                 取消
             </button>
+
         </div>
-        
+
+        <div>
+        <span>全部患者：</span><span>{{patients.length}}</span>
+
+<!--         <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
+        <a ng-class="{'high-light':params.isTeam}" class="item col-50 " ng-click="showTeams()">全部患者：{{}}</a>
+        <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px" ng-click="showDocs()">今日新增：</a>
+        </div> -->
+
+
+        </div>
+
         <ion-list>
-        <ion-item ng-repeat="p in patients | filter:PatientSearch |orderBy:filter.propertyName" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)" ng-show="p.show">
+
+        
+        <ion-item ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" class="item-thumbnail-left" ng-click="getPatientDetail(p.patientId.userId)" ng-show="p.show" style="height:10px">
         <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
         <div>
                 <span>{{p.patientId.name}}</span>
  <!--                <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
                 <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->
-                <p class="friend-detail-p">是否VIP{{p.patientId.VIP | filterVIP}}</p>
+                <p class="friend-detail-p">是否VIP：{{p.patientId.VIP | filterVIP}}</p>
 <!--                 <p class="friend-detail-p">危机程度{{p.patientId.class}}</p> -->
-                </div>
+        </div>
 
       </ion-item>
+
     </ion-list>
 
 

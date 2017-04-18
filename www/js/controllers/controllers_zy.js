@@ -499,6 +499,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         });
         $state.go('tab.consult');
     }
+    
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
+    }
   //$scope.isChecked1=true;
 
 }])
@@ -532,6 +540,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             disableBack: true
         });
         $state.go('tab.consult');
+    }
+
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
     }
     //$scope.isChecked1=true;
 }])
@@ -576,7 +592,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             if (data.results!='')
             {
                 $scope.patients=data.results[0].patients;
-                $scope.patients[1].patientId.VIP=0;
+                // $scope.patients[1].patientId.VIP=0;
                 patientlength=data.results[0].patients.length;
             }
             else
@@ -603,10 +619,17 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.getPatientDetail = function(id) {
         console.log(id)
-         Storage.set('getpatientId',id);
+        Storage.set('getpatientId',id);
         $state.go('tab.patientDetail');
 
 
+    }
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
     }
 
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover.html', {
@@ -671,7 +694,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
     function(data)
         {
-            // console.log(data)
+             console.log(data)
             $scope.patient=data.results;
             $scope.diagnosisInfo = data.results.diagnosisInfo;           
         },
@@ -701,9 +724,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.barwidth="width:0%";
    
    //$scope.userid=Storage.get('userid');
-    $scope.$on('$ionicView.beforeEnter', function() {
-        $scope.doRefresh();
-    });
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.doRefresh();
+    // });
     
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
