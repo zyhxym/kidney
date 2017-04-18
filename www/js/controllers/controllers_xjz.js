@@ -174,7 +174,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 .controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover','Doctor','Storage','Patient', function($scope, $http, $state, $ionicPopover,Doctor,Storage,Patient) {
     $scope.mygroups = ""
     $scope.query={
-        name:'测试'
+        name:''
     }
     $scope.params={
         isTeam:null,

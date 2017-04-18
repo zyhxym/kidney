@@ -325,7 +325,7 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-         cache: false,
+        cache: false,
         url: '/me',
         views: {
             'tab-me':{
@@ -450,6 +450,17 @@ angular.module('kidney',[
             }
         }
     })
+
+    // .state('tab.HealthInfo', {
+    //     // cache: false,
+    //     url: '/HealthInfo',
+    //     views: {
+    //         'tab-patient':{
+    //             controller: 'HealthInfoCtrl',
+    //             templateUrl: 'partials/patient/HealthInfo.html'
+    //         }
+    //     }
+    // })    
 
     // views-tab-groups
     .state('tab.new-group', {

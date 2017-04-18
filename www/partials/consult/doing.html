@@ -8,19 +8,31 @@
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content>
+        <div class="bar bar-header item-input-inset" style="height:40px;">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="搜索" ng-model="query.name">
+            </label>
+            <button class="button button-clear button-positive" ng-click="clearSearch()">
+                取消
+            </button>
+        </div>
         <div>
-        等待患者：{{patients.length}}
+        <span>等待患者：</span><span>{{patients.length}}</span>
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
-                <div>
+            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" href="#/tab/patientDetail">
+            <div>
+                <a href="#/tab/detail/1/{{p.counselId}}">    
                 <span>{{p.patientId.name}}</span>
                 <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>
                 <span style="margin-left:5px;">{{p.patientId.birthday|filterAge}}岁</span>
                 <span class="mine-msg-right">{{p.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
                 <p class="friend-detail-p" style="white-space:nowrap;">{{p.topic}}</p>
-                </div>
+                </a>    
+            </div>
+
             </a>
             <a class="item item-thumbnail-left" href="#/tab/detail/1/U201702071766">
                 <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
