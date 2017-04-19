@@ -490,6 +490,16 @@ angular.module('kidney',[
                 }
             }
         })
+    .state('tab.group-kick', {
+            url: '/groups/kick',
+            views: {
+                'tab-groups': {
+                    templateUrl: 'partials/group/group-kick.html',
+                    controller: 'GroupKickCtrl'
+                }
+            },
+            params:{teamId:null}
+        })
     .state('tab.group-add-member', {
             //type : 'new'表示从新建组进来的，不是'new'就是已有team加成员
             url: '/groups/addmember/:type',

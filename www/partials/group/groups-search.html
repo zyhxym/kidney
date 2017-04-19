@@ -23,6 +23,7 @@
             <a ng-repeat="team in teamresult" class="item item-avatar" href="#tab/groups/add/{{team.teamId}}">
                 <img ng-src="img/avatar.png">
                 <h2>{{team.name}}</h2><p>{{team.teamId}}</p>
+                <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{team.number}}</span></div>
                 <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{team.sponsorName}}</div>
                     <p>{{team.description}}</p>
             </a>
