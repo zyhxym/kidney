@@ -22,7 +22,7 @@
         </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" style="position:absolute;z-index:-100" href="http://www.runoob.com/">
 
   
                 <span>{{p.patientId.name}}</span>
@@ -32,7 +32,7 @@
                 <p class="friend-detail-p" style="white-space:nowrap;">{{p.topic}}</p>
                 </a>    
             </a>
-<!--             <a class="item item-thumbnail-left" href="#/tab/detail/1/U201702071766">
+            <a class="item item-thumbnail-left" href="#/tab/detail/1/U201702071766">
                 <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>卢兴芳</span>
@@ -41,7 +41,7 @@
                 <span class="mine-msg-right">2017-4-14 8:53</span>
                 <p class="friend-detail-p" style="white-space:nowrap;"></p>
                 </div>
-            </a>  -->
+            </a> 
         </div>
     </ion-content>
 </ion-view>

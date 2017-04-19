@@ -432,7 +432,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     //获取在等待
     Counsel.getCounsels({
-        userId:'doc01',
+        userId:Storage.get('UID'),
         status:0
     })
     .then(
@@ -450,7 +450,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     )
     //获取进行中
     Counsel.getCounsels({
-        userId:'doc01',
+        userId:Storage.get('UID'),
         status:1
     })
     .then(
