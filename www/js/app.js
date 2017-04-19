@@ -433,13 +433,15 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-add-member', {
+            //type : 'new'表示从新建组进来的，不是'new'就是已有team加成员
             url: '/groups/addmember/:type',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add-member.html',
                     controller: 'GroupAddMemberCtrl'
                 }
-            }
+            },
+            params:{teamId:null}
         })
     .state('tab.group-detail', {
             url: '/groups/detail',
@@ -449,7 +451,7 @@ angular.module('kidney',[
                     controller: 'GroupDetailCtrl'
                 }
             },
-            params:{team:null}
+            params:{teamId:null}
         })
     .state('tab.group-qrcode', {
             url: '/groups/qrcode',
@@ -459,7 +461,7 @@ angular.module('kidney',[
                     controller: 'GroupQrcodeCtrl'
                 }
             },
-            params:{team:null}
+            params:{teamId:null}
         })
     .state('tab.group-chat', {
         //'0':团队交流  '1': 未结束病历  '2':已结束病历
@@ -476,14 +478,14 @@ angular.module('kidney',[
             // params:['group','typr','groupId']
         })
     .state('tab.group-conclusion', {
-            url: '/groups/conclusion/:type/:teamId/:groupId',
+            url: '/groups/conclusion',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/conclusion.html',
                     controller: 'GroupConclusionCtrl'
                 }
-            }
-
+            },
+            params:{consultationId:null,teamId:null}
         })
     .state('tab.group-patient', {
         // cache: false,
@@ -494,8 +496,9 @@ angular.module('kidney',[
                 templateUrl: 'partials/group/group-patient.html'
             }
         },
-        params:{team:null}
+        params:{teamId:null}
     })
+    //医生个人信息
     .state('tab.group-profile', {
         // cache: false,
         url: '/group/doctor/profile',

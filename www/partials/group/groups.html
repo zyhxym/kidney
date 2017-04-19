@@ -23,16 +23,16 @@
             <div  ng-repeat="team in teams" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div style="display:inline-block;width:70%;">
-                    <h2>{{team.name}}</h2>
-                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{team.number}}</span></div>
+                    <h2>{{team.name}}</h2><p>{{team.teamId}}</p>
+                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i><span>{{team.num}}</span></div>
                     <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{team.sponsorName}}</div>
-                    <p>{{team.description}}{{team.teamId}}</p>
+                    <p>{{team.description}}</p>
                 </div>
                 <!--注意 id="discuss" 用于页面跳转 -->
                 <a id="discuss" style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
             </div>
 
-            <div  ng-repeat="team in team" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
+         <!--    <div  ng-repeat="team in team" class="item item-avatar" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{d.photoUrl|imgUrl:'doctor'}}">
                 <div style="display:inline-block;width:70%;">
                     <h2>{{team.name}}</h2>
@@ -40,9 +40,9 @@
                     <div style="display:inline-block;"><span style="display:inline-block;margin:0 0.2em 0 0.8em ;background-color:#AAA;color:#FFF">创建者</span>{{team.sponsorName}}</div>
                     <p>{{team.description}}</p>
                 </div>
-                <!--注意 id="discuss" 用于页面跳转 -->
+           
                 <a id="discuss" style="display:inline-block;width:auto;background-color: #00C853;height:100%;float:right;padding:0.4em 0.6em;border-radius: 0.5em;color:#FFF">讨论</a>
-            </div>
+            </div> -->
             
         </div>
         <!-- 医生 -->
