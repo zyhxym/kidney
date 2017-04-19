@@ -573,12 +573,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(
             function(data)
             {
-                console.log(data)
+                
                 if (data.results!='')
                 {
-                    $scope.patients=data.results[0].patients;
+                    $scope.patients=data.results.patients;
                     //$scope.patients[1].patientId.VIP=0;
-                    //patientlength=data.results[0].patients.length;
                 }
                 else
                 {
@@ -748,7 +747,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             function(data)
             {
                 //console.log(data)
-                $scope.Ins=data.results;
+                $scope.Ins.count=$scope.Ins.count + 1;
                 //$state.go('tab.patientDetail');       
             },
             function(err)
