@@ -742,7 +742,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             deleteSchedule:{method:'POST',params:{route:'deleteSchedule'},timeout:10000},
             getSuspendTime:{method:'GET',params:{route:'getSuspendTime'},timeout:10000},
             insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
-            deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000}
+            deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
+            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000}
         });
     }
 
@@ -805,6 +806,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
     }
 
+
+    var Insurance =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'insurance'},{
+            getInsMsg:{method:'GET', params:{route: 'getInsMsg'}, timeout: 100000},
+            updateInsuranceMsg:{method:'POST', params:{route: 'updateInsuranceMsg'}, timeout: 100000}
+        });
+    }
+
     serve.abort = function ($scope) {
         abort.resolve();
         $interval(function () {
@@ -823,6 +832,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Message = Message();
             serve.Communication = Communication();
             serve.User = User();
+            serve.Insurance = Insurance();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -839,6 +849,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Message = Message();
     serve.Communication = Communication();
     serve.User = User();
+    serve.Insurance = Insurance();    
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -1767,6 +1778,22 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+           //   userId:'doc01',
+           // }
+    self.getPatientByDate = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getPatientByDate(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
   
     return self;
 }])
@@ -1811,6 +1838,46 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
+
+.factory('Insurance', ['$q', 'Data', function($q, Data){
+    var self = this;
+    // //params->0:{
+    //                 doctorId:'doc01',
+    //                 patientId:'p01'
+    //             }
+    self.getInsMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.getInsMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+                    // doctorId:'doc01', 
+                    // patientId:'p02', 
+                    // insuranceId:'ins01',                    
+                    // type:5, 
+    //          }
+    self.updateInsuranceMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.updateInsuranceMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+
 .factory('QRScan', ['$cordovaBarcodeScanner', '$ionicLoading', '$q', function($cordovaBarcodeScanner, $ionicLoading, $q) {
     return {
         getCode: function() {
