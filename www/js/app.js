@@ -32,6 +32,7 @@ angular.module('kidney',[
 
         //用户ID
         var userid = '';
+        //记录jmessage当前会话
         $rootScope.conversation = {
             type: null,
             id: ''
@@ -100,7 +101,7 @@ angular.module('kidney',[
                 // var alertContent
                 if(device.platform == "Android") {
                     if(msg.extras.targetType=='group'){
-
+                        //转发团队
                         var content = JSON.stringify(msg.extras.content);
                             groupId = content.contentStringMap.consultationId;
                             teamId = content.contentStringMap.targetId;
@@ -109,9 +110,9 @@ angular.module('kidney',[
                         }else{
                             $state.go('tab.group-chat', { type:'0',groupId: groupId,teamId:teamId});
                         }
-                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
                     }else{
-                        if(msg.fromAppkey==CONFIG.appKey){
+                        //转发医生
+                        if(msg.extras.fromAppkey==CONFIG.appKey){
                             $state.go('tab.detail', { type:'2',chatId: msg.extras.fromName});
                         }else{
                             $state.go('tab.detail', { type:'1',chatId: msg.extras.fromName});
