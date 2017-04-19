@@ -51,7 +51,8 @@
         <div ng-if="!params.showSearch && !params.isTeam" class="list">
             <a class="item item-avatar" ng-repeat="d in doctorst|filter:query" href="#/tab/detail/2/{{d.userId}}">
                 <img src="{{d.photoUrl|imgUrl:'doctor'}}">
-                <div class="doctor-msg-left balanced balanced-border">专家团队</div>
+                <!-- <span class="msg-badge"></span> -->
+                <div class="doctor-msg-left balanced balanced-border">专家团队 <span class="button__badge">13</span></div>
                 <div>
                     <span>{{d.name}}</span> {{d.title}}
                     <p><span>{{d.workUnit}}</span> <span>{{d.department}}</span> </p>
@@ -67,7 +68,7 @@
                 <div>
                     <span>{{d.doctorId.name}}</span> {{d.doctorId.title}}
                     <p><span>{{d.doctorId.workUnit}}</span> <span>{{d.doctorId.department}}</span> </p>
-                    <p><span>评分{{d.doctorId.score}}</span> 问诊量：{{d.doctorId.num}} </p>
+                    <p><span>评分{{d.doctorId.score}}</span> 咨询量:{{d.doctorId.count2}} 问诊量:{{d.doctorId.count2}} </p>
                     <p>擅长：{{d.doctorId.major}}</p>
                 </div>
             </a>
