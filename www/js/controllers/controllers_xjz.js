@@ -18,14 +18,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.members = $rootScope.newMember;
     });
 
-    $scope.confirm = function() {
+     $scope.confirm = function(){
         console.log($rootScope.newMember);
-        // return;
-        if ($scope.team.name == '' || $scope.team.description == '') {
+       // return;
+        if($scope.team.name=='' || $scope.team.description==''){
             $ionicLoading.show({ template: '请完整填写信息', duration: 1500 });
-        } else if (!$scope.members) {
+        }else if(!$scope.members){
             $ionicLoading.show({ template: '请至少添加一个成员', duration: 1500 });
-
         }else{  
             var idStr='';
                     for(i=0;i<$rootScope.newMember.length;i++){
@@ -44,40 +43,24 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             setTimeout(function(){ 
                  window.JMessage.createGroup($scope.team.name,$scope.team.description,idStr,
                 function(data){
-
                     console.log(data);
-                }, function(err) {
+                    upload(data);
+                    // members=$rootScope.newMember;
+                    
+                    // window.JMessage.addGroupMembers(groupId,idStr,
+                    // window.JMessage.addGroupMembers('22818577','user004',
+                    //     function(data){
+                    //         console.log(data);
+                    //         upload();
+                    //     },function(err){
+                    //         $ionicLoading.show({ template: '失败addGroupMembers', duration: 1500 });
+                    //         console.log(err);
+                    //     })
+                },function(err){
+                    $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
                     console.log(err);
-                });
-                if (i == 0) {
-                    idStr = $rootScope.newMember[i].userId
-                } else { idStr = idStr + ',' + $rootScope.newMember[i].userId }
-            }
-
-
-            console.log(idStr);
-            setTimeout(function() {
-                window.JMessage.createGroup($scope.team.name, $scope.team.description, idStr,
-                    function(data) {
-                        console.log(data);
-                        upload(data);
-                        // members=$rootScope.newMember;
-
-                        // window.JMessage.addGroupMembers(groupId,idStr,
-                        // window.JMessage.addGroupMembers('22818577','user004',
-                        //     function(data){
-                        //         console.log(data);
-                        //         upload();
-                        //     },function(err){
-                        //         $ionicLoading.show({ template: '失败addGroupMembers', duration: 1500 });
-                        //         console.log(err);
-                        //     })
-                    },
-                    function(err) {
-                        $ionicLoading.show({ template: '失败createGroup', duration: 1500 });
-                        console.log(err);
-                    })
-            }, 500);
+                })
+            },500); 
             // JM.newGroup($scope.team.name,$scope.team.description,$scope.members)
             // .then(function(data){
             //     console.log(data);
