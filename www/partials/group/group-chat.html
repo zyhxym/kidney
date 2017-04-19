@@ -21,8 +21,7 @@
           </div>
           <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
           <p style="width:60%;display:inline-block;"><i class="icon ion-android-car"></i>{{patient.discription}}</p>
-          <a ng-if="patient.undergo" class="item" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF"
-           href="#/tab/groups/conclusion/2/{{patient.teamId}}/{{patient.groupId}}">回复患者</a>
+          <a ng-if="patient.undergo" class="item" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF" ng-click="goConclusion()">回复患者</a>
            <div ng-if="!patient.undergo" style="float:right;background-color:#888;border-radius:0.4em;padding:2px;color:#FFF">已回复</div>
       </div>
       <div ng-if="params.type=='2'" class="item item-body">
