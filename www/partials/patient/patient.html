@@ -4,9 +4,9 @@
      <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
          <button class="button button-clear"  ng-click="openPopover($event)"><i class="icon ion-android-funnel"></i></button>
       </ion-nav-buttons>
-
     </ion-nav-bar>
-    <ion-content padding="fasle">
+
+    <ion-content>
         <div class="bar bar-header item-input-inset" style="height:40px;">
             <label class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon"></i>
@@ -18,41 +18,56 @@
 
         </div>
 
-        
-        <span>全部患者：</span><span>{{patients.length}}</span>
+        <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;position: 0px;top: 0px">
 
-   <!--      <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;">
-        <a ng-class="{'high-light':params.isTeam}" class="item col-50 " ng-click="showTeams()">全部患者：{{}}</a>
-        <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px" ng-click="showDocs()">今日新增：</a> -->
-        
-
-
+            <a ng-class="{'high-light':params.isPatients}" class="item col-50 " ng-click="ShowPatients()">
+                <span>全部患者：{{patients.length}}</span>
+            </a>
+            <a ng-class="{'high-light':!params.isPatients}" class="item col-50 " style="border-right:0px" ng-click="ShowTodays()">
+                <span>今日新增：{{Todays.length}}</span>
+            </a>
         </div>
 
-        <div  ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(p.patientId.userId)">
-            <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
-                <div style="display:inline-block;width:70%;">
-                    <h2>{{p.patientId.name}}</h2>
- <!--                <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span>
-                <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->                    
-                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-star"></i>
+        <p></p>
+
+        <div ng-if="params.isPatients" class="list">
+            <div ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(p.patientId.userId)">
+                <img ng-src={{p.patientId.photoUrl|imgUrl:'patient'}}>
+                    <div style="display:inline-block;width:70%;">
+                        <h2>{{p.patientId.name}}</h2>
+                    <!-- <span>{{p.patientId.gender | filterGender}}</span><span>{{p.patientId.birthday | filterAge}}岁</span> -->
+                    <!-- <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name}}</span> -->
+                        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px">
+                            <i style="font-size:1em" class="icon ion-android-star" ng-if="p.patientId.VIP==1"></i>
+                        </div> 
+                        <!-- <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-ios-flame"></i>
+                        </div>                    
+                        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-hand"></i>
+                        </div>
+                        <div style="display:inline-block;background-color:#FFFF66;border-radius: 0.3em;color:#FF0000;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i>
+                        </div>
+                        <div style="display:inline-block;background-color: #FF0000;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon icon ion-android-favorite"></i>
+                        </div>    -->
+                          
+                        <!-- <p>是否VIP：{{p.patientId.VIP | filterVIP}}</p>  -->
                     </div>
-
-
-
-
-                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-ios-flame"></i>
-                    </div>                    
-                    <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon ion-android-hand"></i>
-                    </div>
-                    <div style="display:inline-block;background-color:#FFFF66;border-radius: 0.3em;color:#FF0000;padding:0 3px"><i style="font-size:1em" class="icon ion-android-person"></i>
-                    </div>
-                    <div style="display:inline-block;background-color: #FF0000;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em" class="icon icon ion-android-favorite"></i>
-                    </div>     
-<!--                     <p>是否VIP：{{p.patientId.VIP | filterVIP}}</p> -->
-                </div>
+            </div>
         </div>
 
+
+        <div ng-if="!params.isPatients" class="list">
+            <div ng-repeat="t in Todays | filter:query.name |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(t.patientId.userId)">
+                <img ng-src={{t.patientId.photoUrl|imgUrl:'patient'}}>
+                    <div style="display:inline-block;width:70%;">
+                        <h2>{{t.patientId.name}}</h2>
+
+                        <div style="display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px">
+                            <i style="font-size:1em" class="icon ion-android-star" ng-if="t.patientId.VIP==1"></i>
+                        </div> 
+
+                    </div>
+            </div>
+        </div>        
 
 
     </ion-content>
