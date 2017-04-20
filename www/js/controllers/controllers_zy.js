@@ -432,7 +432,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     //获取在等待
     Counsel.getCounsels({
-        userId:Storage.get('UID'),
+        userId:'doc01',
         status:0
     })
     .then(
@@ -450,7 +450,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     )
     //获取进行中
     Counsel.getCounsels({
-        userId:Storage.get('UID'),
+        userId:'doc01',
         status:1
     })
     .then(
@@ -507,7 +507,21 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         //console.log($scope.PatientSearch)
         $scope.query.name='';
     }
-  //$scope.isChecked1=true;
+
+    $scope.itemClick = function(ele, userId) {
+        if (ele.target.id == 'doingdetail'){
+            console.log(userId)
+            Storage.set('getpatientId',userId);
+            $state.go('tab.patientDetail');
+        } 
+
+        else
+        {
+            Storage.set('getpatientId',userId);
+            $state.go('tab.detail');
+        }
+    }
+    //$scope.isChecked1=true;
 
 }])
 
@@ -696,12 +710,15 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$state) {
+.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
     // $scope.doctor = doc;
-
+    $scope.goback=function(){
+        $ionicHistory.goBack();
+    }
+    
     console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
