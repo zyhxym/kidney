@@ -367,14 +367,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
 
     ionic.DomUtil.ready(function(){
-        // $http({
-        //     method  : 'POST',
-        //     url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-        //     params    : {'username':'admin','password':"bme319"},  // pass in data as strings
-        //     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-        //     }).success(function(data) {
-        //         //console.log(data);
-        // });
+        $http({
+            method  : 'POST',
+            url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
+            params    : {'username':'admin','password':"bme319"},  // pass in data as strings
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+            }).success(function(data) {
+                //console.log(data);
+        });
     })
     $scope.options = {
         loop: false,
@@ -383,24 +383,24 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
     $scope.testregis=function()
     {
-        $http({
-            method  : 'POST',
-            url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
-            params    :{
-                'regsubmit':'yes',
-                'formhash':'',
-                'D2T9s9':'test9',
-                'O9Wi2H':"123456",
-                'hWhtcM':'123456',
-                'qSMA7S':'qw@qq.com'
-            },  // pass in data as strings
-            headers : {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept':'application/xml, text/xml, */*'
-            }  // set the headers so angular passing info as form data (not request payload)
-        }).success(function(data) {
-                // console.log(data);
-        });
+        // $http({
+        //     method  : 'POST',
+        //     url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+        //     params    :{
+        //         'regsubmit':'yes',
+        //         'formhash':'',
+        //         'D2T9s9':'test9',
+        //         'O9Wi2H':"123456",
+        //         'hWhtcM':'123456',
+        //         'qSMA7S':'qw@qq.com'
+        //     },  // pass in data as strings
+        //     headers : {
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //         'Accept':'application/xml, text/xml, */*'
+        //     }  // set the headers so angular passing info as form data (not request payload)
+        // }).success(function(data) {
+        //         // console.log(data);
+        // });
     }
     // $scope.testRestful=function()
     // {
@@ -438,7 +438,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-            // console.log(data)
+            console.log(data)
             Storage.set("consulted",angular.toJson(data.results))
             // console.log(angular.fromJson(Storage.get("consulted",data.results)))
             $scope.doctor.b=data.results.length;
@@ -1001,9 +1001,63 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置内容页
-.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage', function($scope, $ionicPopup,$state,$stateParams,Storage) {
+.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage','User', function($scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
+    $scope.resetPassword=function(oldPW,newPW,confirmPW)
+    {
+        // console.log("resetpw")
+        // console.log(oldPW)
+        // console.log(newPW)
+        // console.log(confirmPW)
+        if(oldPW==undefined)
+        {
+            $scope.changePasswordStatus="请输入旧密码"
+            return;
+        }
+        if(oldPW==newPW)
+        {
+            $scope.changePasswordStatus="不能重置为之前的密码"
+            return;
+        }
+        if(newPW==undefined||newPW.length<6)
+        {
+            $scope.changePasswordStatus="新密码不能为空且必须大于6位"
+            return;
+        }
+        if(newPW!=confirmPW)
+        {
+            $scope.changePasswordStatus="两次输入不一致"
+            return;
+        }
+        User.logIn({username:Storage.get('USERNAME'),password:oldPW,role:'doctor'})
+        .then(function(succ)
+        {
+            // console.log(Storage.get('USERNAME'))
+            if(succ.results.mesg=="login success!")
+            {
+                User.changePassword({phoneNo:Storage.get('USERNAME'),password:newPW})
+                .then(function(succ)
+                {
+                    // console.log(succ)
+                    var phoneNo=Storage.get('USERNAME')
+                    Storage.clear();
+                    Storage.set('USERNAME',phoneNo)
+                    $state.go('signin');
+                },function(err)
+                {
+                    console.log(err)
+                })
+            }
+            else
+            { 
+                $scope.changePasswordStatus="旧密码不正确"
+            }
+        },function(err)
+        {
+            console.log(err)
+        })
+    }
   
 }])
 
@@ -1031,7 +1085,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Doctor.getSuspendTime({userId:Storage.get('UID')})
         .then(function(data)
         {
-            console.log(data.results.suspendTime)
+            // console.log(data.results.suspendTime)
             if(data.results.suspendTime.length==0)
             {
                 $scope.stausText="接诊中..."
@@ -1119,7 +1173,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 start:$scope.begin,
                 end:$scope.end
             }
-            console.log(param)
+            // console.log(param)
             Doctor.deleteSuspendTime(param)
             .then(function(data)
             {
@@ -1146,7 +1200,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 start:$scope.begin,
                 end:$scope.end
             }
-            console.log(param)
+            // console.log(param)
             Doctor.insertSuspendTime(param)
             .then(function(data)
             {
@@ -1162,7 +1216,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
     $scope.changeWorkStatus=function(index)
     {
-        console.log("changeWorkStatus"+index)
+        // console.log("changeWorkStatus"+index)
         var text=''
         if($scope.workStatus[index].status==0)
         {

@@ -685,7 +685,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'dict'},{
             getDiseaseType:{method:'GET', params:{route: 'typeTWO'}, timeout: 100000},
             getDistrict:{method:'GET', params:{route: 'district'}, timeout: 100000},
-            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000}
+            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000},
+            typeOne:{method:'GET', params:{route: 'typeOne'}, timeout: 100000}
         });
     };
 
@@ -895,6 +896,21 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.getHospital = function(params){
         var deferred = $q.defer();
         Data.Dict.getHospital(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+    //    category:'MessageType'
+    //}
+    self.typeOne = function(params){
+        var deferred = $q.defer();
+        Data.Dict.typeOne(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1362,7 +1378,10 @@ angular.module('kidney.services', ['ionic','ngResource'])
 }])
 .factory('Message', ['$q', 'Data', function($q, Data){
     var self = this;
-    //params->0:{type:1}
+    //params->0:{
+    //    userId:'U201704120001',
+    //    type:1//option
+    //}
     self.getMessages = function(params){
         var deferred = $q.defer();
         Data.Message.getMessages(
