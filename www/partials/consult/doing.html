@@ -22,7 +22,7 @@
         </div>
         <div class="list">
             <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" style="position:absolute;z-index:-100" href="http://www.runoob.com/">
+                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" style="position:absolute;z-index:-100" href="http://www.runoob.com/">
 
   
                 <span>{{p.patientId.name}}</span>
@@ -33,7 +33,7 @@
                 </a>    
             </a>
             <a class="item item-thumbnail-left" href="#/tab/detail/1/U201702071766">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
+                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>卢兴芳</span>
                 <span style="margin-left:5px;">女</span>

@@ -438,7 +438,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-            // console.log(data)
+            console.log(data)
             Storage.set("consulted",angular.toJson(data.results))
             // console.log(angular.fromJson(Storage.get("consulted",data.results)))
             $scope.doctor.b=data.results.length;
