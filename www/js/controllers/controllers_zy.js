@@ -499,6 +499,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         });
         $state.go('tab.consult');
     }
+    
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
+    }
   //$scope.isChecked1=true;
 
 }])
@@ -533,6 +541,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         });
         $state.go('tab.consult');
     }
+
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
+    }
     //$scope.isChecked1=true;
 }])
 
@@ -540,73 +556,95 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //"患者”页
 .controller('patientCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function(Doctor,$scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
     $scope.barwidth="width:0%";
-    //$scope.order="VIP";
-    //$scope.abc=false;
-    //$scope.index=0;
-    //$scope.turn=0;
-    //$scope.orderGroup=new Array("VIP","class");
-    // $scope.reorder = function() { 
-  
-    //     if(($scope.turn%2)==0)
-    //     {
-    //         $scope.abc=!$scope.abc;
-    //         $scope.turn=$scope.turn+1;
-    //         console.log('index:'+$scope.index);
-    //         console.log('turn:'+$scope.turn);
-    //         console.log('abc:'+$scope.abc);
-    //     }
-    //     else{
-    //         $scope.index=($scope.index+1)%2;
-    //         $scope.turn=$scope.turn+1;
-    //         $scope.order=$scope.orderGroup[$scope.index];
-    //         console.log('index:'+$scope.index);
-    //         console.log('turn:'+$scope.turn);
-    //         console.log('order:'+$scope.order);
-    //     }   
-    // };
     var patients=[];
-    var patientlength = '';
-    Doctor.getPatientList({
-        userId:'doc01'
-    })
-    .then(
-        function(data)
-        {
-            console.log(data)
-            if (data.results!='')
+    //var patientlength = '';
+    $scope.params={
+        isPatients:true,
+        updateTime:0
+    }
+
+    function load(force){
+        var time= Date.now();
+        if(!force && time-$scope.params.updateTime<21600000) return;
+        $scope.params.updateTime=time;
+        Doctor.getPatientList({
+            userId:'doc01'
+        })
+        .then(
+            function(data)
             {
-                $scope.patients=data.results[0].patients;
-                $scope.patients[1].patientId.VIP=0;
-                patientlength=data.results[0].patients.length;
-            }
-            else
-            {
-                $scope.patients=''
-            }
-            angular.forEach($scope.patients,
-                function(value,key)
+                
+                if (data.results!='')
                 {
-                    $scope.patients[key].show=true;
+                    $scope.patients=data.results.patients;
+                    //$scope.patients[1].patientId.VIP=0;
                 }
-            )
-            
-            // console.log($scope.patients);
-            
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    );
-    // Storage.set('getpatientId','NO');
-    // console.log(Storage.get('getpatientId'))
+                else
+                {
+                    $scope.patients=''
+                }
+                angular.forEach($scope.patients,
+                    function(value,key)
+                    {
+                        $scope.patients[key].show=true;
+                    }
+                )            
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+
+        Doctor.getPatientByDate({
+            userId:'doc01'
+        })
+        .then(
+            function(data)
+            {
+                //console.log(data)
+                $scope.Todays=data.results2;
+                //console.log($scope.Todays)            
+                // angular.forEach($scope.Todays,
+                //     function(value,key)
+                //     {
+                //         $scope.Todays[key].show=true;
+                //     }
+                // )
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+    }
+
+
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.params.isPatients = '1';
+    // })
+    $scope.$on('$ionicView.enter', function() {
+        load();
+    })
+    $scope.ShowPatients = function(){
+        $scope.params.isPatients=true;
+    }
+    $scope.ShowTodays = function(){
+        $scope.params.isPatients=false;
+    }
 
     $scope.getPatientDetail = function(id) {
         console.log(id)
-         Storage.set('getpatientId',id);
+        Storage.set('getpatientId',id);
         $state.go('tab.patientDetail');
+    }
 
-
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
     }
 
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover.html', {
@@ -658,7 +696,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['Storage','Doctor','Patient','$scope','$ionicPopup','$state', function(Storage,Doctor,Patient,$scope, $ionicPopup,$state) {
+.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
@@ -669,9 +707,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
          userId:Storage.get('getpatientId')
     })
     .then(
-    function(data)
+        function(data)
         {
-            // console.log(data)
+            //console.log(data)
             $scope.patient=data.results;
             $scope.diagnosisInfo = data.results.diagnosisInfo;           
         },
@@ -680,6 +718,45 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     );
+
+    Insurance.getInsMsg({
+         doctorId:'doc01',
+         patientId:Storage.get('getpatientId')
+    })
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            $scope.Ins=data.results;       
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    );
+
+    $scope.SendInsMsg=function()
+    {
+        Insurance.updateInsuranceMsg({
+            doctorId:'doc01',
+            patientId:Storage.get('getpatientId'),
+            insuranceId:'ins01',
+            type:5
+        })
+        .then(
+            function(data)
+            {
+                //console.log(data)
+                $scope.Ins.count=$scope.Ins.count + 1;
+                //$state.go('tab.patientDetail');       
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+    }
+
 
     $scope.goToDiagnose=function()
     {
@@ -701,9 +778,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.barwidth="width:0%";
    
    //$scope.userid=Storage.get('userid');
-    $scope.$on('$ionicView.beforeEnter', function() {
-        $scope.doRefresh();
-    });
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.doRefresh();
+    // });
     
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')

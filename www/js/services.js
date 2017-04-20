@@ -743,7 +743,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             deleteSchedule:{method:'POST',params:{route:'deleteSchedule'},timeout:10000},
             getSuspendTime:{method:'GET',params:{route:'getSuspendTime'},timeout:10000},
             insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
-            deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000}
+            deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
+            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000}
         });
     }
 
@@ -799,10 +800,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
             newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
             newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
-            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
-            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
+            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
+            updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000}
+        });
+    }
+
+
+    var Insurance =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'insurance'},{
+            getInsMsg:{method:'GET', params:{route: 'getInsMsg'}, timeout: 100000},
+            updateInsuranceMsg:{method:'POST', params:{route: 'updateInsuranceMsg'}, timeout: 100000}
         });
     }
 
@@ -824,6 +834,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Message = Message();
             serve.Communication = Communication();
             serve.User = User();
+            serve.Insurance = Insurance();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -840,6 +851,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Message = Message();
     serve.Communication = Communication();
     serve.User = User();
+    serve.Insurance = Insurance();    
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -1009,7 +1021,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
-.factory('Communication', ['$q', 'Data', function($q, Data){
+.factory('Communication', ['$q', 'Data','Storage', function($q, Data,Storage){
     var self = this;
     //params->0:{
             //      teamId:'teampost2',
@@ -1093,7 +1105,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-
+    // {
+    //     teamId,
+    //     counselId,
+    //     sponsorId,
+    //     patientId,
+    //     consultationId,
+    //     status:'1'-进行中,'0'-已结束
+    // }
     self.newConsultation = function(params){
         var deferred = $q.defer();
         Data.Communication.newConsultation(
@@ -1106,6 +1125,29 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    // {
+    //     "doctorId":"doc01", 
+    //     "doctorId2":"doc03", 
+    //     "lastTalkTime":"2017-04-09T10:00:00"
+    // }
+    self.updateLastTalkTime = function(id2,millis){
+        var params={
+            "doctorId":Storage.get('UID'), 
+            "doctorId2":id2, 
+            "lastTalkTime":(new Date(millis)).toISOString().substr(0,19)
+        }
+        var deferred = $q.defer();
+        Data.Communication.updateLastTalkTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
 
     return self;
 }])
@@ -1786,6 +1828,22 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+           //   userId:'doc01',
+           // }
+    self.getPatientByDate = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getPatientByDate(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
   
     return self;
 }])
@@ -1830,6 +1888,46 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
+
+.factory('Insurance', ['$q', 'Data', function($q, Data){
+    var self = this;
+    // //params->0:{
+    //                 doctorId:'doc01',
+    //                 patientId:'p01'
+    //             }
+    self.getInsMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.getInsMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+                    // doctorId:'doc01', 
+                    // patientId:'p02', 
+                    // insuranceId:'ins01',                    
+                    // type:5, 
+    //          }
+    self.updateInsuranceMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.updateInsuranceMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+
 .factory('QRScan', ['$cordovaBarcodeScanner', '$ionicLoading', '$q', function($cordovaBarcodeScanner, $ionicLoading, $q) {
     return {
         getCode: function() {
