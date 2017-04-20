@@ -25,7 +25,7 @@
         已完成：{{patients.length}}
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
+            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.patientId.userId}}" ng-repeat="p in patients | filter:query.name">
                 <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
                 <div>
                 <span>{{p.patientId.name}}</span>

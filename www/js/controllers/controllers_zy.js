@@ -432,7 +432,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     //获取在等待
     Counsel.getCounsels({
-        userId:'doc01',
+        userId:Storage.get('UID'),
         status:0
     })
     .then(
@@ -450,7 +450,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     )
     //获取进行中
     Counsel.getCounsels({
-        userId:'doc01',
+        userId:Storage.get('UID'),
         status:1
     })
     .then(
@@ -513,12 +513,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(userId)
             Storage.set('getpatientId',userId);
             $state.go('tab.patientDetail');
-        } 
-
-        else
+        }else
         {
-            Storage.set('getpatientId',userId);
-            $state.go('tab.detail');
+            // Storage.set('getpatientId',userId);
+            //[type]:0=已结束;1=进行中;2=医生
+            $state.go('tab.detail',{type:'1',chatId:userId});
         }
     }
     //$scope.isChecked1=true;

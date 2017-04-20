@@ -197,12 +197,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             if(window.JMessage){
                 window.JMessage.getAllSingleConversation(
                 function(data){
-                    var conversations = JSON.parse(data);
-                    for(var i in doctors){
-                        var index=arrTool.indexOf(conversations,'targetId',doctors[i].doctorId.userId);
-                        if(index!=-1){
-                            doctors[i].doctorId.unRead=conversations[index].unReadMsgCnt;
-                            doctors[i].doctorId.latestMsg = msgNoteGen(conversations[index].latestMessage);
+                    if(data!=''){
+                        var conversations = JSON.parse(data);
+                        for(var i in doctors){
+                            var index=arrTool.indexOf(conversations,'targetId',doctors[i].doctorId.userId);
+                            if(index!=-1){
+                                doctors[i].unRead=conversations[index].unReadMsgCnt;
+                                doctors[i].latestMsg = msgNoteGen(conversations[index].latestMessage);
+                                doctors[i].lastMsgDate = conversations[index].lastMsgDate;
+                            }
                         }
                     }
                     resolve(doctors);
@@ -214,35 +217,22 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 resolve(doctors);
             }
         });
-        // if(!window.JMessage) return doctors;
-        // window.JMessage.getAllSingleConversation(
-        //     function(data){
-        //         var conversations = JSON.parse(data);
-        //         for(var i in doctors){
-        //             var index=arrTool.indexOf(conversations,'targetId',doctors[i].doctorId.userId);
-        //             if(index!=-1){
-        //                 doctors[i].doctorId.unRead=conversations[index].unReadMsgCnt;
-        //                 doctors[i].doctorId.latestMsg = msgNoteGen(conversations[index].latestMessage);
-        //             }
-        //         }
-        //         return doctors;
-        //     },function(err){
-        //         $scope.doctors = doctors;
-        //         return doctors;
-        //     });
     }
     function setGroupUnread(teams){
         return $q(function(resolve,reject){
             if(window.JMessage){
                 window.JMessage.getAllGroupConversation(
                 function(data){
-                    var conversations = JSON.parse(data);
-                    for(var i in teams){
-                        var index=arrTool.indexOf(conversations,'targetId',teams[i].teamId);
-                        if(index!=-1) {
-                            teams[i].unRead=conversations[index].unReadMsgCnt;
-                            teams[i].latestMsg = msgNoteGen(conversations[index].latestMessage);
-                        }
+                    if(data!=''){
+                       var conversations = JSON.parse(data);
+                        for(var i in teams){
+                            var index=arrTool.indexOf(conversations,'targetId',teams[i].teamId);
+                            if(index!=-1) {
+                                teams[i].unRead=conversations[index].unReadMsgCnt;
+                                teams[i].latestMsg = msgNoteGen(conversations[index].latestMessage);
+                                teams[i].lastMsgDate = conversations[index].lastMsgDate;
+                            }
+                        } 
                     }
                     resolve(teams);
                 },function(err){
@@ -252,27 +242,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 resolve(teams);
             }
         });
-        // if(!window.JMessage) return teams;
-        // window.JMessage.getAllGroupConversation(
-        //     function(data){
-        //         var conversations = JSON.parse(data);
-        //         console.log(conversations);
-        //         for(var i in teams){
-        //             var index=arrTool.indexOf(conversations,'targetId',teams[i].teamId);
-        //             if(index!=-1) {
-        //                 teams[i].unRead=conversations[index].unReadMsgCnt;
-        //                 teams[i].latestMsg = msgNoteGen(conversations[index].latestMessage);
-        //             }
-        //         }
-        //         return teams;
-        //     },function(err){
-        //         // $scope.teams = teams;
-        //         return teams;
-        //     });
     }
     $scope.load = function(force) {
         var time = Date.now();
-        if (!force && time - $scope.params.updateTime < 300000){
+        if (!force && time - $scope.params.updateTime < 60000){
             setGroupUnread($scope.teams)
             .then(function(teams){
                 $scope.teams=teams;
@@ -405,6 +378,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.itemClick = function(ele, team) {
         if (ele.target.id == 'discuss') $state.go("tab.group-patient", { teamId: team.teamId });
         else $state.go('tab.group-chat', { type: '0', groupId: team.teamId, teamId: team.teamId });
+    }
+    $scope.doctorClick = function(ele, doc) {
+        if (ele.target.id == 'profile') $state.go("tab.group-profile", { doctorId: doc.userId });
+        else $state.go('tab.detail', { type: '2', chatId: doc.userId });
     }
 
     $scope.$on('$ionicView.beforeLeave', function() {
@@ -547,16 +524,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.type = $state.params.type;
         $scope.params.msgCount = 0;
         console.log($scope.params)
-        if (window.JMessage) {
-            window.JMessage.enterSingleConversation($state.params.chatId, $scope.params.key);
-            getMsg(15);
-        }
         if ($scope.params.type != '2') {
             $scope.params.key = CONFIG.crossKey;
         }
         if ($scope.params.type == '2') $scope.params.title = "医生交流";
         else if ($scope.params.type == '1') $scope.params.title = "咨询-进行中";
         else $scope.params.title = "咨询详情";
+        if (window.JMessage) {
+            window.JMessage.enterSingleConversation($state.params.chatId, $scope.params.key);
+            getMsg(15);
+        }
     });
 
     $scope.$on('$ionicView.enter', function() {
@@ -570,12 +547,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('keyboardshow', function(event, height) {
         $scope.params.helpDivHeight = height + 60;
         setTimeout(function() {
-            $scope.scrollHandle.scrollBottom();
+            $scope.scrollHandle.scrollBottom(true);
         }, 100);
     })
     $scope.$on('keyboardhide', function(event) {
         $scope.params.helpDivHeight = 60;
-        // $ionicScrollDelegate.scrollBottom();
     })
     $scope.$on('$ionicView.beforeLeave', function() {
         if ($scope.popover) $scope.popover.hide();
@@ -602,6 +578,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //     }
         // }
     function getMsg(num) {
+        console.log('getMsg:' + num);
         window.JMessage.getHistoryMessages("single", $state.params.chatId, $scope.params.key, $scope.params.msgCount, num,
             function(response) {
                 // console.log(response);
@@ -632,6 +609,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 
     function viewUpdate(length, scroll) {
+        console.log('viewUpdate:' + length);
         if ($scope.params.msgCount == 0) return getMsg(1);
         var num = $scope.params.msgCount < length ? $scope.params.msgCount : length;
         if (num == 0) return;
@@ -1226,7 +1204,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 .then(function(data) {
                     console.log(data)
                     $scope.params.team = data.results;
-                    $scope.params.title = $scope.params.team.name + '(' + $scope.params.team.number + ')';
+                    $scope.params.title = $scope.params.team.name + '(' + ($scope.params.team.number+1) + ')';
                 })
 
         } else if ($scope.params.type == '1') {
@@ -1246,7 +1224,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $rootScope.conversation.id = $scope.params.groupId;
             if (window.JMessage) {
                 window.JMessage.enterGroupConversation($scope.params.groupId);
-                getMsg(20);
+                getMsg(15);
             }
             imgModalInit();
         })
@@ -1279,7 +1257,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if (window.JMessage) window.JMessage.exitConversation();
     })
     $scope.DisplayMore = function() {
-        getMsg(20);
+        getMsg(15);
     }
     $scope.scrollBottom = function() {
         $scope.scrollHandle.scrollBottom(true);
@@ -1307,10 +1285,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     setTimeout(function() {
                         $scope.scrollHandle.scrollBottom(true);
                     }, 100);
-                    // $ionicScrollDelegate.scrollBottom();
                     $scope.params.msgCount += res.length;
                 }
-
             },
             function(err) {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -1659,11 +1635,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 }])
 .controller('selectDocCtrl', ['$state', '$scope', 'JM', '$ionicPopup', 'Patient', 'Storage', function($state, $scope, JM, $ionicPopup, Patient, Storage) {
-    // Patient.getDoctorLists()
+    // Patient.getDoctorLists({userId:Storage.get('UUID')})
     //   .then(
     //       function(data)
     //       {
-    //           //console.log(data)
+    //           // console.log(data)
     //           $scope.doctors=data.results;
     //           console.log(data.results);
     //       },
