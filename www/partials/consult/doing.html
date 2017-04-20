@@ -21,8 +21,8 @@
         <span>等待患者：</span><span>{{patients.length}}</span>
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
-                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" style="position:absolute;z-index:-100" href="http://www.runoob.com/">
+            <a class="item item-thumbnail-left" ng-repeat="p in patients | filter:query.name" ng-click="itemClick($event,p.patientId.userId)">
+                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" id="doingdetail">
 
   
                 <span>{{p.patientId.name}}</span>
