@@ -749,13 +749,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //团队信息
-.controller('GroupDetailCtrl', ['$scope', '$state', '$ionicModal', 'Communication',function($scope, $state, $ionicModal,Communication) {
+.controller('GroupDetailCtrl', ['$scope', '$state', '$ionicModal', 'Communication','$ionicPopup','Storage',function($scope, $state, $ionicModal,Communication,$ionicPopup,Storage) {
     $scope.$on('$ionicView.beforeEnter',function(){
        
          Communication.getTeam({teamId:$state.params.teamId})
                 .then(function(data){
                   console.log(data)
                   $scope.team=data.results;
+                  if($scope.team.sponsorId=Storage.get('UID')) $scope.ismyteam=true;
+                  else $scope.ismyteam=false;
                 },function(err){
                     console.log(err);
                 })
@@ -763,6 +765,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
         console.log($scope.team)
     })
+    
 
     $scope.addMember = function() {
         console.log($scope.team.teamId)
@@ -779,6 +782,35 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.modal.hide();
         $scope.modal.remove()
     };
+    $scope.gokick=function(){
+          $state.go('tab.group-kick', { teamId: $scope.team.teamId });
+
+    }
+    // $scope.leaveteam=function(){
+    //        var confirmPopup = $ionicPopup.confirm({
+    //         title: '确定要退出团队吗?',
+    //         // template: '确定要结束此次咨询吗?'
+    //         okText: '确定',
+    //         cancelText: '取消'
+    //     });
+    //     confirmPopup.then(function(res) {
+    //         if (res) {
+    //             console.log('You are sure');
+    //             console.log($state.params.teamId);
+    //             console.log(Storage.get('UID'));
+    //             Communication.removeMember({teamId:$state.params.teamId,membersuserId:Storage.get('UID')})
+    //             .then(function(data){
+    //               console.log(data)
+    //             },function(err){
+    //                 console.log(err)
+    //             })
+    //         } else {
+    //             console.log('You are not sure');
+    //         }
+    //     });
+
+    // }
+
     // $scope.group = {
     //     id: $state.params.groupId,
     //     name: '折翼肾病管家联盟',
@@ -803,6 +835,52 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //         { url: 'img/max.png', name: 'Nat King Cole' }
     //     ]
     // }
+}])
+//踢人
+.controller('GroupKickCtrl', ['$scope', '$state','$ionicModal', 'Communication','$ionicPopup','Storage', function($scope, $state,$ionicModal,Communication,$ionicPopup,Storage) {
+    $scope.$on('$ionicView.beforeEnter',function(){
+       
+         Communication.getTeam({teamId:$state.params.teamId})
+                .then(function(data){
+                  console.log(data)
+                  $scope.doctors=data.results.members;
+                },function(err){
+                    console.log(err);
+                })
+    }) 
+     $scope.kick=function(id){
+        var confirmPopup = $ionicPopup.confirm({
+            title: '确定要将此人移出团队吗?',
+            okText: '确定',
+            cancelText: '取消'
+        });
+        confirmPopup.then(function(res) {
+            if (res) {
+                console.log('You are sure');
+                console.log($state.params.teamId);
+                Communication.removeMember({teamId:$state.params.teamId,membersuserId:$scope.doctors[id].userId})
+                .then(function(data){
+                  console.log(data)
+                    if(data.result="移除成功"){
+                      Communication.getTeam({teamId:$state.params.teamId})
+                      .then(function(data){
+                       console.log(data)
+                       $scope.doctors=data.results.members;
+                       },function(err){
+                       console.log(err);
+                      })
+                    };
+                },function(err){
+                    console.log(err)
+                })
+            } else {
+                console.log('You are not sure');
+            }
+        });
+     }   
+
+
+
 }])
 //团队二维码
 .controller('GroupQrcodeCtrl', ['$scope', '$state', function($scope, $state) {
