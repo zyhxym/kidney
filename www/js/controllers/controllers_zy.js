@@ -58,7 +58,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         Storage.set('TOKEN',data.results.token);//token作用目前还不明确
                         Storage.set('isSignIn',true);
                         Storage.set('UID',data.results.userId);
-                        $timeout(function(){$state.go('tab.home');},500);
+                        User.getAgree({userId:data.results.userId}).then(function(res){
+                            if(res.results.agreement=="0"){
+                                $timeout(function(){$state.go('tab.home');},500);
+                            }else{
+                                $timeout(function(){$state.go('agreement',{last:'signin'});},500);
+                            }
+                        },function(err){
+                            console.log(err);
+                        })
+
                     }
                 },
                 function(data){
@@ -93,7 +102,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //手机号码验证
-.controller('phonevalidCtrl', ['$scope','$state','$interval', 'Storage','User',  function($scope, $state,$interval,Storage,User) {
+.controller('phonevalidCtrl', ['$scope','$state','$interval', '$stateParams','Storage','User','$timeout',  function($scope, $state,$interval,$stateParams,Storage,User,$timeout) {
     $scope.barwidth="width:0%";
     $scope.Verify={Phone:"",Code:""};
     $scope.veritext="获取验证码";
@@ -191,43 +200,81 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //判断验证码和手机号是否正确
     $scope.gotoReset = function(Verify){
         $scope.logStatus = '';
-        if(Verify.Phone!="" && Verify.Code!=""){
+        if(Verify.Phone!="" && Verify.Code!="")
+        {
             var tempVerify = 123;
             //结果分为三种：(手机号验证失败)1验证成功；2验证码错误；3连接超时，验证失败
             var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
             //手机正则表达式验证
-            if(phoneReg.test(Verify.Phone)){ 
-                User.verifySMS({
-                mobile:Verify.Phone,
-                smsType:1,
-                smsCode:Verify.Code
-            })
-            .then(function(succ)
-            {
-                console.log(succ)
-                if(succ.results==0)//验证成功
-                {
+            if(phoneReg.test(Verify.Phone)){
+                //测试用
+                if(Verify.Code==123456){
+                    $scope.logStatus = "验证成功";
                     Storage.set('phoneNumber',Verify.Phone);
-                    $state.go('setpassword');
-                }
-                else//验证码错误
-                {
-                    $scope.logStatus="请输入正确的验证码！";
-                }
-            },function(err)
-            {
-                console.log(err)
-                $scope.logStatus="网络错误！";
-                })
+                    if(validMode == 0){
+                        $timeout(function(){$state.go('agreement',{last:'register'});},500);
+                    }else{
+                       $timeout(function(){$state.go('setpassword')}); 
+                    }
+                    
+                }else{$scope.logStatus = "验证码错误";}
+
+                // User.verifySMS({
+                //     mobile:Verify.Phone,
+                //     smsType:1,
+                //     smsCode:Verify.Code
+                // })
+                // .then(function(succ)
+                // {
+                //     console.log(succ)
+                //     if(succ.results==0)//验证成功
+                //     {
+                //         $scope.logStatus="验证成功！";
+                //         Storage.set('phoneNumber',Verify.Phone);
+                //         if(validMode == 0){
+                //             $timeout(function(){$state.go('agreement',{last:'register'});},500);
+                //         }else{
+                //             $timeout(function(){$state.go('setpassword')}); 
+                //         }
+                //     else//验证码错误
+                //     {
+                //         $scope.logStatus="请输入正确的验证码！";
+                //     }
+                // },
+                // function(err)
+                // {   
+                //     console.log(err)
+                //     $scope.logStatus="网络错误！";
+                // })
             }
             else{$scope.logStatus="手机号验证失败！";}        
             }       
         else{$scope.logStatus = "请输入完整信息！";}
-    }
+        }
 
 }])
 
-
+//签署协议（0为签署）
+.controller('AgreeCtrl', ['$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data','User', function($stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data,User) {
+    $scope.YesIdo = function(){
+        console.log('yesido');
+        if($stateParams.last=='signin'){
+            User.updateAgree({userId:Storage.get('UID'),agreement:"0"}).then(function(data){
+                if(data.results!=null){
+                    $timeout(function(){$state.go('tab.home');},500);
+                }else{
+                    console.log("用户不存在!");
+                }
+            },function(err){
+                console.log(err);
+            })
+        }
+        else if($stateParams.last=='register'){
+            //Storage.set('AgreeStatus',0);
+            $timeout(function(){$state.go('setpassword',0)},500);
+        }
+    }
+}])
 
 //设置密码
 .controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User','$http',function($scope,$state,$rootScope,$timeout,Storage,User,$http) {
@@ -262,8 +309,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         })
                         .then(function(succ)
                         {
-                            console.log(succ)
+                            //console.log(phoneNumber)
+                            //console.log(password.newPass)
+                            //console.log(succ)
                             Storage.set('UID',succ.userNo);
+
+                            //签署协议置位0
+                            User.updateAgree({userId:Storage.get('UID'),agreement:"0"}).
+                            then(function(data){
+                                console.log(data);
+                            },function(err){
+                                console.log(err);
+                            })
 
                             //注册论坛
 
