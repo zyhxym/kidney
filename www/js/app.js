@@ -131,6 +131,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     fromId:
@@ -140,6 +141,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     targetId:DoctorId,
@@ -149,6 +151,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     targetId:teamId,
