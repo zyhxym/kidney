@@ -256,7 +256,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //签署协议（0为签署）
-.controller('AgreeCtrl', ['$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data', function($stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data) {
+.controller('AgreeCtrl', ['User','$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data', function(User,$stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data) {
     $scope.YesIdo = function(){
         console.log('yesido');
         if($stateParams.last=='signin'){
