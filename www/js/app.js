@@ -18,12 +18,6 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
     $ionicPlatform.ready(function() {
-        $rootScope.goConclusion =function(){
-            alert('aaa');
-        // if(params.type=='2') location.hash = "#conclusion";
-        // else $state.go('tab.group-conclusion',{teamId:params.teamId,groupId:params.groupId,type:params.type});
-    }
-
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
@@ -182,7 +176,7 @@ angular.module('kidney',[
                         if (device.platform == "Android") {
                             window.plugins.jPushPlugin.addLocalNotification(1, prefix+counsel.help, msg.targetName, msg.serverMessageId, 0, msg);
                         } else {
-                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, msg.content.contentStringMap)
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, prefix+counsel.help, 1, msg.serverMessageId, msg);
                         }
                     }else if(msg.content.contentStringMap.type=='contact'){
 
@@ -194,7 +188,7 @@ angular.module('kidney',[
                         if (device.platform == "Android") {
                                 window.plugins.jPushPlugin.addLocalNotification(1, '[团队咨询]', msg.fromNickname, msg.serverMessageId, 0, msg);
                         } else {
-                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, '[团队咨询]', 1, msg.serverMessageId, msg);
                         }
                     }else if(msg.content.contentStringMap.type=='contact'){
                     }
@@ -577,7 +571,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/group/profile.html'
             }
         },
-        params:{'member':null}
+        params:{doctorId:null}
 
     })
 
