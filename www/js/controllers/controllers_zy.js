@@ -208,44 +208,45 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             //手机正则表达式验证
             if(phoneReg.test(Verify.Phone)){
                 //测试用
-                if(Verify.Code==123456){
-                    $scope.logStatus = "验证成功";
-                    Storage.set('phoneNumber',Verify.Phone);
-                    if(validMode == 0){
-                        $timeout(function(){$state.go('agreement',{last:'register'});},500);
-                    }else{
-                       $timeout(function(){$state.go('setpassword')}); 
-                    }
-                    
-                }else{$scope.logStatus = "验证码错误";}
-
-                // User.verifySMS({
-                //     mobile:Verify.Phone,
-                //     smsType:1,
-                //     smsCode:Verify.Code
-                // })
-                // .then(function(succ)
-                // {
-                //     console.log(succ)
-                //     if(succ.results==0)//验证成功
-                //     {
-                //         $scope.logStatus="验证成功！";
-                //         Storage.set('phoneNumber',Verify.Phone);
-                //         if(validMode == 0){
-                //             $timeout(function(){$state.go('agreement',{last:'register'});},500);
-                //         }else{
-                //             $timeout(function(){$state.go('setpassword')}); 
-                //         }
-                //     else//验证码错误
-                //     {
-                //         $scope.logStatus="请输入正确的验证码！";
+                // if(Verify.Code==123456){
+                //     $scope.logStatus = "验证成功";
+                //     Storage.set('phoneNumber',Verify.Phone);
+                //     if(validMode == 0){
+                //         $timeout(function(){$state.go('agreement',{last:'register'});},500);
+                //     }else{
+                //        $timeout(function(){$state.go('setpassword')}); 
                 //     }
-                // },
-                // function(err)
-                // {   
-                //     console.log(err)
-                //     $scope.logStatus="网络错误！";
-                // })
+                    
+                // }else{$scope.logStatus = "验证码错误";}
+
+                User.verifySMS({
+                    mobile:Verify.Phone,
+                    smsType:1,
+                    smsCode:Verify.Code
+                })
+                .then(function(succ)
+                {
+                    console.log(succ)
+                    if(succ.results==0)//验证成功
+                    {
+                        $scope.logStatus="验证成功！";
+                        Storage.set('phoneNumber',Verify.Phone);
+                        if(validMode == 0){
+                            $timeout(function(){$state.go('agreement',{last:'register'});},500);
+                        }else{
+                            $timeout(function(){$state.go('setpassword')}); 
+                        }
+                    }
+                    else //验证码错误
+                    {
+                        $scope.logStatus="请输入正确的验证码！";
+                    }
+                },
+                function(err)
+                {   
+                    console.log(err)
+                    $scope.logStatus="网络错误！";
+                })
             }
             else{$scope.logStatus="手机号验证失败！";}        
             }       
@@ -255,7 +256,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //签署协议（0为签署）
-.controller('AgreeCtrl', ['$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data','User', function($stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data,User) {
+.controller('AgreeCtrl', ['$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data', function($stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data) {
     $scope.YesIdo = function(){
         console.log('yesido');
         if($stateParams.last=='signin'){
@@ -277,7 +278,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //设置密码
-.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User','$http',function($scope,$state,$rootScope,$timeout,Storage,User,$http) {
+.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User',function($scope,$state,$rootScope,$timeout,Storage,User) {
     $scope.barwidth="width:0%";
     var validMode=Storage.get('validMode');//0->set;1->reset
     var phoneNumber=Storage.get('phoneNumber');
@@ -302,54 +303,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 {
                     if(validMode==0)
                     {
-                        User.register({
-                            'phoneNo':phoneNumber,
-                            'password':password.newPass,
-                            'role':'doctor'
-                        })
-                        .then(function(succ)
-                        {
-                            //console.log(phoneNumber)
-                            //console.log(password.newPass)
-                            //console.log(succ)
-                            Storage.set('UID',succ.userNo);
-
-                            //签署协议置位0
-                            User.updateAgree({userId:Storage.get('UID'),agreement:"0"}).
-                            then(function(data){
-                                console.log(data);
-                            },function(err){
-                                console.log(err);
-                            })
-
-                            //注册论坛
-
-                            $http({
-                                method  : 'POST',
-                                url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
-                                params    :{
-                                    'regsubmit':'yes',
-                                    'formhash':'',
-                                    'D2T9s9':phoneNumber,
-                                    'O9Wi2H':password.newPass,
-                                    'hWhtcM':password.newPass,
-                                    'qSMA7S':phoneNumber+'@qq.com'
-                                },  // pass in data as strings
-                                headers : {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                    'Accept':'application/xml, text/xml, */*'
-                                }  // set the headers so angular passing info as form data (not request payload)
-                            }).success(function(data) {
-                                // console.log(data);
-                            });
-
-                            Storage.set("lt",'bme319');
-
-                            $state.go('userdetail');
-                        },function(err)
-                        {
-                            console.log(err)
-                        })
+                        Storage.set('password',password.newPass);
+                        $state.go('userdetail');
                     }
                     else
                     { 
@@ -360,7 +315,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         .then(function(succ)
                         {
                             console.log(succ)
-
                             $state.go('signin')
                         },function(err)
                         {
@@ -385,10 +339,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //注册时填写医生个人信息
-.controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover){
+.controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http){
     $scope.barwidth="width:0%";
+    var phoneNumber=Storage.get('phoneNumber');
+    var password=Storage.get('password');
     $scope.doctor={
-        userId:Storage.get('UID'),
+        userId:"",
         name:"",
         workUnit:"",
         department:"",
@@ -399,19 +355,70 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.infoSetup = function() 
     {
-        console.log($scope.doctor)
-        Doctor.postDocBasic($scope.doctor)
-        .then(
-            function(data)
-            {
-                console.log(data)
-            },
-            function(err)
-            {
-                console.log(err)
-            }
-        );
-        $state.go('signin');
+        User.register({
+            'phoneNo':phoneNumber,
+            'password':password,
+            'role':'doctor'
+        })
+        .then(function(succ)
+        {
+            console.log(phoneNumber)
+            console.log(password)
+            //console.log(succ)
+            Storage.set('UID',succ.userNo);
+
+            //签署协议置位0，同意协议
+            User.updateAgree({userId:Storage.get('UID'),agreement:"0"}).
+            then(function(data){
+                console.log(data);
+
+            },function(err){
+                console.log(err);
+            })
+
+            //填写个人信息
+            $scope.doctor.userId = Storage.get('UID')
+            Doctor.postDocBasic($scope.doctor)
+            .then(
+                function(data)
+                {
+                    console.log(data);
+                    //$scope.doctor = data.newResults;                  
+                },
+                function(err)
+                {
+                    console.log(err)
+                }
+            );            
+
+            //注册论坛
+
+            $http({
+                method  : 'POST',
+                url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+                params    :{
+                    'regsubmit':'yes',
+                    'formhash':'',
+                    'D2T9s9':phoneNumber,
+                    'O9Wi2H':password.newPass,
+                    'hWhtcM':password.newPass,
+                    'qSMA7S':phoneNumber+'@qq.com'
+                },  // pass in data as strings
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept':'application/xml, text/xml, */*'
+                }  // set the headers so angular passing info as form data (not request payload)
+            }).success(function(data) {
+                // console.log(data);
+            });
+            $state.go('signin');
+            Storage.set("lt",'bme319');
+
+        },function(err)
+        {
+            console.log(err)       
+        })
+       
     };
 
 }])
