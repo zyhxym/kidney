@@ -581,7 +581,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/group/profile.html'
             }
         },
-        params:{doctorId:null}
+        params:{member:null}
 
     })
 

@@ -275,42 +275,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     console.log(err)
                 });
         }
-        
-        // if()
-        
-
-        // window.JMessage.getSingleConversation('U201702070041','',
-        // function(data){
-        //     console.log(data);
-        //     console.log(JSON.parse(data));
-
-        // },function(err){
-        //     console.log(err)
-        // });
-        // window.JMessage.getSingleConversation('U201702070048','cf32b94444c4eaacef86903e',
-        // function(data){
-        //     console.log(data);
-        //     console.log(JSON.parse(data));
-
-        // },function(err){
-        //     console.log(err)
-        // });
-        // window.JMessage.getAllSingleConversation(
-        // function(data){
-        //     console.log(data);
-        //     console.log(JSON.parse(data));
-
-        // },function(err){
-        //     console.log(err)
-        // });
-        // window.JMessage.getAllSingleConversation(Storage.get('UID'),'',
-        // function(data){
-        //     console.log(data);
-        //     console.log(JSON.parse(data));
-
-        // },function(err){
-        //     console.log(err)
-        // });
     }
 
     $scope.$on('$ionicView.beforeEnter', function() {
