@@ -7,9 +7,8 @@
     </ion-nav-buttons> -->
     <ion-content class=" gray-back">
         <div style="background-color: #FFF" class="padding">
-        <div class="avatar-item" ng-repeat="member in team.members" ng-click="viewProfile(member)">
-            <!-- <img src="{{member.url}}" /> -->
-            <img src="img/avatar.png" />
+        <div class="avatar-item" ng-repeat="member in members" ng-click="viewProfile(member)">
+            <img src="{{member.photoUrl}}" />
             <div>{{member.name}}</div>
         </div>
         <div style="vertical-align: top" class="avatar-item" ng-click="addMember()">
@@ -24,14 +23,38 @@
             <div class="item item-icon-right" href="#">
                 团队名称
                 <span class="item-note">{{team.name}}</span>
-                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
                 <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+             <div class="item item-icon-right" href="#">
+                群号
+                <span class="item-note">{{team.teamId}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item item-icon-right" href="#">
+                创建者
+                <span class="item-note">{{team.sponsorName}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item item-icon-right" href="#">
+                创建时间
+                <span class="item-note">{{team.time.substr(0,10)}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item item-icon-right" href="#">
+                团队简介
+                <span class="item-note">{{team.description}}</span>
+              <!--   <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+              -->
             </div>
             <a class="item item-icon-right" ng-click="showQRCode()">
                 团队二维码
                 <!-- <span class="item-note">BME319</span> -->
                 <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
-                <!-- <div class="item-span">{{group.locale}} </div> -->
+              
             </a>
              <a ng-show="ismyteam" class="item item-icon-right ng-hide" ng-click="gokick()">
                 团队管理

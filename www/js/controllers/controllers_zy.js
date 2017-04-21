@@ -5,10 +5,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM) {
     $scope.barwidth="width:0%";
     if(Storage.get('USERNAME')!=null){
-        $scope.logOn={username:Storage.get('USERNAME'),password:""};
+        $scope.logOn={username:Storage.get('USERNAME'),password:"123456"};
     }
     else{
-        $scope.logOn={username:"",password:""};
+        $scope.logOn={username:"",password:"123456"};
     }
     $scope.signIn = function(logOn) {  
         $scope.logStatus='';
