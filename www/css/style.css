@@ -1,7 +1,41 @@
 /* Empty. Add your own CSS if you like */
-/*p{
-	 white-space:nowrap;
-}*/
+
+/*未读消息小红点*/
+.button__badge {
+  background-color: #fa3e3e;
+  border-radius: 2px;
+  color: white;
+ 
+  padding: 1px 3px;
+  font-size: 10px;
+  
+  position: absolute; /* Position the badge within the relatively positioned button */
+  top: 0;
+  right: 0;
+}
+.red-badge :before{
+    position: absolute;
+        content: '';
+        background-color:#FF0000;
+        border-radius:50%;
+        opacity:0.8;
+        width: 10px;
+        height: 10px;
+        pointer-events: none;
+}
+.msg-badge {
+  background-color: #fa3e3e;
+  border-radius: 2px;
+  color: white;
+ 
+  padding: 1px 3px;
+  font-size: 10px;
+  
+  position: absolute; /* Position the badge within the relatively positioned button */
+  top: 0;
+  right: 0;
+}
+/*取消ionicPopover固定高度 XJZ*/
 .popover {
     height: auto !important;
 }

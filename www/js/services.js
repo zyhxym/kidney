@@ -685,7 +685,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'dict'},{
             getDiseaseType:{method:'GET', params:{route: 'typeTWO'}, timeout: 100000},
             getDistrict:{method:'GET', params:{route: 'district'}, timeout: 100000},
-            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000}
+            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000},
+            typeOne:{method:'GET', params:{route: 'typeOne'}, timeout: 100000}
         });
     };
 
@@ -756,7 +757,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getUserId:{method:'GET', params:{route: 'getUserID',phoneNo:'@phoneNo'}, timeout: 100000},
             sendSMS:{method:'POST', params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType'}, timeout: 100000},//第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
             verifySMS:{method:'GET', params:{route: 'verifySMS',mobile:'@mobile',smsType:'@smsType',smsCode:'@smsCode'}, timeout: 100000},
-
+            getAgree:{method:'GET', params:{route: 'getUserAgreement',userId:'@userId'}, timeout: 100000},
+            updateAgree:{method:'POST', params:{route: 'updateUserAgreement'}, timeout: 100000}
         });
     }
 
@@ -799,10 +801,11 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
             newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
             newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
-            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
-            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
+            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
+            updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000}
         });
     }
 
@@ -894,6 +897,21 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.getHospital = function(params){
         var deferred = $q.defer();
         Data.Dict.getHospital(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+    //    category:'MessageType'
+    //}
+    self.typeOne = function(params){
+        var deferred = $q.defer();
+        Data.Dict.typeOne(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1004,7 +1022,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
-.factory('Communication', ['$q', 'Data', function($q, Data){
+.factory('Communication', ['$q', 'Data','Storage', function($q, Data,Storage){
     var self = this;
     //params->0:{
             //      teamId:'teampost2',
@@ -1088,7 +1106,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-
+    // {
+    //     teamId,
+    //     counselId,
+    //     sponsorId,
+    //     patientId,
+    //     consultationId,
+    //     status:'1'-进行中,'0'-已结束
+    // }
     self.newConsultation = function(params){
         var deferred = $q.defer();
         Data.Communication.newConsultation(
@@ -1101,6 +1126,29 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    // {
+    //     "doctorId":"doc01", 
+    //     "doctorId2":"doc03", 
+    //     "lastTalkTime":"2017-04-09T10:00:00"
+    // }
+    self.updateLastTalkTime = function(id2,millis){
+        var params={
+            "doctorId":Storage.get('UID'), 
+            "doctorId2":id2, 
+            "lastTalkTime":(new Date(millis)).toISOString().substr(0,19)
+        }
+        var deferred = $q.defer();
+        Data.Communication.updateLastTalkTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
 
     return self;
 }])
@@ -1132,6 +1180,36 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.changePassword = function(params){
         var deferred = $q.defer();
         Data.User.changePassword(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    //params->{userId:"U201702070041"}
+    //036
+    self.getAgree = function(params){
+        var deferred = $q.defer();
+        Data.User.getAgree(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
+    
+    //params->{userId:"U201702070041",agreement:"0"}
+    //037
+    self.updateAgree = function(params){
+        var deferred = $q.defer();
+        Data.User.updateAgree(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1331,7 +1409,10 @@ angular.module('kidney.services', ['ionic','ngResource'])
 }])
 .factory('Message', ['$q', 'Data', function($q, Data){
     var self = this;
-    //params->0:{type:1}
+    //params->0:{
+    //    userId:'U201704120001',
+    //    type:1//option
+    //}
     self.getMessages = function(params){
         var deferred = $q.defer();
         Data.Message.getMessages(
