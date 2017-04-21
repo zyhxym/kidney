@@ -18,12 +18,6 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
     $ionicPlatform.ready(function() {
-        $rootScope.goConclusion =function(){
-            alert('aaa');
-        // if(params.type=='2') location.hash = "#conclusion";
-        // else $state.go('tab.group-conclusion',{teamId:params.teamId,groupId:params.groupId,type:params.type});
-    }
-
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
@@ -32,6 +26,7 @@ angular.module('kidney',[
 
         //用户ID
         var userid = '';
+        //记录jmessage当前会话
         $rootScope.conversation = {
             type: null,
             id: ''
@@ -100,7 +95,7 @@ angular.module('kidney',[
                 // var alertContent
                 if(device.platform == "Android") {
                     if(msg.extras.targetType=='group'){
-
+                        //转发团队
                         var content = JSON.stringify(msg.extras.content);
                             groupId = content.contentStringMap.consultationId;
                             teamId = content.contentStringMap.targetId;
@@ -109,9 +104,9 @@ angular.module('kidney',[
                         }else{
                             $state.go('tab.group-chat', { type:'0',groupId: groupId,teamId:teamId});
                         }
-                    // $state.go('tab.group-chat', { type:'2',chatId: msg.fromName});
                     }else{
-                        if(msg.fromAppkey==CONFIG.appKey){
+                        //转发医生
+                        if(msg.extras.fromAppkey==CONFIG.appKey){
                             $state.go('tab.detail', { type:'2',chatId: msg.extras.fromName});
                         }else{
                             $state.go('tab.detail', { type:'1',chatId: msg.extras.fromName});
@@ -181,7 +176,7 @@ angular.module('kidney',[
                         if (device.platform == "Android") {
                             window.plugins.jPushPlugin.addLocalNotification(1, prefix+counsel.help, msg.targetName, msg.serverMessageId, 0, msg);
                         } else {
-                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, msg.content.contentStringMap)
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, prefix+counsel.help, 1, msg.serverMessageId, msg);
                         }
                     }else if(msg.content.contentStringMap.type=='contact'){
 
@@ -193,7 +188,7 @@ angular.module('kidney',[
                         if (device.platform == "Android") {
                                 window.plugins.jPushPlugin.addLocalNotification(1, '[团队咨询]', msg.fromNickname, msg.serverMessageId, 0, msg);
                         } else {
-                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, msg.content.contentStringMap.help + '本地推送内容test', 1, 111, null)
+                            window.plugins.jPushPlugin.addLocalNotificationForIOS(0, '[团队咨询]', 1, msg.serverMessageId, msg);
                         }
                     }else if(msg.content.contentStringMap.type=='contact'){
                     }
@@ -233,6 +228,13 @@ angular.module('kidney',[
         templateUrl: 'partials/others/signin.html',
         controller: 'SignInCtrl'
     })
+    .state('agreement', {
+      cache: false,
+      url: '/agreeOrNot',
+      params:{last:null},
+      templateUrl: 'partials/others/agreement.html',
+      controller: 'AgreeCtrl'
+    })   
     .state('phonevalid', {
         url: '/phonevalid',
         cache: false,
@@ -577,7 +579,6 @@ angular.module('kidney',[
             }
         },
         params:{memberId:null}
-
     })
 
     // views-tab-me
@@ -690,4 +691,10 @@ angular.module('kidney',[
         $state.go('tab.groups', {type:'0'});
       },20);
     }
+    $scope.goPatient = function(){
+        setTimeout(function() {
+        $state.go('tab.patient', {});
+      },20);
+    }
+
 }])
