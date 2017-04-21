@@ -231,6 +231,13 @@ angular.module('kidney',[
         templateUrl: 'partials/others/signin.html',
         controller: 'SignInCtrl'
     })
+    .state('agreement', {
+      cache: false,
+      url: '/agreeOrNot',
+      params:{last:null},
+      templateUrl: 'partials/others/agreement.html',
+      controller: 'AgreeCtrl'
+    })   
     .state('phonevalid', {
         url: '/phonevalid',
         cache: false,
