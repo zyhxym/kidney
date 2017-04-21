@@ -487,7 +487,7 @@ angular.module('kidney',[
         }
     })
     .state('tab.group-add', {
-            url: '/groups/add/:groupId',
+            url: '/groups/add/:teamId',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add.html',
@@ -581,8 +581,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/group/profile.html'
             }
         },
-        params:{member:null}
-
+        params:{memberId:null}
     })
 
     // views-tab-me
