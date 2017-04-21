@@ -21,10 +21,8 @@
         <span>等待患者：</span><span>{{patients.length}}</span>
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/{{p.counselId}}" ng-repeat="p in patients | filter:query.name">
-                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" style="position:absolute;z-index:-100" href="http://www.runoob.com/">
-
-  
+            <a class="item item-thumbnail-left" ng-repeat="p in patients | filter:query.name" ng-click="itemClick($event,p.patientId.userId)">
+                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" id="doingdetail">
                 <span>{{p.patientId.name}}</span>
                 <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>
                 <span style="margin-left:5px;">{{p.patientId.birthday|filterAge}}岁</span>
@@ -32,16 +30,6 @@
                 <p class="friend-detail-p" style="white-space:nowrap;">{{p.topic}}</p>
                 </a>    
             </a>
-            <a class="item item-thumbnail-left" href="#/tab/detail/1/U201702071766">
-                <img ng-src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
-                <div>
-                <span>卢兴芳</span>
-                <span style="margin-left:5px;">女</span>
-                <span style="margin-left:5px;"> 47岁</span>
-                <span class="mine-msg-right">2017-4-14 8:53</span>
-                <p class="friend-detail-p" style="white-space:nowrap;"></p>
-                </div>
-            </a> 
         </div>
     </ion-content>
 </ion-view>
