@@ -562,6 +562,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         //console.log($scope.PatientSearch)
         $scope.query.name='';
     }
+
+    $scope.itemClick = function(ele, userId) {
+        if (ele.target.id == 'diddetail'){
+            console.log(userId)
+            Storage.set('getpatientId',userId);
+            $state.go('tab.patientDetail');
+        }else
+        {
+            // Storage.set('getpatientId',userId);
+            //[type]:0=已结束;1=进行中;2=医生
+            $state.go('tab.detail',{type:'0',chatId:userId});
+        }
+    }
     //$scope.isChecked1=true;
 }])
 
