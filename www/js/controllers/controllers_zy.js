@@ -367,14 +367,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
 
     ionic.DomUtil.ready(function(){
-        // $http({
-        //     method  : 'POST',
-        //     url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-        //     params    : {'username':'admin','password':"bme319"},  // pass in data as strings
-        //     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-        //     }).success(function(data) {
-        //         //console.log(data);
-        // });
+        $http({
+            method  : 'POST',
+            url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
+            params    : {'username':'admin','password':"bme319"},  // pass in data as strings
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+            }).success(function(data) {
+                //console.log(data);
+        });
     })
     $scope.options = {
         loop: false,
@@ -383,24 +383,24 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
     $scope.testregis=function()
     {
-        $http({
-            method  : 'POST',
-            url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
-            params    :{
-                'regsubmit':'yes',
-                'formhash':'',
-                'D2T9s9':'test9',
-                'O9Wi2H':"123456",
-                'hWhtcM':'123456',
-                'qSMA7S':'qw@qq.com'
-            },  // pass in data as strings
-            headers : {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept':'application/xml, text/xml, */*'
-            }  // set the headers so angular passing info as form data (not request payload)
-        }).success(function(data) {
-                // console.log(data);
-        });
+        // $http({
+        //     method  : 'POST',
+        //     url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+        //     params    :{
+        //         'regsubmit':'yes',
+        //         'formhash':'',
+        //         'D2T9s9':'test9',
+        //         'O9Wi2H':"123456",
+        //         'hWhtcM':'123456',
+        //         'qSMA7S':'qw@qq.com'
+        //     },  // pass in data as strings
+        //     headers : {
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //         'Accept':'application/xml, text/xml, */*'
+        //     }  // set the headers so angular passing info as form data (not request payload)
+        // }).success(function(data) {
+        //         // console.log(data);
+        // });
     }
     // $scope.testRestful=function()
     // {
@@ -438,7 +438,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-            // console.log(data)
+            console.log(data)
             Storage.set("consulted",angular.toJson(data.results))
             // console.log(angular.fromJson(Storage.get("consulted",data.results)))
             $scope.doctor.b=data.results.length;
@@ -470,7 +470,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel) {
+.controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory) {
   // $scope.patients=[
   //   {
   //     head:"default_user.png",
@@ -493,12 +493,39 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.popover.show($event);
     //$scope.testt=12345
     };
-  //$scope.isChecked1=true;
+    $scope.goCounsel = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.consult');
+    }
+    
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
+    }
+
+    $scope.itemClick = function(ele, userId) {
+        if (ele.target.id == 'doingdetail'){
+            console.log(userId)
+            Storage.set('getpatientId',userId);
+            $state.go('tab.patientDetail');
+        }else
+        {
+            // Storage.set('getpatientId',userId);
+            //[type]:0=已结束;1=进行中;2=医生
+            $state.go('tab.detail',{type:'1',chatId:userId});
+        }
+    }
+    //$scope.isChecked1=true;
 
 }])
 
 //"咨询”已完成
-.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
+.controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory) {
   // $scope.patients=[
   //   {
   //     head:"default_user.png",
@@ -521,6 +548,33 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $scope.popover.show($event);
         //$scope.testt=12345
     };
+    $scope.goCounsel = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('tab.consult');
+    }
+
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
+    }
+
+    $scope.itemClick = function(ele, userId) {
+        if (ele.target.id == 'diddetail'){
+            console.log(userId)
+            Storage.set('getpatientId',userId);
+            $state.go('tab.patientDetail');
+        }else
+        {
+            // Storage.set('getpatientId',userId);
+            //[type]:0=已结束;1=进行中;2=医生
+            $state.go('tab.detail',{type:'0',chatId:userId});
+        }
+    }
     //$scope.isChecked1=true;
 }])
 
@@ -528,73 +582,95 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //"患者”页
 .controller('patientCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover',  function(Doctor,$scope, $state,$interval,$rootScope,Storage,$ionicPopover) {
     $scope.barwidth="width:0%";
-    //$scope.order="VIP";
-    //$scope.abc=false;
-    //$scope.index=0;
-    //$scope.turn=0;
-    //$scope.orderGroup=new Array("VIP","class");
-    // $scope.reorder = function() { 
-  
-    //     if(($scope.turn%2)==0)
-    //     {
-    //         $scope.abc=!$scope.abc;
-    //         $scope.turn=$scope.turn+1;
-    //         console.log('index:'+$scope.index);
-    //         console.log('turn:'+$scope.turn);
-    //         console.log('abc:'+$scope.abc);
-    //     }
-    //     else{
-    //         $scope.index=($scope.index+1)%2;
-    //         $scope.turn=$scope.turn+1;
-    //         $scope.order=$scope.orderGroup[$scope.index];
-    //         console.log('index:'+$scope.index);
-    //         console.log('turn:'+$scope.turn);
-    //         console.log('order:'+$scope.order);
-    //     }   
-    // };
     var patients=[];
-    var patientlength = '';
-    Doctor.getPatientList({
-        userId:Storage.get('UID')
-    })
-    .then(
-        function(data)
-        {
-            console.log(data)
-            if (data.results!='')
+    //var patientlength = '';
+    $scope.params={
+        isPatients:true,
+        updateTime:0
+    }
+
+    function load(force){
+        var time= Date.now();
+        if(!force && time-$scope.params.updateTime<21600000) return;
+        $scope.params.updateTime=time;
+        Doctor.getPatientList({
+            userId:'doc01'
+        })
+        .then(
+            function(data)
             {
-                $scope.patients=data.results[0].patients;
-                $scope.patients[1].patientId.VIP=0;
-                patientlength=data.results[0].patients.length;
-            }
-            else
-            {
-                $scope.patients=''
-            }
-            angular.forEach($scope.patients,
-                function(value,key)
+                
+                if (data.results!='')
                 {
-                    $scope.patients[key].show=true;
+                    $scope.patients=data.results.patients;
+                    //$scope.patients[1].patientId.VIP=0;
                 }
-            )
-            
-            // console.log($scope.patients);
-            
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    );
-    // Storage.set('getpatientId','NO');
-    // console.log(Storage.get('getpatientId'))
+                else
+                {
+                    $scope.patients=''
+                }
+                angular.forEach($scope.patients,
+                    function(value,key)
+                    {
+                        $scope.patients[key].show=true;
+                    }
+                )            
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+
+        Doctor.getPatientByDate({
+            userId:'doc01'
+        })
+        .then(
+            function(data)
+            {
+                //console.log(data)
+                $scope.Todays=data.results2;
+                //console.log($scope.Todays)            
+                // angular.forEach($scope.Todays,
+                //     function(value,key)
+                //     {
+                //         $scope.Todays[key].show=true;
+                //     }
+                // )
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+    }
+
+
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.params.isPatients = '1';
+    // })
+    $scope.$on('$ionicView.enter', function() {
+        load();
+    })
+    $scope.ShowPatients = function(){
+        $scope.params.isPatients=true;
+    }
+    $scope.ShowTodays = function(){
+        $scope.params.isPatients=false;
+    }
 
     $scope.getPatientDetail = function(id) {
         console.log(id)
-         Storage.set('getpatientId',id);
+        Storage.set('getpatientId',id);
         $state.go('tab.patientDetail');
+    }
 
-
+    $scope.query={
+        name:''
+    }
+    $scope.clearSearch = function(){
+        //console.log($scope.PatientSearch)
+        $scope.query.name='';
     }
 
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover.html', {
@@ -646,20 +722,23 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['Storage','Doctor','Patient','$scope','$ionicPopup','$state', function(Storage,Doctor,Patient,$scope, $ionicPopup,$state) {
+.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
     // $scope.doctor = doc;
-
+    $scope.goback=function(){
+        $ionicHistory.goBack();
+    }
+    
     console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
     })
     .then(
-    function(data)
+        function(data)
         {
-            // console.log(data)
+            //console.log(data)
             $scope.patient=data.results;
             $scope.diagnosisInfo = data.results.diagnosisInfo;           
         },
@@ -668,6 +747,45 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     );
+
+    Insurance.getInsMsg({
+         doctorId:'doc01',
+         patientId:Storage.get('getpatientId')
+    })
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            $scope.Ins=data.results;       
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    );
+
+    $scope.SendInsMsg=function()
+    {
+        Insurance.updateInsuranceMsg({
+            doctorId:'doc01',
+            patientId:Storage.get('getpatientId'),
+            insuranceId:'ins01',
+            type:5
+        })
+        .then(
+            function(data)
+            {
+                //console.log(data)
+                $scope.Ins.count=$scope.Ins.count + 1;
+                //$state.go('tab.patientDetail');       
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        );
+    }
+
 
     $scope.goToDiagnose=function()
     {
@@ -689,9 +807,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
   $scope.barwidth="width:0%";
    
    //$scope.userid=Storage.get('userid');
-    $scope.$on('$ionicView.beforeEnter', function() {
-        $scope.doRefresh();
-    });
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.doRefresh();
+    // });
     
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
@@ -912,28 +1030,144 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置内容页
-.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage', function($scope, $ionicPopup,$state,$stateParams,Storage) {
+.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage','User', function($scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
+    $scope.resetPassword=function(oldPW,newPW,confirmPW)
+    {
+        // console.log("resetpw")
+        // console.log(oldPW)
+        // console.log(newPW)
+        // console.log(confirmPW)
+        if(oldPW==undefined)
+        {
+            $scope.changePasswordStatus="请输入旧密码"
+            return;
+        }
+        if(oldPW==newPW)
+        {
+            $scope.changePasswordStatus="不能重置为之前的密码"
+            return;
+        }
+        if(newPW==undefined||newPW.length<6)
+        {
+            $scope.changePasswordStatus="新密码不能为空且必须大于6位"
+            return;
+        }
+        if(newPW!=confirmPW)
+        {
+            $scope.changePasswordStatus="两次输入不一致"
+            return;
+        }
+        User.logIn({username:Storage.get('USERNAME'),password:oldPW,role:'doctor'})
+        .then(function(succ)
+        {
+            // console.log(Storage.get('USERNAME'))
+            if(succ.results.mesg=="login success!")
+            {
+                User.changePassword({phoneNo:Storage.get('USERNAME'),password:newPW})
+                .then(function(succ)
+                {
+                    // console.log(succ)
+                    var phoneNo=Storage.get('USERNAME')
+                    Storage.clear();
+                    Storage.set('USERNAME',phoneNo)
+                    $state.go('signin');
+                },function(err)
+                {
+                    console.log(err)
+                })
+            }
+            else
+            { 
+                $scope.changePasswordStatus="旧密码不正确"
+            }
+        },function(err)
+        {
+            console.log(err)
+        })
+    }
   
 }])
 
 //"我”排班页
-.controller('schedualCtrl', ['$scope','$ionicPopover','ionicDatePicker', function($scope,$ionicPopover,ionicDatePicker) {
-    var ipObj1 = {
-        callback: function (val) {  //Mandatory
-            console.log('Return value from the datepicker popup is : ' + val, new Date(val));
-            if($scope.flag==1)
+.controller('schedualCtrl', ['$scope','ionicDatePicker','$ionicPopup','Doctor','Storage', function($scope,ionicDatePicker,$ionicPopup,Doctor,Storage) {
+    var getSchedual=function()
+    {
+        Doctor.getSchedules({userId:Storage.get('UID')})
+        .then(function(data)
+        {
+            // console.log(data)
+            angular.forEach(data.results.schedules,function(value,key)
             {
-                console.log(1)
-                var date=new Date(val)
-                $scope.begin=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                // console.log(value)
+                var index=value.day-'0';
+                if(value.time==1)
+                    index+=7;
+                $scope.workStatus[index].status=1;
+                $scope.workStatus[index].style={'background-color':'red'};
+            })
+        },function(err)
+        {
+            console.log(err)
+        })
+        Doctor.getSuspendTime({userId:Storage.get('UID')})
+        .then(function(data)
+        {
+            // console.log(data.results.suspendTime)
+            if(data.results.suspendTime.length==0)
+            {
+                $scope.stausText="接诊中..."
+                $scope.stausButtontText="停诊"
             }
             else
             {
-                console.log(2);
-                var date=new Date(val)
-                $scope.end=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+                $scope.stausText="停诊中..."
+                $scope.stausButtontText="接诊"
+                $scope.begin=data.results.suspendTime[0].start;
+                $scope.end=data.results.suspendTime[0].end;
+            }
+        },function(err)
+        {
+            console.log(err)
+        })
+    }
+    $scope.workStatus=[
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+        {status:0,style:{'background-color':'white'}},
+    ]
+    $scope.stausButtontText="停诊"
+    $scope.stausText="接诊中..."
+    $scope.showSchedual=true;
+    getSchedual();
+    var ipObj1 = {
+        callback: function (val) {  //Mandatory
+            // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            if($scope.flag==1)
+            {
+                $scope.begin=val;
+                // console.log(1)
+                // var date=new Date(val)
+                // $scope.begin=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            }
+            else
+            {
+                $scope.end=val;
+                // console.log(2);
+                // var date=new Date(val)
+                // $scope.end=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
             }
         },
         titleLabel: '停诊开始',
@@ -952,13 +1186,127 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.openDatePicker = function(params){
         ionicDatePicker.openDatePicker(ipObj1);
-        $scope.flag=params;
+        $scope.flag=params;//标识选定时间用于开始时间还是结束时间
     };
 
-    $scope.showSchedual=true;
     $scope.showSch=function()
     {
-        $scope.showSchedual=!$scope.showSchedual;
-    }   
+        if($scope.stausButtontText=="停诊")
+        {
+            $scope.showSchedual=false;
+        }
+        else
+        {
+            var param={
+                userId:Storage.get('UID'),
+                start:$scope.begin,
+                end:$scope.end
+            }
+            // console.log(param)
+            Doctor.deleteSuspendTime(param)
+            .then(function(data)
+            {
+                console.log(data)
+                $scope.stausButtontText="停诊"
+                $scope.stausText="接诊中..."
+            },function(err)
+            {
+                console.log(err)
+            })
+        }
+    }
+    $scope.stopWork=function(cancel)
+    {
+        if(cancel)
+        {
+            $scope.showSchedual=true;
+            return;
+        }
+        if($scope.begin!=undefined&&$scope.end!=undefined)
+        {
+            var param={
+                userId:Storage.get('UID'),
+                start:$scope.begin,
+                end:$scope.end
+            }
+            // console.log(param)
+            Doctor.insertSuspendTime(param)
+            .then(function(data)
+            {
+                console.log(data)
+                $scope.stausButtontText="接诊"
+                $scope.stausText="停诊中..."
+                $scope.showSchedual=true;
+            },function(err)
+            {
+                console.log(err)
+            })
+        }
+    }
+    $scope.changeWorkStatus=function(index)
+    {
+        // console.log("changeWorkStatus"+index)
+        var text=''
+        if($scope.workStatus[index].status==0)
+        {
+            text = '此时间段将更改为工作状态！'
+        }
+        else
+        {
+            text = '此时间段将更改为空闲状态！'
+        }
+        var confirmPopup = $ionicPopup.confirm({
+            title: '修改工作状态',
+            template: text,
+            cancelText:'取消',
+            okText:'确定'
+        });
+
+        confirmPopup.then(function(res) {
+            if(res) {
+                // console.log('You are sure');
+                var param={
+                    userId:Storage.get('UID'),
+                    day:index.toString(),
+                    time:'0'
+                }
+                if(index>6)
+                {
+                    param.time='1';
+                    param.day=(index-7).toString();
+                }
+                // console.log(param)
+                if($scope.workStatus[index].status==0)
+                {
+                    Doctor.insertSchedule(param)
+                    .then(function(data)
+                    {
+                        // console.log(data)
+                        $scope.workStatus[index].status=1;
+                        $scope.workStatus[index].style={'background-color':'red'};
+                    },function(err)
+                    {
+                        console.log(err)
+                    })
+                }
+                else
+                {
+                    Doctor.deleteSchedule(param)
+                    .then(function(data)
+                    {
+                        // console.log(data)
+                        $scope.workStatus[index].status=0;
+                        $scope.workStatus[index].style={'background-color':'white'};
+                    },function(err)
+                    {
+                        console.log(err)
+                    })
+                }
+            }
+            else {
+                // console.log('You are not sure');
+            }
+        });
+    }
 
 }])

@@ -1,9 +1,9 @@
 <ion-view view-title="已完成" hide-tabs>
     <ion-nav-bar class="bar-positive" align-title="center">
-        <ion-nav-back-button class="button-clear">
-            <i class="ion-chevron-left"></i>
-        </ion-nav-back-button>
-        <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
+        <ion-nav-buttons side="left" >
+            <button class="button button-icon icon ion-chevron-left" ng-click="goCounsel()"></button>
+        </ion-nav-buttons>
+        <ion-nav-buttons side="right" >
              <button class="button button-clear"  ng-click="openPopover($event)">筛选<i class="icon ion-navicon"></i></button>
         </ion-nav-buttons>
      <!--  <ion-nav-back-button class="button-clear">
@@ -12,12 +12,21 @@
       </ion-nav-back-button> -->
     </ion-nav-bar>
     <ion-content>
+        <div class="bar bar-header item-input-inset" style="height:40px;">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="搜索" ng-model="query.name">
+            </label>
+            <button class="button button-clear button-positive" ng-click="clearSearch()">
+                取消
+            </button>
+        </div>
         <div>
         已完成：{{patients.length}}
         </div>
         <div class="list">
-            <a class="item item-thumbnail-left" href="#/tab/detail/0/{{p.counselId}}" ng-repeat="p in patients">
-                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}">
+            <a class="item item-thumbnail-left" ng-repeat="p in patients | filter:query.name" ng-click="itemClick($event,p.patientId.userId)">
+                <img src="{{p.patientId.photoUrl|imgUrl:'doctor'}}" id="diddetail">
                 <div>
                 <span>{{p.patientId.name}}</span>
                 <span style="margin-left:5px;">{{p.patientId.gender|filterGender}}</span>

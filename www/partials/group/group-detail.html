@@ -23,7 +23,7 @@
         <div class="list margin-list">
             <div class="item item-icon-right" href="#">
                 团队名称
-                <span class="item-note">BME319</span>
+                <span class="item-note">{{team.name}}</span>
                 <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
                 <!-- <div class="item-span">{{group.locale}} </div> -->
             </div>
@@ -33,6 +33,15 @@
                 <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
                 <!-- <div class="item-span">{{group.locale}} </div> -->
             </a>
+             <a ng-show="ismyteam" class="item item-icon-right ng-hide" ng-click="gokick()">
+                团队管理
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+                
+            </a>
+            <!--  <div class="item item-icon-right" ng-click="leaveteam()">
+                退出团队
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+            </div> -->
         </div>
         <!-- </div> -->
     </ion-content>

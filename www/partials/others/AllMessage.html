@@ -1,6 +1,6 @@
 <ion-view title="消息中心" >
 
-  <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
+  <ion-nav-bar class="bar-positive nav-title-slide-ios7" style="" >
       <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="left" >
          <button class="button button-clear"  ng-click="Goback()"><i class="icon ion-chevron-left"></i>返回</button>
       </ion-nav-buttons>
@@ -11,28 +11,46 @@
   <ion-content padding="true" style="">
 
     <ion-list>
-      <ion-item ng-repeat="message in messages" class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail({{message.type}})">
-        <img ng-src="{{message.img}}">
-        <h2>{{message.name}}</h2>
-        <p style="text-align: right">{{message.time}}</p>
-        <p>{{message.response}}</p>
+
+      <!-- 支付消息 -->
+      <ion-item class="item-thumbnail-left" ng-click="getMessageDetail('ZF')">
+        <img ng-src="img/payment.png">
+        <h2 style="margin-top: 30px;">支付消息</h2>
+        <span class="badge badge-assertive" style="margin-top: 20px;" ng-if="messages.ZF.values.length">{{messages.ZF.values.length}}</span>
       </ion-item>
 
-      <ion-item ng-repeat="consult in consults" class="item-thumbnail-left item-text-wrap" ng-click="getConsultRecordDetail()">
+      <!-- 警报消息 -->
+      <!-- <ion-item class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail('JB')">
+        <img ng-src="img/alert.png">
+        <h2 style="margin-top: 30px;">警报消息</h2>
+        <span class="badge badge-assertive" style="margin-top: 20px;" ng-if="messages.JB.values.length">{{messages.JB.values.length}}</span>
+      </ion-item> -->
+
+      <!-- 任务消息 -->
+      <ion-item class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail('RW')">
+        <img ng-src="img/task.png">
+        <h2 style="margin-top: 30px;">任务消息</h2>
+        <span class="badge badge-assertive" style="margin-top: 20px;" ng-if="messages.RW.values.length">{{messages.RW.values.length}}</span>
+      </ion-item>
+
+      <!-- 保险消息 -->
+      <ion-item class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail('BX')">
+        <img ng-src="img/security.png">
+        <h2 style="margin-top: 30px;">保险消息</h2>
+        <span class="badge badge-assertive" style="margin-top: 20px;" ng-if="messages.BX.values.length">{{messages.BX.values.length}}</span>
+      </ion-item>
+
+      <!-- 聊天消息 -->
+      <ion-item ng-repeat="consult in messages.LT.values" class="item-thumbnail-left" ng-click="getConsultRecordDetail()">
         <img ng-src="{{consult.img}}">
-        <h2>{{consult.name}}</h2>
-        <p style="text-align: right">{{consult.time}}</p>
-        <p>{{consult.response}}</p>
+        <h2>{{consult.title}}</h2>
+        <p style="text-align: right">{{consult.time|dateFormat:"YYYY-MM-DD h:m"}}</p>
+        <p>{{consult.description}}</p>
       </ion-item>
 
 
     </ion-list>
     
-    
-    
-
-
-           
   </ion-content>
           
 </ion-view>

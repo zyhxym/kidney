@@ -343,28 +343,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 }
             },function(err){
                 reject(err);
-            })
-            
-
-            // console.log(ionic.Platform)
-            // console.log(ionic.Platform.platforms[0]=="browser")
-            // if(ionic.Platform.platforms[0]!="browser")
-            // if(window.JMessage){
-            //     window.JMessage.login(user, pGen(user),
-            //         function(response) {
-            //             window.JMessage.updateMyInfo('nickname',nick)
-            //             window.JMessage.nickname = nick;
-            //             window.JMessage.username = user;
-            //             resolve(user);
-            //         }, function(err){
-            //             console.log(err);
-            //             register(user,nick);
-            //             // reject(err);
-            //         });
-
-
-            // }
-
+            })            
         });
     }
 
@@ -374,7 +353,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 function(response) {
                     window.JMessage.login(user, pGen(user),
                     function(response) {
-                        window.JMessage.updateMyInfo('nickname',nick)
+                        //真实姓名
+                        window.JMessage.updateMyInfo('nickname',nick);
                         window.JMessage.username = user;
                         window.JMessage.nickname = nick;
                         resolve(user);
@@ -574,6 +554,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 })
         })
     }
+
     function sendCustom(type,toUser,key,data){
         return $q(function(resolve,reject){
             if(type='single'){
@@ -659,6 +640,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             //     onReceivePushMessage, false);
         },
         login:login,
+        pGen:pGen,
         sendCustom:sendCustom,
         newGroup:newGroup,
         register: register,
@@ -703,7 +685,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'dict'},{
             getDiseaseType:{method:'GET', params:{route: 'typeTWO'}, timeout: 100000},
             getDistrict:{method:'GET', params:{route: 'district'}, timeout: 100000},
-            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000}
+            getHospital:{method:'GET', params:{route: 'hospital'}, timeout: 100000},
+            typeOne:{method:'GET', params:{route: 'typeOne'}, timeout: 100000}
         });
     };
 
@@ -754,7 +737,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
             getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000},
             getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000},
-            editDoctorDetail:{method:'POST',params:{route:'editDoctorDetail'},timeout:10000}
+            editDoctorDetail:{method:'POST',params:{route:'editDoctorDetail'},timeout:10000},
+            insertSchedule:{method:'POST',params:{route:'insertSchedule'},timeout:10000},
+            getSchedules:{method:'GET',params:{route:'getSchedules'},timeout:10000},
+            deleteSchedule:{method:'POST',params:{route:'deleteSchedule'},timeout:10000},
+            getSuspendTime:{method:'GET',params:{route:'getSuspendTime'},timeout:10000},
+            insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
+            deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
+            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000}
         });
     }
 
@@ -810,10 +800,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
             newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
             newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
-            insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
-            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000}
+            removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
+            updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000}
+        });
+    }
+
+
+    var Insurance =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'insurance'},{
+            getInsMsg:{method:'GET', params:{route: 'getInsMsg'}, timeout: 100000},
+            updateInsuranceMsg:{method:'POST', params:{route: 'updateInsuranceMsg'}, timeout: 100000}
         });
     }
 
@@ -835,6 +834,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Message = Message();
             serve.Communication = Communication();
             serve.User = User();
+            serve.Insurance = Insurance();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -851,6 +851,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Message = Message();
     serve.Communication = Communication();
     serve.User = User();
+    serve.Insurance = Insurance();    
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -895,6 +896,21 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.getHospital = function(params){
         var deferred = $q.defer();
         Data.Dict.getHospital(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{
+    //    category:'MessageType'
+    //}
+    self.typeOne = function(params){
+        var deferred = $q.defer();
+        Data.Dict.typeOne(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -1005,7 +1021,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
-.factory('Communication', ['$q', 'Data', function($q, Data){
+.factory('Communication', ['$q', 'Data','Storage', function($q, Data,Storage){
     var self = this;
     //params->0:{
             //      teamId:'teampost2',
@@ -1089,7 +1105,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-
+    // {
+    //     teamId,
+    //     counselId,
+    //     sponsorId,
+    //     patientId,
+    //     consultationId,
+    //     status:'1'-进行中,'0'-已结束
+    // }
     self.newConsultation = function(params){
         var deferred = $q.defer();
         Data.Communication.newConsultation(
@@ -1102,6 +1125,29 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    // {
+    //     "doctorId":"doc01", 
+    //     "doctorId2":"doc03", 
+    //     "lastTalkTime":"2017-04-09T10:00:00"
+    // }
+    self.updateLastTalkTime = function(id2,millis){
+        var params={
+            "doctorId":Storage.get('UID'), 
+            "doctorId2":id2, 
+            "lastTalkTime":(new Date(millis)).toISOString().substr(0,19)
+        }
+        var deferred = $q.defer();
+        Data.Communication.updateLastTalkTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
 
     return self;
 }])
@@ -1332,7 +1378,10 @@ angular.module('kidney.services', ['ionic','ngResource'])
 }])
 .factory('Message', ['$q', 'Data', function($q, Data){
     var self = this;
-    //params->0:{type:1}
+    //params->0:{
+    //    userId:'U201704120001',
+    //    type:1//option
+    //}
     self.getMessages = function(params){
         var deferred = $q.defer();
         Data.Message.getMessages(
@@ -1675,6 +1724,126 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->0:{
+           //   userId:'doc01',
+           //   day:0,//0-6->周一，周二...周日
+           //   time:0//0->上午 1->下午
+           // }
+    self.insertSchedule = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.insertSchedule(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+           //   userId:'doc01'
+           // }
+    self.getSchedules = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getSchedules(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+           //   userId:'doc01',
+           //   day:0,//0-6->周一，周二...周日
+           //   time:0//0->上午 1->下午
+           // }
+    self.deleteSchedule = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.deleteSchedule(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+    //   userId:'doc01'
+    // }
+    self.getSuspendTime = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getSuspendTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+           //   userId:'doc01',
+           //   start:new Date(),
+           //   end:new Date(),
+           // }
+    self.insertSuspendTime = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.insertSuspendTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
+    //params->0:{
+           //   userId:'doc01',
+           //   start:new Date(),
+           //   end:new Date(),
+           // }
+    self.deleteSuspendTime = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.deleteSuspendTime(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params->0:{
+           //   userId:'doc01',
+           // }
+    self.getPatientByDate = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getPatientByDate(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
   
     return self;
 }])
@@ -1719,6 +1888,46 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     return self;
 }])
+
+.factory('Insurance', ['$q', 'Data', function($q, Data){
+    var self = this;
+    // //params->0:{
+    //                 doctorId:'doc01',
+    //                 patientId:'p01'
+    //             }
+    self.getInsMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.getInsMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->0:{
+                    // doctorId:'doc01', 
+                    // patientId:'p02', 
+                    // insuranceId:'ins01',                    
+                    // type:5, 
+    //          }
+    self.updateInsuranceMsg = function(params){
+        var deferred = $q.defer();
+        Data.Insurance.updateInsuranceMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+
 .factory('QRScan', ['$cordovaBarcodeScanner', '$ionicLoading', '$q', function($cordovaBarcodeScanner, $ionicLoading, $q) {
     return {
         getCode: function() {
