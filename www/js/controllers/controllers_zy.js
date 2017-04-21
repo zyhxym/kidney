@@ -5,10 +5,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM) {
     $scope.barwidth="width:0%";
     if(Storage.get('USERNAME')!=null){
-        $scope.logOn={username:Storage.get('USERNAME'),password:"123456"};
+        $scope.logOn={username:Storage.get('USERNAME'),password:""};
     }
     else{
-        $scope.logOn={username:"",password:"123456"};
+        $scope.logOn={username:"",password:""};
     }
     $scope.signIn = function(logOn) {  
         $scope.logStatus='';
@@ -256,7 +256,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //签署协议（0为签署）
-.controller('AgreeCtrl', ['$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data','User', function($stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data,User) {
+.controller('AgreeCtrl', ['User','$stateParams','$scope','$timeout','$state','Storage','$ionicHistory','$http','Data', function(User,$stateParams,$scope, $timeout,$state,Storage,$ionicHistory,$http,Data) {
     $scope.YesIdo = function(){
         console.log('yesido');
         if($stateParams.last=='signin'){
@@ -271,7 +271,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             })
         }
         else if($stateParams.last=='register'){
-            //Storage.set('AgreeStatus',0);
             $timeout(function(){$state.go('setpassword',0)},500);
         }
     }
@@ -833,8 +832,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Insurance.updateInsuranceMsg({
             doctorId:'doc01',
             patientId:Storage.get('getpatientId'),
-            insuranceId:'ins01',
-            type:5
+            insuranceId:'ins01'
+            //type:5  //保险type=5
         })
         .then(
             function(data)
