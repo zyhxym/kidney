@@ -1941,8 +1941,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //params->0:{
                     // doctorId:'doc01', 
                     // patientId:'p02', 
-                    // insuranceId:'ins01',                    
-                    // type:5, 
+                    // insuranceId:'ins01'
     //          }
     self.updateInsuranceMsg = function(params){
         var deferred = $q.defer();
