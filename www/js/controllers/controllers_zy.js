@@ -399,8 +399,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     'regsubmit':'yes',
                     'formhash':'',
                     'D2T9s9':phoneNumber,
-                    'O9Wi2H':password.newPass,
-                    'hWhtcM':password.newPass,
+                    'O9Wi2H':phoneNumber,
+                    'hWhtcM':phoneNumber,
                     'qSMA7S':phoneNumber+'@qq.com'
                 },  // pass in data as strings
                 headers : {
@@ -433,7 +433,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $http({
             method  : 'POST',
             url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-            params    : {'username':'admin','password':"bme319"},  // pass in data as strings
+            params    : {'username':Storage.get('phoneNumber'),'password':Storage.get('phoneNumber')},  // pass in data as strings
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
             }).success(function(data) {
                 //console.log(data);
