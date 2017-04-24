@@ -572,7 +572,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $scope.query.name='';
     }
 
-    $scope.itemClick = function(ele, userId) {
+    $scope.itemClick = function(ele, userId, counselId) {
         if (ele.target.id == 'doingdetail'){
             console.log(userId)
             Storage.set('getpatientId',userId);
@@ -581,7 +581,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             // Storage.set('getpatientId',userId);
             //[type]:0=已结束;1=进行中;2=医生
-            $state.go('tab.detail',{type:'1',chatId:userId});
+            $state.go('tab.detail',{type:'1',chatId:userId,counselId:counselId});
         }
     }
     //$scope.isChecked1=true;
@@ -627,7 +627,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $scope.query.name='';
     }
 
-    $scope.itemClick = function(ele, userId) {
+    $scope.itemClick = function(ele, userId, counselId) {
         if (ele.target.id == 'diddetail'){
             console.log(userId)
             Storage.set('getpatientId',userId);
@@ -636,7 +636,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             // Storage.set('getpatientId',userId);
             //[type]:0=已结束;1=进行中;2=医生
-            $state.go('tab.detail',{type:'0',chatId:userId});
+            $state.go('tab.detail',{type:'0',chatId:userId,counselId:counselId});
         }
     }
     //$scope.isChecked1=true;
