@@ -505,7 +505,7 @@ angular.module('kidney',[
         views: {
             'tab-groups': {
                 templateUrl: 'partials/group/doctor-search.html',
-                controller: 'GroupsSearchCtrl'
+                controller: 'DoctorSearchCtrl'
             }
         }
     })
