@@ -1,7 +1,7 @@
 angular.module('tdy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////tongdanyang/////////////////
-.controller('DoctorDiagnoseCtrl', ['$scope', 'Storage','ionicDatePicker','Patient', function ($scope, Storage,ionicDatePicker,Patient) {
+.controller('DoctorDiagnoseCtrl', ['$scope', 'Storage','ionicDatePicker','Patient','$state', function ($scope, Storage,ionicDatePicker,Patient,$state) {
   $scope.Hypers =
   [
     {Name:"是",Type:1},
@@ -41,15 +41,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services'])
       title="开始日期"
     return title
   }
-
+  var latestDiagnose=angular.fromJson(Storage.get("latestDiagnose"))
+  console.log(latestDiagnose)
   $scope.Diagnose = 
   {
-    "diagname": null,
-    "diagtime": null,
-    "operationTime": null,
-    "hypertension": null,
-    "diagprogress": '稳定期',
-    "diagcontent":""
+    "diagname": latestDiagnose.name,
+    "diagtime": latestDiagnose.time,
+    "operationTime": latestDiagnose.operationTime,
+    "hypertension": latestDiagnose.hypertension,
+    "diagprogress": latestDiagnose.progress,
+    "diagcontent":latestDiagnose.content
   }
   var datepickerD = {
         callback: function (val) {  //Mandatory
