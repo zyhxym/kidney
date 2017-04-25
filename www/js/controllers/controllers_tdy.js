@@ -975,7 +975,7 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
         $scope.items = data.results
         for (var i = 0; i < $scope.items.length; i++){
           $scope.items[i].acture = $scope.items[i].insertTime
-          $scope.items[i].time = $scope.items[i].time.substr(0,10)
+          //$scope.items[i].time = $scope.items[i].time.substr(0,10)
           // if ($scope.items[i].url != ""&&$scope.items[i].url!=null)
           // {
           //   $scope.items[i].url = [$scope.items[i].url]
@@ -1088,9 +1088,10 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
       if (data.results != "" && data.results!= null)
       {
         $scope.items = data.results
+        console.log($scope.items)
         for (var i = 0; i < $scope.items.length; i++){
           $scope.items[i].acture = $scope.items[i].insertTime
-          $scope.items[i].time = $scope.items[i].time.substr(0,10)
+          //$scope.items[i].time = $scope.items[i].time.substr(0,10)
           // if ($scope.items[i].url != ""&&$scope.items[i].url!=null)
           // {
           //   $scope.items[i].url = [$scope.items[i].url]
@@ -1253,7 +1254,7 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
                 $scope.health.label = searchObj($scope.health.label,$scope.labels);
                 console.log( $scope.health.label);
               }
-              $scope.health.date = data.results.time.substr(0,10)
+              $scope.health.date = data.results.time
               $scope.health.text = data.results.description
               if (data.results.url != ""&&data.results.url!=null)
               {
@@ -1361,12 +1362,14 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
 
 }
 
-  var datepickerD = {
+    var ipObj1 = {
         callback: function (val) {  //Mandatory
-            console.log('Return value from the datepicker popup is : ' + val, new Date(val));
-            $scope.health.date=new Date(val);
+            // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+            $scope.health.date = new Date(val);
+            console.log(val);
+            console.log(Date(val));       
         },
-        titleLabel: '添加日期',
+        titleLabel: '停诊开始',
         inputDate: new Date(),
         mondayFirst: true,
         closeOnSelect: false,
@@ -1379,8 +1382,9 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
         weeksList: ["周日","周一","周二","周三","周四","周五","周六"],
         monthsList:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"]
     };
-    $scope.openDatePicker = function(){
-        ionicDatePicker.openDatePicker(datepickerD);
+
+    $scope.openDatePicker = function(params){
+        ionicDatePicker.openDatePicker(ipObj1);
     };
 
 

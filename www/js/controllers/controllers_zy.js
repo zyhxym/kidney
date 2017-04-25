@@ -781,14 +781,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     );
 
     Insurance.getInsMsg({
-         doctorId:'doc01',
-         patientId:Storage.get('getpatientId')
+        doctorId:'doc01',
+        patientId:Storage.get('getpatientId')
     })
     .then(
         function(data)
         {
-            //console.log(data)
-            $scope.Ins=data.results;       
+            console.log(data.results)
+            $scope.Ins=data.results||{count:0};                   
         },
         function(err)
         {
@@ -1103,6 +1103,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     var phoneNo=Storage.get('USERNAME')
                     Storage.clear();
                     Storage.set('USERNAME',phoneNo)
+                    $scope.changePasswordStatus = "修改成功！";
                     $state.go('signin');
                 },function(err)
                 {
