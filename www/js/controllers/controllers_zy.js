@@ -1,6 +1,6 @@
 angular.module('zy.controllers', ['ionic','kidney.services'])
 
-/////////////////////////////zhangying////////////////////////
+/////////////////////////////zhangying///////////////////////
 //登录
 .controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM) {
     $scope.barwidth="width:0%";
@@ -334,9 +334,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
 }])
 
-
-
-
 //注册时填写医生个人信息
 .controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http){
     $scope.barwidth="width:0%";
@@ -416,13 +413,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         },function(err)
         {
             console.log(err)       
-        })
-       
+        })      
     };
-
 }])
-
-
 
 //首页
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce) {
@@ -484,7 +477,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.barwidth="width:0%";
     //变量a 等待患者数量 变量b 已完成咨询患者数量
     $scope.doctor={a:0,b:0};
-
     var now=new Date();
     var year=now.getYear();
     var month=now.getMonth()+1;
@@ -529,22 +521,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             console.log(err)
         }
     )
-
 }])
 
 //"咨询”进行中
 .controller('doingCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory) {
-  // $scope.patients=[
-  //   {
-  //     head:"default_user.png",
-  //     name:"赵大头",
-  //     id:18868800011,
-  //     gender:"男",
-  //     age:"32",
-  //     time:"2017/3/27 9:32",
-  //     qs:"问题1" 
-  //   }
-  // ];
     $scope.patients=angular.fromJson(Storage.get("consulting"));
     console.log($scope.patients)
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
@@ -584,22 +564,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     }
     //$scope.isChecked1=true;
-
 }])
 
 //"咨询”已完成
 .controller('didCtrl', ['$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory',  function($scope, $state,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory) {
-  // $scope.patients=[
-  //   {
-  //     head:"default_user.png",
-  //     name:"王大头",
-  //     id:18868800001,
-  //     gender:"男",
-  //     age:"32",
-  //     time:"2017/3/27 9:32",
-  //     qs:"问题1" 
-  //   }
-  // ];
     $scope.patients=angular.fromJson(Storage.get("consulted"));
   
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
@@ -708,7 +676,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         );
     }
 
-
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.params.isPatients = '1';
     // })
@@ -793,7 +760,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.goback=function(){
         $ionicHistory.goBack();
     }
-    
+
     console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
@@ -851,7 +818,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         );
     }
 
-
     $scope.goToDiagnose=function()
     {
         $state.go("tab.DoctorDiagnose");
@@ -871,7 +837,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('meCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage', function(Doctor,$scope, $state,$interval,$rootScope,Storage) {
   $scope.barwidth="width:0%";
    
-   //$scope.userid=Storage.get('userid');
+    //$scope.userid=Storage.get('userid');
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
     // });
@@ -1375,3 +1341,5 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
 
 }])
+
+
