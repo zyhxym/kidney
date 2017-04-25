@@ -714,7 +714,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     var Counsel = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
             getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
-            questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000}
+            questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000},
+            changeCounselStatus:{method:'POST', params:{route: 'changeCounselStatus'}, timeout: 100000}
         });
     };
 
@@ -788,7 +789,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Account =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'account'},{
-            getAccountInfo:{method:'GET', params:{route: 'getAccountInfo'}, timeout: 100000}
+            getAccountInfo:{method:'GET', params:{route: 'getAccountInfo'}, timeout: 100000},
+            modifyCounts:{method:'POST', params:{route:'modifyCounts'}, timeout: 100000},
+            getCounts:{method:'GET', params:{route: 'getCounts'}, timeout: 100000}
         });
     }
 
@@ -1458,6 +1461,30 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    self.modifyCounts = function(params){
+        var deferred = $q.defer();
+        Data.Account.modifyCounts(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    self.getCounts = function(params){
+        var deferred = $q.defer();
+        Data.Account.getCounts(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
     return self;
 }])
 .factory('VitalSign', ['$q', 'Data', function($q, Data){
@@ -1924,6 +1951,18 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.questionaire = function(params){
         var deferred = $q.defer();
         Data.Counsel.questionaire(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    self.changeCounselStatus = function(params){
+        var deferred = $q.defer();
+        Data.Counsel.changeCounselStatus(
             params,
             function(data, headers){
                 deferred.resolve(data);

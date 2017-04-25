@@ -359,13 +359,15 @@ angular.module('kidney',[
     .state('tab.detail', {
         // cache: false,
         //[type]:0=已结束;1=进行中;2=医生
+        //传一个counselId进来
         url: '/detail/:type/:chatId',
         views: {
             'tab-consult':{
                 controller: 'detailCtrl',
                 templateUrl: 'partials/consult/detail.html'
             }
-        }
+        },
+        params:{counselId:null}
     })
     .state('tab.consult-detail', {
         // cache: false,
