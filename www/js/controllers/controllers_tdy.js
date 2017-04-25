@@ -1089,6 +1089,8 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
       {
         $scope.items = data.results
         console.log($scope.items)
+        var testtime=$scope.items[0]
+        console.log(testtime)
         for (var i = 0; i < $scope.items.length; i++){
           $scope.items[i].acture = $scope.items[i].insertTime
           //$scope.items[i].time = $scope.items[i].time.substr(0,10)
@@ -1365,9 +1367,11 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
     var ipObj1 = {
         callback: function (val) {  //Mandatory
             // console.log('Return value from the datepicker popup is : ' + val, new Date(val));
-            $scope.health.date = new Date(val);
-            console.log(val);
-            console.log(Date(val));       
+            var date=new Date(val)
+            date.setHours(8)
+            $scope.health.date = date.toUTCString();
+            console.log($scope.health.date);
+            console.log(date);       
         },
         titleLabel: '停诊开始',
         inputDate: new Date(),
