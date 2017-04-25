@@ -1061,7 +1061,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置内容页
-.controller('set-contentCtrl', ['$scope','$ionicPopup','$state','$stateParams','Storage','User', function($scope, $ionicPopup,$state,$stateParams,Storage,User) {
+.controller('set-contentCtrl', ['$timeout','$scope','$ionicPopup','$state','$stateParams','Storage','User', function($timeout,$scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
     $scope.resetPassword=function(oldPW,newPW,confirmPW)
@@ -1101,10 +1101,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 {
                     // console.log(succ)
                     var phoneNo=Storage.get('USERNAME')
-                    Storage.clear();
+                    //Storage.clear();
                     Storage.set('USERNAME',phoneNo)
                     $scope.changePasswordStatus = "修改成功！";
-                    $state.go('signin');
+                    //$state.go('signin');
+                    $timeout(function(){$state.go('tab.set');},500);
                 },function(err)
                 {
                     console.log(err)

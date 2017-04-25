@@ -182,7 +182,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           }];
 }])
 //医生查找
-.controller('GroupsSearchCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'JM', 'CONFIG', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, JM, CONFIG) {
+.controller('DoctorSearchCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'JM', 'CONFIG', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, JM, CONFIG) {
 
     //get groupId via $state.params.groupId
     $scope.moredata = true;
@@ -194,12 +194,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.doctors = [];
     $scope.alldoctors = [];
     $scope.skipnum = 0;
-    $scope.update = function(id) {
-        if ($scope.doctors[id].check) $scope.group.members.push({ photoUrl: $scope.doctors[id].photoUrl, name: $scope.doctors[id].name, userId: $scope.doctors[id].userId });
-        else $scope.group.members.splice(arrTool.indexOf($scope.group.members, 'userId', $scope.doctors[id].userId), 1);
-    }
-
-
+    // $scope.update = function(id) {
+    //     if ($scope.doctors[id].check) $scope.group.members.push({ photoUrl: $scope.doctors[id].photoUrl, name: $scope.doctors[id].name, userId: $scope.doctors[id].userId });
+    //     else $scope.group.members.splice(arrTool.indexOf($scope.group.members, 'userId', $scope.doctors[id].userId), 1);
+    // }
     $scope.loadMore = function() {
         // $scope.$apply(function() {
         Patient.getDoctorLists({ skip: $scope.skipnum, limit: 10 })
@@ -221,8 +219,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.goSearch = function() {
         $scope.isnotsearching = true;
         $scope.issearching = false;
-
-
         $scope.moredata = false;
         Patient.getDoctorLists({ skip: 0, limit: 10, name: $scope.search.name })
             .then(function(data) {
@@ -239,79 +235,68 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.closeSearch = function() {
         $scope.issearching = true;
         $scope.isnotsearching = false;
-
         $scope.moredata = true;
         $scope.doctors = $scope.alldoctors;
         $scope.search.name = '';
-
     }
     $scope.clearSearch = function() {
         $scope.search.name = '';
     }
-
-    $scope.confirmAdd = function() {
-        if ($state.params.type == 'new') {
-            $rootScope.newMember = $rootScope.newMember.concat($scope.group.members);
-            $ionicHistory.goBack();
-        } else {
-            console.log($state.params.teamId)
-            var idStr = '';
-            for (i = 0; i < $scope.group.members.length; i++) {
-                window.JMessage.register($scope.group.members[i].userId, JM.pGen($scope.group.members[i].userId), function(data) {
-                    console.log(data);
-                }, function(err) {
-                    console.log(err);
-                });
-                if (i == 0) {
-                    idStr = $scope.group.members[i].userId
-                } else { idStr = idStr + ',' + $scope.group.members[i].userId }
-            }
-
-
-            console.log(idStr);
-            // setTimeout(function(){ 
-            window.JMessage.addGroupMembersCrossApp($state.params.teamId, CONFIG.appKey, idStr,
-                    function(data) {
-
-                        console.log(data);
-                    },
-                    function(err) {
-                        console.log(err);
-
-                    })
-                // },500); 
-            Communication.insertMember({ teamId: $state.params.teamId, members: $scope.group.members })
-                .then(function(data) {
-                    console.log(data.result)
-                    if (data.result == "更新成员成功") {
-                        $ionicLoading.show({ template: '添加成功', duration: 1500 });
-                    }
-                    setTimeout(function() { $ionicHistory.goBack(); }, 1500);
-                })
-
-        }
-
-
-        console.log(idStr);
-        setTimeout(function() {
-            window.JMessage.addGroupMembers($state.params.teamId, idStr,
-                function(data) {
-                    console.log(data);
-
-
-                },
-                function(err) {
-
-                    console.log(err);
-                })
-        }, 500);
-        Communication.insertMember({ teamId: $state.params.teamId, members: $scope.group.members })
-            .then(function(data) {
-                $ionicLoading.show({ template: '添加成功', duration: 1500 });
-                setTimeout(function() { $ionicHistory.goBack(); }, 1500);
-            })
-
+    $scope.doctorClick = function(doc) {
+        console.log(doc)
+        $state.go('tab.detail', { type: '2', chatId:doc });
     }
+    // $scope.confirmAdd = function() {
+    //     if ($state.params.type == 'new') {
+    //         $rootScope.newMember = $rootScope.newMember.concat($scope.group.members);
+    //         $ionicHistory.goBack();
+    //     } else {
+    //         console.log($state.params.teamId)
+    //         var idStr = '';
+    //         for (i = 0; i < $scope.group.members.length; i++) {
+    //             window.JMessage.register($scope.group.members[i].userId, JM.pGen($scope.group.members[i].userId), function(data) {
+    //                 console.log(data);
+    //             }, function(err) {
+    //                 console.log(err);
+    //             });
+    //             if (i == 0) {
+    //                 idStr = $scope.group.members[i].userId
+    //             } else { idStr = idStr + ',' + $scope.group.members[i].userId }
+    //         }
+
+    //             // },500); 
+    //         Communication.insertMember({ teamId: $state.params.teamId, members: $scope.group.members })
+    //             .then(function(data) {
+    //                 console.log(data.result)
+    //                 if (data.result == "更新成员成功") {
+    //                     $ionicLoading.show({ template: '添加成功', duration: 1500 });
+    //                 }
+    //                 setTimeout(function() { $ionicHistory.goBack(); }, 1500);
+    //             })
+
+    //     }
+
+
+    //     console.log(idStr);
+    //     setTimeout(function() {
+    //         window.JMessage.addGroupMembers($state.params.teamId, idStr,
+    //             function(data) {
+    //                 console.log(data);
+
+
+    //             },
+    //             function(err) {
+
+    //                 console.log(err);
+    //             })
+    //     }, 500);
+    //     Communication.insertMember({ teamId: $state.params.teamId, members: $scope.group.members })
+    //         .then(function(data) {
+    //             $ionicLoading.show({ template: '添加成功', duration: 1500 });
+    //             setTimeout(function() { $ionicHistory.goBack(); }, 1500);
+         
+
+    // }
 
 }])
 
