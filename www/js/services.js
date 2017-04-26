@@ -714,7 +714,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
             getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
             questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000},
-            changeCounselStatus:{method:'POST', params:{route: 'changeCounselStatus'}, timeout: 100000}
+            changeCounselStatus:{method:'POST', params:{route: 'changeCounselStatus'}, timeout: 100000},
+            getStatus:{method:'GET', params:{route: 'getStatus'}, timeout: 100000},
+            changeStatus:{method:'POST', params:{route: 'changeStatus'}, timeout: 100000}
         });
     };
 
@@ -1944,9 +1946,33 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-    self.changeCounselStatus = function(params){
+    self.getStatus = function(params){
         var deferred = $q.defer();
-        Data.Counsel.changeCounselStatus(
+        Data.Counsels.getStatus(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    self.getStatus = function(params){
+        var deferred = $q.defer();
+        Data.Counsels.getStatus(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    self.changeStatus = function(params){
+        var deferred = $q.defer();
+        Data.Counsel.changeStatus(
             params,
             function(data, headers){
                 deferred.resolve(data);

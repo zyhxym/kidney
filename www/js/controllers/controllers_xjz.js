@@ -560,7 +560,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //"咨询”问题详情
-.controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Account','Counsel', function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Account, Counsel) {
+.controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Account','Counsel','Storage', function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Account, Counsel,Storage) {
     $scope.input = {
         text: ''
     }
@@ -857,7 +857,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         confirmPopup.then(function(res) {
             if (res) {
                 console.log('问诊结束');
-                  Counsel.changeCounselStatus({counselId:$scope.param.consultId,status:0})
+                  Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
                         .then(function(data){
                             console.log(data)
                         })
@@ -882,7 +882,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                   .then(function(data){
                      console.log(data)
                      if(data.result<=0){ //问题数归零
-                        Counsel.changeCounselStatus({counselId:$scope.param.consultId,status:0})
+                        Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:1,status:0})
                         .then(function(data){
                             console.log(data)
                         })
