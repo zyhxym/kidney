@@ -280,7 +280,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User',function($scope,$state,$rootScope,$timeout,Storage,User) {
     $scope.barwidth="width:0%";
     var validMode=Storage.get('validMode');//0->set;1->reset
-    var phoneNumber=Storage.get('phoneNumber');
+    var phoneNumber=Storage.get('USERNAME');
     $scope.headerText="设置密码";
     $scope.buttonText="";
     $scope.logStatus='';
@@ -337,7 +337,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //注册时填写医生个人信息
 .controller('userdetailCtrl',['Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http',function(Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http){
     $scope.barwidth="width:0%";
-    var phoneNumber=Storage.get('phoneNumber');
+    var phoneNumber=Storage.get('USERNAME');
     var password=Storage.get('password');
     $scope.doctor={
         userId:"",
@@ -421,12 +421,13 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce) {
     $scope.barwidth="width:0%";
     $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
+    console.log(Storage.get('USERNAME'))
 
     ionic.DomUtil.ready(function(){
         $http({
             method  : 'POST',
             url     : 'http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2',
-            params    : {'username':Storage.get('phoneNumber'),'password':Storage.get('phoneNumber')},  // pass in data as strings
+            params    : {'username':Storage.get('USERNAME'),'password':Storage.get('USERNAME')},  // pass in data as strings
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
             }).success(function(data) {
                 //console.log(data);
@@ -769,8 +770,24 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
             console.log(data)
+            Storage.set("latestDiagnose","");
             if(data.results.diagnosisInfo.length>0)
+            {
                 Storage.set("latestDiagnose",angular.toJson(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1]));
+                console.log(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1])
+            }
+            else if(data.results.diagnosisInfo.length==0)
+            {
+                var lD={
+                    content:"",
+                    hypertension:data.results.hypertension,
+                    name:"",
+                    operationTime:"",
+                    progress:"",
+                    time:""
+                }
+                Storage.set("latestDiagnose",angular.toJson(lD));
+            }
             $scope.patient=data.results;
             $scope.diagnosisInfo = data.results.diagnosisInfo;           
         },
