@@ -486,41 +486,55 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.riqi=date1;
 
     //获取在等待
-    Counsel.getCounsels({
-        userId:Storage.get('UID'),
-        status:0
+    var load = function()
+    {
+        Counsel.getCounsels({
+            userId:Storage.get('UID'),
+            status:0
+        })
+        .then(
+            function(data)
+            {
+                console.log(data)
+                Storage.set("consulted",angular.toJson(data.results))
+                // console.log(angular.fromJson(Storage.get("consulted",data.results)))
+                $scope.doctor.b=data.results.length;
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )
+        //获取进行中
+        Counsel.getCounsels({
+            userId:Storage.get('UID'),
+            status:1
+        })
+        .then(
+            function(data)
+            {
+                console.log(data)
+                Storage.set("consulting",angular.toJson(data.results))
+                // console.log(angular.fromJson(Storage.get("consulting",data.results)))
+                $scope.doctor.a=data.results.length;
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )        
+    }
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }    
+    // $scope.$on('$ionicView.beforeEnter', function() {
+    //     $scope.params.isPatients = '1';
+    // })
+    $scope.$on('$ionicView.enter', function() {
+        load();
     })
-    .then(
-        function(data)
-        {
-            console.log(data)
-            Storage.set("consulted",angular.toJson(data.results))
-            // console.log(angular.fromJson(Storage.get("consulted",data.results)))
-            $scope.doctor.b=data.results.length;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
-    //获取进行中
-    Counsel.getCounsels({
-        userId:Storage.get('UID'),
-        status:1
-    })
-    .then(
-        function(data)
-        {
-            console.log(data)
-            Storage.set("consulting",angular.toJson(data.results))
-            // console.log(angular.fromJson(Storage.get("consulting",data.results)))
-            $scope.doctor.a=data.results.length;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
 }])
 
 //"咨询”进行中
@@ -563,7 +577,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $state.go('tab.detail',{type:'1',chatId:userId,counselId:counselId});
         }
     }
-    //$scope.isChecked1=true;
 }])
 
 //"咨询”已完成
@@ -620,14 +633,13 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         updateTime:0
     }
 
-    function load(force){
-        var time= Date.now();
-        if(!force && time-$scope.params.updateTime<21600000) return;
-        $scope.params.updateTime=time;
+    var load = function()
+    {
         Doctor.getPatientList({
-            userId:'doc01'
+            userId:Storage.get('UID')
         })
         .then(
+
             function(data)
             {
                 
@@ -654,7 +666,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         );
 
         Doctor.getPatientByDate({
-            userId:'doc01'
+            userId:Storage.get('UID')
         })
         .then(
             function(data)
@@ -676,6 +688,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         );
     }
 
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }    
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.params.isPatients = '1';
     // })
@@ -781,7 +798,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     );
 
     Insurance.getInsMsg({
-        doctorId:'doc01',
+        doctorId:Storage.get('UID'),
         patientId:Storage.get('getpatientId')
     })
     .then(
@@ -799,7 +816,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.SendInsMsg=function()
     {
         Insurance.updateInsuranceMsg({
-            doctorId:'doc01',
+            doctorId:Storage.get('UID'),
             patientId:Storage.get('getpatientId'),
             insuranceId:'ins01'
             //type:5  //保险type=5

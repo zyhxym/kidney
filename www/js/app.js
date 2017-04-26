@@ -722,5 +722,9 @@ angular.module('kidney',[
         $state.go('tab.patient', {});
       },20);
     }
-
+    $scope.goMe = function(){
+        setTimeout(function() {
+        $state.go('tab.me', {});
+      },20);
+    }
 }])
