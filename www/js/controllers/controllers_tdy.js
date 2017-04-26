@@ -1182,8 +1182,8 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
 //健康详情--PXY
 .controller('HealthDetailCtrl', ['ionicDatePicker','$scope','$state','$ionicHistory','$ionicPopup','$stateParams','$ionicPopover','$ionicModal','$ionicScrollDelegate','$ionicLoading','$timeout','Dict','Health','Storage','Camera',function(ionicDatePicker,$scope, $state,$ionicHistory,$ionicPopup,$stateParams,$ionicPopover,$ionicModal,$ionicScrollDelegate,$ionicLoading,$timeout,Dict,Health,Storage,Camera) {
   $scope.barwidth="width:0%";
-  //var patientId = Storage.get('getpatientId')
-  var patientId = 'U201702071766'   //测试ID
+  var patientId = Storage.get('getpatientId')
+  // var patientId = 'U201702071766'   //测试ID
 
   // $scope.test = function(){
   //   console.log($scope.datepickerObject4);

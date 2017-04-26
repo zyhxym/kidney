@@ -8,7 +8,9 @@
         </ion-nav-buttons>
     </ion-nav-bar> -->
     <ion-content has-bouncing="true" overflow-scroll="false">  
-       <div class="blank-h12"></div>
+        <div class="blank-h12"></div>
+        <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()">           
+        </ion-refresher>
 	    <div>进行中</div>
         <div class="card">
             <a href="#/tab/doing" class="subdued">
