@@ -131,6 +131,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     fromId:
@@ -140,6 +141,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     targetId:DoctorId,
@@ -149,6 +151,7 @@ angular.module('kidney',[
             //     counsel:data.results,
             //     type:'card',
             //     patientId:patientId,
+            //     patientName:patientname,
             //     doctorId:DoctorId,
             //     //转发信息
             //     targetId:teamId,
@@ -228,6 +231,13 @@ angular.module('kidney',[
         templateUrl: 'partials/others/signin.html',
         controller: 'SignInCtrl'
     })
+    .state('agreement', {
+      cache: false,
+      url: '/agreeOrNot',
+      params:{last:null},
+      templateUrl: 'partials/others/agreement.html',
+      controller: 'AgreeCtrl'
+    })   
     .state('phonevalid', {
         url: '/phonevalid',
         cache: false,
@@ -349,13 +359,15 @@ angular.module('kidney',[
     .state('tab.detail', {
         // cache: false,
         //[type]:0=已结束;1=进行中;2=医生
+        //传一个counselId进来
         url: '/detail/:type/:chatId',
         views: {
             'tab-consult':{
                 controller: 'detailCtrl',
                 templateUrl: 'partials/consult/detail.html'
             }
-        }
+        },
+        params:{counselId:null}
     })
     .state('tab.consult-detail', {
         // cache: false,
@@ -446,16 +458,28 @@ angular.module('kidney',[
         }
     })
 
-    // .state('tab.HealthInfo', {
-    //     // cache: false,
-    //     url: '/HealthInfo',
-    //     views: {
-    //         'tab-patient':{
-    //             controller: 'HealthInfoCtrl',
-    //             templateUrl: 'partials/patient/HealthInfo.html'
-    //         }
-    //     }
-    // })    
+    .state('tab.HealthInfo', {
+        // cache: false,
+        url: '/HealthInfo',
+        views: {
+            'tab-patient':{
+                controller: 'HealthInfoCtrl',
+                templateUrl: 'partials/patient/HealthInfo.html'
+            }
+        }
+    })
+
+    .state('tab.HealthInfoDetail', {
+        // cache: false,
+        url: '/HealthInfoDetail',
+        params: {id:null},
+        views: {
+            'tab-patient':{
+                controller: 'HealthDetailCtrl',
+                templateUrl: 'partials/patient/editHealthInfo.html'
+            }
+        }
+    })        
 
     // views-tab-groups
     .state('tab.new-group', {
@@ -476,8 +500,17 @@ angular.module('kidney',[
             }
         }
     })
+    .state('tab.doctor-search', {
+        url: '/doctorsearch',
+        views: {
+            'tab-groups': {
+                templateUrl: 'partials/group/doctor-search.html',
+                controller: 'DoctorSearchCtrl'
+            }
+        }
+    })
     .state('tab.group-add', {
-            url: '/groups/add/:groupId',
+            url: '/groups/add/:teamId',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add.html',
@@ -571,8 +604,7 @@ angular.module('kidney',[
                 templateUrl: 'partials/group/profile.html'
             }
         },
-        params:{doctorId:null}
-
+        params:{memberId:null}
     })
 
     // views-tab-me
@@ -690,5 +722,9 @@ angular.module('kidney',[
         $state.go('tab.patient', {});
       },20);
     }
-
+    $scope.goMe = function(){
+        setTimeout(function() {
+        $state.go('tab.me', {});
+      },20);
+    }
 }])

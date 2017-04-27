@@ -15,7 +15,6 @@
             <button class="button button-clear button-positive" ng-click="clearSearch()">
                 取消
             </button>
-
         </div>
 
         <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0;position: 0px;top: 0px">
@@ -28,7 +27,7 @@
             </a>
         </div>
 
-        <p></p>
+        <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
 
         <div ng-if="params.isPatients" class="list">
             <div ng-repeat="p in patients | filter:query.name |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(p.patientId.userId)">
