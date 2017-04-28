@@ -210,89 +210,95 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   }
 
 }])
-.controller('TestRecordCtrl', ['$scope', '$http','Storage','VitalSign', function ($scope,$http, Storage,VitalSign) {
+.controller('TestRecordCtrl', ['$scope', '$http','$stateParams','Storage','VitalSign', function ($scope,$http,$stateParams,Storage,VitalSign) {
   
 
-
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      console.log($stateParams.PatinetId)
+      console.log(Storage.get("getpatientId"))
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
-          if(Data.results[i].date>="2017-04-08"&&Data.results[i].code=="舒张压"){
+          // if(Data.results[i].date>="2017-04-08"&&Data.results[i].code=="舒张压"){
+          if(Data.results[i].code=="舒张压"){
             for(var j=0;j<Data.results[i].data.length;j++){
               $scope.ChartData.push(Data.results[i].data[j])
             }
           }
         }
-        AmCharts.makeChart("chartdiv", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
+        if($scope.ChartData.length==0){
+          console.log($scope.ChartData)
+          $scope.chartdiv=false;
+        }else{
+          $scope.chartdiv=true;
+          AmCharts.makeChart("chartdiv", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+        });
+        }
         // console.log($scope.ChartData);
         // createStockChart("chartdiv",$scope.ChartData,"舒张压","mmHg");
       }, function(e) {  
       });
 
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="收缩压"){
@@ -301,73 +307,77 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             }
           }
         }
-        AmCharts.makeChart("chartdiv1", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
+        if($scope.ChartData.length==0){
+          $scope.chartdiv1=false;
+        }else{
+          $scope.chartdiv1=true;
+          AmCharts.makeChart("chartdiv1", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+          });
+        }
         // console.log($scope.ChartData);
         // createStockChart("chartdiv",$scope.ChartData,"收缩压","mmHg");
       }, function(e) {  
       });
 
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'体温'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体温'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="体温"){
@@ -376,72 +386,75 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             }
           }
         }
+        if($scope.ChartData.length==0){
+          $scope.chartdiv2=false;
+        }else{
+          $scope.chartdiv2=true;
+          AmCharts.makeChart("chartdiv2", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-        AmCharts.makeChart("chartdiv2", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
-
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+          });
+        }
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体重'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="体重"){
@@ -450,72 +463,75 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
             }
           }
         }
+        if($scope.ChartData.length==0){
+          $scope.chartdiv3=false;
+        }else{
+          $scope.chartdiv3=true;
+          AmCharts.makeChart("chartdiv3", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-        AmCharts.makeChart("chartdiv3", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
-
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+          });
+        }
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'尿量'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="尿量"){
@@ -524,72 +540,75 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
             }
           }
         }
+        if($scope.ChartData.length==0){
+          $scope.chartdiv4=false;
+        }else{
+          $scope.chartdiv4=true;
+          AmCharts.makeChart("chartdiv4", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-        AmCharts.makeChart("chartdiv4", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
-
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+          });
+        }
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'心率'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="心率"){
@@ -598,65 +617,69 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
             }
           }
         }
+        if($scope.ChartData.length==0){
+          $scope.chartdiv5=false;
+        }else{
+          $scope.chartdiv5=true;
+          AmCharts.makeChart("chartdiv5", {
+            "type": "serial",
+            "theme": "light",
+            "marginTop":0,
+            "marginRight": 80,
+            "dataProvider": $scope.ChartData,
+            "valueAxes": [{
+                "axisAlpha": 0,
+                "position": "left"
+            }],
+            "graphs": [{
+                "id":"g1",
+                "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                "bullet": "round",
+                "bulletSize": 8,
+                "lineColor": "#d1655d",
+                "lineThickness": 2,
+                "negativeLineColor": "#637bb6",
+                // "type": "smoothedLine",
+                "valueField": "value"
+            }],
+            "chartScrollbar": {
+                "graph":"g1",
+                "gridAlpha":0,
+                "color":"#888888",
+                "scrollbarHeight":55,
+                "backgroundAlpha":0,
+                "selectedBackgroundAlpha":0.1,
+                "selectedBackgroundColor":"#888888",
+                "graphFillAlpha":0,
+                "autoGridCount":true,
+                "selectedGraphFillAlpha":0,
+                "graphLineAlpha":0.2,
+                "graphLineColor":"#c2c2c2",
+                "selectedGraphLineColor":"#888888",
+                "selectedGraphLineAlpha":1
 
-        AmCharts.makeChart("chartdiv5", {
-          "type": "serial",
-          "theme": "light",
-          "marginTop":0,
-          "marginRight": 80,
-          "dataProvider": $scope.ChartData,
-          "valueAxes": [{
-              "axisAlpha": 0,
-              "position": "left"
-          }],
-          "graphs": [{
-              "id":"g1",
-              "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-              "bullet": "round",
-              "bulletSize": 8,
-              "lineColor": "#d1655d",
-              "lineThickness": 2,
-              "negativeLineColor": "#637bb6",
-              // "type": "smoothedLine",
-              "valueField": "value"
-          }],
-          "chartScrollbar": {
-              "graph":"g1",
-              "gridAlpha":0,
-              "color":"#888888",
-              "scrollbarHeight":55,
-              "backgroundAlpha":0,
-              "selectedBackgroundAlpha":0.1,
-              "selectedBackgroundColor":"#888888",
-              "graphFillAlpha":0,
-              "autoGridCount":true,
-              "selectedGraphFillAlpha":0,
-              "graphLineAlpha":0.2,
-              "graphLineColor":"#c2c2c2",
-              "selectedGraphLineColor":"#888888",
-              "selectedGraphLineAlpha":1
-
-          },
-          "chartCursor": {
-              "categoryBalloonDateFormat": "YYYY-MM-DD",
-              "cursorAlpha": 0,
-              "valueLineEnabled":true,
-              "valueLineBalloonEnabled":true,
-              "valueLineAlpha":0.5,
-              "fullWidth":true
-          },
-          "dataDateFormat": "YYYY-MM-DD",
-          "categoryField": "time",
-          "categoryAxis": {
-              "minPeriod": "mm",
-              "parseDates": true,
-              "minorGridAlpha": 0.1,
-              "minorGridEnabled": true
-          },
-          "export": {
-              "enabled": true
-          }
-      });
+            },
+            "chartCursor": {
+                "categoryBalloonDateFormat": "YYYY-MM-DD",
+                "cursorAlpha": 0,
+                "valueLineEnabled":true,
+                "valueLineBalloonEnabled":true,
+                "valueLineAlpha":0.5,
+                "fullWidth":true
+            },
+            "dataDateFormat": "YYYY-MM-DD",
+            "categoryField": "time",
+            "categoryAxis": {
+                "minPeriod": "mm",
+                "parseDates": true,
+                "minorGridAlpha": 0.1,
+                "minorGridEnabled": true
+            },
+            "export": {
+                "enabled": true
+            }
+          });
+        }
 
       }, function(e) {  
       });

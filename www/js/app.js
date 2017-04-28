@@ -448,6 +448,7 @@ angular.module('kidney',[
     .state('tab.TestRecord', {
         // cache: false,
         url: '/TestRecord',
+        params:{PatinetId:null},
         views: {
             'tab-patient':{
                 controller: 'TestRecordCtrl',
