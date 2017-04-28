@@ -108,7 +108,7 @@
 			</ion-item>
 			<ion-item  class="item item-input item-select">
 				<span class="input-label">医院</span>
-                <select class="myinfo-msg-right" ng-model="HosObject" ng-options="Hospital.hospitalName for Hospital in Hospitals track by Hospital._id" style="width:100%" ng-change="test(HosObject)">
+                <select class="myinfo-msg-right" ng-model="HosObject" ng-options="Hospital.hospitalName for Hospital in Hospitals track by Hospital._id" style="width:100%" ng-change="trans(HosObject)">
                 </select>
 			</ion-item>
 			<ion-item class="item item-input">

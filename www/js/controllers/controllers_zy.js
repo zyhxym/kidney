@@ -837,7 +837,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.goback=function(){
         $ionicHistory.goBack();
     }
-
+    $scope.gototestrecord=function(){
+        $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
+    }
     // console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
@@ -1003,7 +1005,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 
-//"我”个人资料页
 .controller('myinfoCtrl', ['Dict','Camera','Doctor','$scope','Storage','$ionicPopover', function(Dict,Camera,Doctor,$scope, Storage,$ionicPopover) {
     $scope.hideTabs = true;
     $scope.updateDiv=false;
@@ -1016,7 +1017,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //     };
     //     return "未填写";
     // }
-
+    $scope.ProvinceObject={};
+    $scope.CityObject={};
+    $scope.HosObject={};
 
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
@@ -1079,40 +1082,51 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
             return "未填写";           
         } 
+        //-------------点击编辑省市医院读字典表--------------
+        if ($scope.doctor.province != null){
+            //console.log($scope.doctor.province)
+            //console.log($scope.Provinces)
+            $scope.ProvinceObject = searchObj($scope.doctor.province,$scope.Provinces)
 
-
-
-        Doctor.getDoctorInfo({
-            userId:Storage.get('UID')
-        })
-        .then(
-            function(data)
-            {
-                // console.log(data)
-                $scope.doctor=data.results;
-                // if(data.results.photoUrl==undefined||data.results.photoUrl==""){
-                //   $scope.doctor.photoUrl="img/doctor.png"
-                // }else{
-                //   $scope.doctor.photoUrl=data.results.photoUrl;
-                // }
-                if ($scope.doctor.province != null){
-                    console.log($scope.Provinces)
-                    $scope.ProvinceObject = searchObj($scope.doctor.province,$scope.Provinces)
-                }
-                if ($scope.doctor.city != null){
-                    console.log($scope.Cities)
+        }
+        if ($scope.doctor.city != null){
+            //console.log($scope.ProvinceObject.province)
+            Dict.getDistrict({level:"2",province:$scope.ProvinceObject.province,city:"",district:""})
+            .then(
+                function(data)
+                {
+                    $scope.Cities = data.results;
+                    //console.log($scope.Cities);
                     $scope.CityObject = searchObj($scope.doctor.city,$scope.Cities)
+                    console.log($scope.CityObject)
+                    console.log($scope.CityObject.name)
+                    if ($scope.doctor.workUnit != null){
+                        //console.log($scope.Hospitals)
+                        console.log($scope.doctor.workUnit)
+                        console.log($scope.CityObject)
+                        console.log($scope.CityObject.name)
+                        Dict.getHospital({city:$scope.CityObject.name})
+                        .then(
+                            function(data)
+                            {
+                                $scope.Hospitals = data.results;
+                                //console.log($scope.Hospitals);
+                                $scope.HosObject = searchObj($scope.doctor.workUnit,$scope.Hospitals)
+                            },
+                            function(err)
+                            {
+                                console.log(err);
+                            }
+                        )                   
+                    }
+                },
+                function(err)
+                {
+                    console.log(err);
                 }
-                if ($scope.doctor.workUnit != null){
-                    console.log($scope.Hospitals)
-                    $scope.HosObject = searchObj($scope.doctor.workUnit,$scope.Hospitals)
-                }
-            },
-            function(err)
-            {
-                console.log(err)
-            }
-        )
+            );                       
+        }
+        //-------------点击编辑省市医院读字典表--------------
 
     };
 
@@ -1175,11 +1189,15 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     }
 
-    $scope.test = function(docinfo){
+    $scope.trans = function(docinfo){
         console.log(docinfo)
-        $scope.doctor.province = docinfo.province;
-        $scope.doctor.city = docinfo.city;
-        $scope.doctor.workUnit = docinfo.hospitalName;        
+        if (docinfo !=null)
+        {
+            $scope.doctor.province = docinfo.province;
+            $scope.doctor.city = docinfo.city;
+            $scope.doctor.workUnit = docinfo.hospitalName;    
+        }
+      
     }
     //------------省市医院读字典表--------------------
 
