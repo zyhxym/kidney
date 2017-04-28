@@ -489,7 +489,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     console.log(Storage.get('USERNAME'))
 
-    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+Storage.get('USERNAME')+"&password=13208017796");
+    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+Storage.get('USERNAME')+"&password="+Storage.get('USERNAME'));
     $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
 
     $scope.options = {
