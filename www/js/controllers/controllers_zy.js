@@ -845,28 +845,28 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $ionicHistory.goBack();
     }
 
-    console.log(Storage.get('getpatientId'))
+    // console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
     })
     .then(
         function(data)
         {
-            console.log(data)
+            // console.log(data)
             Storage.set("latestDiagnose","");
             if(data.results.diagnosisInfo.length>0)
             {
                 Storage.set("latestDiagnose",angular.toJson(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1]));
-                console.log(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1])
+                // console.log(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1])
             }
             else if(data.results.diagnosisInfo.length==0)
             {
                 var lD={
                     content:"",
                     hypertension:data.results.hypertension,
-                    name:"",
-                    operationTime:"",
-                    progress:"",
+                    name:data.results.class,
+                    operationTime:data.results.operationTime,
+                    progress:data.results.class_info?data.results.class_info[0]:"",
                     time:""
                 }
                 Storage.set("latestDiagnose",angular.toJson(lD));
@@ -887,7 +887,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-            console.log(data.results)
+            // console.log(data.results)
             $scope.Ins=data.results||{count:0};                   
         },
         function(err)

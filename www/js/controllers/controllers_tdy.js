@@ -2,12 +2,113 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 /////////////////////////tongdanyang/////////////////
 .controller('DoctorDiagnoseCtrl', ['$scope', 'Storage','ionicDatePicker','Patient','$state', function ($scope, Storage,ionicDatePicker,Patient,$state) {
+  
+  var decodeDiseases=function(type)
+  {
+    var dict;
+    switch(type)
+    {
+      case '2':
+        dict="class_2";
+        break;
+      case '3':
+        dict="class_3";
+        break;
+      case '4':
+        dict="class_4";
+        break;
+      case '5':
+        dict="class_6";
+        break;
+      case '6':
+        dict="class_5";
+        break;
+      case '1':
+        dict="class_1";
+        break;
+    }
+    return dict;
+  }
+  var encodeDiseases=function(dict)
+  {
+    var type;
+    switch(dict)
+    {
+      case "class_2":
+        type='2';
+        break;
+      case "class_3":
+        type='3';
+        break;
+      case "class_4":
+        type='4';
+        break;
+      case "class_6":
+        type='5';
+        break;
+      case "class_5":
+        type='6';
+        break;
+      case "class_1":
+        type='1';
+        break;
+    }
+    return type;
+  }
+  var decodeprogress=function(type)
+  {
+    var dict;
+    switch(type)
+    {
+      case '疾病活跃期':
+        dict="stage_5";
+        break;
+      case '稳定期':
+        dict="stage_6";
+        break;
+      case '>3年':
+        dict="stage_7";
+        break;
+    }
+    return dict;
+  }
+  var encodeprogress=function(dict)
+  {
+    var type;
+    switch(dict)
+    {
+      case "stage_5":
+        type='疾病活跃期';
+        break;
+      case "stage_6":
+        type='稳定期';
+        break;
+      case "stage_7":
+        type='>3年';
+        break;
+    }
+    return type;
+  }
   $scope.Hypers =
   [
-    {Name:"是",Type:1},
-    {Name:"否",Type:2}
+    {Name:"是",Type:'1'},
+    {Name:"否",Type:'2'}
   ]
-  
+  $scope.edit=false;
+  var tmpDiagnose;
+  $scope.canEdit=function()
+  {
+    $scope.edit=~$scope.edit;
+    if($scope.edit)
+    {
+      tmpDiagnose=angular.copy($scope.Diagnose);
+    }
+    else
+    {
+      // console.log(tmpDiagnose)
+      $scope.Diagnose=angular.copy(tmpDiagnose);
+    }
+  }
   $scope.Diseases =
   [
     {Name:"CKD1-2期",Type:2},
@@ -42,16 +143,17 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     return title
   }
   var latestDiagnose=angular.fromJson(Storage.get("latestDiagnose"))
-  console.log(latestDiagnose)
+  // console.log(latestDiagnose)
   $scope.Diagnose = 
   {
-    "diagname": latestDiagnose.name,
-    "diagtime": latestDiagnose.time,
-    "operationTime": latestDiagnose.operationTime,
-    "hypertension": latestDiagnose.hypertension,
-    "diagprogress": latestDiagnose.progress,
+    "diagname": encodeDiseases(latestDiagnose.name),
+    "diagtime": (new Date()).toDateString(),
+    "diagoperationTime": latestDiagnose.operationTime==undefined?(new Date()).toDateString():latestDiagnose.operationTime,
+    "diaghypertension": ""+latestDiagnose.hypertension,
+    "diagprogress": encodeprogress(latestDiagnose.progress),
     "diagcontent":latestDiagnose.content
   }
+  console.log($scope.Diagnose)
   var datepickerD = {
         callback: function (val) {  //Mandatory
             console.log('Return value from the datepicker popup is : ' + val, new Date(val));
@@ -74,39 +176,39 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         ionicDatePicker.openDatePicker(datepickerD);
     };
 
-  // {
-  //     patientId:'',
-  //     doctorId:'',
-  //     diagname:'',
-  //     diagtime:'',
-  //     diagprogress:'',
-  //     diagcontent:''
-  //   }
   $scope.saveDiagnose=function()
   {
     $scope.Diagnose.patientId=Storage.get('getpatientId');
     $scope.Diagnose.doctorId=Storage.get('UID');
-    console.log($scope.Diagnose)
+    $scope.Diagnose.diagname=decodeDiseases($scope.Diagnose.diagname);
+    $scope.Diagnose.diagprogress=decodeprogress($scope.Diagnose.diagprogress);
+    // console.log($scope.Diagnose)
+
     Patient.insertDiagnosis($scope.Diagnose)
     .then(function(data){
-      console.log(data)
-      $state.go('tab.patientDetail');
+      // console.log(data)
+      var lD={
+          content:$scope.Diagnose.diagcontent,
+          hypertension:$scope.Diagnose.diaghypertension,
+          name:$scope.Diagnose.diagname,
+          operationTime:$scope.Diagnose.diagoperationTime,
+          progress:$scope.Diagnose.diagprogress,
+          time:$scope.Diagnose.diagtime
+      }
+      Storage.set("latestDiagnose",angular.toJson(lD));
+      
+      $scope.Diagnose.diagname=encodeDiseases($scope.Diagnose.diagname);
+      $scope.Diagnose.diagprogress=encodeprogress($scope.Diagnose.diagprogress);
+
+      tmpDiagnose=angular.copy($scope.Diagnose);
+      $scope.canEdit();
+      // $state.go('tab.patientDetail');
     },function(err)
     {
       console.log(err)
     })
   }
 
-  $scope.reset =function(){
-    $scope.Diagnose = 
-    {
-      "KidneyDisease": null,
-      "DiseaseDetail": null,
-      "OperationDate": null,
-      "Hypertension": '稳定期',
-      "DetailDiagnose": null
-    }
-  }
 }])
 .controller('TestRecordCtrl', ['$scope', '$http','Storage','VitalSign', function ($scope,$http, Storage,VitalSign) {
   
