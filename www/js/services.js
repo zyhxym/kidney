@@ -867,7 +867,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
             newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
-            updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000}
+            updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000},
+            getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000}
         });
     }
 
@@ -1139,6 +1140,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.getTeam = function(params){
         var deferred = $q.defer();
         Data.Communication.getTeam(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.getConsultation = function(params){
+        var deferred = $q.defer();
+        Data.Communication.getConsultation(
             params,
             function(data, headers){
                 deferred.resolve(data);
