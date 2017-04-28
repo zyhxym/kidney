@@ -844,7 +844,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.goback=function(){
         $ionicHistory.goBack();
     }
-
+    $scope.gototestrecord=function(){
+        $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
+    }
     // console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')

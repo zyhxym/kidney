@@ -210,23 +210,25 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   }
 
 }])
-.controller('TestRecordCtrl', ['$scope', '$http','Storage','VitalSign', function ($scope,$http, Storage,VitalSign) {
+.controller('TestRecordCtrl', ['$scope', '$http','$stateParams','Storage','VitalSign', function ($scope,$http,$stateParams,Storage,VitalSign) {
   
 
-
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      console.log($stateParams.PatinetId)
+      console.log(Storage.get("getpatientId"))
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
-          if(Data.results[i].date>="2017-04-08"&&Data.results[i].code=="舒张压"){
+          // if(Data.results[i].date>="2017-04-08"&&Data.results[i].code=="舒张压"){
+          if(Data.results[i].code=="舒张压"){
             for(var j=0;j<Data.results[i].data.length;j++){
               $scope.ChartData.push(Data.results[i].data[j])
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
+          console.log($scope.ChartData)
           $scope.chartdiv=false;
         }else{
           $scope.chartdiv=true;
@@ -294,10 +296,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       }, function(e) {  
       });
 
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'血压'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="收缩压"){
@@ -306,7 +307,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
           $scope.chartdiv1=false;
         }else{
           $scope.chartdiv1=true;
@@ -374,10 +375,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       }, function(e) {  
       });
 
-      VitalSign.getVitalSigns({userId:'U201702071766',type:'体温'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体温'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="体温"){
@@ -386,7 +386,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
           $scope.chartdiv2=false;
         }else{
           $scope.chartdiv2=true;
@@ -452,10 +452,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体重'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="体重"){
@@ -464,7 +463,7 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
           $scope.chartdiv3=false;
         }else{
           $scope.chartdiv3=true;
@@ -530,10 +529,9 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'体重'}).then(
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'尿量'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="尿量"){
@@ -542,7 +540,7 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
           $scope.chartdiv4=false;
         }else{
           $scope.chartdiv4=true;
@@ -608,10 +606,9 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'尿量'}).then(
 
       }, function(e) {  
       });
-VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
+      VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'心率'}).then(
       function(Data){
         $scope.ChartData=[];
-        console.log(Data.results[0])
         console.log(Data.results.length)
         for(var i=0;i<Data.results.length;i++){
           if(Data.results[i].code=="心率"){
@@ -620,7 +617,7 @@ VitalSign.getVitalSigns({userId:'U201702071766',type:'心率'}).then(
             }
           }
         }
-        if($scope.ChartData==null){
+        if($scope.ChartData.length==0){
           $scope.chartdiv5=false;
         }else{
           $scope.chartdiv5=true;
