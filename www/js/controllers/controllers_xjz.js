@@ -1239,6 +1239,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     $scope.clearSearch = function() {
         $scope.search.name = '';
+         $scope.issearching = true;
+        $scope.isnotsearching = false;
+
+        $scope.moredata = true;
+        $scope.doctors = $scope.alldoctors;
+        $scope.search.name = '';
     }
 
     $scope.confirmAdd = function() {
