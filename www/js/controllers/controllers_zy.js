@@ -489,9 +489,15 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     console.log(Storage.get('USERNAME'))
 
-    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+Storage.get('USERNAME')+"&password="+Storage.get('USERNAME'));
-    $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
-
+    
+    $http({
+        method  : 'POST',
+        url     : 'http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx'
+    }).success(function(data) {
+            // console.log(data);
+        $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+Storage.get('USERNAME')+"&password="+Storage.get('USERNAME'));
+        $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
+    });
     $scope.options = {
         loop: false,
         effect: 'fade',
