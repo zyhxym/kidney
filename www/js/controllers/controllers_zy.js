@@ -461,10 +461,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 params    :{
                     'regsubmit':'yes',
                     'formhash':'',
-                    'D2T9s9':phoneNumber,
-                    'O9Wi2H':phoneNumber,
-                    'hWhtcM':phoneNumber,
-                    'qSMA7S':phoneNumber+'@qq.com'
+                    'username':phoneNumber,
+                    'password':phoneNumber,
+                    'password2':phoneNumber,
+                    'email':phoneNumber+'@qq.com'
                 },  // pass in data as strings
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -935,7 +935,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”页
-.controller('meCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage', function(Doctor,$scope, $state,$interval,$rootScope,Storage) {
+.controller('meCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage','$http', function(Doctor,$scope, $state,$interval,$rootScope,Storage,$http) {
   $scope.barwidth="width:0%";
    
     //$scope.userid=Storage.get('userid');
