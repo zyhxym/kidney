@@ -859,7 +859,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.$on('viewcard', function(event, args) {
         console.log(args);
         event.stopPropagation();
-        Storage.set('getpatientId',args[1]); 
+        Storage.set('getpatientId',args[1].content.patientId);
         $state.go('tab.patientDetail');
         // if (args[2].target.tagName == "IMG") {
         //     $scope.imageHandle.zoomTo(1, true);
