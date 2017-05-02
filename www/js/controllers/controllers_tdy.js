@@ -840,127 +840,36 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 
 //任务设置--GL
-.controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', function ($scope, $state, $ionicPopup, Storage) {
+.controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
+  //初始化
    var UserId = Storage.get('UID'); 
+   //var UserId = "Test09";
+   $scope.Tasks = [];
+   $scope.EditTasks = []; //修改任务
     $scope.$on('$ionicView.enter', function() {
-        Temp();
+        GetTasks();
     }); 
-  //任务先写死
-    $scope.Tasks = [
-        {
-          "type": "Measure",
-          "details": [
-            {
-              "code": "Temperature",
-              "instruction": "",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "天"
-            },
-            {
-              "code": "Weight",
-              "instruction": "",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "天"
-            },
-            {
-              "code": "BloodPressure",
-              "instruction": "",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 2,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "天"
-            },
-            {
-              "code": "Vol",
-              "instruction": "",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "天"
-            },
-            {
-              "code": "HeartRate",
-              "instruction": "",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 2,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "天"
-            }
-          ]
-        },
-        {
-          "type": "ReturnVisit",
-          "details": [            
-            {
-              "code": "TimeInterval_3",
-              "instruction": "术后时间>3年",
-              "content": "",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 2,
-              "frequencyUnits": "月"
-            }
-          ]
-        },
-        {
-          "type": "LabTest",
-          "details": [
-            {
-              "code": "LabTest_3",
-              "instruction": "术后时间>3年",
-              "content": "血常规、血生化、尿常规、尿生化、移植肾彩超、血药浓度",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 2,
-              "frequencyUnits": "周"
-            }
-          ]
-        },
-        {
-          "type": "SpecialEvaluate",
-          "details": [
-            {
-              "code": "ECG",
-              "instruction": "",
-              "content": "心电图，胸片，移植肾B超",
-              "startTime": "2050-11-02T07:58:51.718Z",
-              "endTime": "2050-11-02T07:58:51.718Z",
-              "times": 1,
-              "timesUnits": "次",
-              "frequencyTimes": 1,
-              "frequencyUnits": "年"
-            }            
-          ]
-        }
-      ];
-  
-  function Temp()
-    {
-       //console.log($scope.Tasks);
-       $scope.Tasks.Other = [];
+
+  //获取对应任务模板
+    function GetTasks(TaskCode)
+    {     
+       var promise =  Task.getUserTask({userId:UserId});
+       promise.then(function(data){
+         if(data.result.length != 0)
+         {
+            $scope.Tasks = data.result.task;
+            //console.log($scope.Tasks);
+            HandleTasks();
+         }
+       },function(){
+                      
+       })
+    }
+
+  //获取任务后处理
+    function HandleTasks()
+    {                       
+      $scope.Tasks.Other = [];
       for (var i=0;i<$scope.Tasks.length;i++)
       {      
          var task = $scope.Tasks[i];
@@ -969,25 +878,60 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             $scope.Tasks.Measure = task.details;
             for(var j=0;j<$scope.Tasks.Measure.length;j++)
             {
-                $scope.Tasks.Measure[j].Name = NameMatch($scope.Tasks.Measure[j].code);                    
+                $scope.Tasks.Measure[j].Name = NameMatch($scope.Tasks.Measure[j].code);     
+                $scope.Tasks.Measure[j].type = task.type;               
             }
          }
          else
          {
-            var newTask = task.details[0];        
-            newTask.type = task.type;
-            newTask.Name = NameMatch(newTask.type);               
-            $scope.Tasks.Other.push(newTask);                            
-         }
-         
+            for(var j=0;j<task.details.length;j++)
+            {
+               var newTask = task.details[j];       
+               if(newTask.times != 0)
+               {
+                 newTask.type = task.type;
+                 if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+                 {
+                    newTask.dateStr = newTask.content;
+                    newTask.content = newTask.instruction;
+                 }    
+                 newTask.Name = NameMatch(newTask.type);               
+                 $scope.Tasks.Other.push(newTask);   
+               }
+            }                        
+         }   
       }
-      //console.log($scope.Tasks);
+    }
+
+  //修改任务模板
+   function UpdateUserTask(task)
+    {
+      var promise = Task.updateUserTask(task);
+       promise.then(function(data){
+         if(data.results)
+         { 
+           var flag = true; //数据插好后页面跳转
+           for(var i=0;i<$scope.EditTasks;i++)
+           {
+              if(!$scope.EditTasks[i].Flag)
+              {
+                  flag = false;
+                  break;
+              }
+           }
+           if(flag)
+           {
+              $state.go('tab.patientDetail');
+           }
+         };
+       },function(){                    
+       })
     }
 
   //名称转换
    function NameMatch(name)
    {
-     var Tbl = [
+      var Tbl = [
                  {Name:'体温', Code:'Temperature'},
                  {Name:'体重', Code:'Weight'},
                  {Name:'血压', Code:'BloodPressure'},
@@ -995,7 +939,12 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                  {Name:'心率', Code:'HeartRate'},
                  {Name:'复诊', Code:'ReturnVisit'},
                  {Name:'化验', Code:'LabTest'},
-                 {Name:'特殊评估', Code:'SpecialEvaluate'}
+                 {Name:'特殊评估', Code:'SpecialEvaluate'},
+                 {Name:'血管通路情况', Code:'VascularAccess'},
+                 {Name:'腹透', Code:'PeritonealDialysis'},
+                 {Name:'超滤量', Code:'cll'},
+                 {Name:'浮肿', Code:'ywfz'},
+                 {Name:'引流通畅', Code:'yl'}
                 ];
       for (var i=0;i<Tbl.length;i++)
       {
@@ -1016,7 +965,24 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $scope.OkClick = function()
     {
         //调用修改模板函数
-        $state.go('tab.patientDetail');
+        for (var i=0;i<$scope.EditTasks.length;i++)
+        {
+           var temp = $scope.EditTasks[i];
+           var task = {
+                          "userId":UserId, 
+                          "type":temp.type, 
+                          "code":temp.code, 
+                          "instruction":temp.instruction, 
+                          "content":temp.content, 
+                          "startTime":temp.startTime, 
+                          "endTime":temp.endTime, 
+                          "times":temp.times,
+                          "timesUnits":temp.timesUnits, 
+                          "frequencyTimes":temp.frequencyTimes, 
+                          "frequencyUnits":temp.frequencyUnits
+                        };
+            UpdateUserTask(task); 
+        }            
     }
   
   //编辑任务描述
@@ -1046,12 +1012,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
        myPopup.then(function(res) {
         //console.log(res);
         if(res)
-        {        
+        {   
+          var newTask;    
           for(var i=0;i<$scope.Tasks.Measure.length;i++)
           {
               if($scope.Tasks.Measure[i].Name == task.Name)
               {
                   $scope.Tasks.Measure[i].content = res;
+                  newTask = JSON.parse(JSON.stringify($scope.Tasks.Measure[i]));
                   break;
               }
           } 
@@ -1060,13 +1028,47 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               if($scope.Tasks.Other[i].Name == task.Name)
               {
                   $scope.Tasks.Other[i].content = res;
+                  newTask = JSON.parse(JSON.stringify($scope.Tasks.Other[i]));
+                  if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+                  {
+                     newTask.instruction = newTask.content;
+                     newTask.content = newTask.dateStr;
+                  }
                   break;
               }
           } 
+          newTask.Flag = false;
+          $scope.EditTasks.push(newTask);
         } 
         //console.log( $scope.Tasks);
       });
     };
+
+  //修改任务执行频率
+    $scope.ChangeFreq = function (item)
+    {
+      var newTask = JSON.parse(JSON.stringify(item));
+      var flag = false;
+      if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+      {
+         newTask.instruction = newTask.content;
+         newTask.content = newTask.dateStr;
+      }
+      for(var i=0;i<$scope.EditTasks.length;i++)
+      { 
+         var task = $scope.EditTasks[i]
+         if(task.Name == newTask.Name)
+         {
+            task = newTask;
+            flag = true;
+         }
+      }
+      if(!flag)
+      {
+         newTask.Flag = false;
+         $scope.EditTasks.push(newTask);
+      }      
+    }
 
 }])
 
