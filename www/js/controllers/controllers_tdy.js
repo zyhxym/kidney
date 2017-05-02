@@ -846,9 +846,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    //var UserId = "Test09";
    $scope.Tasks = [];
    $scope.EditTasks = []; //修改任务
-    $scope.$on('$ionicView.enter', function() {
+   $scope.$on('$ionicView.enter', function() {
         GetTasks();
-    }); 
+   }); 
+   var index = 0;//方法调用计数
 
   //获取对应任务模板
     function GetTasks(TaskCode)
@@ -904,28 +905,44 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
 
   //修改任务模板
-   function UpdateUserTask(task)
+   function UpdateUserTask()
     {
-      var promise = Task.updateUserTask(task);
-       promise.then(function(data){
+      if(index < $scope.EditTasks.length)
+      {
+        var temp = $scope.EditTasks[index];
+        var task = {
+                            "userId":UserId, 
+                            "type":temp.type, 
+                            "code":temp.code, 
+                            "instruction":temp.instruction, 
+                            "content":temp.content, 
+                            "startTime":temp.startTime, 
+                            "endTime":temp.endTime, 
+                            "times":temp.times,
+                            "timesUnits":temp.timesUnits, 
+                            "frequencyTimes":temp.frequencyTimes, 
+                            "frequencyUnits":temp.frequencyUnits
+                    };
+        var promise = Task.updateUserTask(task);
+         promise.then(function(data){
          if(data.results)
          { 
-           var flag = true; //数据插好后页面跳转
-           for(var i=0;i<$scope.EditTasks;i++)
+           //task.Flag = true;
+           //console.log(task.code);
+           index = index + 1; 
+           if(index == $scope.EditTasks.length)
            {
-              if(!$scope.EditTasks[i].Flag)
-              {
-                  flag = false;
-                  break;
-              }
+             $state.go('tab.patientDetail');
            }
-           if(flag)
+           else
            {
-              $state.go('tab.patientDetail');
-           }
+             UpdateUserTask();      
+           }                  
          };
-       },function(){                    
-       })
+         },function(){                    
+         })
+      }
+      
     }
 
   //名称转换
@@ -963,28 +980,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
   //确定按钮
     $scope.OkClick = function()
-    {
-        //调用修改模板函数
-        for (var i=0;i<$scope.EditTasks.length;i++)
-        {
-           var temp = $scope.EditTasks[i];
-           var task = {
-                          "userId":UserId, 
-                          "type":temp.type, 
-                          "code":temp.code, 
-                          "instruction":temp.instruction, 
-                          "content":temp.content, 
-                          "startTime":temp.startTime, 
-                          "endTime":temp.endTime, 
-                          "times":temp.times,
-                          "timesUnits":temp.timesUnits, 
-                          "frequencyTimes":temp.frequencyTimes, 
-                          "frequencyUnits":temp.frequencyUnits
-                        };
-            UpdateUserTask(task); 
-        }            
+    {       
+       UpdateUserTask();                  
     }
-  
+
   //编辑任务描述
     $scope.showPopup = function(task) {
       $scope.data = {};    
@@ -1013,32 +1012,28 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         //console.log(res);
         if(res)
         {   
-          var newTask;    
-          for(var i=0;i<$scope.Tasks.Measure.length;i++)
-          {
-              if($scope.Tasks.Measure[i].Name == task.Name)
-              {
-                  $scope.Tasks.Measure[i].content = res;
-                  newTask = JSON.parse(JSON.stringify($scope.Tasks.Measure[i]));
-                  break;
-              }
-          } 
-          for(var i=0;i<$scope.Tasks.Other.length;i++)
-          {
-              if($scope.Tasks.Other[i].Name == task.Name)
-              {
-                  $scope.Tasks.Other[i].content = res;
-                  newTask = JSON.parse(JSON.stringify($scope.Tasks.Other[i]));
-                  if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
-                  {
-                     newTask.instruction = newTask.content;
-                     newTask.content = newTask.dateStr;
-                  }
-                  break;
-              }
-          } 
+          task.content = res;
+          var flag = false;
+          var newTask = JSON.parse(JSON.stringify(task));
           newTask.Flag = false;
-          $scope.EditTasks.push(newTask);
+          if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+          {
+             newTask.instruction = newTask.content;
+             newTask.content = newTask.dateStr;
+          }
+          for(var i=0;i<$scope.EditTasks.length;i++)
+          {
+             if($scope.EditTasks[i].Name == newTask.Name)
+             {
+                $scope.EditTasks[i] = newTask;
+                flag = true;
+                break;
+             }
+          }
+          if(!flag)
+          {
+             $scope.EditTasks.push(newTask);
+          }
         } 
         //console.log( $scope.Tasks);
       });
