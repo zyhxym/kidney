@@ -842,7 +842,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 //任务设置--GL
 .controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
   //初始化
-   var UserId = Storage.get('UID'); 
+   var UserId = Storage.get('getpatientId'); 
    //var UserId = "Test09";
    $scope.Tasks = [];
    $scope.EditTasks = []; //修改任务
