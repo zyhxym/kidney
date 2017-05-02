@@ -1004,12 +1004,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
           // console.log(data)
             $scope.doctor=data.results;
-            if(data.results.photoUrl==undefined||data.results.photoUrl==""){
-              $scope.doctor.photoUrl="img/doctor.png"
-            }else{
-              $scope.doctor.photoUrl=data.results.photoUrl;
-            }
-
         },
         function(err)
         {
@@ -1064,6 +1058,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 
+//我的个人资料页
 .controller('myinfoCtrl', ['Dict','Camera','Doctor','$scope','Storage','$ionicPopover', function(Dict,Camera,Doctor,$scope, Storage,$ionicPopover) {
     $scope.hideTabs = true;
     $scope.updateDiv=false;
@@ -1088,11 +1083,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             // console.log(data)
             $scope.doctor=data.results;
-            if(data.results.photoUrl==undefined||data.results.photoUrl==""){
-              $scope.doctor.photoUrl="img/doctor.png"
-            }else{
-              $scope.doctor.photoUrl=data.results.photoUrl;
-            }
             // if ($scope.doctor.province != null){
             //     $scope.doctor.province = searchObj($scope.doctor.province,$scope.Provinces)
             // }
