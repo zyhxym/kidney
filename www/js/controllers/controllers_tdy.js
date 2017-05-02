@@ -1096,9 +1096,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       if (data.results != "" && data.results!= null)
       {
         $scope.items = data.results
-        console.log($scope.items)
-        var testtime=$scope.items[0]
-        console.log(testtime)
+        //console.log($scope.items)
+        //var testtime=$scope.items[0]
+        //console.log(testtime)
         for (var i = 0; i < $scope.items.length; i++){
           $scope.items[i].acture = $scope.items[i].insertTime
           //$scope.items[i].time = $scope.items[i].time.substr(0,10)
@@ -1130,13 +1130,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       confirmPopup.then(function(res) {
         if(res) 
           {
-            Health.deleteHealth({userId:patientId,insertTime:item.acture}).then(
+            Health.deleteHealth({userId:patientId,insertTime:editId.acture}).then(
               function(data)
               {
                 if (data.results == 0)
                 {
                   for (var i = 0; i < $scope.items.length; i++){
-                    if (item.acture == $scope.items[i].acture)
+                    if (editId.acture == $scope.items[i].acture)
                     {
                       $scope.items.splice(i,1)
                       break;
@@ -1213,18 +1213,26 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         
     }
 
+    $scope.healthinfoimgurl = '';
+          $ionicModal.fromTemplateUrl('partials/patient/consult/msg/healthinfoimag.html', {
+              scope: $scope,
+              animation: 'slide-in-up'
+            }).then(function(modal) {
+              $scope.modal = modal;
+            });  
+
     $scope.edit = function(){
         $scope.canEdit = true;
   }
-  $scope.$on('$ionicView.enter', function() {
-    $scope.healthinfoimgurl = '';
-    $ionicModal.fromTemplateUrl('partials/patient/healthinfoimag.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.modal = modal;
-      });
-  })
+  // $scope.$on('$ionicView.enter', function() {
+  //   $scope.healthinfoimgurl = '';
+  //   $ionicModal.fromTemplateUrl('partials/patient/healthinfoimag.html', {
+  //       scope: $scope,
+  //       animation: 'slide-in-up'
+  //     }).then(function(modal) {
+  //       $scope.modal = modal;
+  //     });
+  // })
 
     //从字典中搜索选中的对象。
   var searchObj = function(code,array){
@@ -1381,7 +1389,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             console.log($scope.health.date);
             console.log(date);       
         },
-        titleLabel: '停诊开始',
+        titleLabel: '日期选择',
         inputDate: new Date(),
         mondayFirst: true,
         closeOnSelect: false,
