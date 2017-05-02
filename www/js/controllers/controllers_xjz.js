@@ -136,16 +136,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //团队查找
-.controller('GroupsSearchCtrl', ['$scope', '$state','Communication', function($scope, $state,Communication) {
+.controller('GroupsSearchCtrl', ['$scope', '$state','Communication','$ionicLoading', function($scope, $state,Communication,$ionicLoading) {
     $scope.search='';
+    $scope.noteam=0;
   $scope.Searchgroup=function(){
     console.log($scope.search)
      Communication.getTeam({teamId:$scope.search})
                 .then(function(data){
-                  console.log(data)                 
-                  $scope.teamresult=data;
-                  if(data.length==0){
-                    $ionicLoading.show({ template: '查无此群', duration: 1000 })}       
+                  console.log(data.results)                 
+                  
+                  if(data.results==null){
+                    $scope.noteam=1;
+                    $ionicLoading.show({ template: '查无此群', duration: 1000 })}  
+                    else{$scope.teamresult=data}     
                 },function(err){
                     console.log(err);
                 })
@@ -489,14 +492,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.load();
     });
     $scope.load = function() {
-        Doctor.getGroupPatientList({ teamId: $scope.params.teamId, status: 0 }) //0->进行中
+        Doctor.getGroupPatientList({ teamId: $scope.params.teamId, status: 1 }) //1->进行中
             .then(function(data) {
                 console.log(data)
                 $scope.grouppatients0 = data.results
             }, function(err) {
                 console.log(err)
             })
-        Doctor.getGroupPatientList({ teamId: $scope.params.teamId, status: 1 }) //1->已处理
+        Doctor.getGroupPatientList({ teamId: $scope.params.teamId, status: 0 }) //0->已处理
             .then(function(data) {
                 console.log(data);
                 $scope.grouppatients1 = data.results;
@@ -617,7 +620,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.msgCount = 0;
         console.log($scope.params)
         //获取counsel信息
-        Communication.getCounselReport({counselId:$scope.params.counselId})
+        Communication.getCounselReport({counselId:$state.params.counselId})
                 .then(function(data){
                   console.log(data)
                   $scope.counseltype=data.results.type;
@@ -890,6 +893,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log('问诊结束');
                   Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
                         .then(function(data){
+                            var endlMsg={
+                                type:'endl',
+                                info:"问诊已结束",
+                                docId:Storage.get('UID'),
+                                counseltype:2
+
+                            }
+                            window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
+                                function(response){
+                                    console.log(response);
+                                },function(err){
+                                    console.error(err);
+                                })
                             console.log(data)
                         })
 
@@ -915,7 +931,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                      if(data.result<=0){ //问题数归零
                         Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:1,status:0})
                         .then(function(data){
-                            console.log(data)
+                            var endlMsg={
+                                type:'endl',
+                                info:"咨询已结束",
+                                docId:Storage.get('UID'),
+                                counseltype:1
+                            }
+                            window.JMessage.sendSingleCustomMessage(Storage.get('UID'),endlMsg,$scope.params.key,
+                                function(response){
+                                    console.log(response);
+                                },function(err){
+                                    console.error(err);
+                                })
                         })
                      };
                  })
@@ -1019,7 +1046,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $state.go('tab.group-profile',{memberId:member.userId});
     }
     $scope.showQRCode = function() {
-        $state.go('tab.group-qrcode', { teamId: $scope.team.teamId });
+        $state.go('tab.group-qrcode', { team: $scope.team });
     }
     $scope.closeModal = function() {
         // $scope.imageHandle.zoomTo(1,true);
@@ -1212,6 +1239,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     $scope.clearSearch = function() {
         $scope.search.name = '';
+         $scope.issearching = true;
+        $scope.isnotsearching = false;
+
+        $scope.moredata = true;
+        $scope.doctors = $scope.alldoctors;
+        $scope.search.name = '';
     }
 
     $scope.confirmAdd = function() {
@@ -1257,32 +1290,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
 
 
-        console.log(idStr);
-        setTimeout(function() {
-            window.JMessage.addGroupMembers($state.params.teamId, idStr,
-                function(data) {
-                    console.log(data);
-
-
-                },
-                function(err) {
-
-                    console.log(err);
-                })
-        }, 500);
-        Communication.insertMember({ teamId: $state.params.teamId, members: $scope.group.members })
-            .then(function(data) {
-                $ionicLoading.show({ template: '添加成功', duration: 1500 });
-                setTimeout(function() { $ionicHistory.goBack(); }, 1500);
-            })
-
     }
 
 }])
 
 
 //团队聊天
-.controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', 'Communication', function($scope, $state, $rootScope, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicPopup, Camera, voice, Communication) {
+.controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage', function($scope, $state, $rootScope, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicPopup, Camera, voice, Communication,Storage) {
     $scope.input = {
         text: ''
     }
@@ -1929,7 +1943,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                     console.log(gid);
                                     var d = {
                                         teamId: team.teamId,
-                                        counselId: $state.params.msg.counsel.counselId,
+                                        counselId: $state.params.msg.counselId,
                                         sponsorId: $state.params.msg.doctorId,
                                         patientId: $state.params.msg.patientId,
                                         consultationId: gid,
@@ -1938,6 +1952,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                     var msgdata = {
                                         counsel: $state.params.msg.counsel,
                                         type: 'card',
+                                        counselId: $state.params.msg.counselId,
                                         patientId: $state.params.msg.patientId,
                                         doctorId: $state.params.msg.doctorId,
                                         targetId: team.teamId,
@@ -1955,6 +1970,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                             //     },function(err){
                                             //         console.error(err);
                                             //     });
+                                            console.log(con)
                                             window.JMessage.sendGroupCustomMessage(d.consultationId, msgdata,
                                                 function(m) {
                                                     console.log(m);

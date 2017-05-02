@@ -130,6 +130,7 @@ angular.module('kidney',[
             // 患者发送咨询：{
             //     counsel:data.results,
             //     type:'card',
+            //     counselId:'',
             //     patientId:patientId,
             //     patientName:patientname,
             //     doctorId:DoctorId,
@@ -140,6 +141,7 @@ angular.module('kidney',[
             // 咨询转发医生：{
             //     counsel:data.results,
             //     type:'card',
+            //     counselId:'',
             //     patientId:patientId,
             //     patientName:patientname,
             //     doctorId:DoctorId,
@@ -150,6 +152,7 @@ angular.module('kidney',[
             // 咨询转发团队：{
             //     counsel:data.results,
             //     type:'card',
+            //     counselId:'',
             //     patientId:patientId,
             //     patientName:patientname,
             //     doctorId:DoctorId,
@@ -166,6 +169,12 @@ angular.module('kidney',[
             //     fromId:
             //     targetId:
             // }
+            // 结束消息{
+            //    type:'endl',
+            //    info:
+            //    docId:
+            //    counseltype:1或2
+            //}
             //显示通知栏消息
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {
                 console.info('[jmessage.onReceiveCustomMessage]:' );
@@ -439,6 +448,7 @@ angular.module('kidney',[
     .state('tab.TestRecord', {
         // cache: false,
         url: '/TestRecord',
+        params:{PatinetId:null},
         views: {
             'tab-patient':{
                 controller: 'TestRecordCtrl',
@@ -557,7 +567,7 @@ angular.module('kidney',[
                     controller: 'GroupQrcodeCtrl'
                 }
             },
-            params:{teamId:null}
+            params:{team:null}
         })
     .state('tab.group-chat', {
         //'0':团队交流  '1': 未结束病历  '2':已结束病历
