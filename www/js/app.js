@@ -590,7 +590,7 @@ angular.module('kidney',[
                     controller: 'GroupConclusionCtrl'
                 }
             },
-            params:{consultationId:null,teamId:null}
+            params:{groupId:null,teamId:null}
         })
     .state('tab.group-patient', {
         // cache: false,
