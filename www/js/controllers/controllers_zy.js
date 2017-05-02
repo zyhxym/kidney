@@ -112,8 +112,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
      //验证码BUTTON效果
         $scope.isable=true;
         console.log($scope.isable)
-        $scope.veritext="180S再次发送"; 
-        var time = 179;
+        $scope.veritext="60S再次发送"; 
+        var time = 59;
         var timer;
         timer = $interval(function(){
             if(time==0){

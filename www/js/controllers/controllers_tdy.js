@@ -1214,7 +1214,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
 
     $scope.healthinfoimgurl = '';
-          $ionicModal.fromTemplateUrl('partials/patient/consult/msg/healthinfoimag.html', {
+          $ionicModal.fromTemplateUrl('partials/patient/healthinfoimag.html', {
               scope: $scope,
               animation: 'slide-in-up'
             }).then(function(modal) {
@@ -1360,7 +1360,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             Health.modifyHealth({userId:patientId,type:$scope.health.label.code,time:$scope.health.date,url:$scope.health.imgurl,label:$scope.health.label.name,description:$scope.health.text,comments:"",insertTime:$stateParams.id.insertTime}).then(
               function(data)
               {
-                console.log(data.results);
+                console.log(data.data);
                 $scope.canEdit= false;
                 // $ionicHistory.goBack()
               },
@@ -1458,7 +1458,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
  // 上传照片并将照片读入页面-------------------------
   var photo_upload_display = function(imgURI){
    // 给照片的名字加上时间戳
-    var temp_photoaddress = patientId + "_" + new Date().getTime() + "healthinfo.jpg";
+    var temp_photoaddress = Storage.get('getpatientId') + "_" + new Date().getTime() + "healthinfo.jpg";
     console.log(temp_photoaddress)
     Camera.uploadPicture(imgURI, temp_photoaddress)
     .then(function(res){
@@ -1478,7 +1478,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       // ionicPopover functions 弹出框的预定义
         //--------------------------------------------
         // .fromTemplateUrl() method
-  $ionicPopover.fromTemplateUrl('my-popover.html', {
+  $ionicPopover.fromTemplateUrl('my-popover1.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(popover) {
