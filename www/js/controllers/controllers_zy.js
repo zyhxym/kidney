@@ -524,6 +524,59 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         //         // console.log(data);
         // });
     }
+    var forumReg=function(phone,role)
+    {
+        var url='http://121.43.107.106';
+        if(role=='patient')
+            url+=':6699/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1'
+        else if(role=='doctor')
+            url+='/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1';
+        $http({
+            method  : 'POST',
+            url     : url,
+            params    :{
+                'regsubmit':'yes',
+                'formhash':'xxxxxx',
+                'username':phone,
+                'password':phone,
+                'password2':phone,
+                'email':phone+'@qq.com'
+            },  // pass in data as strings
+            headers : {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept':'application/xml, text/xml, */*'
+            }  // set the headers so angular passing info as form data (not request payload)
+        })
+    }
+    $scope.importDocs=function()
+    {
+        $http({
+            method:'GET',
+            url:'http://121.196.221.44:4050/user/getPhoneNoByRole?role=patient'
+        })
+        .success(function(data)
+        {
+            console.log(data)
+            var users=data.results;
+            for(var i=0;i<users.length;i++)
+            {
+                forumReg(users[i],'patient');
+            }
+        })
+        $http({
+            method:'GET',
+            url:'http://121.196.221.44:4050/user/getPhoneNoByRole?role=doctor'
+        })
+        .success(function(data)
+        {
+            console.log(data)
+            var users=data.results;
+            for(var i=0;i<users.length;i++)
+            {
+                forumReg(users[i],'doctor');
+            }
+        })
+    }
     // $scope.testRestful=function()
     // {
     //     Communication.removeMember({
