@@ -614,7 +614,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(
             function(data)
             {
-                console.log(data)
+                // console.log(data)
                 Storage.set("consulted",angular.toJson(data.results))
                 // console.log(angular.fromJson(Storage.get("consulted",data.results)))
                 $scope.doctor.b=data.results.length;
@@ -632,7 +632,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(
             function(data)
             {
-                console.log(data)
+                // console.log(data)
                 Storage.set("consulting",angular.toJson(data.results))
                 // console.log(angular.fromJson(Storage.get("consulting",data.results)))
                 $scope.doctor.a=data.results.length;
@@ -661,14 +661,37 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.patients=angular.fromJson(Storage.get("consulting"));
     console.log($scope.patients)
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
-    scope: $scope
+        scope: $scope
     }).then(function(popover) {
-    $scope.popover = popover;
+        $scope.popover = popover;
     });
     $scope.openPopover = function($event) {
-    $scope.popover.show($event);
-    //$scope.testt=12345
+        $scope.popover.show($event);
+        //$scope.testt=12345
     };
+    $scope.filters={
+        item1:true,
+        item2:true
+    }
+    $scope.filterShow=function()
+    {
+        angular.forEach($scope.patients,function(value,key)
+        {
+            value.show=true;
+            if(!$scope.filters.item1)
+            {
+                if(value.type==1)
+                    value.show=false;
+            }
+            if(!$scope.filters.item2)
+            {
+                if(value.type==2||value.type==3)
+                    value.show=false;
+            }
+        })
+        // console.log($scope.patients)
+    }
+
     $scope.goCounsel = function(){
         $ionicHistory.nextViewOptions({
             disableBack: true
@@ -686,7 +709,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.itemClick = function(ele, userId, counselId) {
         if (ele.target.id == 'doingdetail'){
-            console.log(userId)
+            // console.log(userId)
             Storage.set('getpatientId',userId);
             $state.go('tab.patientDetail');
         }else
@@ -716,6 +739,28 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             disableBack: true
         });
         $state.go('tab.consult');
+    }
+    $scope.filters={
+        item1:true,
+        item2:true
+    }
+    $scope.filterShow=function()
+    {
+        angular.forEach($scope.patients,function(value,key)
+        {
+            value.show=true;
+            if(!$scope.filters.item1)
+            {
+                if(value.type==1)
+                    value.show=false;
+            }
+            if(!$scope.filters.item2)
+            {
+                if(value.type==2||value.type==3)
+                    value.show=false;
+            }
+        })
+        // console.log($scope.patients)
     }
 
     $scope.query={
@@ -761,6 +806,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
             function(data)
             {
+                console.log(data)
                 if (data.results!='')
                 {
                     $scope.patients=data.results.patients;
