@@ -1152,14 +1152,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               }
             )
             //20140421 zxf
-            var healthinfotimes=angular.fromJson(Storage.get('consulthealthinfo'))
-            for(var i=0;i<healthinfotimes.length;i++){
-              if(healthinfotimes[i].time==item.acture){
-                healthinfotimes.splice(i, 1)
-                break;
-              }
-            }
-            Storage.set('consulthealthinfo',angular.toJson(healthinfotimes))
+            // var healthinfotimes=angular.fromJson(Storage.get('consulthealthinfo'))
+            // for(var i=0;i<healthinfotimes.length;i++){
+            //   if(healthinfotimes[i].time==item.acture){
+            //     healthinfotimes.splice(i, 1)
+            //     break;
+            //   }
+            // }
+            // Storage.set('consulthealthinfo',angular.toJson(healthinfotimes))
             // HealthInfo.remove(number);
             // $scope.items = HealthInfo.getall();
           } 
@@ -1326,16 +1326,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                 $scope.canEdit= false;
                 var healthinfoToconsult=[]
                 //从咨询过来的需要返回对应的健康信息
-                if($ionicHistory.backView()!=null&&$ionicHistory.backView().stateName=='tab.consultquestion2'){
-                  if(Storage.get('consulthealthinfo')==''||Storage.get('consulthealthinfo')==null||Storage.get('consulthealthinfo')=='undefined'){
-                    healthinfoToconsult.push({'time':data.results.insertTime})
-                  }else{
-                    healthinfoToconsult=angular.fromJson(Storage.get('consulthealthinfo'))
-                    healthinfoToconsult.push({'time':data.results.insertTime})
-                  }
-                  Storage.set('consulthealthinfo',angular.toJson(healthinfoToconsult))
-                  console.log(Storage.get('consulthealthinfo'))
-                }
+                // if($ionicHistory.backView()!=null&&$ionicHistory.backView().stateName=='tab.consultquestion2'){
+                //   if(Storage.get('consulthealthinfo')==''||Storage.get('consulthealthinfo')==null||Storage.get('consulthealthinfo')=='undefined'){
+                //     healthinfoToconsult.push({'time':data.results.insertTime})
+                //   }else{
+                //     healthinfoToconsult=angular.fromJson(Storage.get('consulthealthinfo'))
+                //     healthinfoToconsult.push({'time':data.results.insertTime})
+                //   }
+                //   Storage.set('consulthealthinfo',angular.toJson(healthinfoToconsult))
+                //   console.log(Storage.get('consulthealthinfo'))
+                // }
 
 
                 $ionicHistory.goBack()
