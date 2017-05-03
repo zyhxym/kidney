@@ -1224,15 +1224,6 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $scope.edit = function(){
         $scope.canEdit = true;
   }
-  // $scope.$on('$ionicView.enter', function() {
-  //   $scope.healthinfoimgurl = '';
-  //   $ionicModal.fromTemplateUrl('partials/patient/healthinfoimag.html', {
-  //       scope: $scope,
-  //       animation: 'slide-in-up'
-  //     }).then(function(modal) {
-  //       $scope.modal = modal;
-  //     });
-  // })
 
     //从字典中搜索选中的对象。
   var searchObj = function(code,array){
