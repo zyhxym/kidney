@@ -21,10 +21,10 @@
           </div>
           <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
           <p style="width:60%;display:inline-block;"><i class="icon ion-android-car"></i>{{patient.diseaseInfo.symptom}}</p>
-          <a ng-if="patient.undergo" class="item" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF" ng-click="goConclusion()">回复患者</a>
-           <div ng-if="!patient.undergo" style="float:right;background-color:#888;border-radius:0.4em;padding:2px;color:#FFF">已回复</div>
+          <div ng-show="params.undergo" class="item ng-hide" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF" ng-click="goConclusion()">回复患者</div>
+           <div ng-show="!patient.undergo" class="item ng-hide" style="float:right;background-color:#888;border-radius:0.4em;padding:2px;color:#FFF">已回复</div>
       </div>
-      <div ng-if="params.type=='2'" class="item item-body">
+      <div ng-show="!params.undergo" class="item item-body">
 
           <div>
           <span style="color:#2196F3">结论 </span>

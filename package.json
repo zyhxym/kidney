@@ -27,7 +27,7 @@
     "cordova-plugin-compat",
 	{
       "id": "jmessage-phonegap-plugin",
-      "locator": "https://github.com/jpush/jmessage-phonegap-plugin.git",
+      "locator": "../jmessage-phonegap-plugin",
       "variables": {
         "APP_KEY": "cf32b94444c4eaacef86903e"
       }
