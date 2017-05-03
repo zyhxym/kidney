@@ -112,8 +112,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
      //验证码BUTTON效果
         $scope.isable=true;
         console.log($scope.isable)
-        $scope.veritext="180S再次发送"; 
-        var time = 179;
+        $scope.veritext="60S再次发送"; 
+        var time = 59;
         var timer;
         timer = $interval(function(){
             if(time==0){
@@ -1211,14 +1211,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.hideTabs = true;
     $scope.updateDiv=false;
     $scope.myDiv=true;
-
-    //从字典中搜索选中的对象
-    // var searchObj = function(code,array){
-    //     for (var i = 0; i < array.length; i++) {
-    //         if(array[i].name == code || array[i].hospitalName == code) return array[i];
-    //     };
-    //     return "未填写";
-    // }
     $scope.ProvinceObject={};
     $scope.CityObject={};
     $scope.HosObject={};
@@ -1231,15 +1223,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
             // console.log(data)
             $scope.doctor=data.results;
-            // if ($scope.doctor.province != null){
-            //     $scope.doctor.province = searchObj($scope.doctor.province,$scope.Provinces)
-            // }
-            // if ($scope.doctor.city != null){
-            //     $scope.doctor.city = searchObj($scope.doctor.city,$scope.Cities)
-            // }
-            // if ($scope.doctor.workUnit != null){
-            //     $scope.doctor.workUnit = searchObj($scope.doctor.workUnit,$scope.Hospitals)
-            // }
         },
         function(err)
         {
@@ -1500,7 +1483,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”个人收费页
-.controller('myfeeCtrl', ['Doctor','$scope','$ionicPopup','$state','Storage' ,function(Doctor,$scope, $ionicPopup,$state,Storage) {
+.controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage) {
     $scope.hideTabs = true;
   
     Doctor.getDoctorInfo({
@@ -1511,6 +1494,30 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
         // console.log(data)
             $scope.doctor=data.results;
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    )
+
+    Account.getAccountInfo({
+        userId:Storage.get('UID')
+    })
+    .then(
+        function(data)
+        {
+            //console.log(data)
+            //console.log(data.results[0].money)
+            $scope.account={money:data.results.length==0?0:data.results[0].money};
+            // if (data.results.length!=0)
+            // {
+            //     $scope.account=data.results
+            // }
+            // else
+            // {
+            //     $scope.account={money:0}
+            // }
         },
         function(err)
         {
