@@ -1896,4 +1896,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 }])
 
-
+.controller('aboutCtrl', ['$scope','$state','Storage','$ionicHistory', function($scope,$state,Storage,$ionicHistory) {
+     
+}])
