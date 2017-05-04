@@ -445,7 +445,7 @@ angular.module('kidney',[
 
     //患者详情页面
     .state('tab.patientDetail', {
-        // cache: false,
+        cache: false,
         url: '/patientDetail',
         views: {
             'tab-patient':{
