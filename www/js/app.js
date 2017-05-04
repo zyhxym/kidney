@@ -725,7 +725,7 @@ angular.module('kidney',[
         url: '/about',
         views: {
             'tab-me':{
-                controller: 'myinfoCtrl',
+                controller: 'aboutCtrl',
                 templateUrl: 'partials/me/about.html'
             }
         }
