@@ -333,7 +333,7 @@ angular.module('kidney',[
             
     //患者页面
     .state('tab.patient', {
-        // cache: false,
+        cache: false,
         url: '/patient',
         views: {
             'tab-patient':{
@@ -374,7 +374,7 @@ angular.module('kidney',[
 
     //进行中
     .state('tab.doing', {
-        // cache: false,
+        cache: false,
         url: '/doing',
         views: {
             'tab-consult':{
@@ -431,7 +431,7 @@ angular.module('kidney',[
     })
     //已完成
     .state('tab.did', {
-        // cache: false,
+        cache: false,
         url: '/did',
         views: {
             'tab-consult':{
