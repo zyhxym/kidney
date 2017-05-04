@@ -240,6 +240,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     $scope.clearSearch = function() {
         $scope.search.name = '';
+        $scope.issearching = true;
+        $scope.isnotsearching = false;
+        $scope.moredata = true;
+        $scope.doctors = $scope.alldoctors;
+        $scope.search.name = '';
     }
     $scope.doctorClick = function(doc) {
         console.log(doc)
@@ -903,10 +908,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
                                 function(response){
                                     console.log(response);
+                                  viewUpdate(10);
                                 },function(err){
                                     console.error(err);
+                                    alert('[send msg]:err');
+                                       viewUpdate(10);
                                 })
                             console.log(data)
+                             viewUpdate(5, true);
                         })
 
             } else {
@@ -937,12 +946,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 docId:Storage.get('UID'),
                                 counseltype:1
                             }
-                            window.JMessage.sendSingleCustomMessage(Storage.get('UID'),endlMsg,$scope.params.key,
+                            window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
                                 function(response){
                                     console.log(response);
+                                    viewUpdate(10);
                                 },function(err){
                                     console.error(err);
+                                     alert('[send msg]:err');
+                                       viewUpdate(10);
                                 })
+                             viewUpdate(5, true);
                         })
                      };
                  })
