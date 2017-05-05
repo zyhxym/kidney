@@ -921,7 +921,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 function(response){
                                     console.log(response);
                                   viewUpdate(10);
-                                  Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:Json.parse(response)})
+                                  Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
                                   .then(function(data){
                                     console.log(data);
                                   },function(err){
@@ -948,7 +948,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     function onSendSuccess(res) {
         console.log(res);
         viewUpdate(10);
-        Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:Json.parse(res)})
+        Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(res)})
                                   .then(function(data){
                                     console.log(data);
                                   },function(err){
@@ -974,7 +974,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 function(response){
                                     console.log(response);
                                     viewUpdate(10);
-                                    Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:Json.parse(response)})
+                                    Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
                                   .then(function(data){
                                     console.log(data);
                                   },function(err){
@@ -1815,7 +1815,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     function(res) {
                         console.log(res);
                         viewUpdate(5, true);
-                        Communication.postCommunication({messageType:2,sendBy:Storage.get('UID'),receiver:$scope.params.groupId,content:Json.parse(res)})
+                        Communication.postCommunication({messageType:2,sendBy:Storage.get('UID'),receiver:$scope.params.groupId,content:JSON.parse(res)})
                                   .then(function(data){
                                     console.log(data);
                                   },function(err){
