@@ -487,8 +487,25 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout) {
     $scope.barwidth="width:0%";
 
-    console.log(Storage.get('USERNAME'))
-
+    console.log(Storage.get('USERNAME'));
+    $scope.isWriting={'margin-top': '100px'};
+    if(!sessionStorage.addKBEvent)
+    {
+        // console.log("true")
+        sessionStorage.addKBEvent=true;
+        window.addEventListener('native.keyboardshow', keyboardShowHandler);
+        window.addEventListener('native.keyboardhide', keyboardHideHandler);
+    }
+    function keyboardShowHandler(e){
+        $scope.$apply(function(){
+            $scope.isWriting={'margin-top': '-40px','z-index':'20'};
+        })
+    }
+    function keyboardHideHandler(e){
+        $scope.$apply(function(){
+            $scope.isWriting={'margin-top': '100px'};
+        })
+    }
     
     $http({
         method  : 'POST',
