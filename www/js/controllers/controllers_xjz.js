@@ -1485,6 +1485,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     if(data.result.status==1){$scope.params.type == '1'}else if(data.result.status==0){$scope.params.type == '2'}
                     
                 })
+                 Communication.getTeam({ teamId: $scope.params.teamId })
+                .then(function(data) {
+                    console.log(data)
+                    
+                    for(i=0;i<data.results.members.length;i++){
+                        $scope.photoUrls[data.results.members[i].userId]=data.results.members[i].photoUrl;
+                    }
+                   
+                })
+              Doctor.getDoctorInfo({userId:Storage.get('UID')})
+            .then(function(data){
+              $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+            });
     }
     $scope.DisplayMore = function() {
         getMsg(15);
