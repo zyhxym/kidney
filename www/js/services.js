@@ -871,7 +871,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
             updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000},
             getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000},
-            conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000}
+            conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000},
+            postCommunication:{method:'POST', params:{route: 'postCommunication'}, timeout: 100000}
         });
     }
 
