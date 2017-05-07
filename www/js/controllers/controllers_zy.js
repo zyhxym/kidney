@@ -1742,7 +1742,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 
-//"我”设置内容页
+//"我”设置内容修改密码页
 .controller('set-contentCtrl', ['$timeout','$scope','$ionicPopup','$state','$stateParams','Storage','User', function($timeout,$scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
@@ -1803,6 +1803,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
   
+}])
+//“我”设置内容查看协议页
+.controller('viewAgreeCtrl', ['$scope','$state','Storage','$ionicHistory', function($scope,$state,Storage,$ionicHistory) {
+     
 }])
 
 //"我”排班页
