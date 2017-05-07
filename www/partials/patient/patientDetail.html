@@ -45,10 +45,10 @@
         最近就诊信息
       </ion-item>
       <ion-item ng-repeat="di in diagnosisInfo">
-        <p class="fc-6b f16">就诊日期 : {{di.time | dateFormat:"YYYY-MM-DD"}}</p>
-        <p class="fc-6b f16">就诊医院 : {{di.doctor.workUnit}}</p>
-        <p class="fc-6b f16">就诊科室 : {{di.doctor.department}}</p>
-        <p class="fc-6b f16">就诊诊断 : {{di.content}}</p>
+        <p class="fc-6b ">就诊日期 : {{di.time | dateFormat:"YYYY-MM-DD"}}</p>
+        <p class="fc-6b ">就诊医院 : {{di.doctor.workUnit}}</p>
+        <p class="fc-6b ">就诊科室 : {{di.doctor.department}}</p>
+        <p class="fc-6b >就诊诊断 : {{di.content}}</p>
       </ion-item>
     </div>
   </ion-content>

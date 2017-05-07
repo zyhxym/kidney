@@ -799,7 +799,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         });
     }
-
     // send message--------------------------------------------------------------------------------
     //
     function onSendSuccess(res) {
