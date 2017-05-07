@@ -510,7 +510,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.isWriting={'margin-top': '100px'};
         })
     }
-
+    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx");
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
@@ -1694,18 +1694,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //"我”设置页
-.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage) {
+.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage','$sce',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage,$sce) {
     $scope.hideTabs = true; 
     $scope.logout = function() {
-    //Storage.set('IsSignIn','NO');
-    $state.logStatus="用户已注销";
-    //清除登陆信息
-    Storage.rm('IsSignIn');
-    //Storage.rm('USERNAME');
-    Storage.rm('PASSWORD');
-    Storage.rm('userid');
-    console.log($state);
-    $timeout(function(){$state.go('signin');},500);
+        //Storage.set('IsSignIn','NO');
+        $state.logStatus="用户已注销";
+        //清除登陆信息
+        Storage.rm('IsSignIn');
+        //Storage.rm('USERNAME');
+        Storage.rm('PASSWORD');
+        Storage.rm('userid');
+        console.log($state);
+        $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx");
+        $timeout(function(){$state.go('signin');},500);
     };
   
 }])
