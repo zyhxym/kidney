@@ -1135,7 +1135,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
+.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
@@ -1202,15 +1202,32 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Insurance.updateInsuranceMsg({
             doctorId:Storage.get('UID'),
             patientId:Storage.get('getpatientId'),
-            insuranceId:'ins01'
+            insuranceId:'ins01',
+            description:'医生给您发送了一条保险消息'
             //type:5  //保险type=5
         })
         .then(
             function(data)
             {
                 //console.log(data)
-                $scope.Ins.count=$scope.Ins.count + 1;
-                //$state.go('tab.patientDetail');       
+                $scope.Ins.count=$scope.Ins.count + 1; 
+                New.insertNews({
+                    sendBy:Storage.get('UID'),
+                    userId:Storage.get('getpatientId'),
+                    type:5,
+                    readOrNot:'0',
+                    description:'医生给您发送了一条保险消息'                    
+                })
+                .then(
+                    function(data)
+                    {
+                        console.log(data)                 
+                    },
+                    function(err)
+                    {
+                        console.log(err)
+                    }
+                );
             },
             function(err)
             {
