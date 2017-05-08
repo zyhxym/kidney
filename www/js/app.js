@@ -193,6 +193,7 @@ angular.module('kidney',[
             //    info:
             //    docId:
             //    counseltype:1或2
+            //    counselId:
             //}
             //显示通知栏消息
             document.addEventListener('jmessage.onReceiveCustomMessage', function(msg) {

@@ -874,18 +874,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
   
     $scope.$on('viewcard', function(event, args) {
-        console.log(args);
+        console.log(args[2]);
         event.stopPropagation();
-        Storage.set('getpatientId',args[1].content.patientId);
-        $state.go('tab.patientDetail');
-        // if (args[2].target.tagName == "IMG") {
-        //     $scope.imageHandle.zoomTo(1, true);
-        //     $scope.imageUrl = args[2].target.currentSrc;
-        //     console.log(args[2].target.attributes.hires.nodeValue);
-        //     $scope.modal.show();
-        // } else {
-        //     // $state.go('tab.consult-detail',{consultId:args[1]});
-        // }
+        if (args[2].target.tagName == "IMG") {
+            $scope.imageHandle.zoomTo(1, true);
+            $scope.imageUrl = args[2].target.currentSrc;
+            console.log(args[2].target.attributes.hires.nodeValue);
+            $scope.modal.show();
+        } else {
+            Storage.set('getpatientId',args[1].content.patientId);
+            $state.go('tab.patientDetail');
+            // $state.go('tab.consult-detail',{consultId:args[1]});
+        }
         // $state.go('tab.consult-detail',{consultId:args[1]});
     })
     $scope.toolChoose = function(data) {
@@ -895,9 +895,72 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if (data == 1) $state.go('tab.selectTeam', { msg: content });
     }
     $scope.$on('profile', function(event, args) {
-        console.log(args)
+        console.log(args[1])
+        if(args[1].direct=='receive'){
+            if($scope.params.type=='2'){
+                return $state.go('tab.group-profile', { memberId: args[1].fromID });
+            }else{
+                Storage.set('getpatientId',args[1].fromID); 
+                return $state.go('tab.patientDetail');
+            }
+            
+        }
+          // if($scope.params.type=='2'){
+        //医生
+        // $state.go('tab.group-profile', { memberId: args[1].fromName });
+        // }else{
+            // $state.go('tab.patientDetail', { memberId: args[1] });
+        // }
         event.stopPropagation();
     })
+
+    // function endCounsel(type){
+    //     Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:type,status:0})
+    //     .then(function(data){
+
+    //         var endlMsg={
+    //             type:'endl',
+    //             info:"咨询已结束",
+    //             docId:thisDoctor.userId,
+    //             counseltype:1
+    //         }
+    //         if(type==2) {endlMsg.info="问诊已结束";
+    //         endlMsg.counseltype=2
+    //         }
+    //         var msgJson={
+    //             contentType:'custom',
+    //             fromID:thisDoctor.userId,
+    //             fromName:thisDoctor.name,
+    //             fromUser:{
+    //                 avatarPath:CONFIG.mediaUrl+'uploads/photos/resized'+thisDoctor.userId+'_myAvatar.jpg'
+    //             },
+    //             targetID:$scope.params.chatId,
+    //             targetName:'',
+    //             targetType:'single',
+    //             status:'send_going',
+    //             createTimeInMillis: Date.now(),
+    //             newsType:$scope.params.newsType,
+    //             content:endlMsg
+    //         }
+    //         socket.emit('message',{msg:msgJson,to:$scope.params.chatId});
+    //         $scope.counselstatus='0';
+    //     });
+    //     Counsel.changeCounselStatus({counselId:$state.params.counselId,status:0})
+    // }
+    // $scope.finishConsult = function() {
+    //     var confirmPopup = $ionicPopup.confirm({
+    //         title: '确定要结束此次咨询吗?',
+    //         // template: '确定要结束此次咨询吗?'
+    //         okText: '确定',
+    //         cancelText: '取消'
+    //     });
+    //     confirmPopup.then(function(res) {
+    //         if (res) {
+    //             endCounsel($scope.params.realCounselType);
+    //         } else {
+    //         }
+    //     });
+    // }
     $scope.finishConsult = function() {
         var confirmPopup = $ionicPopup.confirm({
             title: '确定要结束此次问诊吗?',
@@ -908,13 +971,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         confirmPopup.then(function(res) {
             if (res) {
                 console.log('问诊结束');
+                $scope.counselstatus='0';
                   Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
                         .then(function(data){
                             var endlMsg={
                                 type:'endl',
                                 info:"问诊已结束",
                                 docId:Storage.get('UID'),
-                                counseltype:2
+                                counseltype:2,
+                                counselId:$state.params.counselId
 
                             }
                             window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
@@ -968,7 +1033,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 type:'endl',
                                 info:"咨询已结束",
                                 docId:Storage.get('UID'),
-                                counseltype:1
+                                counseltype:1,
+                                counselId:$state.params.counselId
                             }
                             window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
                                 function(response){
