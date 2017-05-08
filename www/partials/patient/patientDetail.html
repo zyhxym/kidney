@@ -44,7 +44,7 @@
       <ion-item class="bg-f5 f-18 fc-33">
         最近就诊信息
       </ion-item>
-      <ion-item ng-repeat="di in diagnosisInfo">
+      <ion-item ng-repeat="di in diagnosisInfo" class="diagnosisInfo">
         <p class="fc-6b ">就诊日期 : {{di.time | dateFormat:"YYYY-MM-DD"}}</p>
         <p class="fc-6b ">就诊医院 : {{di.doctor.workUnit}}</p>
         <p class="fc-6b ">就诊科室 : {{di.doctor.department}}</p>

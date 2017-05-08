@@ -233,7 +233,7 @@
 }
 .groud-d{
   color: #6ac4f8!important;
-  font-size: 18px;
+  font-size: 16px;
 }
 .p-dordes{
   color: #4d4d4d;
@@ -416,4 +416,11 @@
 .chat-more span img{
   width: 100%;
   height: 100%;
+}
+.diagnosisInfo p{
+  margin-bottom: 5px;
+}
+.my-sheet{
+  color: #ffa76d;
+  font-size: 16px;
 }

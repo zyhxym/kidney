@@ -470,7 +470,7 @@ display: inline-block;
   color: lightgray;
   position: absolute;
   right: 30px;
-  top: 16px;
+  top: 9px;
 }
 
 .myinfo-img-right {
@@ -983,7 +983,6 @@ display: inline-block;
 
 .qr-code div:first-child {
   width: 100%;
-  padding-right: 30px;
   text-align: center;
   margin-bottom: 15px;
 }

@@ -875,7 +875,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }])
 
   //"我”页
-  .controller('meCtrl', ['Doctor', '$scope', '$ionicPopover', '$state', '$interval', '$rootScope', 'Storage', function (Doctor, $scope, $ionicPopover, $state, $interval, $rootScope, Storage) {
+  .controller('meCtrl', ['Doctor', '$scope', '$ionicPopover', '$state', '$interval', '$rootScope', 'Storage','$ionicActionSheet','$timeout', function (Doctor, $scope, $ionicPopover, $state, $interval, $rootScope, Storage,$ionicActionSheet,$timeout) {
     $scope.barwidth = "width:0%";
 
     //$scope.userid=Storage.get('userid');
@@ -912,7 +912,22 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$destroy', function () {
       $scope.popover.remove();
     });
-
+    $scope.show = function() {
+      var hideSheet = $ionicActionSheet.show({
+        buttons: [
+          { text: '<span class="my-sheet">拍摄照片</span>' },
+          { text: '<span class="my-sheet">拍摄照片</span>' },
+          { text: '<span class="my-sheet">删除照片</span>' }
+        ],
+        cancelText: '<span class="my-sheet">取消</span>',
+        cancel: function() {
+          // add cancel code..
+        },
+        buttonClicked: function(index) {
+          return true;
+        }
+      });
+    };
 
     Doctor.getDoctorInfo({
       userId: Storage.get('UID')
