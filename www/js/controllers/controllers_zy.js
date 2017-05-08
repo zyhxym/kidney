@@ -423,70 +423,91 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.infoSetup = function() 
     {
-        User.register({
-            'phoneNo':phoneNumber,
-            'password':password,
-            'role':'doctor'
-        })
-        .then(function(succ)
-        {
-            console.log(phoneNumber)
-            console.log(password)
-            console.log(succ)
-            Storage.set('UID',succ.userNo);
-
-            //签署协议置位0，同意协议
-            User.updateAgree({userId:Storage.get('UID'),agreement:"0"})
-            .then(function(data){
-                console.log(data);
-            },function(err){
-                console.log(err);
-            })
-
-            //填写个人信息
-            $scope.doctor.userId = Storage.get('UID')
-            Doctor.postDocBasic($scope.doctor)
-            .then(
-                function(data)
+        if ($scope.doctor.name&&$scope.doctor.province&&$scope.doctor.city&&$scope.doctor.workUnit&&$scope.doctor.department&&$scope.doctor.title&&$scope.doctor.IDNo){
+            //如果必填信息已填
+            var IDreg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;  //身份证号判断
+            if ($scope.doctor.IDNo!='' && IDreg.test($scope.doctor.IDNo) == false){
+                // console.log("身份证");
+                $ionicLoading.show({
+                    template: '请输入正确的身份证号',
+                    duration:1000
+                });
+            }
+            else{
+                User.register({
+                    'phoneNo':phoneNumber,
+                    'password':password,
+                    'role':'doctor'
+                })
+                .then(function(succ)
                 {
-                    console.log(data);
-                    console.log($scope.doctor)
-                    //$scope.doctor = data.newResults;                  
-                },
-                function(err)
+                    console.log(phoneNumber)
+                    console.log(password)
+                    console.log(succ)
+                    Storage.set('UID',succ.userNo);
+
+                    //签署协议置位0，同意协议
+                    User.updateAgree({userId:Storage.get('UID'),agreement:"0"})
+                    .then(function(data){
+                        console.log(data);
+                    },function(err){
+                        console.log(err);
+                    })
+
+                    //填写个人信息
+                    $scope.doctor.userId = Storage.get('UID')
+                    Doctor.postDocBasic($scope.doctor)
+                    .then(
+                        function(data)
+                        {
+                            console.log(data);
+                            console.log($scope.doctor)
+                            //$scope.doctor = data.newResults;                  
+                        },
+                        function(err)
+                        {
+                            console.log(err)
+                        }
+                    );            
+
+                    //注册论坛
+
+                    $http({
+                        method  : 'POST',
+                        url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+                        params    :{
+                            'regsubmit':'yes',
+                            'formhash':'',
+                            'username':$scope.doctor.name+phoneNumber.slice(7),
+                            'password':$scope.doctor.name+phoneNumber.slice(7),
+                            'password2':$scope.doctor.name+phoneNumber.slice(7),
+                            'email':phoneNumber+'@bme319.com'
+                        },  // pass in data as strings
+                        headers : {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept':'application/xml, text/xml, */*'
+                        }  // set the headers so angular passing info as form data (not request payload)
+                    }).success(function(data) {
+                        // console.log(data);
+                    });
+                    $state.go('signin');
+                    Storage.set("lt",'bme319');
+
+                },function(err)
                 {
-                    console.log(err)
-                }
-            );            
-
-            //注册论坛
-
-            $http({
-                method  : 'POST',
-                url     : 'http://121.43.107.106/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
-                params    :{
-                    'regsubmit':'yes',
-                    'formhash':'',
-                    'username':$scope.doctor.name+phoneNumber.slice(7),
-                    'password':$scope.doctor.name+phoneNumber.slice(7),
-                    'password2':$scope.doctor.name+phoneNumber.slice(7),
-                    'email':phoneNumber+'@bme319.com'
-                },  // pass in data as strings
-                headers : {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept':'application/xml, text/xml, */*'
-                }  // set the headers so angular passing info as form data (not request payload)
-            }).success(function(data) {
-                // console.log(data);
-            });
-            $state.go('signin');
-            Storage.set("lt",'bme319');
-
-        },function(err)
-        {
-            console.log(err)       
-        })      
+                    console.log(err)       
+                })                 
+            }                         
+        }
+        else{
+            $ionicLoading.show({
+                template: '信息填写不完整,请完善必填信息(红色*)',
+                duration:1000
+            });            
+        }
+    
     };
+
 }])
 
 //首页
