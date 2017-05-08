@@ -1202,6 +1202,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return deferred.promise;
     };
 
+    self.postCommunication = function(params){
+        var deferred = $q.defer();
+        Data.Communication.postCommunication(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
     self.getConsultation = function(params){
         var deferred = $q.defer();
         Data.Communication.getConsultation(
