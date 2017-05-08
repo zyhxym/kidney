@@ -843,7 +843,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 .controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
   //初始化
    var UserId = Storage.get('getpatientId'); 
-   //var UserId = "Test09";
+   //UserId = "Test12";
    $scope.Tasks = [];
    $scope.EditTasks = []; //修改任务
    $scope.$on('$ionicView.enter', function() {
@@ -890,11 +890,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                var newTask = task.details[j];       
                if(newTask.times != 0)
                {
+                 newTask.flag = true;
                  newTask.type = task.type;
                  if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
                  {
-                    newTask.dateStr = newTask.content;
-                    newTask.content = newTask.instruction;
+                    //newTask.dateStr = newTask.content;
+                    newTask.flag = false; //暂时设定血透排班不可更改备注
+                    newTask.content = "设定血透排班";
                  }    
                  newTask.Name = NameMatch(newTask.type);               
                  $scope.Tasks.Other.push(newTask);   
@@ -1016,11 +1018,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           var flag = false;
           var newTask = JSON.parse(JSON.stringify(task));
           newTask.Flag = false;
-          if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
-          {
-             newTask.instruction = newTask.content;
+         /* if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+          {            
              newTask.content = newTask.dateStr;
-          }
+          }*/
           for(var i=0;i<$scope.EditTasks.length;i++)
           {
              if($scope.EditTasks[i].Name == newTask.Name)
@@ -1044,11 +1045,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     {
       var newTask = JSON.parse(JSON.stringify(item));
       var flag = false;
-      if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
+      /*if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透
       {
          newTask.instruction = newTask.content;
          newTask.content = newTask.dateStr;
-      }
+      }*/
       for(var i=0;i<$scope.EditTasks.length;i++)
       { 
          var task = $scope.EditTasks[i]
