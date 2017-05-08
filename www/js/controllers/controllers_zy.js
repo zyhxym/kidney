@@ -2,8 +2,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying///////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce) {
     $scope.barwidth="width:0%";
+    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null){
         $scope.logOn={username:Storage.get('USERNAME'),password:""};
     }
@@ -141,11 +142,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     if(!phoneReg.test(Verify.Phone))
     {
         $scope.logStatus="请输入正确的手机号码！";
-          return;
+        return;
     }
     else//通过基本验证-正确的手机号
     {
         console.log(Verify.Phone)
+        Storage.set('RegisterNO',$scope.Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
         User.logIn({
             username:Verify.Phone,
@@ -274,13 +276,17 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $timeout(function(){$state.go('setpassword',0)},500);
         }
     }
+    var a=document.getElementById("agreement");
+    // console.log(document.body.clientHeight);
+    // console.log(window.screen.height);
+    a.style.height=window.screen.height*0.85+"px";
 }])
 
 //设置密码
 .controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' ,'Storage','User',function($scope,$state,$rootScope,$timeout,Storage,User) {
     $scope.barwidth="width:0%";
     var validMode=Storage.get('validMode');//0->set;1->reset
-    var phoneNumber=Storage.get('USERNAME');
+    var phoneNumber=Storage.get('RegisterNO');
     $scope.headerText="设置密码";
     $scope.buttonText="";
     $scope.logStatus='';
@@ -337,7 +343,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //注册时填写医生个人信息
 .controller('userdetailCtrl',['Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http',function(Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http){
     $scope.barwidth="width:0%";
-    var phoneNumber=Storage.get('USERNAME');
+    var phoneNumber=Storage.get('RegisterNO');
     var password=Storage.get('password');
     $scope.doctor={
         userId:"",
@@ -433,7 +439,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             User.updateAgree({userId:Storage.get('UID'),agreement:"0"})
             .then(function(data){
                 console.log(data);
-
             },function(err){
                 console.log(err);
             })
@@ -445,6 +450,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 function(data)
                 {
                     console.log(data);
+                    console.log($scope.doctor)
                     //$scope.doctor = data.newResults;                  
                 },
                 function(err)
@@ -461,10 +467,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 params    :{
                     'regsubmit':'yes',
                     'formhash':'',
-                    'username':phoneNumber,
-                    'password':phoneNumber,
-                    'password2':phoneNumber,
-                    'email':phoneNumber+'@qq.com'
+                    'username':$scope.doctor.name+phoneNumber.slice(7),
+                    'password':$scope.doctor.name+phoneNumber.slice(7),
+                    'password2':$scope.doctor.name+phoneNumber.slice(7),
+                    'email':phoneNumber+'@bme319.com'
                 },  // pass in data as strings
                 headers : {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -484,20 +490,43 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //首页
-.controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout) {
+.controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout','Doctor',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout,Doctor) {
     $scope.barwidth="width:0%";
 
-    console.log(Storage.get('USERNAME'))
-
-    
-    $http({
-        method  : 'POST',
-        url     : 'http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx'
-    }).success(function(data) {
-            // console.log(data);
-        $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+Storage.get('USERNAME')+"&password="+Storage.get('USERNAME'));
-        $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
-    });
+    console.log(Storage.get('USERNAME'));
+    $scope.isWriting={'margin-top': '100px'};
+    if(!sessionStorage.addKBEvent)
+    {
+        // console.log("true")
+        sessionStorage.addKBEvent=true;
+        window.addEventListener('native.keyboardshow', keyboardShowHandler);
+        window.addEventListener('native.keyboardhide', keyboardHideHandler);
+    }
+    function keyboardShowHandler(e){
+        $scope.$apply(function(){
+            $scope.isWriting={'margin-top': '-40px','z-index':'20'};
+        })
+    }
+    function keyboardHideHandler(e){
+        $scope.$apply(function(){
+            $scope.isWriting={'margin-top': '100px'};
+        })
+    }
+    Doctor.getDoctorInfo({
+        userId:Storage.get('UID')
+    })
+    .then(
+        function(data)
+        {
+            console.log(data)
+            $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+data.results.name+Storage.get('USERNAME').slice(7)+"&password="+data.results.name+Storage.get('USERNAME').slice(7));
+            $scope.navigation=$sce.trustAsResourceUrl("http://121.43.107.106/");
+        },
+        function(err)
+        {
+            console.log(err)
+        }
+    )
     $scope.options = {
         loop: false,
         effect: 'fade',
@@ -526,6 +555,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }
     var forumReg=function(phone,role)
     {
+        // console.log(phone.userName+phone.phoneNo.slice(7))
+        var un=phone.userName+phone.phoneNo.slice(7);
         var url='http://121.43.107.106';
         if(role=='patient')
             url+=':6699/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1'
@@ -537,15 +568,17 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             params    :{
                 'regsubmit':'yes',
                 'formhash':'xxxxxx',
-                'username':phone,
-                'password':phone,
-                'password2':phone,
-                'email':phone+'@qq.com'
+                'username':un,
+                'password':un,
+                'password2':un,
+                'email':phone.phoneNo+'@bme319.com'
             },  // pass in data as strings
             headers : {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept':'application/xml, text/xml, */*'
             }  // set the headers so angular passing info as form data (not request payload)
+        }).success(function(s){
+            console.log(s)
         })
     }
     $scope.importDocs=function()
@@ -1097,7 +1130,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
+.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
@@ -1164,15 +1197,32 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Insurance.updateInsuranceMsg({
             doctorId:Storage.get('UID'),
             patientId:Storage.get('getpatientId'),
-            insuranceId:'ins01'
+            insuranceId:'ins01',
+            description:'医生给您发送了一条保险消息'
             //type:5  //保险type=5
         })
         .then(
             function(data)
             {
                 //console.log(data)
-                $scope.Ins.count=$scope.Ins.count + 1;
-                //$state.go('tab.patientDetail');       
+                $scope.Ins.count=$scope.Ins.count + 1; 
+                New.insertNews({
+                    sendBy:Storage.get('UID'),
+                    userId:Storage.get('getpatientId'),
+                    type:5,
+                    readOrNot:'0',
+                    description:'医生给您发送了一条保险消息'                    
+                })
+                .then(
+                    function(data)
+                    {
+                        console.log(data)                 
+                    },
+                    function(err)
+                    {
+                        console.log(err)
+                    }
+                );
             },
             function(err)
             {
@@ -1546,46 +1596,55 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //"我”个人收费页
 .controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage) {
     $scope.hideTabs = true;
-  
-    Doctor.getDoctorInfo({
-        userId:Storage.get('UID')
-    })
-    .then(
-        function(data)
-        {
-        // console.log(data)
-            $scope.doctor=data.results;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
+    var load = function(){
+        Doctor.getDoctorInfo({
+            userId:Storage.get('UID')
+        })
+        .then(
+            function(data)
+            {
+            // console.log(data)
+                $scope.doctor=data.results;
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )
 
-    Account.getAccountInfo({
-        userId:Storage.get('UID')
+        Account.getAccountInfo({
+            userId:Storage.get('UID')
+        })
+        .then(
+            function(data)
+            {
+                //console.log(data)
+                //console.log(data.results[0].money)
+                $scope.account={money:data.results.length==0?0:data.results[0].money};
+                // if (data.results.length!=0)
+                // {
+                //     $scope.account=data.results
+                // }
+                // else
+                // {
+                //     $scope.account={money:0}
+                // }
+            },
+            function(err)
+            {
+                console.log(err)
+            }
+        )        
+    }
+    $scope.$on('$ionicView.enter', function() {
+        load();
     })
-    .then(
-        function(data)
-        {
-            //console.log(data)
-            //console.log(data.results[0].money)
-            $scope.account={money:data.results.length==0?0:data.results[0].money};
-            // if (data.results.length!=0)
-            // {
-            //     $scope.account=data.results
-            // }
-            // else
-            // {
-            //     $scope.account={money:0}
-            // }
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    )
-  
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }   
+
     $scope.savefee = function() {
         Doctor.editDoctorDetail($scope.doctor)
         .then(
@@ -1613,67 +1672,77 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.hideTabs = true;
     var commentlength='';
     //var commentlist=[];
-
-    Doctor.getDoctorInfo({
-        userId:Storage.get('UID')
-    })
-    .then(
-        function(data)
-        {
-            // console.log(data)
-            $scope.feedbacks=data.comments;
-            $scope.doctor=data.results;
-            //console.log($scope.feedbacks.length)
-            commentlength=data.comments.length;
-            //   for (var i=0; i<commentlength; i++){
-            //       commentlist[i]=$scope.feedbacks[i].pateintId.userId;
-        },
-        function(err)
-        {
-            console.log(err)
-        }
-    );
-
-
-    for (var i=0; i<commentlength; i++){
-        Patient.getPatientDetail({
-        userId:$scope.feedbacks[i].pateintId.userId
-    })
+    var load = function(){
+        Doctor.getDoctorInfo({
+            userId:Storage.get('UID')
+        })
         .then(
             function(data)
             {
-            // console.log(data)
-                $scope.feedbacks[i].photoUrl=data.results.photoUrl;
+                // console.log(data)
+                $scope.feedbacks=data.comments;
+                $scope.doctor=data.results;
+                //console.log($scope.feedbacks.length)
+                commentlength=data.comments.length;
+                //   for (var i=0; i<commentlength; i++){
+                //       commentlist[i]=$scope.feedbacks[i].pateintId.userId;
             },
             function(err)
             {
                 console.log(err)
             }
         );
+
+        for (var i=0; i<commentlength; i++){
+            Patient.getPatientDetail({
+            userId:$scope.feedbacks[i].pateintId.userId
+        })
+            .then(
+                function(data)
+                {
+                // console.log(data)
+                    $scope.feedbacks[i].photoUrl=data.results.photoUrl;
+                },
+                function(err)
+                {
+                    console.log(err)
+                }
+            );
+        }
+    }
+    $scope.$on('$ionicView.enter', function() {
+        load();
+    })
+
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
     }
 
 }])
 
 
 //"我”设置页
-.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage) {
+.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage','$sce',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage,$sce) {
     $scope.hideTabs = true; 
     $scope.logout = function() {
-    //Storage.set('IsSignIn','NO');
-    $state.logStatus="用户已注销";
-    //清除登陆信息
-    Storage.rm('IsSignIn');
-    //Storage.rm('USERNAME');
-    Storage.rm('PASSWORD');
-    Storage.rm('userid');
-    console.log($state);
-    $timeout(function(){$state.go('signin');},500);
+        //Storage.set('IsSignIn','NO');
+        $state.logStatus="用户已注销";
+        //清除登陆信息
+        Storage.rm('IsSignIn');
+        //Storage.rm('USERNAME');
+        Storage.rm('PASSWORD');
+        Storage.rm('userid');
+        console.log($state);
+        $scope.navigation_login=$sce.trustAsResourceUrl("http://121.43.107.106/member.php?mod=logging&action=logout&formhash=xxxxxx");
+        $timeout(function(){$state.go('signin');},500);
     };
   
 }])
 
 
-//"我”设置内容页
+//"我”设置内容修改密码页
 .controller('set-contentCtrl', ['$timeout','$scope','$ionicPopup','$state','$stateParams','Storage','User', function($timeout,$scope, $ionicPopup,$state,$stateParams,Storage,User) {
     $scope.hideTabs = true; 
     $scope.type = $stateParams.type;
@@ -1734,6 +1803,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
   
+}])
+//“我”设置内容查看协议页
+.controller('viewAgreeCtrl', ['$scope','$state','Storage','$ionicHistory', function($scope,$state,Storage,$ionicHistory) {
+     
 }])
 
 //"我”排班页
