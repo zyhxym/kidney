@@ -129,6 +129,25 @@ angular.module('kidney',[
             // custom消息内容
             // 患者发送咨询：{
             //     counsel:data.results,
+                        // {
+                        //     counselId : "CL201704280021"
+                        //     diagnosisPhotoUrl : Array(0)
+                        //     doctorId : "58eb2ee11e152b523139e723"
+                        //     help : ""
+                        //     hospital : "折腾"
+                        //     messages : Array(0)
+                        //     patientId : "58eb86b9a177a0eab3fbff38"
+                        //     revisionInfo : Object
+                        //     sickTime : "2017-04-20"
+                        //     status : 1
+                        //     symptom : ""
+                        //     symptomPhotoUrl : Array(0)
+                        //     time : "2017-04-28T14:36:40.403Z"
+                        //     type : 1
+                        //     visitDate : "2017-04-28T00:00:00.000Z"
+                        //     __v : 0
+                        //     _id : "5903537836408c33ae0663be"
+                        // }
             //     type:'card',
             //     counselId:'',
             //     patientId:patientId,
@@ -314,7 +333,7 @@ angular.module('kidney',[
             
     //患者页面
     .state('tab.patient', {
-        // cache: false,
+        cache: false,
         url: '/patient',
         views: {
             'tab-patient':{
@@ -355,7 +374,7 @@ angular.module('kidney',[
 
     //进行中
     .state('tab.doing', {
-        // cache: false,
+        cache: false,
         url: '/doing',
         views: {
             'tab-consult':{
@@ -412,7 +431,7 @@ angular.module('kidney',[
     })
     //已完成
     .state('tab.did', {
-        // cache: false,
+        cache: false,
         url: '/did',
         views: {
             'tab-consult':{
@@ -426,7 +445,7 @@ angular.module('kidney',[
 
     //患者详情页面
     .state('tab.patientDetail', {
-        // cache: false,
+        cache: false,
         url: '/patientDetail',
         views: {
             'tab-patient':{
@@ -591,7 +610,7 @@ angular.module('kidney',[
                     controller: 'GroupConclusionCtrl'
                 }
             },
-            params:{consultationId:null,teamId:null}
+            params:{groupId:null,teamId:null}
         })
     .state('tab.group-patient', {
         // cache: false,
@@ -699,14 +718,24 @@ angular.module('kidney',[
             }
         }
     })
-
+    //查看协议页
+    .state('tab.viewAgree', {
+        // cache: false,
+        url: '/me/set/viewAgree',
+        views: {
+            'tab-me':{
+                controller: 'viewAgreeCtrl',
+                templateUrl: 'partials/me/set/viewAgree.html'
+            }
+        }
+    })    
     //关于
     .state('tab.about', {
         // cache: false,
         url: '/about',
         views: {
             'tab-me':{
-                controller: 'myinfoCtrl',
+                controller: 'aboutCtrl',
                 templateUrl: 'partials/me/about.html'
             }
         }

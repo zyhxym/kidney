@@ -20,7 +20,7 @@
         </ion-item>
         <ion-item>
             <span class="msg">头像</span>
-			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl}}></p>
+			<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="{{doctor.photoUrl||'img/doctor.png'}}"></p>
         </ion-item>
         <ion-item>
             <span class="msg">职称</span>
@@ -61,7 +61,7 @@
 
 			<ion-item class="item item-input">
 				<span class="input-label">头像</span>
-				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src={{doctor.photoUrl}} name="Photo" ng-click="onClickCamera($event)"></p>
+				<p class="myinfo-img-right"><img style="width:40px;height:40px;" ng-src="{{doctor.photoUrl||'img/doctor.png'}}" name="Photo" ng-click="onClickCamera($event)"></p>
 			</ion-item>
 
 		    <!-- 上传照片的弹出框 -->

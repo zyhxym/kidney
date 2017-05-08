@@ -870,7 +870,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
             newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
             updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000},
-            getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000}
+            getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000},
+            conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000},
+            postCommunication:{method:'POST', params:{route: 'postCommunication'}, timeout: 100000}
         });
     }
 
@@ -881,6 +883,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
             updateInsuranceMsg:{method:'POST', params:{route: 'updateInsuranceMsg'}, timeout: 100000}
         });
     }
+
+    var New =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'new'},{
+            insertNews:{method:'POST', params:{route: 'insertNews'}, timeout: 100000}
+        });
+    }   
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -901,6 +909,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Communication = Communication();
             serve.User = User();
             serve.Insurance = Insurance();
+            serve.New = New();            
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -917,7 +926,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Message = Message();
     serve.Communication = Communication();
     serve.User = User();
-    serve.Insurance = Insurance();    
+    serve.Insurance = Insurance();
+    serve.New = New();      
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -1141,6 +1151,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.newTeam = function(params){
         var deferred = $q.defer();
         Data.Communication.newTeam(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.conclusion = function(params){
+        var deferred = $q.defer();
+        Data.Communication.conclusion(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -2126,6 +2149,23 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.updateInsuranceMsg = function(params){
         var deferred = $q.defer();
         Data.Insurance.updateInsuranceMsg(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+
+.factory('New', ['$q', 'Data', function($q, Data){
+    var self = this;
+    self.insertNews = function(params){
+        var deferred = $q.defer();
+        Data.New.insertNews(
             params,
             function(data, headers){
                 deferred.resolve(data);
