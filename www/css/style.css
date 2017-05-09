@@ -80,13 +80,14 @@ display: inline-block;
 
 /*搜索*/
 .item-input-inset {
-  padding: 20px;
   background: #fafafa;
+  margin-top: 10px;
 }
 
 .item-input-wrapper {
   background: #FFFFFF;
-  border-radius: 20px;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 /*筛选*/
 .checkbox input, .checkbox-icon{

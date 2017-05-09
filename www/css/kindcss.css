@@ -294,8 +294,8 @@
   font-size: 16px;
   color: #333333;
   padding: 15px;
-  background: #fafafa;
-  margin: 0;
+  background: #fff;
+  margin: 10px 0;
 }
 .m-em{
   white-space:normal;
@@ -423,4 +423,7 @@
 .my-sheet{
   color: #ffa76d;
   font-size: 16px;
+}
+.item-avatar > img:first-child{
+  top:10px
 }

@@ -482,13 +482,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     //var date1=new Date().format("MM月dd日");
     $scope.riqi = date1;
-    /*选项卡*/
+   /* /!*选项卡*!/
     $scope.showConduct = function () {
       $scope.parms.isEnd = true;
     }
     $scope.showEnd = function () {
       $scope.parms.isEnd = false;
-    }
+    }*/
     //获取在等待
     Counsel.getCounsels({
       userId: Storage.get('UID'),
