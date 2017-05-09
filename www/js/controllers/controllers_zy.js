@@ -1226,13 +1226,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             function(data)
             {
                 //console.log(data)
-                $scope.Ins.count=$scope.Ins.count + 1; 
+                $scope.Ins.count=$scope.Ins.count + 1;
+                console.log(data)
+                Storage.set('MessId',data.newResults.message.messageId)
                 New.insertNews({
                     sendBy:Storage.get('UID'),
                     userId:Storage.get('getpatientId'),
                     type:5,
                     readOrNot:'0',
-                    description:'医生给您发送了一条保险消息'                    
+                    description:'医生给您发送了一条保险消息',
+                    messageId:Storage.get('MessId')                    
                 })
                 .then(
                     function(data)
