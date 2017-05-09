@@ -1704,7 +1704,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 $scope.feedbacks=data.comments;
                 $scope.doctor=data.results;
                 //console.log($scope.feedbacks.length)
-                commentlength=data.comments.length;
+                //commentlength=data.comments.length;
                 //   for (var i=0; i<commentlength; i++){
                 //       commentlist[i]=$scope.feedbacks[i].pateintId.userId;
             },
@@ -1714,22 +1714,22 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
         );
 
-        for (var i=0; i<commentlength; i++){
-            Patient.getPatientDetail({
-            userId:$scope.feedbacks[i].pateintId.userId
-        })
-            .then(
-                function(data)
-                {
-                // console.log(data)
-                    $scope.feedbacks[i].photoUrl=data.results.photoUrl;
-                },
-                function(err)
-                {
-                    console.log(err)
-                }
-            );
-        }
+        // for (var i=0; i<commentlength; i++){
+        //     Patient.getPatientDetail({
+        //     userId:$scope.feedbacks[i].pateintId.userId
+        // })
+        //     .then(
+        //         function(data)
+        //         {
+        //         // console.log(data)
+        //             $scope.feedbacks[i].photoUrl=data.results.photoUrl;
+        //         },
+        //         function(err)
+        //         {
+        //             console.log(err)
+        //         }
+        //     );
+        // }
     }
     $scope.$on('$ionicView.enter', function() {
         load();
