@@ -5,45 +5,36 @@
     </ion-nav-buttons>
   </ion-nav-bar>
     <ion-content>
-		<div class="list">
+		<div class="list card">
 
 			<div class="item noborder">
+				<h2>
+					状态：{{stausText}}
+					<a class="button button-small button-positive" style="float:right " ng-click="showSch()">
+						{{stausButtontText}}
+					</a>
+				</h2>
+				<div ng-show="stausButtontText=='接诊'">
+					<p>停诊开始：{{begin|dateFormat:"YYYY-MM-DD"}}</p>
+					<p>停诊结束：{{end|dateFormat:"YYYY-MM-DD"}}</p>
+				</div>
+			</div>
 
-         <p class="mh3">正常/停诊</p>
+			<div class="item" ng-hide="showSchedual">
+				<button class="button button-block button-positive button-outline" ng-click="openDatePicker(1)">
+					开始时间:{{begin|dateFormat:"YYYY-MM-DD"}}
+				</button>
+				<button class="button button-block button-positive button-outline" ng-click="openDatePicker(2)">
+					结束时间:{{end|dateFormat:"YYYY-MM-DD"}}
+				</button>
+				<div class="button-bar">
+					  <a class="button button-positive" ng-click="stopWork(1)">取消</a>
 
-         <div class="row  lable-style">
-           <div class="col">编辑</div>
-            <span style="text-align: center">|</span>
-           <div class="col">停诊设置</div>
+					  <a class="button button-assertive" ng-click="stopWork()">保存</a>
+				</div>
+			</div>
 
-         </div>
-
-        <!--<h2>
-                            状态：{{stausText}}
-                            <a class="button button-small button-positive" style="float:right " ng-click="showSch()">
-                                {{stausButtontText}}
-                            </a>
-                        </h2>
-                        <div ng-show="stausButtontText=='接诊'">
-                            <p>停诊开始：{{begin|dateFormat:"YYYY-MM-DD"}}</p>
-                            <p>停诊结束：{{end|dateFormat:"YYYY-MM-DD"}}</p>
-                        </div>
-                    </div>
-
-                    <div class="item noborder" ng-hide="showSchedual">
-                        <button class="button button-block button-positive button-outline" ng-click="openDatePicker(1)">
-                            开始时间:{{begin|dateFormat:"YYYY-MM-DD"}}
-                        </button>
-                        <button class="button button-block button-positive button-outline" ng-click="openDatePicker(2)">
-                            结束时间:{{end|dateFormat:"YYYY-MM-DD"}}
-                        </button>
-                        <div class="button-bar">
-                              <a class="button button-positive" ng-click="stopWork(1)">取消</a>
-                              <a class="button button-assertive" ng-click="stopWork()">保存</a>
-                        </div>
-                    </div>-->
-			<div class="item noborder" >
-
+			<div class="item noborder">
 				<div class="row">
 					<div class="col schedual-border" ><span style="opacity:0">上午</span></div>
 					<div class="col schedual-border" >一</div>
@@ -74,26 +65,25 @@
 					<div class="col schedual-border-bottom" ng-click="changeWorkStatus(12)" ng-style="workStatus[12].style" ></div>
 					<div class="col schedual-border-all" ng-click="changeWorkStatus(13)" ng-style="workStatus[13].style" ></div>
 				</div>
-			<!--	<p style="padding-left:4px;">点击某一时段以修改状态</p>
+				<p style="padding-left:4px;">点击某一时段以修改状态</p>
 				<div class="row" style="padding:0px;">
 					<div class='col'>
-						<div style="width: 20px;height: 20px;background-color: red;border: solid;border-color: green"></div>
+						<div style="width: 20px;height: 20px;background-color: red;border: solid;border-color: #6ac4f8"></div>
 					</div>
 					<div class='col'>
-
+						
 						<div >值班</div>
 					</div>
 					<div class='col'>
-						<div style="width: 20px;height: 20px;background-color: white;border: solid;border-color: green"></div>
+						<div style="width: 20px;height: 20px;background-color: white;border: solid;border-color: #6ac4f8"></div>
 					</div>
 					<div class='col'>
-
+						
 						<div>空闲</div>
 					</div>
 				</div>
 			</div>
-		</div>-->
-      <button class="button button-block button-positive login_outbtn1" ng-click="" >保存</button>
 
+		</div>
     </ion-content>
 </ion-view>

@@ -1,14 +1,14 @@
 <ion-view  hide-tabs view-title="团队信息">
-  <ion-nav-bar class="bar-positive " align-title="center">
-    <ion-nav-buttons side="left">
-      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
-    </ion-nav-buttons>
-  </ion-nav-bar>
+    <!--     <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons> -->
+    <!--    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-android-add" href="#/tab/groups/search" ng-click="popover.show($event)"></a>
+    </ion-nav-buttons> -->
     <ion-content class=" gray-back">
         <div style="background-color: #FFF" class="padding">
-        <div class="avatar-item" ng-repeat="member in team.members" ng-click="viewProfile(member)">
-            <!-- <img src="{{member.url}}" /> -->
-            <img src="img/avatar.png" />
+        <div class="avatar-item" ng-repeat="member in members" ng-click="viewProfile(member)">
+            <img src="{{member.photoUrl || 'img/doctor.png'}}" />
             <div>{{member.name}}</div>
         </div>
         <div style="vertical-align: top" class="avatar-item" ng-click="addMember()">
@@ -23,22 +23,48 @@
             <div class="item" href="#">
                 团队名称
                 <span style="float: right">{{team.name}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
                 <!-- <div class="item-span">{{group.locale}} </div> -->
             </div>
-            <a class="item" ng-click="showQRCode()">
+             <div class="item" href="#">
+                群号
+                <span style="float: right">{{team.teamId}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item" href="#">
+                创建者
+                <span style="float: right">{{team.sponsorName}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item" href="#">
+                创建时间
+                <span style="float: right">{{team.time.substr(0,10)}}</span>
+                <!-- <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+                <!-- <div class="item-span">{{group.locale}} </div> -->
+            </div>
+            <div class="item" href="#">
+                团队简介
+                <span style="float: right">{{team.description}}</span>
+              <!--   <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+              -->
+            </div>
+            <div class="item" ng-click="showQRCode()">
                 团队二维码
                 <!-- <span class="item-note">BME319</span> -->
-                <span style="float: right" class="iconfont icon-erweima"></span>
-                <!-- <div class="item-span">{{group.locale}} </div> -->
-            </a>
-             <a ng-show="ismyteam" class="item item-icon-right ng-hide" ng-click="gokick()">
+                 <span style="float: right" class="iconfont icon-erweima"></span>
+               <!--  <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>  -->
+              
+            </div>
+             <div ng-show="ismyteam" class="item item-icon-right ng-hide" ng-click="gokick()">
                 团队管理
-                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>
-
-            </a>
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
+                
+            </div>
             <!--  <div class="item item-icon-right" ng-click="leaveteam()">
                 退出团队
-                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i>
+                <i style="color:#AAA" class="icon ion-ios-arrow-forward"></i> 
             </div> -->
         </div>
         <!-- </div> -->

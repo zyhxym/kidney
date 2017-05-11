@@ -2,7 +2,7 @@
 
   <ion-nav-bar class="bar-positive " align-title="center">
     <ion-nav-buttons side="left">
-      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="Goback()"></button>
     </ion-nav-buttons>
   </ion-nav-bar>
 
@@ -13,12 +13,12 @@
     <ion-list>
 
       <!-- 支付消息 -->
-
       <ion-item class="item message-item item-avatar right message-new"ng-click="getMessageDetail('ZF')">
         <img   src="/img/icon_paymessage.png">
         <h2>支付消息</h2>
-        <p>[{{messages.ZF.values.length}}条]你有新的支付消息请注意查收</p>
+        <p ng-if="messages.ZF.values.length">[{{messages.ZF.values.length}}条]你有新的支付消息请注意查收</p>
       </ion-item>
+
       <!-- 警报消息 -->
       <!-- <ion-item class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail('JB')">
         <img ng-src="img/alert.png">
@@ -27,28 +27,19 @@
       </ion-item> -->
 
       <!-- 任务消息 -->
-
-
       <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('RW')">
         <img   src="/img/icon_renwu.png">
         <h2>待做任务</h2>
-        <p>[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
+        <p ng-if="messages.RW.values.length">[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
       </ion-item>
 
       <!-- 保险消息 -->
-
-
       <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('BX')">
         <img   src="/img/icon_warning.png">
         <h2>警报消息</h2>
-        <p>[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
+        <p ng-if="messages.BX.values.length">[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
       </ion-item>
 
-    <!--  <ion-item class="item item-avatar " ng-click="getConsultRecordDetail()">
-        <img   src="/img/icon_sick.png">
-        <div><span>患者咨询</span><span style="float: right">04-11</span></div>
-        <p style="white-space:normal;margin-top: 10px">你有新的支付消息请注意查收你有新的支付消息请注意查收你有新的支付消息请注意查收你有新的支付消息请注意查收你有新的支付消息请注意查收你有新的支付消息请注意查收</p>
-      </ion-item>-->
       <!-- 聊天消息 -->
       <ion-item ng-repeat="consult in messages.LT.values" class="item item-avatar" ng-click="getConsultRecordDetail()">
 
@@ -60,7 +51,7 @@
 
 
     </ion-list>
-
+    
   </ion-content>
-
+          
 </ion-view>

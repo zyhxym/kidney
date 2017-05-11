@@ -375,7 +375,15 @@
   font-size: 32px;
 }
 .chat-bar .chat-top{
-
+  position: absolute;
+  top:0;
+  width: 100%;
+   min-height: 44px;
+  height: auto!important;
+  background: #fff;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .chat-box{
   position: absolute;

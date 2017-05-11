@@ -1,11 +1,36 @@
 <ion-view title="团队病例" hide-tabs>
-  <ion-nav-bar class="bar-positive">
-    <ion-nav-buttons side="left">
-      <button class="button button-icon icon ion-chevron-left" style="color: white" ng-click="backToGroups()"></button>
-    </ion-nav-buttons>
-  </ion-nav-bar>
-  <ion-content class="gray-back">
-    <div class="list">
+    <ion-nav-bar class="bar-positive">
+        <ion-nav-buttons side="left">
+            <button class="button button-icon icon ion-chevron-left" style="color: white" ng-click="backToGroups()"></button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-content class="gray-back">
+    <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
+<div class="list">
+    <div style="width:100%;background-color: #FFF;height:2.4em;line-height: 2.4em;font-size:1.3em;padding:0 1.5em">
+        <div>
+            <i style="color:green;font-size:1.5em;position:relative;top:4px" class="icon ion-android-calendar"></i> 进行中：{{grouppatients0.length}}
+        </div>
+    </div>
+    <a ng-repeat="grouppatient in grouppatients0" class="item item-avatar" ng-click="enterChat(1,grouppatient)">
+        <img ng-src="{{grouppatient.patientId.photoUrl|imgUrl:'patient'}}">
+        <div>
+            <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.patientId.name}}</div>
+            <div style="display:inline-block">{{grouppatient.patientId.gender|filterGender}} {{grouppatient.patientId.birthday|filterAge}}岁</div>
+            <div style="display:inline-block;float:right">{{grouppatient.time|dateFormat:"YYYY-MM-DD h:m"}}</div>
+        </div>
+        <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.diseaseInfo.symptom}}</div>
+        
+    </a>
+   <!--  <a ng-repeat="grouppatient in grouppatients01" class="item item-avatar" ng-click="enterChat(1,grouppatient)">
+        <img ng-src="{{grouppatient.patientId.photoUrl|imgUrl:'patient'}}">
+        <div>
+            <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{grouppatient.patientId.name}}</div>
+            <div style="display:inline-block">47岁</div>
+            <div style="display:inline-block;float:right"></div>
+        </div>
+        <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">现在口服药有，早上拜新同两片，中午47.5mg的倍他乐克一片</div>
+    </a> -->
 
       <div>
         <div class="item  m-item-divider context-pading1">

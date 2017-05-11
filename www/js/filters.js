@@ -12,10 +12,52 @@ angular.module('kidney.filters', [])
     return function(gender){
         var g="未知";
         if(gender==1)
-        	g='男'
-        if(gender==0)
-        	g='女'
+            g='男'
+        if(gender==2)
+            g='女'
         return g;
+    }
+}])
+.filter('diagname',[function(){
+    return function(type){
+        var name;
+        switch(type)
+        {
+          case '2':
+            name="CKD1-2期";
+            break;
+          case '3':
+            name="CKD3-4期";
+            break;
+          case '4':
+            name="CDK5期未透析";
+            break;
+          case '5':
+            name="腹透";
+            break;
+          case '6':
+            name="血透";
+            break;
+          case '1':
+            name="肾移植";
+            break;
+        }
+        return name;
+    }
+}])
+.filter('hypertension',[function(){
+    return function(type){
+        var name="--";
+        switch(type)
+        {
+          case '1':
+            name="是";
+            break;
+          case '2':
+            name="否";
+            break;
+        }
+        return name;
     }
 }])
 .filter('filterAge',[function(){
@@ -41,7 +83,7 @@ angular.module('kidney.filters', [])
         var g="未知";
         if(hypertension==1)
             g='是'
-        if(hypertension==0)
+        if(hypertension==2)
             g='否'
         return g;
     }
@@ -64,18 +106,18 @@ angular.module('kidney.filters', [])
         var d=new Date(date)
         var ret=""
         if(date==null)
-        	return "-"
+            return "-"
         switch(format)
         {
-        	case "YYYY-MM-DD":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-        		break;
-        	case "MM-DD-YYYY":
-        		ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
-        		break;
-        	case "YYYY-MM-DD h:m":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
-        		break;
+            case "YYYY-MM-DD":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+                break;
+            case "MM-DD-YYYY":
+                ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
+                break;
+            case "YYYY-MM-DD h:m":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
+                break;
         }
         return ret;
     }

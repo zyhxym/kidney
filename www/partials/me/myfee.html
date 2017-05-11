@@ -3,13 +3,14 @@
     <ion-nav-buttons side="left">
       <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
     </ion-nav-buttons>
-  </ion-nav-bar>
+ </ion-nav-bar>
     <ion-content>
+        <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
         <div class="blank-h12"></div>
         <ion-item>
             <span class="iconfont icon-yue01 icon-yue011"></span>
             <span >我的余额</span>
-            <p class="myinfo-msg-right">{{doctor.sum}}</p>
+            <p class="myinfo-msg-right">{{account.money}}</p>
         </ion-item>
         <ion-item>
         <span class="input-label" >  <img class="icon_charge" src="/img/icon_charge.png"><i></i>收费定制</span>
@@ -21,11 +22,13 @@
         </ion-item>
         <ion-item>
             <span class="msg">问诊收费</span>
-            <p class="myinfo-msg-right"><input type=text ng-model="doctor.charge2" ></p>
+            <p class="myinfo-msg-right"><input type=text ng-model="doctor.charge2"></p>
             <i class="icon ion-ios-close-outline mine-msg-right"></i>
-
+            
         </ion-item>
         <div class="blank-h12"></div>
-      <button style="margin-top:0; background: #6ac4f8" class="button button-block button-positive login_outbtn" ng-click="savefee()">保存修改</button>
+        <button style="margin-top:0; background: #6ac4f8" class="button button-block button-positive login_outbtn" ng-click="savefee()">保存修改</button>
+
+      
     </ion-content>
 </ion-view>
