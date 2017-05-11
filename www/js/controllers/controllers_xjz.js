@@ -641,13 +641,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.params.type != '2') {
             $scope.params.key = CONFIG.crossKey;
             //获取counsel信息
-            Communication.getCounselReport({counselId:$state.params.counselId})
+            Counsel.getStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
             .then(function(data){
                 console.log(data)
-                $scope.params.counsel = data.results;
-                $scope.counseltype= data.results.type=='3'?'2':data.results.type;
-                $scope.counselstatus=data.results.status;
-                $scope.params.realCounselType=data.results.type;
+                $scope.params.counsel = data.result;
+                $scope.params.counselId = data.result.counselId;
+                $scope.counseltype= data.result.type=='3'?'2':data.result.type;
+                $scope.counselstatus=data.result.status;
+                $scope.params.realCounselType=data.result.type;
                 Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
                 .then(function(res){
                     var head='',body='';
@@ -1038,7 +1039,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 info:"问诊已结束",
                                 docId:Storage.get('UID'),
                                 counseltype:2,
-                                counselId:$state.params.counselId
+                                counselId:$scope.params.counselId
 
                             }
                             window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
@@ -1059,7 +1060,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             console.log(data)
                              viewUpdate(5, true);
                         })
-                        Counsel.changeCounselStatus({counselId:$state.params.counselId,status:0})
+                        Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
 
             } else {
                 console.log('You are not sure');
@@ -1097,7 +1098,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 info:"咨询已结束",
                                 docId:Storage.get('UID'),
                                 counseltype:1,
-                                counselId:$state.params.counselId
+                                counselId:$scope.params.counselId
                             }
                             window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
                                 function(response){
@@ -1116,7 +1117,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 })
                              viewUpdate(5, true);
                         })
-                        Counsel.changeCounselStatus({counselId:$state.params.counselId,status:0})
+                        Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
                      };
                  })
                 },function(err){
