@@ -623,7 +623,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             helpDivHeight: 60,
             realCounselType:'',
             moreMsgs: true,
-            counsel:{}
+            counsel:{},
+            recording:false
         }
         // $scope.msgs = [];
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
@@ -836,6 +837,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         getMsg(15);
     }
     $scope.scrollBottom = function() {
+        $scope.showVoice = false;
+        $scope.showMore = false;
         $scope.scrollHandle.scrollBottom(true);
     }
     //长按工具条
@@ -1023,10 +1026,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         confirmPopup.then(function(res) {
             if (res) {
                 console.log('问诊结束');
-                $scope.counselstatus='0';
-                $scope.params.title="问诊";
                   Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
                         .then(function(data){
+                            $scope.counselstatus='0';
+                            $scope.params.title="问诊";
                             Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:900})
                             .then(function(data){
                               console.log(data)
@@ -1077,7 +1080,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                   },function(err){
                                     console.error(err);
                                     })
-       if($scope.counseltype==1){//如果是咨询
+       if($scope.counseltype==1 && scope.counselstatus=='1'){//如果是咨询
          Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:'-1'})
                  .then(function(data){
                   console.log(data)
@@ -1085,10 +1088,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                   .then(function(data){
                      console.log(data)
                      if(data.result.count<=0){ //问题数归零
-                        $scope.counselstatus='0';
-                        $scope.params.title="咨询";
+                        
                         Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:1,status:0})
                         .then(function(data){
+                            $scope.counselstatus='0';
+                            $scope.params.title="咨询";
                             var endlMsg={
                                 type:'endl',
                                 info:"咨询已结束",
@@ -1142,6 +1146,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
     //get image
     $scope.getImage = function(type) {
+        $scope.showMore = false;
             Camera.getPicture(type)
                 .then(function(url) {
                     console.log(url);
@@ -1159,11 +1164,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //voice.record() do 2 things: record --- file manipulation 
         voice.record()
             .then(function(fileUrl) {
+                $scope.params.recording=false;
                 window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
                 viewUpdate(5, true);
             }, function(err) {
                 console.log(err);
             });
+        $scope.params.recording=true;
 
     }
 
@@ -1648,6 +1655,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         getMsg(15);
     }
     $scope.scrollBottom = function() {
+        $scope.showVoice = false;
+        $scope.showMore = false;
         $scope.scrollHandle.scrollBottom(true);
     }
 
@@ -1921,6 +1930,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
         //get image
     $scope.getImage = function(type) {
+        $scope.showMore = false;
             Camera.getPicture(type)
                 .then(function(url) {
                     console.log(url);
@@ -1941,6 +1951,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 window.JMessage.sendGroupVoiceMessageWithExtras($scope.params.groupId, fileUrl, $scope.msgExtra,
                     function(res) {
                         console.log(res);
+                        $scope.params.recording=false;
                         viewUpdate(5, true);
                         Communication.postCommunication({messageType:2,sendBy:Storage.get('UID'),receiver:$scope.params.groupId,content:JSON.parse(res)})
                                   .then(function(data){
@@ -1956,7 +1967,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }, function(err) {
                 console.log(err);
             });
-
+        $scope.params.recording=true;
     }
     $scope.stopAndSend = function() {
         voice.stopRec();

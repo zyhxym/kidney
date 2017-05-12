@@ -12,9 +12,9 @@ angular.module('kidney.filters', [])
     return function(gender){
         var g="未知";
         if(gender==1)
-        	g='男'
+            g='男'
         if(gender==2)
-        	g='女'
+            g='女'
         return g;
     }
 }])
@@ -106,18 +106,18 @@ angular.module('kidney.filters', [])
         var d=new Date(date)
         var ret=""
         if(date==null)
-        	return "-"
+            return "-"
         switch(format)
         {
-        	case "YYYY-MM-DD":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-        		break;
-        	case "MM-DD-YYYY":
-        		ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
-        		break;
-        	case "YYYY-MM-DD h:m":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
-        		break;
+            case "YYYY-MM-DD":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+                break;
+            case "MM-DD-YYYY":
+                ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
+                break;
+            case "YYYY-MM-DD h:m":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
+                break;
         }
         return ret;
     }
