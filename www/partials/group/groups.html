@@ -35,12 +35,13 @@
     </div>
     <ion-content class="gray-back has-subheader content-item-list groups">
         <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
-        <div ng-if="!params.showSearch && params.isTeam">
+        <div ng-if="!params.showSearch && params.isTeam" style="padding-top:10px">
             <!-- 团队 -->
-            <div ng-repeat="team in teams |filter:query | orderBy:'-lastMsgDate'" collection-item-height="94px" class="item item-avatar context-pading" type="item-text-wrap" ng-click="itemClick($event,team)">
+            <div ng-repeat="team in teams |filter:query | orderBy:'-lastMsgDate'" collection-item-height="94px"  class="item item-avatar context-pading" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{team.photoUrl|imgUrl:'group'}}">
                 <div style="display:inline-block;width:70%;">
-                    <h2>{{team.name}} <span>{{team.teamId}}</span></h2>
+                    <h2><span>{{team.name}}</span></h2>
+                    <h2> <span>{{team.teamId}}</span></h2>
                     <div style="font-size: 12px;display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:12px" class="icon ion-android-person"></i><span>{{team.members.length+1}}</span></div>
                     <div style="display:inline-block;margin-top: 5px"><span style="font-size: 12px;border-radius: 3px;display:inline-block;margin:0 0.2em 0 0.5em ;background-color:#f15124;color:#FFF">创建者</span>{{team.sponsorName}}</div>
                     <!-- <p>{{team.description}}</p> -->
@@ -51,12 +52,12 @@
             </div>
         </div>
         <!-- 医生 -->
-        <div ng-if="!params.showSearch && !params.isTeam">
-            <div class="item item-avatar context-pading" ng-repeat="d in doctors | orderBy:'-lastMsgDate'" ng-click="doctorClick($event,d.doctorId)">
+        <div ng-if="!params.showSearch && !params.isTeam" style="padding-top:10px">
+            <div class="item item-avatar context-pading" ng-repeat="d in doctors | orderBy:'-lastMsgDate'"  ng-click="doctorClick($event,d.doctorId)">
                 <img class="avatar-icon" ng-src="{{d.doctorId.photoUrl || 'img/doctor.png'}}">
                 <div> <span class="groud-d">{{d.doctorId.name}}</span> <span class="groud-d mgleft-10">{{d.doctorId.title}}</span></div>
-                <h2 class="mg-top5"><span>{{d.doctorId.workUnit}}</span></h2>
-                <h2 class="mg-top5"><span>{{d.doctorId.department}}</span></h2>
+                <h3 class="mg-top5"><span>{{d.doctorId.workUnit}}</span></h3>
+                <h3 class="mg-top5"><span>{{d.doctorId.department}}</span></h3>
                 <p class="mg-top5 p-dordes"><i style="color:#FFD600;font-size: 16px" class="icon ion-android-star"></i>{{d.doctorId.score}} 咨询:{{d.doctorId.count1}} 问诊:{{d.doctorId.count2}}</p>
                 <p class="mg-top5 p-dordes">擅长：{{d.doctorId.major}}</p>
                     <p><span style="color:#ea4335" ng-show="d.unRead">[{{d.unRead}}条未读]</span>{{d.latestMsg}}<span style="color:#FFF">.</span></p>
