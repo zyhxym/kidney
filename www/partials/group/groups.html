@@ -31,7 +31,7 @@
     </div>
     <ion-content class="gray-back has-subheader content-item-list groups">
         <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
-        <div ng-if="!params.showSearch && params.isTeam" style="padding-top:10px">
+        <div ng-if="!params.showSearch && params.isTeam">
             <!-- 团队 -->
             <div ng-repeat="team in teams |filter:query | orderBy:'-lastMsgDate'" collection-item-height="94px"  class="item item-avatar context-pading" type="item-text-wrap" ng-click="itemClick($event,team)">
                 <img ng-src="{{team.photoUrl|imgUrl:'group'}}">
@@ -48,7 +48,7 @@
             </div>
         </div>
         <!-- 医生 -->
-        <div ng-if="!params.showSearch && !params.isTeam" style="padding-top:10px">
+        <div ng-if="!params.showSearch && !params.isTeam">
             <div class="item item-avatar context-pading" ng-repeat="d in doctors | orderBy:'-lastMsgDate'"  ng-click="doctorClick($event,d.doctorId)">
                 <img class="avatar-icon" ng-src="{{d.doctorId.photoUrl || 'img/doctor.png'}}">
                 <div> <span class="groud-d">{{d.doctorId.name}}</span> <span class="groud-d mgleft-10">{{d.doctorId.title}}</span></div>
