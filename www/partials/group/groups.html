@@ -17,11 +17,7 @@
         <a ng-class="{'high-light':params.isTeam}" class="item col-50 " style="height:50px" ng-click="showTeams()">团队</a>
         <a ng-class="{'high-light':!params.isTeam}" class="item col-50 " style="border-right: 0px;height:50px" ng-click="showDocs()">医生</a>
     </div> -->
-  
-   
-
-
-    <div class="bar bar-subheader item-input-inset  text-center br-box" style="padding:0;">
+   <div class="bar bar-subheader item-input-inset  text-center br-box" style="margin-top:0 !important;background-color:#fff ">
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -48,7 +44,7 @@
                     <p><span style="color:#ea4335" ng-show="team.unRead">[{{team.unRead}}条未读]</span>{{team.latestMsg}}<span style="color:#FFF">.</span></p>
                 </div>
                 <!--注意 id="discuss" 用于页面跳转 -->
-                <a id="discuss" style="display:inline-block;width:auto;background-color: #11c1f3;float:right;padding:0.3em 0.5em;margin-top:10px;border-radius: 0.1em;color:#FFF;position: absolute;right: 15px;top:25px;border-radius: 5px">讨论</a>
+                <a id="discuss" style="display:inline-block;width:auto;background-color: #11c1f3;float:right;padding:0.3em 0.5em;margin-top:10px;border-radius: 0.1em;color:#FFF;position: absolute;right: 15px;top:25px;border-radius: 5px">病历</a>
             </div>
         </div>
         <!-- 医生 -->
