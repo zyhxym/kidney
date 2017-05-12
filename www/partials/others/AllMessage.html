@@ -9,15 +9,19 @@
 
   <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div>
   <ion-content >
-
+    <div class="card" ng-if="!(Pchats.length||Dchats.length||Tchats.length)">
+        <div class="item item-text-wrap">
+            暂时没有消息
+        </div>
+    </div>
     <ion-list>
 
       <!-- 支付消息 -->
-      <ion-item class="item message-item item-avatar right message-new"ng-click="getMessageDetail('ZF')">
+<!--       <ion-item class="item message-item item-avatar right message-new" ng-click="getMessageDetail('ZF')">
         <img   src="/img/icon_paymessage.png">
         <h2>支付消息</h2>
         <p ng-if="messages.ZF.values.length">[{{messages.ZF.values.length}}条]你有新的支付消息请注意查收</p>
-      </ion-item>
+      </ion-item> -->
 
       <!-- 警报消息 -->
       <!-- <ion-item class="item-thumbnail-left item-text-wrap" ng-click="getMessageDetail('JB')">
@@ -27,31 +31,50 @@
       </ion-item> -->
 
       <!-- 任务消息 -->
-      <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('RW')">
+<!--       <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('RW')">
         <img   src="/img/icon_renwu.png">
         <h2>待做任务</h2>
         <p ng-if="messages.RW.values.length">[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
-      </ion-item>
+      </ion-item> -->
 
       <!-- 保险消息 -->
-      <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('BX')">
+<!--       <ion-item class="item message-item item-avatar right "ng-click="getMessageDetail('BX')">
         <img   src="/img/icon_warning.png">
         <h2>警报消息</h2>
         <p ng-if="messages.BX.values.length">[{{messages.RW.values.length}}条]你有新的支付消息请注意查收</p>
-      </ion-item>
+      </ion-item> -->
 
       <!-- 聊天消息 -->
-      <ion-item ng-repeat="consult in messages.LT.values" class="item item-avatar" ng-click="getConsultRecordDetail()">
+      <ion-item  ng-repeat="Pchat in Pchats"  class="item-thumbnail-left" ng-click="getPChatDetail(Pchat)">
+        <img ng-src="{{Pchat.patPhoto||'img/patient.png'}}" image-red-point="!chat.readOrNot">
+        <div class="row">
+            <h2 class="col" style="margin-top: 10px;">{{Pchat.patName}}</h2>
+            <span class="col" style="margin-top: 10px;text-align: right;">{{Pchat.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
+        </div>
+        <span class="row" style="margin-left:5px;">{{Pchat.description}}</span>
+      </ion-item>
 
-        <img ng-src="{{consult.img}}">
-        <div><span>{{consult.title}}</span><span style="float: right">{{consult.time|dateFormat:"MM-DD"}}</span></div>
-        <p style="white-space:normal;margin-top: 10px">{{consult.description}}</p>
+      <ion-item  ng-repeat="Dchat in Dchats"  class="item-thumbnail-left" ng-click="getDChatDetail(Dchat)">
+        <img ng-src="{{Dchat.docPhoto||'img/doctor.png'}}" image-red-point="!chat.readOrNot">
+        <div class="row">
+            <h2 class="col" style="margin-top: 10px;">{{Dchat.docName}}</h2>
+            <span class="col" style="margin-top: 10px;text-align: right;">{{Dchat.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
+        </div>
+        <span class="row" style="margin-left:5px;">{{Dchat.description}}</span>
+      </ion-item>
 
+      <ion-item  ng-repeat="Tchat in Tchats"  class="item-thumbnail-left" ng-click="getTChatDetail(Tchat)">
+        <img ng-src="{{Tchat.teamPhoto||'img/doctor_group.png'}}" image-red-point="!chat.readOrNot">
+        <div class="row">
+            <h2 class="col" style="margin-top: 10px;">{{Tchat.teamName}}</h2>
+            <span class="col" style="margin-top: 10px;text-align: right;">{{Tchat.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
+        </div>
+        <span class="row" style="margin-left:5px;">{{Tchat.description}}</span>
       </ion-item>
 
 
     </ion-list>
-    
+    <ion-refresher pulling-text="下拉刷新..." on-refresh="do_refresher()"></ion-refresher>   
   </ion-content>
           
 </ion-view>
