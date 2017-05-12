@@ -13,7 +13,8 @@ angular.module('kidney',[
     'kidney.filters',
     'kidney.directives',
     'monospaced.qrcode',
-    'ionic-datepicker'
+    'ionic-datepicker',
+    'kidney.icon_filter'
 ])
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
