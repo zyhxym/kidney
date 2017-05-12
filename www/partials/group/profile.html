@@ -2,7 +2,7 @@
     <ion-content class=" gray-back">
      <div class="list">
             <a class="item item-avatar" style="vertical-align: middle">
-                <img ng-src="{{doctor.photoUrl}}" style="vertical-align: middle">
+                <img ng-src="{{doctor.photoUrl || 'img/doctor.png'}}" style="vertical-align: middle">
                 <h2 style="display:inline-block;">{{doctor.name}}</h2>
                 <div style="margin-top: 10px;display:inline-block;background-color: #0288D1;border-radius: 0.3em;color:#FFF;padding:0 3px"><i style="font-size:1em;vertical-align: middle" class="icon ion-android-person"></i></div>
             </a>

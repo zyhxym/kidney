@@ -1292,6 +1292,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
          Communication.getTeam({teamId:$state.params.teamId})
                 .then(function(data){
                   console.log(data)
+                  $scope.teamname=data.results.name;
                   $scope.doctors=data.results.members;
                 },function(err){
                     console.log(err);
