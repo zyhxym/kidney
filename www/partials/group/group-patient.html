@@ -1,4 +1,4 @@
-<ion-view title="团队病例" hide-tabs>
+<ion-view title="团队病历" hide-tabs>
     <ion-nav-bar class="bar-positive">
         <ion-nav-buttons side="left">
             <button class="button button-icon icon ion-chevron-left" style="color: white" ng-click="backToGroups()"></button>
@@ -46,9 +46,11 @@
           <div><span class="patient-title">{{grouppatient.patientId.name}}</span>
             <span class="mgleft-10 patient-title">{{grouppatient.patientId.gender|filterGender}}</span>
             <span class="mgleft-10 patient-title">{{grouppatient.patientId.birthday|filterAge}}岁</span>
-            <span class="mgleft-10 patient-title">{{grouppatient.time|dateFormat:"YYYY/MM/DD h:m"}}</span>
+            <!-- <span class="mgleft-10 patient-title">{{grouppatient.time|dateFormat:"YYYY/MM/DD h:m"}}</span> -->
           </div>
-          <p class=" mg-top5 patient-content">问题描述: {{grouppatient.time|dateFormat:"YYYY-MM-DD h:m"}}</p>
+          <p class=" mg-top5 patient-content">{{grouppatient.time|dateFormat:"YYYY-MM-DD h:m"}}</p>
+          <br>
+          <p class=" mg-top5 patient-content">问题描述: {{grouppatient.diseaseInfo.symptom}}</p>
         </a>
 
 
@@ -83,7 +85,9 @@
             <span class="mgleft-10 patient-title">{{grouppatient.patientId.birthday|filterAge}}岁</span>
             <span class="mgleft-10 patient-title">{{grouppatient.time|dateFormat:"YYYY-MM-DD h:m"}}</span>
           </div>
-          <p class=" mg-top5 patient-content">问题描述: {{grouppatient.diseaseInfo.topic}}</p>
+          <p class=" mg-top5 patient-content">{{grouppatient.time|dateFormat:"YYYY-MM-DD h:m"}}</p>
+          <br>
+          <p class=" mg-top5 patient-content">问题描述: {{grouppatient.diseaseInfo.symptom}}</p>
         </a>
 
 
