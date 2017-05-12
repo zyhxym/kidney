@@ -21,9 +21,10 @@
           </div>
           <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
           <p style="width:60%;display:inline-block;">{{patient.diseaseInfo.symptom}}</p>
-          <div ng-show="params.ismyturn" class="item ng-hide" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF" ng-click="goConclusion()">回复患者</div>
+          
            <div ng-show="!params.undergo" class="item ng-hide" style="float:right;background-color:#888;border-radius:0.4em;padding:2px;color:#FFF">已回复</div>
            <div ng-show="params.undergo" class="item ng-hide" style="float:right;background-color:#888;border-radius:0.4em;padding:2px;color:#FFF">未回复</div>
+           <div ng-show="params.ismyturn" class="item ng-hide" style="float:right;background-color:#00E676;border-radius:0.4em;padding:2px;color:#FFF" ng-click="goConclusion()">回复患者</div>
       </div>
       <div ng-show="!params.undergo" class="item item-body">
 

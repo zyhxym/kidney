@@ -140,6 +140,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.search='';
     $scope.noteam=0;
   $scope.Searchgroup=function(){
+    $scope.noteam=0;
     console.log($scope.search)
      Communication.getTeam({teamId:$scope.search})
                 .then(function(data){
@@ -1291,6 +1292,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
          Communication.getTeam({teamId:$state.params.teamId})
                 .then(function(data){
                   console.log(data)
+                  $scope.teamname=data.results.name;
                   $scope.doctors=data.results.members;
                 },function(err){
                     console.log(err);

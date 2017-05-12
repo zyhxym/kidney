@@ -771,7 +771,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Counsel = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
-            getCounsel:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
+            getCounsels:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
             questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000},
             changeCounselStatus:{method:'POST', params:{route: 'changeCounselStatus'}, timeout: 100000},
             getStatus:{method:'GET', params:{route: 'getStatus'}, timeout: 100000},
@@ -2068,7 +2068,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     //        3:{userId:'doc01',status:1,type:1}
     self.getCounsels = function(params){
         var deferred = $q.defer();
-        Data.Counsel.getCounsel(
+        Data.Counsel.getCounsels(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -2113,7 +2113,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
     };
     self.changeCounselStatus = function(params){
         var deferred = $q.defer();
+
         Data.Counsel.changeCounselStatus(
+
             params,
             function(data, headers){
                 deferred.resolve(data);
