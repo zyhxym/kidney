@@ -2,7 +2,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 /////////////////////////tongdanyang/////////////////
 .controller('DoctorDiagnoseCtrl', ['$scope', 'Storage','ionicDatePicker','Patient','$state', function ($scope, Storage,ionicDatePicker,Patient,$state) {
-  
+  $scope.BacktoPD = function(){
+    $state.go('tab.patientDetail');
+  }
   var decodeDiseases=function(type)
   {
     var dict;
@@ -816,6 +818,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 //任务设置--GL
 .controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
+  $scope.BacktoPD = function(){
+    $state.go('tab.patientDetail');
+  }
   //初始化
    var UserId = Storage.get('getpatientId'); 
    //UserId = "Test12";
@@ -1045,8 +1050,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 
 //健康信息--PXY
-.controller('HealthInfoCtrl', ['$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict',function($scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict) {
+.controller('HealthInfoCtrl', ['$state','$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict',function($state,$scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict) {
   $scope.barwidth="width:0%";
+  $scope.BacktoPD = function(){
+    $state.go('tab.patientDetail');
+  }
   var patientId = Storage.get('getpatientId')
   //console.log(Storage.get('getpatientId'))
   // var patientId = 'U201702071766'  //测试ID

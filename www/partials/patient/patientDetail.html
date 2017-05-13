@@ -41,7 +41,12 @@
 				
             <ion-item class="bg-f5 f-18 fc-33">
 			     最近就诊信息
-			</ion-item>		
+			</ion-item>
+		    <div class="card" ng-if="!(diagnosisInfo.length)">
+		        <div class="item item-text-wrap">
+		            暂无就诊信息
+		        </div>
+		    </div>					
 			<ion-item ng-repeat="di in diagnosisInfo" class="diagnosisInfo">
 			     <p class="fc-6b ">{{di.time | dateFormat:"YYYY-MM-DD"}}</p>
 				 <p class="fc-6b ">就诊医院 {{di.doctor.workUnit}}</p>
