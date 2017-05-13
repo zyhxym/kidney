@@ -1,17 +1,14 @@
 <ion-view cache-view="false" title="健康信息" >
-
-  <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
-      <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="left" >
-         <button class="button button-clear"  ng-click="Goback()"><i class="icon ion-chevron-left"></i>返回</button>
-      </ion-nav-buttons>
-
-      <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right">
-            <button class="button button-clear"  ng-if="!canEdit"  ng-click="edit() "><i class="icon ion-edit"></i></button>
-        </ion-nav-buttons>
-    </ion-nav-bar>
-
+  <ion-nav-bar class="bar-positive " align-title="center">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-clear icon ion-compose" ng-if="!canEdit" ng-click="edit()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
   <ion-content padding="true" style="margin-top: 40px;">
-    
+
 
   <ion-list>
     <label  class="item item-input item-select">
@@ -35,7 +32,7 @@
           <input  ng-disabled="!canEdit" ng-model="health.text"  type="text">
     </label>
 
-      
+
 
     <ion-item style="border:none; text-align:center; margin-top:30px" >
          <div  ng-repeat="filepath in health.imgurl track by $index">
@@ -44,7 +41,7 @@
          <div ng-if="canEdit">
            <button class="button button-clear" style="color:#666" ng-click="onClickCamera($event)" ><i class="icon ion-camera"></i>上传图片</button>
          </div>
-         
+
     </ion-item>
 
   </ion-list>
@@ -52,7 +49,7 @@
             保存
       </button>
   </ion-content>
-          
+
 </ion-view>
 
 
@@ -63,16 +60,16 @@
               <h1 class="title">上传图片</h1>
           </ion-header-bar>
         <ion-content>
-          <ion-list> 
+          <ion-list>
             <div class = "padding">
               <button class="button button-block button-primary " ng-click="getPhoto()"><i class="icon ion-camera"></i>
                   拍照
               </button>
-            
+
               <button class="button button-block button-primary " ng-click="onClickCameraPhotos()"><i class="icon ion-image"></i>
                   相册
               </button>
-             
+
             </div>
           </ion-list>
         </ion-content>
