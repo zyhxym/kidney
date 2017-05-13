@@ -65,7 +65,7 @@
 }
 /*maginr*/
 .m-b10{
-margin-bottom:10px!important; ;
+  margin-bottom:10px!important; ;
 }
 .m-b5{
   margin-bottom: 5px!important;
@@ -132,7 +132,7 @@ margin-bottom:10px!important; ;
   border-color: #63c1f7!important;
   box-shadow: none;
 }
-  /*选项卡颜色*/
+/*选项卡颜色*/
 .bar-positive .button{
   background-color: #6ac4f8;
   border: none;
@@ -149,13 +149,13 @@ margin-bottom:10px!important; ;
   border-radius: inherit;
 }
 .bar-positive .button.active, .bar-positive .button.activated {
-  background-color: #fafafa;
+  background-color: #6ac4f8;
   color: #333;
 }
 
-.bar-positive .button:hover{
+/*.bar-positive .button:hover{
   color: #646464;
-}
+}*/
 .button-bar > .button{
   padding: 0;
 }
@@ -181,7 +181,6 @@ margin-bottom:10px!important; ;
 }
 /*图片居中*/
 .img-cen{
-  display: table;
   table-layout: fixed;
 }
 .img-cen div{
