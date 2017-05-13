@@ -16,14 +16,12 @@ angular.module('kidney.directives', ['kidney.services'])
         },
         restrict:'AE',
         controller:function($scope){
-            var type='';
+            var type=$scope.msg.contentType;
             $scope.getTemplateUrl = function(){
-                if($scope.msg.contentType=='custom'){
+                if(type=='custom'){
                     type=$scope.msg.content.contentStringMap.type;
                     if(type=='card'){
                         try{
-                            // console.log($scope.msg.content.contentStringMap);
-                            // console.log(JSON.parse($scope.msg.content.contentStringMap.counsel));
                             $scope.counsel=JSON.parse($scope.msg.content.contentStringMap.counsel);
                             if($scope.counsel.type==1){$scope.counsel.counseltype="咨询服务，医生只有三次回答机会"}
                             else if($scope.counsel.type==2){$scope.counsel.counseltype="问诊服务，医生可以不限次回答问题，点击结束按钮结束问诊"};
@@ -34,32 +32,12 @@ angular.module('kidney.directives', ['kidney.services'])
                     }
                     return 'templates/msg/'+ type+'.html';
                 }
-                // type=$scope.msg.contentType=='custom'?$scope.msg.content.contentStringMap.type:$scope.msg.contentType;
-                type=$scope.msg.contentType;
                 return 'templates/msg/'+type+'.html';
             }
             
             $scope.emitEvent = function(code){
               $scope.$emit(code,arguments);
             }
-            // $scope.direct = $scope.msg.fromID==window.JMessage.username?'right':'left';
-            
-            // $scope.showProfile = function(){
-            //     console.log($scope.msg.fromID);
-            // }
-            // $scope.viewImage= function(thumb,url){
-            //     if(type=='image'){
-            //         //image massage
-            //         $scope.$emit('viewImage',type,thumb,$scope.msg.serverMessageId);
-            //     }else{
-            //         //image in card
-            //         $scope.$emit('viewImage',type,thumb,url);
-            //     }
-            // };
-            $scope.picurl=picArr;
-            // $scope.playVoice = function(){
-
-            // }
         }
     }
 }])
