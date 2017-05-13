@@ -435,3 +435,11 @@
 .item-avatar > img:first-child{
   top:10px
 }
+.patient-bar .button{
+  background: #fff;
+  color: #333;
+}
+
+.groups .item-avatar {
+  min-height: 105px;
+}
