@@ -1219,6 +1219,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     // console.log(Storage.get('getpatientId'))
     Patient.getPatientDetail({
          userId:Storage.get('getpatientId')
+         //'U201705090001'
     })
     .then(
         function(data)
@@ -1242,8 +1243,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 }
                 Storage.set("latestDiagnose",angular.toJson(lD));
             }
-            $scope.patient=data.results;
-            $scope.diagnosisInfo = data.results.diagnosisInfo;           
+            $scope.patient=data.results; 
+            console.log(data)
+            $scope.RecentDiagnosis=data.recentDiagnosis[0]; 
+            console.log($scope.RecentDiagnosis)
+          
         },
         function(err)
         {
