@@ -114,21 +114,21 @@ angular.module('kidney.filters', [])
         return name;
     }
 }])
-// .filter('hypertension',[function(){
-//     return function(type){
-//         var name="--";
-//         switch(type)
-//         {
-//           case '1':
-//             name="是";
-//             break;
-//           case '2':
-//             name="否";
-//             break;
-//         }
-//         return name;
-//     }
-// }])
+.filter('hypertension',[function(){
+    return function(type){
+        var name="--";
+        switch(type)
+        {
+          case '1':
+            name="是";
+            break;
+          case '2':
+            name="否";
+            break;
+        }
+        return name;
+    }
+}])
 
 .filter('filterAge',[function(){
     return function(date){
