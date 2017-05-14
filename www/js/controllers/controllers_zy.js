@@ -1243,7 +1243,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 Storage.set("latestDiagnose",angular.toJson(lD));
             }
             $scope.patient=data.results;
-            $scope.diagnosisInfo = data.results.diagnosisInfo;           
+            if(data.rencentDiagnosisInfo.length>0)
+            {
+                $scope.patient.hypertension = data.rencentDiagnosisInfo.hypertension
+            }
+            $scope.diagnosisInfo = data.results.diagnosisInfo;
+            $scope.rencentDiagnosisInfo=data.rencentDiagnosisInfo;           
         },
         function(err)
         {
