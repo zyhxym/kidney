@@ -19,7 +19,7 @@
         <span class="input-label" style="margin-left:5px;color:#6ac4f8;"><i class="iconfont icon-jiaoyilishi icon-jiaoyilishi "  ></i>我的评价</span>
         </ion-item>
         <div class="list">
-			<a class="item item-thumbnail-left" ng-repeat="fb in feedbacks">
+			<a class="item item-thumbnail-left" ng-repeat="fb in feedbacks" ng-click="gocommentdetail(fb.totalScore,fb.content)">
 				<img class="mgleft-10" ng-src="{{fb.patientId.photoUrl||'img/patient.png'}}">
                 <span class="span-text" style="margin-left: 10px">{{fb.patientId.name}}</span>
                 <span style="text-align: right;float: right;font-size: 15px;color: #333333" >{{fb.time|dateFormat:"YYYY-MM-DD h:m"}}</span>

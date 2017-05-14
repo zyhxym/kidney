@@ -1,3 +1,26 @@
+angular.module('ionic-datepicker.service', [])
+
+  .service('IonicDatepickerService', function () {
+
+    this.monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    this.getYearsList = function (from, to) {
+      console.log(from, to)
+      var yearsList = [];
+      var minYear = 1900;
+      var maxYear = new Date().getFullYear() + 1;
+
+      minYear = from ? new Date(from).getFullYear() : minYear;
+      maxYear = to ? new Date(to).getFullYear() : maxYear;
+
+      for (var i = maxYear; i >= minYear; i--) {
+        yearsList.push(i);
+      }
+
+      return yearsList;
+    };
+});
+
 angular.module('kidney.services', ['ionic','ngResource'])
 
 // 本地存储函数
@@ -20,7 +43,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
 .constant('CONFIG', {
     crossKey:'fe7b9ba069b80316653274e4',
     appKey: 'cf32b94444c4eaacef86903e',
-    baseUrl: 'http://121.43.107.106:4050/',
+    baseUrl: 'http://121.196.221.44:4050/',
     cameraOptions: {
         cam: {
             quality: 60,

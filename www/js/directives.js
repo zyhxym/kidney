@@ -254,7 +254,7 @@ angular.module('kidney.directives', ['kidney.services'])
    };
 })
 // 写评论的五角星
-.directive('ionicRatings',ionicRatings)
+.directive('ionicRatings',ionicRatings);
 
 
 function ionicRatings() {
