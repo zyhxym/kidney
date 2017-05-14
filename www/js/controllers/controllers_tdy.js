@@ -1162,33 +1162,43 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
   $scope.items = []
   
-
-  Health.getAllHealths({userId:patientId}).then(
-    function(data)
-    {
-      if (data.results != "" && data.results!= null)
-      {
-        $scope.items = data.results
-        //console.log($scope.items)
-        //var testtime=$scope.items[0]
-        //console.log(testtime)
-        for (var i = 0; i < $scope.items.length; i++){
-          $scope.items[i].acture = $scope.items[i].insertTime
-          //$scope.items[i].time = $scope.items[i].time.substr(0,10)
-          // if ($scope.items[i].url != ""&&$scope.items[i].url!=null)
-          // {
-          //   $scope.items[i].url = [$scope.items[i].url]
-          // }
+  var load = function(){
+      Health.getAllHealths({userId:patientId}).then(
+        function(data)
+        {
+          if (data.results != "" && data.results!= null)
+          {
+            $scope.items = data.results
+            //console.log($scope.items)
+            //var testtime=$scope.items[0]
+            //console.log(testtime)
+            for (var i = 0; i < $scope.items.length; i++){
+              $scope.items[i].acture = $scope.items[i].insertTime
+              //$scope.items[i].time = $scope.items[i].time.substr(0,10)
+              // if ($scope.items[i].url != ""&&$scope.items[i].url!=null)
+              // {
+              //   $scope.items[i].url = [$scope.items[i].url]
+              // }
+            }
+          };
+        },
+        function(err)
+        {
+          console.log(err);
         }
-      };
-    },
-    function(err)
-    {
-      console.log(err);
+      )
     }
-  )
 
+    $scope.$on('$ionicView.enter', function() {
+        load();
+    })
 
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }
+    
   $scope.gotoHealthDetail=function(ele,editId){
     console.log(ele)
     console.log(ele.target)
