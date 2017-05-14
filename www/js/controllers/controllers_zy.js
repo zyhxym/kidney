@@ -1203,7 +1203,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         console.log(Storage.get('backId'))
         $scope.goback = function() {           
             var backId = Storage.get('backId')
-            console.log(backId)
+            //console.log(backId)
             if(backId=="tab.doing"){
               $state.go("tab.doing")
             }
