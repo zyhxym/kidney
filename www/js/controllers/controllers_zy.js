@@ -1244,18 +1244,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 Storage.set("latestDiagnose",angular.toJson(lD));
             }
             $scope.patient=data.results; 
-            console.log(data)
-            $scope.RecentDiagnosis=data.recentDiagnosis[0]; 
-            if ($scope.RecentDiagnosis.name == "class_4"){
-                $scope.RecentDiagnosis.time = null
-                $scope.RecentDiagnosis.progress = null
-            }else if ($scope.RecentDiagnosis.name == "class_2"|| $scope.RecentDiagnosis.name == "class_3"){
-                $scope.RecentDiagnosis.time = null
-            }else if ($scope.RecentDiagnosis.name == "class_5"|| $scope.RecentDiagnosis.name == "class_6"){
-                $scope.RecentDiagnosis.progress = null
-            }
-            
-            console.log($scope.RecentDiagnosis)
+            console.log(data.recentDiagnosis)
+            if (data.recentDiagnosis != null){
+                $scope.RecentDiagnosis=data.recentDiagnosis[0]; 
+                if ($scope.RecentDiagnosis.name == "class_4"){
+                    $scope.RecentDiagnosis.time = null
+                    $scope.RecentDiagnosis.progress = null
+                }else if ($scope.RecentDiagnosis.name == "class_2"|| $scope.RecentDiagnosis.name == "class_3"){
+                    $scope.RecentDiagnosis.time = null
+                }else if ($scope.RecentDiagnosis.name == "class_5"|| $scope.RecentDiagnosis.name == "class_6" || $scope.RecentDiagnosis.name == "class_1"){
+                    $scope.RecentDiagnosis.progress = null
+                }                
+            }            
+            //console.log($scope.RecentDiagnosis)
           
         },
         function(err)
