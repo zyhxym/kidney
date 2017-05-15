@@ -1246,6 +1246,13 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.patient=data.results; 
             console.log(data)
             $scope.RecentDiagnosis=data.recentDiagnosis[0]; 
+            if ($scope.RecentDiagnosis.name == "class_4"){
+                $scope.RecentDiagnosis.time = null
+                $scope.RecentDiagnosis.progress = null
+            }else if ($scope.RecentDiagnosis.name == "class_2"|| $scope.RecentDiagnosis.name == "class_3"){
+                $scope.RecentDiagnosis.time = null
+            }
+            
             console.log($scope.RecentDiagnosis)
           
         },

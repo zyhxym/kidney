@@ -36,6 +36,7 @@
 				<p>是否有高血压：{{patient.hypertension | filterhypertension}}</p>
 				<p>血型：{{patient.bloodType | filterbloodType}}</p>
 				<p>过敏信息：{{patient.allergic}}</p>
+				<p>保险推送次数：{{Ins.count}}</p>
 			  </div>
 			</div>				
 			</ion-item>
@@ -50,8 +51,9 @@
 		    </div>					
 			<ion-item ng-if = "(RecentDiagnosis)">
 			     <p class="fc-6b ">肾病类型 {{RecentDiagnosis.name | classname}}</p>
-				 <p class="fc-6b ">疾病进程 {{RecentDiagnosis.progress | progressname}}</p>
-				 <p class="fc-6b ">开始日期 {{RecentDiagnosis.time |dateFormat:"YYYY-MM-DD"}}</p>
+				 <p class="fc-6b " ng-if ="(RecentDiagnosis.progress)">疾病进程 {{RecentDiagnosis.progress | progressname}}</p>
+				 <p class="fc-6b " ng-if ="(RecentDiagnosis.content)">诊断内容 {{RecentDiagnosis.content}}</p>
+				 <p class="fc-6b " ng-if ="(RecentDiagnosis.time)">开始日期 {{RecentDiagnosis.time |dateFormat:"YYYY-MM-DD"}}</p>
 			</ion-item>				
         </div>
     </ion-content>
