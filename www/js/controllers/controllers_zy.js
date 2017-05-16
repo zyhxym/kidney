@@ -341,7 +341,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //注册时填写医生个人信息
-.controller('userdetailCtrl',['Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http',function(Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http){
+.controller('userdetailCtrl',['Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','User','$http','Camera','$ionicModal',function(Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,User,$http,Camera,$ionicModal){
     $scope.barwidth="width:0%";
     var phoneNumber=Storage.get('RegisterNO');
     var password=Storage.get('password');
@@ -365,7 +365,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         title:"",
         IDNo:"",
         major:"",
-        description:""};
+        description:"",
+        certificatePhotoUrl:"",
+        practisingPhotoUrl:""
+    };
 
     //------------省市医院读字典表---------------------
     Dict.getDistrict({level:"1",province:"",city:"",district:""})
@@ -435,7 +438,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.infoSetup = function() 
     {
-        if ($scope.doctor.name&&$scope.doctor.province&&$scope.doctor.city&&$scope.doctor.workUnit&&$scope.doctor.department&&$scope.doctor.title&&$scope.doctor.IDNo){
+        if ($scope.doctor.certificatePhotoUrl&&$scope.doctor.practisingPhotoUrl&&$scope.doctor.name&&$scope.doctor.province&&$scope.doctor.city&&$scope.doctor.workUnit&&$scope.doctor.department&&$scope.doctor.title&&$scope.doctor.IDNo){
             //如果必填信息已填
             var IDreg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;  //身份证号判断
             if ($scope.doctor.IDNo!='' && IDreg.test($scope.doctor.IDNo) == false){
@@ -520,7 +523,151 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     
     };
+    //0516 zxf
+    $scope.flag=0;//判断是给谁传图片 默认是资格证书
+    //点击显示大图
+    $scope.doctorimgurl="";
+    $ionicModal.fromTemplateUrl('partials/others/doctorimag.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(modal) {
+        console.log(2222)
+        $scope.modal = modal;
+    });
 
+    $scope.onClickCamera = function($event,index){
+        $scope.openPopover($event);
+        $scope.flag=index;
+    };
+     // 上传照片并将照片读入页面-------------------------
+    var photo_upload_display = function(imgURI){
+        var temp_photoaddress;
+        if($scope.flag==0){
+            temp_photoaddress=Storage.get("UID") + "_" + new Date().getTime() + "certificate.jpg";
+        }else{
+            temp_photoaddress=Storage.get("UID") + "_" + new Date().getTime() + "practising.jpg";
+        }
+        Camera.uploadPicture(imgURI, temp_photoaddress)
+        .then(function(res){
+            var data=angular.fromJson(res)
+            //图片路径
+            if($scope.flag==0){
+                $scope.doctor.certificatePhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+            }
+            else{
+                $scope.doctor.practisingPhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+            }
+        },function(err){
+            console.log(err);
+            reject(err);
+        })
+    };
+    ////-----------------------上传头像---------------------
+    // ionicPopover functions 弹出框的预定义
+    $ionicPopover.fromTemplateUrl('my-popover1.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(popover) {
+        $scope.popover = popover;
+    });
+    $scope.openPopover = function($event) {
+        $scope.popover.show($event);
+    };
+    $scope.closePopover = function() {
+        $scope.popover.hide();
+    };
+    //Cleanup the popover when we're done with it!
+    $scope.$on('$destroy', function() {
+        $scope.popover.remove();
+    });
+    // Execute action on hide popover
+    $scope.$on('popover.hidden', function() {
+    // Execute action
+    });
+    // Execute action on remove popover
+    $scope.$on('popover.removed', function() {
+    // Execute action
+    });
+
+    
+    // 相册键的点击事件---------------------------------
+    $scope.onClickCameraPhotos = function(){
+        // console.log("选个照片");
+        $scope.choosePhotos();
+        $scope.closePopover();
+    };
+    $scope.choosePhotos = function() {
+        Camera.getPictureFromPhotos('gallery').then(function(data) {
+          // data里存的是图像的地址
+          // console.log(data);
+          var imgURI = data;
+          photo_upload_display(imgURI);
+        }, function(err) {
+          // console.err(err);
+          var imgURI = undefined;
+        });// 从相册获取照片结束
+    }; // function结束
+
+
+    // 照相机的点击事件----------------------------------
+    $scope.getPhoto = function() {
+        // console.log("要拍照了！");
+        $scope.takePicture();
+        $scope.closePopover();
+    };
+    $scope.isShow=true;
+    $scope.takePicture = function() {
+        Camera.getPicture('cam').then(function(data) {
+          var imgURI = data;
+          photo_upload_display(imgURI);
+        }, function(err) {
+            // console.err(err);
+            var imgURI = undefined;
+        })// 照相结束
+    }; // function结束
+
+
+
+    $scope.openModal = function() {
+      $scope.modal.show();
+    };
+    $scope.closeModal = function() {
+      $scope.modal.hide();
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+      $scope.modal.remove();
+    });
+    // Execute action on hide modal
+    $scope.$on('modal.hidden', function() {
+      // Execute action
+    });
+    // Execute action on remove modal
+    $scope.$on('modal.removed', function() {
+      // Execute action
+    });
+
+    //点击图片返回
+    $scope.imggoback = function(){
+        $scope.modal.hide();
+    };
+    $scope.showoriginal=function(resizedpath){
+        $scope.openModal();
+        console.log(resizedpath)
+        var originalfilepath="http://121.43.107.106:8052/uploads/photos/"+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
+        console.log(originalfilepath)
+        $scope.doctorimgurl=originalfilepath;
+    }
+    $scope.deleteimg=function(index){
+        //somearray.removeByValue("tue");
+        console.log($scope.health.imgurl)
+        $scope.health.imgurl.splice(index, 1)
+        // Storage.set('tempimgrul',angular.toJson($scope.images));
+    }
+
+    // $scope.$on('$ionicView.leave', function() {
+    //     $scope.modal.remove();
+    // })
 }])
 
 //首页
@@ -1508,7 +1655,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //我的个人资料页
-.controller('myinfoCtrl', ['Dict','Camera','Doctor','$scope','Storage','$ionicPopover', function(Dict,Camera,Doctor,$scope, Storage,$ionicPopover) {
+.controller('myinfoCtrl', ['Dict','Camera','Doctor','$scope','Storage','$ionicPopover','$ionicModal', function(Dict,Camera,Doctor,$scope, Storage,$ionicPopover,$ionicModal) {
     $scope.hideTabs = true;
     $scope.updateDiv=false;
     $scope.myDiv=true;
@@ -1527,6 +1674,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {Name:"护师",Type:8},
         {Name:"护士",Type:9}
     ]
+    console.log(Storage.get('UID'))
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
@@ -1697,6 +1845,149 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.doctor.workUnit = docinfo.hospitalName;    
         }
       
+    }
+
+    //执照照片
+    //0516 zxf
+    $scope.flag=0;//判断是给谁传图片 默认是资格证书
+    //点击显示大图
+    $scope.doctorimgurl="";
+    $ionicModal.fromTemplateUrl('partials/others/doctorimag.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(modal) {
+        console.log(2222)
+        $scope.modal = modal;
+    });
+
+    $scope.onClickCamera = function($event,index){
+        $scope.openPopover($event);
+        $scope.flag=index;
+    };
+     // 上传照片并将照片读入页面-------------------------
+    var photo_upload_display = function(imgURI){
+        var temp_photoaddress;
+        if($scope.flag==0){
+            temp_photoaddress=Storage.get("UID") + "_" + new Date().getTime() + "certificate.jpg";
+        }else{
+            temp_photoaddress=Storage.get("UID") + "_" + new Date().getTime() + "practising.jpg";
+        }
+        Camera.uploadPicture(imgURI, temp_photoaddress)
+        .then(function(res){
+            var data=angular.fromJson(res)
+            //图片路径
+            if($scope.flag==0){
+                $scope.doctor.certificatePhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+            }
+            else{
+                $scope.doctor.practisingPhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+            }
+        },function(err){
+            console.log(err);
+            reject(err);
+        })
+    };
+    ////-----------------------上传头像---------------------
+    // ionicPopover functions 弹出框的预定义
+    $ionicPopover.fromTemplateUrl('my-popover1.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function(popover) {
+        $scope.popover = popover;
+    });
+    $scope.openPopover = function($event) {
+        $scope.popover.show($event);
+    };
+    $scope.closePopover = function() {
+        $scope.popover.hide();
+    };
+    //Cleanup the popover when we're done with it!
+    $scope.$on('$destroy', function() {
+        $scope.popover.remove();
+    });
+    // Execute action on hide popover
+    $scope.$on('popover.hidden', function() {
+    // Execute action
+    });
+    // Execute action on remove popover
+    $scope.$on('popover.removed', function() {
+    // Execute action
+    });
+
+    
+    // 相册键的点击事件---------------------------------
+    $scope.onClickCameraPhotos = function(){
+        // console.log("选个照片");
+        $scope.choosePhotos();
+        $scope.closePopover();
+    };
+    $scope.choosePhotos = function() {
+        Camera.getPictureFromPhotos('gallery').then(function(data) {
+          // data里存的是图像的地址
+          // console.log(data);
+          var imgURI = data;
+          photo_upload_display(imgURI);
+        }, function(err) {
+          // console.err(err);
+          var imgURI = undefined;
+        });// 从相册获取照片结束
+    }; // function结束
+
+
+    // 照相机的点击事件----------------------------------
+    $scope.getPhoto = function() {
+        // console.log("要拍照了！");
+        $scope.takePicture();
+        $scope.closePopover();
+    };
+    $scope.isShow=true;
+    $scope.takePicture = function() {
+        Camera.getPicture('cam').then(function(data) {
+          var imgURI = data;
+          photo_upload_display(imgURI);
+        }, function(err) {
+            // console.err(err);
+            var imgURI = undefined;
+        })// 照相结束
+    }; // function结束
+
+
+
+    $scope.openModal = function() {
+      $scope.modal.show();
+    };
+    $scope.closeModal = function() {
+      $scope.modal.hide();
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+      $scope.modal.remove();
+    });
+    // Execute action on hide modal
+    $scope.$on('modal.hidden', function() {
+      // Execute action
+    });
+    // Execute action on remove modal
+    $scope.$on('modal.removed', function() {
+      // Execute action
+    });
+
+    //点击图片返回
+    $scope.imggoback = function(){
+        $scope.modal.hide();
+    };
+    $scope.showoriginal=function(resizedpath){
+        $scope.openModal();
+        console.log(resizedpath)
+        var originalfilepath="http://121.43.107.106:8052/uploads/photos/"+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
+        console.log(originalfilepath)
+        $scope.doctorimgurl=originalfilepath;
+    }
+    $scope.deleteimg=function(index){
+        //somearray.removeByValue("tue");
+        console.log($scope.health.imgurl)
+        $scope.health.imgurl.splice(index, 1)
+        // Storage.set('tempimgrul',angular.toJson($scope.images));
     }
     //------------省市医院读字典表--------------------
 
