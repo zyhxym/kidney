@@ -1475,7 +1475,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 
 //团队聊天
-.controller('GroupChatCtrl', ['$scope', '$state', '$rootScope', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor', function($scope, $state, $rootScope, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicPopup, Camera, voice, Communication,Storage,Doctor) {
+.controller('GroupChatCtrl', ['$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor', function($scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicPopup, Camera, voice, Communication,Storage,Doctor) {
     $scope.input = {
         text: ''
     }
