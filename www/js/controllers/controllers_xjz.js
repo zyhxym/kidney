@@ -923,7 +923,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
   
     $scope.$on('viewcard', function(event, args) {
-        console.log(args[2]);
+        console.log(args[1]);
         event.stopPropagation();
         if (args[2].target.tagName == "IMG") {
             $scope.imageHandle.zoomTo(1, true);
@@ -931,7 +931,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             console.log(args[2].target.attributes.hires.nodeValue);
             $scope.modal.show();
         } else {
-            Storage.set('getpatientId',args[1].content.patientId);
+            Storage.set('getpatientId',args[1].content.contentStringMap.patientId);
+
+            var statep={
+            type:$scope.params.type,
+            chatId:$scope.params.chatId
+            }
+            Storage.set('backId','tab.detail');
+            Storage.set('singleChatParams',JSON.stringify(statep));
             $state.go('tab.patientDetail');
             // $state.go('tab.consult-detail',{consultId:args[1]});
         }
@@ -944,16 +951,25 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if (data == 1) $state.go('tab.selectTeam', { msg: content });
     }
     $scope.$on('profile', function(event, args) {
+           event.stopPropagation();
         console.log(args[1])
         if(args[1].direct=='receive'){
             if($scope.params.type=='2'){
-                return $state.go('tab.group-profile', { memberId: args[1].fromID });
+                return $state.go('tab.group-profile', { memberId: args[1].fromName});
             }else{
-                Storage.set('getpatientId',args[1].fromID); 
+                Storage.set('getpatientId',args[1].fromName); 
+                var statep={
+            type:$scope.params.type,
+            chatId:$scope.params.chatId
+            }
+            Storage.set('backId','tab.detail');
+            Storage.set('singleChatParams',JSON.stringify(statep));
+
                 return $state.go('tab.patientDetail');
             }
             
         }
+
           // if($scope.params.type=='2'){
         //医生
         // $state.go('tab.group-profile', { memberId: args[1].fromName });
@@ -1899,7 +1915,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.imageUrl = src;
         $scope.modal.show();
     }
+    $scope.viewPatient = function(pid){
+        Storage.set('getpatientId',pid);
+        var statep={
+            type:$scope.params.type,
+            groupId:$scope.params.groupId,
+            teamId:$scope.params.teamId
+        }
+        Storage.set('backId','tab.group-chat');
+        Storage.set('groupChatParams',JSON.stringify(statep));
+        $state.go('tab.patientDetail');
 
+    }
     function onSendSuccess(res) {
         console.log(res);
         viewUpdate(10);

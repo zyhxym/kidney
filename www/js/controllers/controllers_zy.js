@@ -1371,22 +1371,28 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 Storage.set('backId',$scope.backstateId);
             }else if($scope.backstateId=="tab.patient"){
                 Storage.set('backId',$scope.backstateId)
-                //console.log(Storage.get('backId'))
-            }            
+            }                   
         }
         console.log(Storage.get('backId'))
         $scope.goback = function() {           
             var backId = Storage.get('backId')
-            //console.log(backId)
+            console.log(backId)
             if(backId=="tab.doing"){
               $state.go("tab.doing")
             }
             else if(backId=="tab.did"){
                 $state.go('tab.did');
+            }else if(backId=='tab.group-chat'){
+                var p = JSON.parse(Storage.get('groupChatParams'));
+                $state.go('tab.group-chat',p);
+            }else if(backId=='tab.detail'){
+                var q = JSON.parse(Storage.get('singleChatParams'));
+                $state.go('tab.detail',q);
             }else{
               $state.go('tab.patient');
             }
         }
+
     $scope.gototestrecord=function(){
         $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
     }
@@ -1398,7 +1404,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-            // console.log(data)
+             console.log(data)
             Storage.set("latestDiagnose","");
             if(data.results.diagnosisInfo.length>0)
             {
