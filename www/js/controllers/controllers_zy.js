@@ -1265,7 +1265,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 }
                 if(!$scope.filter.choose.isChecked8)
                 {
-                    if(value.patientId.gender==0)
+                    if(value.patientId.gender==2)
                         $scope.patients[key].show=false;
                 }
                 if($scope.filter.choose.isChecked9)
