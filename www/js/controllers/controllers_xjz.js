@@ -624,23 +624,38 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             helpDivHeight: 60,
             realCounselType:'',
             moreMsgs: true,
+            UID:Storage.get('UID'),
+            newsType:'',
             counsel:{},
+            connect:false,
             recording:false
         }
-        // $scope.msgs = [];
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
+    function toBottom(animate,delay){
+        if(!delay) delay=100;
+        setTimeout(function(){
+            $scope.scrollHandle.scrollBottom(animate);
+        },delay)
+    }
     //render msgs 
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.photoUrls={};
         $scope.msgs = [];
         $scope.params.key = '';
         $scope.params.chatId = $state.params.chatId;
         $scope.params.counselId = $state.params.counselId;
         $scope.params.type = $state.params.type;
+        $scope.params.connect = false;
         $scope.params.msgCount = 0;
         console.log($scope.params)
         //获取counsel信息
         if ($scope.params.type != '2') {
-            $scope.params.key = CONFIG.crossKey;
+            // $scope.params.key = CONFIG.crossKey;
+            Patient.getPatientDetail({userId:$state.params.chatId})
+             .then(function(data){
+                $scope.params.targetName = data.results.name;
+                $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+            });
             //获取counsel信息
             Counsel.getStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
             .then(function(data){
@@ -652,29 +667,43 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 $scope.params.realCounselType=data.result.type;
                 Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
                 .then(function(res){
-                    var head='',body='';
-                    if($scope.counseltype!='1'){
-                        head+='问诊';
-                        if($scope.counselstatus=='0'){
-                            head+='-已结束';
-                            body='您仍可以向患者追加回答，该消息不计费';
-                        }else{
-                            body='患者提问不限次数，您可以手动结束';
-                        }
+
+                    if($scope.params.connect){
+                        return sendNotice($scope.counseltype,$scope.counselstatus,res.result.count);
                     }else{
-                        head+='咨询';
-                        if(res.result.count<=0){
-                            head+='-已结束';
-                            body='您仍可以向患者追加回答，该消息不计费';
-                        }else{
-                            body='您还需要回答'+res.result.count+'个问题';
-                        }
+                        var connectWatcher = $scope.$watch('params.connect',function(newv,oldv){
+                            if(newv) {
+                                connectWatcher();
+                                return sendNotice($scope.counseltype,$scope.counselstatus,res.result.count);
+                            }
+                        });
                     }
-                    var alertPopup = $ionicPopup.alert({
-                        title: head,
-                        template: body
-                    });
-                })
+                });
+                // Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
+                // .then(function(res){
+                //     var head='',body='';
+                //     if($scope.counseltype!='1'){
+                //         head+='问诊';
+                //         if($scope.counselstatus=='0'){
+                //             head+='-已结束';
+                //             body='您仍可以向患者追加回答，该消息不计费';
+                //         }else{
+                //             body='患者提问不限次数，您可以手动结束';
+                //         }
+                //     }else{
+                //         head+='咨询';
+                //         if(res.result.count<=0){
+                //             head+='-已结束';
+                //             body='您仍可以向患者追加回答，该消息不计费';
+                //         }else{
+                //             body='您还需要回答'+res.result.count+'个问题';
+                //         }
+                //     }
+                //     var alertPopup = $ionicPopup.alert({
+                //         title: head,
+                //         template: body
+                //     });
+                // })
             
             },function(err){
                 console.log(err);
@@ -689,28 +718,46 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //         },function(err){
         //             console.log(err);
         //         })
-         Doctor.getDoctorInfo({userId:Storage.get('UID')})
-            .then(function(data){
-              $scope.photoUrls[data.results.userId]=data.results.photoUrl;
-            });
-         Doctor.getDoctorInfo({userId:$state.params.chatId})
-            .then(function(data){
-              $scope.photoUrls[data.results.userId]=data.results.photoUrl;
-            });
-         Patient.getPatientDetail({userId:$state.params.chatId})
-             .then(function(data){
-              $scope.photoUrls[data.results.userId]=data.results.photoUrl;
-            });
+         // Doctor.getDoctorInfo({userId:Storage.get('UID')})
+         //    .then(function(data){
+         //      $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+         //    });
+         // Doctor.getDoctorInfo({userId:$state.params.chatId})
+         //    .then(function(data){
+         //      $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+         //    });
+         // Patient.getPatientDetail({userId:$state.params.chatId})
+         //     .then(function(data){
+         //      $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+         //    });
         // if ($scope.params.type != '2') {
         //     $scope.params.key = CONFIG.crossKey;
         // }
-        if ($scope.params.type == '2') $scope.params.title = "医生交流";
-        else if ($scope.params.type == '1') $scope.params.title = "咨询-进行中";
+        if ($scope.params.type == '2'){
+            $scope.params.title = "医生交流";
+            Doctor.getDoctorInfo({userId:$scope.params.chatId})
+            .then(function(data){
+                $scope.params.targetName = data.results.name;
+                $scope.photoUrls[data.results.userId]=data.results.photoUrl;
+            });
+        }else if ($scope.params.type == '1') $scope.params.title = "咨询-进行中";
         else $scope.params.title = "咨询详情";
-        if (window.JMessage) {
-            window.JMessage.enterSingleConversation($state.params.chatId, $scope.params.key);
-            getMsg(15);
-        }
+        // if (window.JMessage) {
+        //     window.JMessage.enterSingleConversation($state.params.chatId, $scope.params.key);
+        //     getMsg(15);
+        // }
+        var loadWatcher = $scope.$watch('msgs.length',function(newv,oldv){
+            if(newv) {
+                loadWatcher();
+                var lastMsg=$scope.msgs[$scope.msgs.length-1];
+                if(lastMsg.fromID==$scope.params.UID) return;
+                return New.insertNews({userId:lastMsg.targetID,sendBy:lastMsg.fromID,type:$scope.params.newsType,readOrNot:1});
+            }
+        });
+        $scope.getMsg(15).then(function(data){
+            $scope.msgs=data;
+            toBottom(true,400);
+        });
     });
 
     $scope.$on('$ionicView.enter', function() {
@@ -718,19 +765,88 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $rootScope.conversation.type = 'single';
             $rootScope.conversation.id = $state.params.chatId;
         }
+        Doctor.getDoctorInfo({userId:$scope.params.UID})
+        .then(function(response){
+            thisDoctor=response.results;
+            $scope.photoUrls[response.results.userId]=response.results.photoUrl;
+
+            socket.emit('newUser',{user_name:response.results.name,user_id:$scope.params.UID});
+
+            socket.on('err',function(data){
+                console.error(data)
+                // $rootScope.$broadcast('receiveMessage',data);
+            });
+            socket.on('getMsg',function(data){
+                console.info('getMsg');
+                console.log(data);
+                if (data.msg.targetType == 'single' && data.msg.fromID == $state.params.chatId) {
+                    $scope.$apply(function(){
+                        $scope.pushMsg(data.msg);
+                    });
+                }
+                if($scope.params.type != '2' && data.msg.targetType=='custom' && (data.msg.content.type=='card' || data.msg.content.type=='counsel-payment')){
+                    Communication.getCounselReport({counselId:data.msg.content.counselId})
+                    .then(function(data){
+                        console.log(data)
+                        $scope.params.counsel = data.results;
+                        $scope.counseltype= data.results.type=='3'?'2':data.results.type;
+                        $scope.counselstatus=data.results.status;
+                        $scope.params.realCounselType=data.results.type;
+                    },function(err){
+                        console.log(err);
+                    })
+                }
+                if(data.msg.contentType=='custom' && data.msg.content.type=='counsel-upgrade'){
+                    $scope.$apply(function(){
+                        $scope.counseltype='2';
+                    });
+                    $scope.counselstatus=1;
+                }
+                New.insertNews({userId:$scope.params.UID,sendBy:$scope.params.chatId,type:$scope.params.newsType,readOrNot:1});
+                                // $rootScope.$broadcast('receiveMessage',data);
+            });
+            socket.on('messageRes',function(data){
+                console.info('messageRes');
+                console.log(data);
+                if (data.msg.targetType == 'single' && data.msg.targetID == $state.params.chatId) {
+                        $scope.$apply(function(){
+                            $scope.pushMsg(data.msg);
+                        });
+                }
+                if($scope.counselstatus==1 && $scope.counseltype==1 && !(data.msg.contentType=='custom' && data.msg.content.type=='count-notice')){
+                    Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:'-1'})
+                    .then(function(){
+                        Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
+                        .then(function(data){
+                            if(data.result.count<=0){
+                                $scope.counselstatus=0;
+                                $scope.params.title="咨询";
+                                endCounsel(1);
+                            }
+                        })
+                    })
+                }
+                // $rootScope.$broadcast('messageResponse',data);
+            });
+            $scope.params.connect=true;
+        },function(err){
+            console.log(err);
+        })
         imgModalInit();
     })
 
     $scope.$on('keyboardshow', function(event, height) {
-        $scope.params.helpDivHeight = height + 60;
-        setTimeout(function() {
-            $scope.scrollHandle.scrollBottom(true);
-        }, 100);
+        $scope.params.helpDivHeight = height ;
+        toBottom(true,100);
     })
     $scope.$on('keyboardhide', function(event) {
-        $scope.params.helpDivHeight = 60;
+        $scope.params.helpDivHeight = 0;
     })
     $scope.$on('$ionicView.beforeLeave', function() {
+        socket.off('messageRes');
+        socket.off('getMsg');
+        socket.off('err');
+        socket.emit('disconnect');
         if ($scope.popover) $scope.popover.hide();
     })
     $scope.$on('$ionicView.leave', function() {
@@ -748,95 +864,194 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             viewUpdate(5);
         }
     });
-        // function msgsRender(first,last){
-        //     while(first!=last){
-        //         $scope.msgs[first+1].diff=($scope.msgs[first+1].createTimeInMillis-$scope.msgs[first].createTimeInMillis)>300000?true:false;
-        //         first++;
-        //     }
-        // }
-    function getMsg(num) {
-        console.log('getMsg:' + num);
-        window.JMessage.getHistoryMessages("single", $state.params.chatId, $scope.params.key, $scope.params.msgCount, num,
-            function(response) {
-                // console.log(response);
+
+    function sendNotice(type,status,cnt){
+        return setTimeout(function(){
+            return sendCnNotice(type,status,cnt);
+        },2000);
+    }
+    function sendCnNotice(type,status,cnt){
+        var len=$scope.msgs.length;
+        if(len==0 || !($scope.msgs[len-1].content.type=='count-notice' && $scope.msgs[len-1].content.count==cnt)){
+            var bodyDoc='';
+            if(type!='1'){
+                if(status=='0'){
+                    bodyDoc='您仍可以向患者追加回答，该消息不计费';
+                    bodyPat='您没有提问次数了。如需提问，请新建咨询或问诊';
+                }else{
+                    bodyDoc='患者提问不限次数';
+                    bodyPat='您可以不限次数进行提问';
+                }
+            }else{
+                if(cnt<=0 || status=='0'){
+                    bodyDoc='您仍可以向患者追加回答，该消息不计费';
+                    bodyPat='您没有提问次数了。如需提问，请新建咨询或问诊';
+                }else{
+                    bodyDoc='您还需要回答'+cnt+'个问题';
+                    bodyPat='您还有'+cnt+'次提问机会';
+                }
+            }
+
+            var notice={
+                type:'count-notice',
+                ctype:type,
+                cstatus:status,
+                count:cnt,
+                bodyDoc:bodyDoc,
+                bodyPat:bodyPat,
+                counseltype:$scope.counseltype
+            }
+            var msgJson={
+                contentType:'custom',
+                fromID:thisDoctor.userId,
+                fromName:thisDoctor.name,
+                fromUser:{
+                    avatarPath:CONFIG.mediaUrl+'uploads/photos/resized'+thisDoctor.userId+'_myAvatar.jpg'
+                },
+                targetID:$scope.params.chatId,
+                targetName:$scope.params.targetName,
+                targetType:'single',
+                status:'send_going',
+                createTimeInMillis: Date.now(),
+                newsType:$scope.params.newsType,
+                content:notice
+            }
+            socket.emit('message',{msg:msgJson,to:$scope.params.chatId,role:'doctor'});
+        }
+    }
+    $scope.getMsg = function(num) {
+        console.info('getMsg');
+        return $q(function(resolve,reject){
+            var q={
+                messageType:'1',
+                id1:Storage.get('UID'),
+                id2:$scope.params.chatId,
+                skip:$scope.params.msgCount,
+                limit:num
+            }
+            Communication.getCommunication(q)
+            .then(function(data){
+                console.log(data);
+                var d=data.results;
                 $scope.$broadcast('scroll.refreshComplete');
-                if (!response) $scope.params.moreMsgs = false;
-                else {
-                    var res = JSON.parse(response);
-                    console.log(res);
-                    $scope.$apply(function() {
-                        if ($scope.msgs[0]) $scope.msgs[0].diff = ($scope.msgs[0].createTimeInMillis - res[0].createTimeInMillis) > 300000 ? true : false;
+                if(d=='没有更多了!') return noMore();
+                var res=[];
+                for(var i in d){
+                    res.push(d[i].content);
+                }
+                if(res.length==0 ) $scope.params.moreMsgs = false;
+                else{
+                    $scope.params.msgCount += res.length;
+                    // $scope.$apply(function() {
+                        if ($scope.msgs.length!=0) $scope.msgs[0].diff = ($scope.msgs[0].createTimeInMillis - res[0].createTimeInMillis) > 300000 ? true : false;
                         for (var i = 0; i < res.length - 1; ++i) {
+                            if(res[i].contentType=='image') res[i].content.thumb=CONFIG.mediaUrl+res[i].content['src_thumb'];
+                            res[i].direct = res[i].fromID==$scope.params.UID?'send':'receive';
                             res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
                             $scope.msgs.unshift(res[i]);
                         }
+                        res[i].direct = res[i].fromID==$scope.params.UID?'send':'receive';
+                        res[i].diff = true;
                         $scope.msgs.unshift(res[i]);
-                        $scope.msgs[0].diff = true;
-                    });
-                    setTimeout(function() {
-                        $scope.scrollHandle.scrollBottom(true);
-                    }, 100);
-                    $scope.params.msgCount += res.length;
+                    // });
                 }
-
-            },
-            function(err) {
+                console.log($scope.msgs);
+                resolve($scope.msgs);
+            },function(err){
                 $scope.$broadcast('scroll.refreshComplete');
+                resolve($scope.msgs);
             });
+        })
+
     }
+    // function getMsg(num) {
+    //     console.log('getMsg:' + num);
+    //     window.JMessage.getHistoryMessages("single", $state.params.chatId, $scope.params.key, $scope.params.msgCount, num,
+    //         function(response) {
+    //             // console.log(response);
+    //             $scope.$broadcast('scroll.refreshComplete');
+    //             if (!response) $scope.params.moreMsgs = false;
+    //             else {
+    //                 var res = JSON.parse(response);
+    //                 console.log(res);
+    //                 $scope.$apply(function() {
+    //                     if ($scope.msgs[0]) $scope.msgs[0].diff = ($scope.msgs[0].createTimeInMillis - res[0].createTimeInMillis) > 300000 ? true : false;
+    //                     for (var i = 0; i < res.length - 1; ++i) {
+    //                         res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
+    //                         $scope.msgs.unshift(res[i]);
+    //                     }
+    //                     $scope.msgs.unshift(res[i]);
+    //                     $scope.msgs[0].diff = true;
+    //                 });
+    //                 setTimeout(function() {
+    //                     $scope.scrollHandle.scrollBottom(true);
+    //                 }, 100);
+    //                 $scope.params.msgCount += res.length;
+    //             }
 
-    function viewUpdate(length, scroll) {
-        console.log('viewUpdate:' + length);
-        if ($scope.params.msgCount == 0) return getMsg(1);
-        var num = $scope.params.msgCount < length ? $scope.params.msgCount : length;
-        if (num == 0) return;
-        window.JMessage.getHistoryMessages("single", $state.params.chatId, $scope.params.key, 0, num,
-            function(response) {
-
-                var res = JSON.parse(response);
-                console.log(res);
-                $scope.$apply(function() {
-                    for (var i = res.length - 1, j = $scope.params.msgCount - res.length; i >= 0;) {
-                        if (j == $scope.params.msgCount) {
-                            $scope.params.msgCount += i + 1;
-                            while (i > -1) {
-                                if (i != res.length - 1) {
-                                    res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
-                                } else if ($scope.msgs.length) {
-                                    res[i].diff = (res[i].createTimeInMillis - $scope.msgs[$scope.msgs.length - 1].createTimeInMillis) > 300000 ? true : false;
-                                } else {
-                                    res[i].diff = true;
-                                }
-                                $scope.msgs.push(res[i]);
-                                i--;
-                            }
-                            console.log(i);
-                            break;
-                        } else if (j < $scope.params.msgCount && $scope.msgs[j]['_id'] == res[i]['_id']) {
-                            res[i].diff = $scope.msgs[j].diff;
-                            $scope.msgs[j] = res[i];
-                            ++j;
-                            --i;
-                        } else {
-                            ++j;
-                        }
-
-                    }
-                });
-                // if(scroll){
-                setTimeout(function() {
-                    $scope.scrollHandle.scrollBottom();
-                }, 100);
-                // }
-            },
-            function() {
-
-            });
-    }
-
+    //         },
+    //         function(err) {
+    //             $scope.$broadcast('scroll.refreshComplete');
+    //         });
+    // }
     $scope.DisplayMore = function() {
-        getMsg(15);
+        $scope.getMsg(15).then(function(data){
+            $scope.msgs=data;
+        });
     }
+
+    // function viewUpdate(length, scroll) {
+    //     console.log('viewUpdate:' + length);
+    //     if ($scope.params.msgCount == 0) return getMsg(1);
+    //     var num = $scope.params.msgCount < length ? $scope.params.msgCount : length;
+    //     if (num == 0) return;
+    //     window.JMessage.getHistoryMessages("single", $state.params.chatId, $scope.params.key, 0, num,
+    //         function(response) {
+
+    //             var res = JSON.parse(response);
+    //             console.log(res);
+    //             $scope.$apply(function() {
+    //                 for (var i = res.length - 1, j = $scope.params.msgCount - res.length; i >= 0;) {
+    //                     if (j == $scope.params.msgCount) {
+    //                         $scope.params.msgCount += i + 1;
+    //                         while (i > -1) {
+    //                             if (i != res.length - 1) {
+    //                                 res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
+    //                             } else if ($scope.msgs.length) {
+    //                                 res[i].diff = (res[i].createTimeInMillis - $scope.msgs[$scope.msgs.length - 1].createTimeInMillis) > 300000 ? true : false;
+    //                             } else {
+    //                                 res[i].diff = true;
+    //                             }
+    //                             $scope.msgs.push(res[i]);
+    //                             i--;
+    //                         }
+    //                         console.log(i);
+    //                         break;
+    //                     } else if (j < $scope.params.msgCount && $scope.msgs[j]['_id'] == res[i]['_id']) {
+    //                         res[i].diff = $scope.msgs[j].diff;
+    //                         $scope.msgs[j] = res[i];
+    //                         ++j;
+    //                         --i;
+    //                     } else {
+    //                         ++j;
+    //                     }
+
+    //                 }
+    //             });
+    //             // if(scroll){
+    //             setTimeout(function() {
+    //                 $scope.scrollHandle.scrollBottom();
+    //             }, 100);
+    //             // }
+    //         },
+    //         function() {
+
+    //         });
+    // }
+
+    // $scope.DisplayMore = function() {
+    //     getMsg(15);
+    // }
     $scope.scrollBottom = function() {
         $scope.showVoice = false;
         $scope.showMore = false;
@@ -868,40 +1083,37 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
     }
 
-    function onImageLoad(path) {
-        $scope.$apply(function() {
-            $scope.imageUrl = path;
-        })
-            // window.JMessage.getConversationList(function(data){console.log(JSON.parse(data));},
-            //   function(err){console.log(err)});
-            // window.JMessage.getSingleConversation(function(data){console.log(JSON.parse(data));},
-            //   function(err){console.log(err)});
-    }
+    // function onImageLoad(path) {
+    //     $scope.$apply(function() {
+    //         $scope.imageUrl = path;
+    //     })
+    //         // window.JMessage.getConversationList(function(data){console.log(JSON.parse(data));},
+    //         //   function(err){console.log(err)});
+    //         // window.JMessage.getSingleConversation(function(data){console.log(JSON.parse(data));},
+    //         //   function(err){console.log(err)});
+    // }
 
-    function onImageLoadFail(err) {
+    // function onImageLoadFail(err) {
 
-    }
+    // }
     $scope.$on('image', function(event, args) {
         console.log(args)
         event.stopPropagation();
         $scope.imageHandle.zoomTo(1, true);
-        $scope.imageUrl = args[2];
+        $scope.imageUrl = CONFIG.mediaUrl + (args[2].src_thumb || args[2].localId_thumb);
         $scope.modal.show();
-        // if (args[1] == 'img') {
-        window.JMessage.getOriginImageInSingleConversation($state.params.chatId, args[3], onImageLoad, onImageLoadFail);
-        // } else {
-        // getImage(url,onImageLoad,onImageLoadFail)
-        // $scope.imageUrl = args[3];
-        // }
-        // $scope.image={src:$scope.msgs[msgIndex].content.localThumbnailPath +'.'+ $scope.msgs[msgIndex].content.format};
-        // console.log($scope.allImage);
-        // $scope.imageUrl=imageUrl;
-        // $scope.showModal('templates/msg/imageViewer.html');
     })
+    // $scope.$on('image', function(event, args) {
+    //     console.log(args)
+    //     event.stopPropagation();
+    //     $scope.imageHandle.zoomTo(1, true);
+    //     $scope.imageUrl = args[2];
+    //     $scope.modal.show();
+    //     window.JMessage.getOriginImageInSingleConversation($state.params.chatId, args[3], onImageLoad, onImageLoadFail);
+    // })
     $scope.closeModal = function() {
         $scope.imageHandle.zoomTo(1, true);
         $scope.modal.hide();
-        // $scope.modal.remove()
     };
     $scope.switchZoomLevel = function() {
         if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin)
@@ -923,15 +1135,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
 
     $scope.$on('holdmsg', function(event, args) {
+        event.stopPropagation();
         $scope.holdId = args[1];
         console.log(args)
-        event.stopPropagation();
         $scope.popover.show(args[2]);
     })
   
     $scope.$on('viewcard', function(event, args) {
-        console.log(args[2]);
         event.stopPropagation();
+        console.log(args[2]);
         if (args[2].target.tagName == "IMG") {
             $scope.imageHandle.zoomTo(1, true);
             $scope.imageUrl = args[2].target.currentSrc;
@@ -946,11 +1158,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     $scope.toolChoose = function(data) {
         // console.log(data);
-        var content = $scope.msgs[arrTool.indexOf($scope.msgs, '_id', $scope.holdId)].content.contentStringMap;
+        var content = $scope.msgs[arrTool.indexOf($scope.msgs, 'createTimeInMillis', $scope.holdId)].content;
         if (data == 0) $state.go('tab.selectDoc', { msg: content });
         if (data == 1) $state.go('tab.selectTeam', { msg: content });
     }
     $scope.$on('profile', function(event, args) {
+        event.stopPropagation();
         console.log(args[1])
         if(args[1].direct=='receive'){
             if($scope.params.type=='2'){
@@ -961,15 +1174,93 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
             
         }
-          // if($scope.params.type=='2'){
-        //医生
-        // $state.go('tab.group-profile', { memberId: args[1].fromName });
-        // }else{
-            // $state.go('tab.patientDetail', { memberId: args[1] });
-        // }
-        event.stopPropagation();
     })
 
+    function endCounsel(type){
+        Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:type,status:0})
+        .then(function(data){
+            var endlMsg={
+                type:'endl',
+                info:"咨询已结束",
+                docId:thisDoctor.userId,
+                counseltype:1
+            }
+            if(type==2){
+                endlMsg.info="问诊已结束";
+                endlMsg.counseltype=2;
+            }
+            var msgJson={
+                contentType:'custom',
+                fromID:thisDoctor.userId,
+                fromName:thisDoctor.name,
+                fromUser:{
+                    avatarPath:CONFIG.mediaUrl+'uploads/photos/resized'+thisDoctor.userId+'_myAvatar.jpg'
+                },
+                targetID:$scope.params.chatId,
+                targetName:$scope.params.targetName,
+                targetType:'single',
+                status:'send_going',
+                createTimeInMillis: Date.now(),
+                newsType:$scope.params.newsType,
+                content:endlMsg
+            }
+            socket.emit('message',{msg:msgJson,to:$scope.params.chatId,role:'doctor'});
+            $scope.counselstatus='0';
+        });
+        Counsel.changeCounselStatus({counselId:$state.params.counselId,status:0})
+    }
+    $scope.finishConsult = function() {
+        var confirmPopup = $ionicPopup.confirm({
+            title: '确定要结束此次咨询吗?',
+            // template: '确定要结束此次咨询吗?'
+            okText: '确定',
+            cancelText: '取消'
+        });
+        confirmPopup.then(function(res) {
+            if (res) {
+                Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:'900'})
+                .then(function(){
+                    endCounsel($scope.params.realCounselType);
+                },function(err){
+                    console.error(err);
+                })
+            } else {
+            }
+        });
+    }
+    $scope.updateMsg = function(msg){
+        console.info('updateMsg');
+        var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
+        if(pos!=-1){
+            if(msg.contentType=='image') msg.content.thumb=CONFIG.mediaUrl+msg.content['src_thumb'];
+            msg.diff=$scope.msgs[pos].diff;
+            // $scope.$apply(function(){
+                msg.direct = msg.fromID==$scope.params.UID?'send':'receive';
+                $scope.msgs[pos]=msg;
+            // });
+            alert(JSON.stringify(msg));
+        }
+        // $scope.msgs=$scope.msgs;
+    }
+    $scope.pushMsg = function(msg){
+        console.info('pushMsg');
+        if($scope.msgs.length==0){
+            msg.diff=true;
+        }else{
+            msg.diff=(msg.createTimeInMillis - $scope.msgs[$scope.msgs.length-1].createTimeInMillis) > 300000 ? true : false;
+        }
+        msg.direct = msg.fromID==$scope.params.UID?'send':'receive';
+        if(msg.contentType=='image') {
+            msg.content.thumb=CONFIG.mediaUrl+msg.content['src_thumb'];
+            $http.get(msg.content.thumb).then(function(data){
+                $scope.msgs.push(msg);
+                toBottom(true,400);
+            })
+        }else{
+            $scope.msgs.push(msg);
+            toBottom(true,100);
+        }
+    }
     // function endCounsel(type){
     //     Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:type,status:0})
     //     .then(function(data){
@@ -1017,140 +1308,276 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //         }
     //     });
     // }
-    $scope.finishConsult = function() {
-        var confirmPopup = $ionicPopup.confirm({
-            title: '确定要结束此次问诊吗?',
-            // template: '确定要结束此次咨询吗?'
-            okText: '确定',
-            cancelText: '取消'
-        });
-        confirmPopup.then(function(res) {
-            if (res) {
-                console.log('问诊结束');
-                  Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
-                        .then(function(data){
-                            $scope.counselstatus='0';
-                            $scope.params.title="问诊";
-                            Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:900})
-                            .then(function(data){
-                              console.log(data)
-                             })
-                            var endlMsg={
-                                type:'endl',
-                                info:"问诊已结束",
-                                docId:Storage.get('UID'),
-                                counseltype:2,
-                                counselId:$scope.params.counselId
+    // $scope.finishConsult = function() {
+    //     var confirmPopup = $ionicPopup.confirm({
+    //         title: '确定要结束此次问诊吗?',
+    //         // template: '确定要结束此次咨询吗?'
+    //         okText: '确定',
+    //         cancelText: '取消'
+    //     });
+    //     confirmPopup.then(function(res) {
+    //         if (res) {
+    //             console.log('问诊结束');
+    //               Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:2,status:0})
+    //                     .then(function(data){
+    //                         $scope.counselstatus='0';
+    //                         $scope.params.title="问诊";
+    //                         Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:900})
+    //                         .then(function(data){
+    //                           console.log(data)
+    //                          })
+    //                         var endlMsg={
+    //                             type:'endl',
+    //                             info:"问诊已结束",
+    //                             docId:Storage.get('UID'),
+    //                             counseltype:2,
+    //                             counselId:$scope.params.counselId
 
-                            }
-                            window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
-                                function(response){
-                                    console.log(response);
-                                  viewUpdate(10);
-                                  Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
-                                  .then(function(data){
-                                    console.log(data);
-                                  },function(err){
-                                    console.error(err);
-                                    })
-                                },function(err){
-                                    console.error(err);
-                                    alert('[send msg]:err');
-                                       viewUpdate(10);
-                                })
-                            console.log(data)
-                             viewUpdate(5, true);
-                        })
-                        Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
+    //                         }
+    //                         window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
+    //                             function(response){
+    //                                 console.log(response);
+    //                               viewUpdate(10);
+    //                               Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
+    //                               .then(function(data){
+    //                                 console.log(data);
+    //                               },function(err){
+    //                                 console.error(err);
+    //                                 })
+    //                             },function(err){
+    //                                 console.error(err);
+    //                                 alert('[send msg]:err');
+    //                                    viewUpdate(10);
+    //                             })
+    //                         console.log(data)
+    //                          viewUpdate(5, true);
+    //                     })
+    //                     Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
 
-            } else {
-                console.log('You are not sure');
-            }
-        });
-    }
+    //         } else {
+    //             console.log('You are not sure');
+    //         }
+    //     });
+    // }
 
     // send message--------------------------------------------------------------------------------
     //
-
-    function onSendSuccess(res) {
-        console.log(res);
-        viewUpdate(10);
-        Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(res)})
-                                  .then(function(data){
-                                    console.log(data);
-                                  },function(err){
-                                    console.error(err);
-                                    })
-       if($scope.counseltype==1 && scope.counselstatus=='1'){//如果是咨询
-         Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:'-1'})
-                 .then(function(data){
-                  console.log(data)
-                Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
-                  .then(function(data){
-                     console.log(data)
-                     if(data.result.count<=0){ //问题数归零
-                        
-                        Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:1,status:0})
-                        .then(function(data){
-                            $scope.counselstatus='0';
-                            $scope.params.title="咨询";
-                            var endlMsg={
-                                type:'endl',
-                                info:"咨询已结束",
-                                docId:Storage.get('UID'),
-                                counseltype:1,
-                                counselId:$scope.params.counselId
-                            }
-                            window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
-                                function(response){
-                                    console.log(response);
-                                    viewUpdate(10);
-                                    Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
-                                  .then(function(data){
-                                    console.log(data);
-                                  },function(err){
-                                    console.error(err);
-                                    })
-                                },function(err){
-                                    console.error(err);
-                                     alert('[send msg]:err');
-                                       viewUpdate(10);
-                                })
-                             viewUpdate(5, true);
-                        })
-                        Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
-                     };
-                 })
-                },function(err){
-                    console.log(err);
-                })
-             };
+        function msgGen(content,type,local){
+        var data={};
+        if(type=='text'){
+            data={
+                text:content
+            };
+        }else if(type=='image'){
+            data={
+                mediaId:content[0],
+                mediaId_thumb:content[1],
+                src:'',
+                src_thumb:''
+            };
+        }else if(type=='voice'){
+            data={
+                mediaId:content,
+                src:''
+            };
+        }
+        var msgJson={
+            contentType:type,
+            fromID:$scope.params.UID,
+            fromName:thisDoctor.name,
+            fromUser:{
+                avatarPath: CONFIG.mediaUrl+'uploads/photos/resized'+$scope.params.UID+'_myAvatar.jpg'
+            },
+            targetID:$scope.params.chatId,
+            targetName:$scope.params.targetName,
+            targetType:'single',
+            status:'send_going',
+            createTimeInMillis: Date.now(),
+            newsType:$scope.params.newsType,
+            // _id:'',
+            content:data
+        }
+        if(local){
+            if(type=='image'){
+                msgJson.content.localId=content[2];
+                msgJson.content.localId_thumb=content[3];
+            }else if(type=='voice'){
+                msgJson.content.localId=content[1];
+            }
+        }
+        return msgJson;
     }
+    function sendmsg(content,type){
+        // var data={};
+        // if(type=='text'){
+        //     data={
+        //         text:content
+        //     };
+        // }else if(type=='image'){
+        //     data={
+        //         mediaId:content[0],
+        //         mediaId_thumb:content[1],
+        //         src:'',
+        //         src_thumb:''
+        //     };
+        // }else if(type=='voice'){
+        //     data={
+        //         mediaId:content,
+        //         src:''
+        //     };
+        // }
+        // var msgJson={
+        //     contentType:type,
+        //     fromName:$scope.params.UID,
+        //     fromUser:{
+        //         avatarPath:''
+        //     },
+        //     targetID:$scope.params.chatId,
+        //     targetName:'',
+        //     targetType:'single',
+        //     status:'send_going',
+        //     createTimeInMillis: Date.now(),
+        //     // _id:'',
+        //     content:data
+        // }
+        var msgJson=msgGen(content,type);
+
+        // if(type=='text'){
+            // $scope.pushMsg(msgJson);
+            // toBottom(true);
+        // }
+        console.info('socket.connected'+socket.connected);
+        socket.emit('message',{msg:msgJson,to:$scope.params.chatId,role:'doctor'});
+        
+        // if(type=='image'){
+        //     msgJson.content.localId=content[2];
+        //     msgJson.content.localId_thumb=content[3];
+        // }else if(type=='voice'){
+        //     msgJson.content.localId=content[1];
+        // }
+        $scope.pushMsg(msgJson);
+        toBottom(true);
+    }
+    // function onSendSuccess(res) {
+    //     console.log(res);
+    //     viewUpdate(10);
+    //     Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(res)})
+    //                               .then(function(data){
+    //                                 console.log(data);
+    //                               },function(err){
+    //                                 console.error(err);
+    //                                 })
+    //    if($scope.counseltype==1 && scope.counselstatus=='1'){//如果是咨询
+    //      Account.modifyCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,modify:'-1'})
+    //              .then(function(data){
+    //               console.log(data)
+    //             Account.getCounts({doctorId:Storage.get('UID'),patientId:$scope.params.chatId})
+    //               .then(function(data){
+    //                  console.log(data)
+    //                  if(data.result.count<=0){ //问题数归零
+                        
+    //                     Counsel.changeStatus({doctorId:Storage.get('UID'),patientId:$scope.params.chatId,type:1,status:0})
+    //                     .then(function(data){
+    //                         $scope.counselstatus='0';
+    //                         $scope.params.title="咨询";
+    //                         var endlMsg={
+    //                             type:'endl',
+    //                             info:"咨询已结束",
+    //                             docId:Storage.get('UID'),
+    //                             counseltype:1,
+    //                             counselId:$scope.params.counselId
+    //                         }
+    //                         window.JMessage.sendSingleCustomMessage($scope.params.chatId,endlMsg,$scope.params.key,
+    //                             function(response){
+    //                                 console.log(response);
+    //                                 viewUpdate(10);
+    //                                 Communication.postCommunication({messageType:1,sendBy:Storage.get('UID'),receiver:$scope.params.chatId,content:JSON.parse(response)})
+    //                               .then(function(data){
+    //                                 console.log(data);
+    //                               },function(err){
+    //                                 console.error(err);
+    //                                 })
+    //                             },function(err){
+    //                                 console.error(err);
+    //                                  alert('[send msg]:err');
+    //                                    viewUpdate(10);
+    //                             })
+    //                          viewUpdate(5, true);
+    //                     })
+    //                     Counsel.changeCounselStatus({counselId:$scope.params.counselId,status:0})
+    //                  };
+    //              })
+    //             },function(err){
+    //                 console.log(err);
+    //             })
+    //          };
+    // }
     // state.param.consultId $scope.counseltype=data.results.type;
                 //  $scope.counselstatus=data.results.status;
     // if($scope.counseltype==1)
     // 
    
        
-    function onSendErr(err) {
-        console.log(err);
-        alert('[send msg]:err');
-        viewUpdate(10);
-    }
+    // function onSendErr(err) {
+    //     console.log(err);
+    //     alert('[send msg]:err');
+    //     viewUpdate(10);
+    // }
     $scope.submitMsg = function() {
-        
-            window.JMessage.sendSingleTextMessage($state.params.chatId, $scope.input.text, $scope.params.key, onSendSuccess, onSendErr);
-            $scope.input.text = '';
-            viewUpdate(5, true);
-            // window.JMessage.getHistoryMessages("single",$state.params.chatId,"",0,3,addNewSend,null);
-
+        var template = {
+            "userId": $scope.params.chatId, //患者的UID
+            "role": "patient",
+            "postdata": {
+                "template_id": "N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I",
+                "data": {
+                    "first": {
+                        "value": "您的"+($scope.counseltype==1?'咨询':'问诊') +$scope.params.counsel.symptom+"已被回复！", //XXX取那个咨询或问诊的标题
+                        "color": "#173177"
+                    },
+                    "keyword1": {
+                        "value": $scope.params.counsel.help, //咨询的问题
+                        "color": "#173177"
+                    },
+                    "keyword2": {
+                        "value": $scope.input.text, //医生的回复
+                        "color": "#173177"
+                    },
+                    "keyword3": {
+                        "value": thisDoctor.name, //回复医生的姓名
+                        "color": "#173177"
+                    },
+                    "remark": {
+                        "value": "感谢您的使用！",
+                        "color": "#173177"
+                    }
+                }
+            }
         }
+        wechat.messageTemplate(template);
+        sendmsg($scope.input.text,'text');
+        $scope.input.text = '';
+    }
+    // $scope.submitMsg = function() {
+        
+    //         window.JMessage.sendSingleTextMessage($state.params.chatId, $scope.input.text, $scope.params.key, onSendSuccess, onSendErr);
+    //         $scope.input.text = '';
+    //         viewUpdate(5, true);
+    //         // window.JMessage.getHistoryMessages("single",$state.params.chatId,"",0,3,addNewSend,null);
+
+    //     }
     //get image
     $scope.getImage = function(type) {
         $scope.showMore = false;
             Camera.getPicture(type)
                 .then(function(url) {
                     console.log(url);
+                    var fm=md5(Date().now(),$scope.params.chatId);
+                    Camera.uploadPicture(url,fm)
+                    .then(function(){
+                        sendmsg
+                    },function(){
+
+                    })
 
                     window.JMessage.sendSingleImageMessage($state.params.chatId, url, $scope.params.key, onSendSuccess, onSendErr);
                     viewUpdate(5, true);
