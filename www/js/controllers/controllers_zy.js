@@ -917,11 +917,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
 
-    $scope.clearSearch = function() {
-        $scope.search.name = '';
-        $scope.patients = $scope.allpatients;
-        $scope.search.name = '';
-    }
+    // $scope.clearSearch = function() {
+    //     $scope.search.name = '';
+    //     $scope.patients = $scope.allpatients;
+    // }
     //----------------结束搜索患者------------------
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
         scope: $scope
@@ -1001,11 +1000,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
 
-    $scope.clearSearch = function() {
-        $scope.search.name = '';
-        $scope.patients = $scope.allpatients;
-        $scope.search.name = '';
-    }
+    // $scope.clearSearch = function() {
+    //     $scope.search.name = '';
+    //     $scope.patients = $scope.allpatients;
+    // }
     //----------------结束搜索患者------------------      
     $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
         scope: $scope
@@ -1163,11 +1161,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
 
-    $scope.clearSearch = function() {
-        $scope.search.name = '';
-        $scope.patients = $scope.allpatients;
-        $scope.search.name = '';
-    }
+    // $scope.clearSearch = function() {
+    //     $scope.search.name = '';
+    //     $scope.patients = $scope.allpatients;
+    // }
     //----------------结束搜索患者------------------
     $scope.doRefresh = function(){
         load();
