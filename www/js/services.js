@@ -2257,6 +2257,70 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+    function getIndex(arr,val){
+        for(var i in arr){
+            if(arr[i].userId==val || arr[i].sendBy==val) return i;
+        }
+        return -1;
+    }
+    function addLastMsg(type,userId,msg){
+        // item.lastMsg=msg;
+        try{
+            msg.url=JSON.parse(msg.url);
+            if(type!='11' && type!='12' && msg.url.fromID!=userId) {
+                msg.description=msg.url.fromName + ':' + msg.description;
+            }
+            if(type=='11' || type=='12') msg.readOrNot = msg.readOrNot || (userId==msg.url.fromID?1:0);
+        }catch(e){}
+        return msg;
+    }
+    self.addNews = function(type,userId,arr,idName){
+        return $q(function(resolve,reject){
+            if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
+            var q={
+                userId:userId,
+                type:type
+            }
+            self.getNews(q)
+            .then(function(res){
+                var msgs=res.results;
+                arr.map(function(item){
+                    var pos = getIndex(msgs,item[idName]);
+                    if(pos!=-1){
+                        item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                    }
+                    return item;
+                })
+                resolve(arr);
+            },function(err){
+                resolve(arr);
+            });
+        });
+
+    }
+    self.addNestNews = function(type,userId,arr,idName,keyName){
+        return $q(function(resolve,reject){
+            if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
+            var q={
+                userId:userId,
+                type:type
+            }
+            self.getNews(q)
+            .then(function(res){
+                var msgs=res.results;
+                arr.map(function(item){
+                    var pos = getIndex(msgs,item[keyName][idName]);
+                    if(pos!=-1){
+                        item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                    }
+                    return item;
+                });
+                resolve(arr);
+            },function(err){
+                resolve(arr);
+            });
+        });
+    }
     return self;
 }])
 

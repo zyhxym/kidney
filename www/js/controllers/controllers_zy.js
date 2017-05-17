@@ -891,10 +891,22 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"咨询”进行中
-.controller('doingCtrl', ['$scope','$state','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory',  function($scope, $state,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory) {
-    $scope.allpatients=angular.fromJson(Storage.get("consulting"));
-    $scope.patients=$scope.allpatients;
-    console.log($scope.allpatients)
+.controller('doingCtrl', ['$scope','$state','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory','New',  function($scope, $state,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory,New) {
+    $scope.$on('$ionicView.beforeEnter',function(){
+        Counsel.getCounsels({userId:Storage.get('UID'), status:1 })
+        .then(function(data){
+            $scope.allpatients=data.results;
+            New.addNestNews('11',Storage.get('UID'),$scope.allpatients,'userId','patientId')
+            .then(function(pats){
+                $scope.patients=pats;
+            })
+            // $scope.patients=data.results;
+        })
+    })
+
+    // $scope.allpatients=angular.fromJson(Storage.get("consulting"));
+    // $scope.patients=$scope.allpatients;
+    // console.log($scope.allpatients)
     //----------------开始搜索患者------------------
     $scope.search={
         name:''
@@ -976,9 +988,21 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"咨询”已完成
-.controller('didCtrl', ['$scope','$state','Counsel','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory',  function($scope, $state,Counsel,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory) {
-    $scope.allpatients=angular.fromJson(Storage.get("consulted"));
-    $scope.patients=$scope.allpatients;
+.controller('didCtrl', ['$scope','$state','Counsel','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory','New',  function($scope, $state,Counsel,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory,New) {
+    $scope.$on('$ionicView.beforeEnter',function(){
+        Counsel.getCounsels({userId:Storage.get('UID'), status:0 })
+        .then(function(data){
+            $scope.allpatients=data.results;
+            New.addNestNews('11',Storage.get('UID'),$scope.allpatients,'userId','patientId')
+            .then(function(pats){
+                $scope.patients=pats;
+            })
+
+            // $scope.patients=data.results;
+        })
+    })
+    // $scope.allpatients=angular.fromJson(Storage.get("consulted"));
+    // $scope.patients=$scope.allpatients;
     //----------------开始搜索患者------------------
     $scope.search={
         name:''
