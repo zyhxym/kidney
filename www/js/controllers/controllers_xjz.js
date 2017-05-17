@@ -154,9 +154,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     console.log(err);
                 })
   }
-    $scope.clearSearch=function(){
-        $scope.search='';
-     }    
+    // $scope.clearSearch=function(){
+    //     $scope.search='';
+    //  }    
 
 
     $scope.teams=[
@@ -232,20 +232,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log(err);
             })
     }
-    $scope.closeSearch = function() {
-        $scope.issearching = true;
-        $scope.isnotsearching = false;
-        $scope.moredata = true;
-        $scope.doctors = $scope.alldoctors;
-        $scope.search.name = '';
-    }
+ 
     $scope.clearSearch = function() {
         $scope.search.name = '';
         $scope.issearching = true;
         $scope.isnotsearching = false;
         $scope.moredata = true;
         $scope.doctors = $scope.alldoctors;
-        $scope.search.name = '';
     }
     $scope.doctorClick = function(doc) {
         console.log(doc)
@@ -1423,15 +1416,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log(err);
             })
     }
-    $scope.closeSearch = function() {
-        $scope.issearching = true;
-        $scope.isnotsearching = false;
+    // $scope.closeSearch = function() {
+    //     $scope.issearching = true;
+    //     $scope.isnotsearching = false;
 
-        $scope.moredata = true;
-        $scope.doctors = $scope.alldoctors;
-        $scope.search.name = '';
+    //     $scope.moredata = true;
+    //     $scope.doctors = $scope.alldoctors;
+    //     $scope.search.name = '';
 
-    }
+    // }
     $scope.clearSearch = function() {
         $scope.search.name = '';
          $scope.issearching = true;
@@ -2201,11 +2194,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             })
     }
 
-    $scope.clearSearch = function(){
-        $scope.params.query='';
-        console.log('clearSearch');
+    // $scope.clearSearch = function(){
+    //     $scope.params.query='';
+    //     console.log('clearSearch');
 
-    }
+    // }
     $scope.$watch('params.query',function(val,val1){
         if($scope.params.query==''){
             $scope.doctors=allDoctors;
@@ -2289,9 +2282,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }, function(err) {
             console.log(err);
         });
-    $scope.clearSearch = function(){
-        $scope.query.name='';
-    }
+    // $scope.clearSearch = function(){
+    //     $scope.query.name='';
+    // }
     // $scope.$watch('query.name',function(newVal,oldVal){
     //     if(newVal==''){
     //         $scope.params.isSearch=false;
