@@ -4,7 +4,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //登录
 .controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce) {
     $scope.barwidth="width:0%";
-    $scope.navigation_login=$sce.trustAsResourceUrl("http://121.196.221.44:69/member.php?mod=logging&action=logout&formhash=xxxxxx");
+    $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null){
         $scope.logOn={username:Storage.get('USERNAME'),password:""};
     }
@@ -490,7 +490,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
                     $http({
                         method  : 'POST',
-                        url     : 'http://121.196.221.44:69/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+                        url     : 'http://proxy.haihonghospitalmanagement.com/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
                         params    :{
                             'regsubmit':'yes',
                             'formhash':'',
@@ -714,8 +714,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
             console.log(data)
-            $scope.navigation_login=$sce.trustAsResourceUrl("http://121.196.221.44:69/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+data.results.name+Storage.get('USERNAME').slice(7)+"&password="+data.results.name+Storage.get('USERNAME').slice(7));
-            $scope.navigation=$sce.trustAsResourceUrl("http://121.196.221.44:69/");
+            $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+data.results.name+Storage.get('USERNAME').slice(7)+"&password="+data.results.name+Storage.get('USERNAME').slice(7));
+            $scope.navigation=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/");
         },
         function(err)
         {
@@ -2182,7 +2182,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.rm('PASSWORD');
         Storage.rm('userid');
         console.log($state);
-        $scope.navigation_login=$sce.trustAsResourceUrl("http://121.196.221.44:69/member.php?mod=logging&action=logout&formhash=xxxxxx");
+        $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
         $timeout(function(){$state.go('signin');},500);
     };
   
