@@ -935,7 +935,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 //"咨询”进行中
 .controller('doingCtrl', ['$scope','$state','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','Counsel','$ionicHistory','New',  function($scope, $state,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,Counsel,$ionicHistory,New) {
-    $scope.$on('$ionicView.beforeEnter',function(){
+    var load = function(){
         Counsel.getCounsels({userId:Storage.get('UID'), status:1 })
         .then(function(data){
             $scope.allpatients=data.results;
@@ -944,9 +944,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 $scope.patients=pats;
             })
             // $scope.patients=data.results;
-        })
+        })        
+    }
+    $scope.$on('$ionicView.beforeEnter',function(){
+        load();
     })
-
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }   
     // $scope.allpatients=angular.fromJson(Storage.get("consulting"));
     // $scope.patients=$scope.allpatients;
     // console.log($scope.allpatients)
@@ -1032,7 +1039,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 //"咨询”已完成
 .controller('didCtrl', ['$scope','$state','Counsel','$ionicLoading','$interval','$rootScope', 'Storage','$ionicPopover','$ionicHistory','New',  function($scope, $state,Counsel,$ionicLoading,$interval,$rootScope,Storage,$ionicPopover,$ionicHistory,New) {
-    $scope.$on('$ionicView.beforeEnter',function(){
+    var load = function(){
         Counsel.getCounsels({userId:Storage.get('UID'), status:0 })
         .then(function(data){
             $scope.allpatients=data.results;
@@ -1042,8 +1049,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             })
 
             // $scope.patients=data.results;
-        })
+        })        
+    }
+    $scope.$on('$ionicView.beforeEnter',function(){
+        load();
     })
+    $scope.doRefresh = function(){
+        load();
+        // Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+    }   
     // $scope.allpatients=angular.fromJson(Storage.get("consulted"));
     // $scope.patients=$scope.allpatients;
     //----------------开始搜索患者------------------
