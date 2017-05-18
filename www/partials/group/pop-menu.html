@@ -1,11 +1,9 @@
 <ion-popover-view style="width:150px">
-  <ion-content>
-    <ion-list class="text-center">
-      <ion-item ng-repeat="option in options track by $index" href="{{option.href}}">
-        <!-- <a> -->
-        <p >{{option.name}}</p>
-        <!-- </a> -->
-      </ion-item>
-    </ion-list>
-  </ion-content>
+    <ion-content>
+        <ion-list class="text-center">
+            <ion-item ng-repeat="option in options track by $index" href="{{option.href}}">
+                <p>{{option.name}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-popover-view>
