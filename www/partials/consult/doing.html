@@ -8,6 +8,7 @@
         </ion-nav-buttons>
     </ion-nav-bar>
     <ion-content style="background: #fafafa">
+        <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
         <div class="bar bar-header item-input-inset" style="height:40px;">
             <div class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon"></i>
