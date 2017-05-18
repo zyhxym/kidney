@@ -19,6 +19,7 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
     $ionicPlatform.ready(function() {
+        socket = io.connect(CONFIG.socketServer+'chat');
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
