@@ -605,7 +605,7 @@ display: inline-block;
 .msg-body {
   position: relative;
   display: table;
-  box-shadow: inset 0px -1.5px 0px #d7d7d7;
+  box-shadow:  0px 1px 1.5px #ccc;
   vertical-align: middle;
   /*width: 250px;*/
   min-height: 3em;
@@ -754,46 +754,42 @@ display: inline-block;
   float: right;
 }
 
-.media-card {
-  box-shadow: inset 0px -1.5px 0px #d7d7d7;
-  width: 84%;
-  padding: 0.5em;
-  background: #FFF;
-  margin: auto;
+.media-card{
+    width:100%;
+    padding:0.8em;
+    background: #FFF;
 }
-
-.media-card .title {
-  font-size: 1.25em;
-  padding: 0.2em;
-
+.media-card .title{
+    font-size: 1.1em;
+    padding:0.2em;
 }
-
-.media-card p {
-
+.media-card .title span{
+    font-size: 0.75em;
+    padding-left:0.2em;
+    color:#aaa;
 }
-
-.media-card span {
-  color: #2196F3;
-  font-size: 1.15em;
-  padding-right: 0.5em;
+.media-card p{
+    margin-bottom:8px;
 }
-
-.media-card .img-info {
-  font-size: 1.1em;
-  color: #666;
+.media-card span{
+    color:#2196F3;
+    font-size:1.15em;
+    padding-right:0.5em;    
 }
-
-.media-card img {
-  height: 3.2em;
-  width: 3.2em;
-  margin: 0.2em;
+.media-card .img-info{
+    font-size:1.1em;
+    color:#666; 
 }
-
-.media-card hr {
-  border-color: #C7C7C7;
-  border-style: solid;
-  border-width: 1px 0px 0px 0px;
-  /*margin: 3px 0px 2px 0px;*/
+.media-card img{
+    height: 3.2em;
+    width:3.2em;
+    margin:0.2em;
+}
+.media-card hr{
+    border-color:#C7C7C7;
+    border-style:solid;
+    border-width:1px 0px 0px 0px;
+    /*margin: 3px 0px 2px 0px;*/
 }
 
 .media-endl {
@@ -971,7 +967,15 @@ display: inline-block;
   white-space: nowrap;
   overflow: hidden;
 }
-
+.card-prefix p{
+    margin-top:8px;
+    margin-bottom:8px;
+}
+.card-prefix span{
+    color:#2196F3;
+    font-size:1.15em;
+    padding-right:0.5em;
+}
 /*QR code ----------------------------------------------------------*/
 .qr-code {
   width: 90%;
