@@ -28,7 +28,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
     function upload(gid) {
         var time = new Date();
-        $scope.team.teamId = 'T' + $filter('date')(time, 'MMddHmsss');
+        $scope.team.teamId = $filter('date')(time, 'ssmsssH');
         $scope.team.sponsorId = Storage.get('UID');
         Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
             .then(function(data) {
@@ -456,6 +456,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     //render msgs 
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.timer=[];
         $scope.photoUrls = {};
         $scope.msgs = [];
         $scope.params.key = '';
@@ -609,6 +610,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.helpDivHeight = 0;
     })
     $scope.$on('$ionicView.beforeLeave', function() {
+        for(var i in $scope.timer) clearTimeout($scope.timer[i]);
         socket.off('messageRes');
         socket.off('getMsg');
         socket.off('err');
@@ -631,9 +633,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
 
     function sendNotice(type,status,cnt){
-        return setTimeout(function(){
+        var t = setTimeout(function(){
             return sendCnNotice(type,status,cnt);
         },2000);
+        $scope.timer.push(t);
     }
     function sendCnNotice(type,status,cnt){
         var len=$scope.msgs.length;
@@ -1300,6 +1303,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //voice.record() do 2 things: record --- file manipulation 
         voice.record()
             .then(function(fileUrl) {
+
+
                 $scope.params.recording=false;
                 window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
                 viewUpdate(5, true);
@@ -1707,14 +1712,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $scope.params.title+= '-'+data.result.patientId.name;
             console.log(data)
             $rootScope.patient = data.result;
-            $scope.params.targetName = '['+data.result.patientId.name+']'+$scope.params.team.name;
-
-        });
-        Communication.getTeam({ teamId: $scope.params.teamId })
-        .then(function(data) {
-            for(i=0;i<data.results.members.length;i++){
-                $scope.photoUrls[data.results.members[i].userId]=data.results.members[i].photoUrl;
-            }
+            Communication.getTeam({ teamId: $scope.params.teamId })
+                .then(function(data) {
+                    $scope.params.targetName = '['+data.result.patientId.name+']'+$scope.params.team.name;
+                    for(i=0;i<data.results.members.length;i++){
+                        $scope.photoUrls[data.results.members[i].userId]=data.results.members[i].photoUrl;
+                    }
+                });
         });
     }
     $scope.DisplayMore = function() {
@@ -2395,7 +2399,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
     };
 }])
-.controller('selectTeamCtrl', ['$state', '$scope', 'JM', '$ionicPopup', 'Doctor', 'Communication', 'Storage', function($state, $scope, JM, $ionicPopup, Doctor, Communication, Storage) {
+.controller('selectTeamCtrl', ['$state', '$scope', 'JM', '$ionicPopup', 'Doctor', 'Communication', 'Storage','$filter','CONFIG', function($state, $scope, JM, $ionicPopup, Doctor, Communication, Storage,$filter,CONFIG) {
     $scope.params = {
         // isSearch:false,
     }
