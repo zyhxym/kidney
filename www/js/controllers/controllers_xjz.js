@@ -28,7 +28,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
     function upload(gid) {
         var time = new Date();
-        $scope.team.teamId = 'T' + $filter('date')(time, 'MMddHmsss');
+        $scope.team.teamId = $filter('date')(time, 'ssmsssH');
         $scope.team.sponsorId = Storage.get('UID');
         Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
             .then(function(data) {
@@ -456,6 +456,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     //render msgs 
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.timer=[];
         $scope.photoUrls = {};
         $scope.msgs = [];
         $scope.params.key = '';
@@ -609,6 +610,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.helpDivHeight = 0;
     })
     $scope.$on('$ionicView.beforeLeave', function() {
+        for(var i in $scope.timer) clearTimeout($scope.timer[i]);
         socket.off('messageRes');
         socket.off('getMsg');
         socket.off('err');
@@ -631,9 +633,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
 
     function sendNotice(type,status,cnt){
-        return setTimeout(function(){
+        var t = setTimeout(function(){
             return sendCnNotice(type,status,cnt);
         },2000);
+        $scope.timer.push(t);
     }
     function sendCnNotice(type,status,cnt){
         var len=$scope.msgs.length;
@@ -1187,28 +1190,29 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         return msgJson;
     }
     function localMsgGen(msg,url){
-        var data=msg.content,
-            type=msg.contentType;
-        if(type=='image'){
-            data.localPath=url;
-        }else if(type=='voice'){
-            data.localPath=url;
+        var d = {},
+            type = msg.contentType;
+        if (type == 'image') {
+            d.src = msg.content.src;
+            d.src_thumb = msg.content.src_thumb;
+            d.localPath = url;
+        } else if (type == 'voice') {
+            d.localPath = url;
+            d.src = msg.content.src;
         }
         return {
             clientType:'app',
             contentType:type,
-            fromID:$scope.params.UID,
-            fromName:thisDoctor.name,
-            fromUser:{
-                avatarPath: CONFIG.mediaUrl+'uploads/photos/resized'+$scope.params.UID+'_myAvatar.jpg'
-            },
-            targetID:$scope.params.chatId,
-            targetName:$scope.params.targetName,
+            fromID: msg.fromID,
+            fromName: msg.fromName,
+            fromUser: msg.fromUser,
+            targetID: msg.targetID,
+            targetName: msg.targetName,
             targetType:'single',
             status:'send_going',
             createTimeInMillis: msg.createTimeInMillis,
-            newsType:$scope.params.newsType,
-            content:data
+            newsType:msg.newsType,
+            content:d
         }
     }
     function sendmsg(content,type){
@@ -1279,8 +1283,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         'uploads/photos/' + fm,
                         'uploads/photos/resized' + fm
                     ],
-                    imgMsg = msgGen(d,'image');
-                $scope.pushMsg(localMsgGen(imgMsg,url));
+                    imgMsg = msgGen(d,'image'),
+                    localMsg = localMsgGen(imgMsg,url);
+                $scope.pushMsg(localMsg);
                 Camera.uploadPicture(url, fm)
                     .then(function() {
                         socket.emit('message',{msg:imgMsg,to:$scope.params.chatId,role:'doctor'});
@@ -1290,7 +1295,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }, function(err) {
                 $ionicLoading.show({ template: '打开图片失败', duration: 2000 })
                 console.error(err);
-            })
+            });
     };
 
     //get voice
@@ -1298,6 +1303,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //voice.record() do 2 things: record --- file manipulation 
         voice.record()
             .then(function(fileUrl) {
+
+
                 $scope.params.recording=false;
                 window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
                 viewUpdate(5, true);
@@ -1705,14 +1712,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $scope.params.title+= '-'+data.result.patientId.name;
             console.log(data)
             $rootScope.patient = data.result;
-            $scope.params.targetName = '['+data.result.patientId.name+']'+$scope.params.team.name;
-
-        });
-        Communication.getTeam({ teamId: $scope.params.teamId })
-        .then(function(data) {
-            for(i=0;i<data.results.members.length;i++){
-                $scope.photoUrls[data.results.members[i].userId]=data.results.members[i].photoUrl;
-            }
+            Communication.getTeam({ teamId: $scope.params.teamId })
+                .then(function(data) {
+                    $scope.params.targetName = '['+data.result.patientId.name+']'+$scope.params.team.name;
+                    for(i=0;i<data.results.members.length;i++){
+                        $scope.photoUrls[data.results.members[i].userId]=data.results.members[i].photoUrl;
+                    }
+                });
         });
     }
     $scope.DisplayMore = function() {
@@ -2042,67 +2048,70 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         },20000);
     }
 
-    function msgGen(content,type){
-        var data={};
-        if(type=='text'){
-            data={
-                text:content
+    function msgGen(content, type) {
+        var data = {};
+        if (type == 'text') {
+            data = {
+                text: content
             };
-        }else if(type=='image'){
-            data={
-                src:content[0],
-                src_thumb:content[1]
+        } else if (type == 'image') {
+            data = {
+                src: content[0],
+                src_thumb: content[1]
             };
-        }else if(type=='voice'){
-            data={
-                src:content
+        } else if (type == 'voice') {
+            data = {
+                src: content
             };
         }
-        var msgJson={
-            clientType:'app',
-            contentType:type,
-            fromID:$scope.params.UID,
-            fromName:thisDoctor.name,
-            fromUser:{
-                avatarPath: CONFIG.mediaUrl+'uploads/photos/resized'+$scope.params.UID+'_myAvatar.jpg'
+        var msgJson = {
+            clientType: 'app',
+            contentType: type,
+            fromID: $scope.params.UID,
+            fromName: thisDoctor.name,
+            fromUser: {
+                avatarPath: CONFIG.mediaUrl + 'uploads/photos/resized' + $scope.params.UID + '_myAvatar.jpg'
             },
-            targetID:$scope.params.groupId,
-            teamId:$scope.params.teamId,
-            targetName:$scope.params.targetName,
-            targetType:'group',
-            status:'send_going',
+            targetID: $scope.params.groupId,
+            teamId: $scope.params.teamId,
+            targetName: $scope.params.targetName,
+            targetType: 'group',
+            status: 'send_going',
             createTimeInMillis: Date.now(),
-            newsType:$scope.params.newsType,
-            content:data
+            newsType: $scope.params.newsType,
+            content: data
         }
         return msgJson;
     }
-    function localMsgGen(msg,url){
-        var data=msg.content,
-            type=msg.contentType;
-        if(type=='image'){
-            data.localPath=url;
-        }else if(type=='voice'){
-            data.localPath=url;
+
+    function localMsgGen(msg, url) {
+        var d = {},
+            type = msg.contentType;
+        if (type == 'image') {
+            d.src = msg.content.src;
+            d.src_thumb = msg.content.src_thumb;
+            d.localPath = url;
+        } else if (type == 'voice') {
+            d.localPath = url;
+            d.src = msg.content.src;
         }
         return {
-            clientType:'app',
-            contentType:type,
-            fromID:$scope.params.UID,
-            fromName:thisDoctor.name,
-            fromUser:{
-                avatarPath: CONFIG.mediaUrl+'uploads/photos/resized'+$scope.params.UID+'_myAvatar.jpg'
-            },
-            targetID:$scope.params.groupId,
-            teamId:$scope.params.teamId,
-            targetName:$scope.params.targetName,
-            targetType:'group',
-            status:'send_going',
+            clientType: 'app',
+            contentType: type,
+            fromID: msg.fromID,
+            fromName: msg.fromName,
+            fromUser: msg.fromUser,
+            targetID: msg.targetID,
+            teamId: msg.teamId,
+            targetName: msg.targetName,
+            targetType: 'group',
+            status: 'send_going',
             createTimeInMillis: msg.createTimeInMillis,
-            newsType:$scope.params.newsType,
-            content:data
+            newsType: msg.newsType,
+            content: d
         }
     }
+
     function sendmsg(content,type){
         var msgJson=msgGen(content,type);
         console.info('[socket.connected]',socket.connected);
@@ -2126,8 +2135,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         'uploads/photos/' + fm,
                         'uploads/photos/resized' + fm
                     ],
-                    imgMsg = msgGen(d,'image');
-                $scope.pushMsg(localMsgGen(imgMsg,url));
+                    imgMsg = msgGen(d,'image'),
+                    localMsg = localMsgGen(imgMsg,url);
+                $scope.pushMsg(localMsg);
                 Camera.uploadPicture(url, fm)
                     .then(function() {
                         socket.emit('message',{msg:imgMsg,to:$scope.params.groupId,role:'doctor'});
@@ -2389,7 +2399,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
     };
 }])
-.controller('selectTeamCtrl', ['$state', '$scope', 'JM', '$ionicPopup', 'Doctor', 'Communication', 'Storage', function($state, $scope, JM, $ionicPopup, Doctor, Communication, Storage) {
+.controller('selectTeamCtrl', ['$state', '$scope', 'JM', '$ionicPopup', 'Doctor', 'Communication', 'Storage','$filter','CONFIG', function($state, $scope, JM, $ionicPopup, Doctor, Communication, Storage,$filter,CONFIG) {
     $scope.params = {
         // isSearch:false,
     }
