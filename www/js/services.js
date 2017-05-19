@@ -44,9 +44,11 @@ angular.module('kidney.services', ['ionic','ngResource'])
     crossKey:'fe7b9ba069b80316653274e4',
     appKey: 'cf32b94444c4eaacef86903e',
     baseUrl: 'http://121.43.107.106:4050/',
+    mediaUrl: 'http://121.43.107.106:8052/',
+    socketServer:'ws://121.43.107.106:4050/',
     cameraOptions: {
         cam: {
-            quality: 60,
+            quality: 70,
             destinationType: 1,
             sourceType: 1,
             allowEdit: true,
@@ -57,7 +59,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             saveToPhotoAlbum: false
         },
         gallery: {
-            quality: 60,
+            quality: 70,
             destinationType: 1,
             sourceType: 0,
             allowEdit: true,
@@ -228,54 +230,6 @@ angular.module('kidney.services', ['ionic','ngResource'])
     return audio;
 }])
 
-.factory('Chats', function() {
-    // Might use a resource here that returns a JSON array
-
-    // Some fake testing data
-    var chats = [{
-        id: 'user001',
-        name: 'user001',
-        lastText: 'You on your way?',
-        face: 'img/ben.png'
-    }, {
-        id: 'user002',
-        name: 'user002',
-        lastText: 'Hey, it\'s me',
-        face: 'img/max.png'
-    }, {
-        id: 'user003',
-        name: 'user003',
-        lastText: 'I should buy a boat',
-        face: 'img/adam.jpg'
-    }, {
-        id: 'user004',
-        name: 'user004',
-        lastText: 'Look at my mukluks!',
-        face: 'img/perry.png'
-    }, {
-        id: 'user005',
-        name: 'user005',
-        lastText: 'This is wicked good ice cream.',
-        face: 'img/mike.png'
-    }];
-
-    return {
-        all: function() {
-            return chats;
-        },
-        remove: function(chat) {
-            chats.splice(chats.indexOf(chat), 1);
-        },
-        get: function(chatId) {
-            for (var i = 0; i < chats.length; i++) {
-                if (chats[i].id === parseInt(chatId)) {
-                    return chats[i];
-                }
-            }
-            return null;
-        }
-    };
-})
 //jmessage XJZ
 .factory('JM', ['Storage','$q','Doctor', function(Storage,$q,Doctor) {
     var ConversationList = [];
@@ -887,6 +841,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Communication =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
+            conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000},
+            getCommunication:{method:'GET', params:{route: 'getCommunication'}, timeout: 100000},
             getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
             getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
             insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
@@ -895,7 +851,6 @@ angular.module('kidney.services', ['ionic','ngResource'])
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
             updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000},
             getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000},
-            conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000},
             postCommunication:{method:'POST', params:{route: 'postCommunication'}, timeout: 100000}
         });
     }
@@ -914,7 +869,16 @@ angular.module('kidney.services', ['ionic','ngResource'])
             insertNews:{method:'POST', params:{route: 'insertNews'}, timeout: 100000},
             getNewsByReadOrNot:{method:'GET', params:{route: 'getNewsByReadOrNot'}, timeout: 100000}
         });
-    }   
+    }
+
+    var wechat = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'wechat'},{
+            // settingConfig:{method:'GET', params:{route: 'settingConfig'}, timeout: 100000},
+            // getUserInfo:{method:'GET', params:{route: 'getUserInfo'}, timeout: 100000},
+            // download:{method:'GET', params:{route: 'download'}, timeout: 100000},
+            messageTemplate:{method:'POST', params:{route: 'messageTemplate'}, timeout: 100000}
+        })
+    }
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -934,6 +898,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Message = Message();
             serve.Communication = Communication();
             serve.User = User();
+            serve.wechat = wechat();
             serve.Insurance = Insurance();
             serve.New = New();            
         }, 0, 1);
@@ -952,6 +917,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Message = Message();
     serve.Communication = Communication();
     serve.User = User();
+    serve.wechat = wechat();
     serve.Insurance = Insurance();
     serve.New = New();      
     return serve;
@@ -1206,6 +1172,21 @@ angular.module('kidney.services', ['ionic','ngResource'])
     self.conclusion = function(params){
         var deferred = $q.defer();
         Data.Communication.conclusion(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    //params-> messageType=2&id2=teamOrConsultation&limit=1&skip=0
+    //         messageType=1&id1=doc&id2=pat&limit=1&skip=0
+    self.getCommunication = function(params){
+        var deferred = $q.defer();
+        Data.Communication.getCommunication(
             params,
             function(data, headers){
                 deferred.resolve(data);
@@ -2350,6 +2331,24 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 
+}])
+.factory('wechat', ['$q', 'Data', function($q, Data){
+    var self = this;
+
+    self.messageTemplate = function(params){
+        var deferred = $q.defer();
+        Data.wechat.messageTemplate(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    
+    return self;
 }])
 .factory('arrTool',function(){
     return {

@@ -19,6 +19,7 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage', 'JM','$rootScope','CONFIG','Communication', function($ionicPlatform, $state, Storage, JM,$rootScope,CONFIG,Communication) {
     $ionicPlatform.ready(function() {
+        socket = io.connect(CONFIG.socketServer+'chat');
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
@@ -550,25 +551,23 @@ angular.module('kidney',[
             }
         })
     .state('tab.group-kick', {
-            url: '/groups/kick',
+            url: '/groups/:teamId/kick',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-kick.html',
                     controller: 'GroupKickCtrl'
                 }
-            },
-            params:{teamId:null}
+            }
         })
     .state('tab.group-add-member', {
             //type : 'new'表示从新建组进来的，不是'new'就是已有team加成员
-            url: '/groups/addmember/:type',
+            url: '/groups/:teamId/addmember/:type/',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-add-member.html',
                     controller: 'GroupAddMemberCtrl'
                 }
-            },
-            params:{teamId:null}
+            }
         })
     .state('tab.group-detail', {
             url: '/groups/detail',
@@ -592,50 +591,43 @@ angular.module('kidney',[
         })
     .state('tab.group-chat', {
         //'0':团队交流  '1': 未结束病历  '2':已结束病历
-            url: '/groups/chat',
+            url: '/groups/chat/t/:type/:groupId/:teamId',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/group-chat.html',
                     controller: 'GroupChatCtrl'
-                    // params:{'group':null,'type':'0','groupId':null}
-                },
-                // params:['group','typr','groupId']
-            },
-            params:{'type':'0','teamId':null,'groupId':null}
-            // params:['group','typr','groupId']
+                }
+            }
         })
     .state('tab.group-conclusion', {
-            url: '/groups/conclusion',
+            url: '/groups/conclusion/:groupId/:teamId',
             views: {
                 'tab-groups': {
                     templateUrl: 'partials/group/conclusion.html',
                     controller: 'GroupConclusionCtrl'
                 }
-            },
-            params:{groupId:null,teamId:null}
+            }
         })
     .state('tab.group-patient', {
         // cache: false,
-        url: '/group/patients',
+        url: '/group/patients/:teamId',
         views: {
             'tab-groups':{
                 controller: 'groupPatientCtrl',
                 templateUrl: 'partials/group/group-patient.html'
             }
-        },
-        params:{teamId:null}
+        }
     })
     //医生个人信息
     .state('tab.group-profile', {
         // cache: false,
-        url: '/group/doctor/profile',
+        url: '/group/doctor/:memberId/profile',
         views: {
             'tab-groups':{
                 controller: 'doctorProfileCtrl',
                 templateUrl: 'partials/group/profile.html'
             }
-        },
-        params:{memberId:null}
+        }
     })
 
     // views-tab-me
