@@ -249,7 +249,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 
 //我的团队
-.controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover', 'Doctor', 'Storage', 'Patient','arrTool','$q', function($scope, $http, $state, $ionicPopover, Doctor, Storage, Patient,arrTool,$q) {
+.controller('groupsCtrl', ['$scope', '$http', '$state', '$ionicPopover', 'Doctor', 'Storage', 'Patient','arrTool','$q','$cordovaLocalNotification', function($scope, $http, $state, $ionicPopover, Doctor, Storage, Patient,arrTool,$q,$cordovaLocalNotification ) {
     // $scope.teams=[];
     // $scope.doctors=[];
     $scope.query = {
@@ -365,6 +365,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //type:   '0'=team  '1'=doctor
         $scope.params.isTeam = $state.params.type == '0';
         $scope.params.showSearch = false;
+         //notification test by zyh at 5/18
+    $cordovaLocalNotification.schedule({
+        id: 1,
+        title: 'Title here',
+        text: 'Text here',
+        data: {
+          customProperty: 'custom value'
+        }
+      }).then(function (result) {
+        // ...
+      });
     })
     $scope.$on('receiveMessage',function(event, msg) {
         $scope.load();
@@ -479,7 +490,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }];
 }])
 //团队病历
-.controller('groupPatientCtrl', ['$scope', '$http', '$state', 'Storage', '$ionicHistory','Doctor','$ionicLoading', function($scope, $http, $state, Storage, $ionicHistory,Doctor,ionicLoading) {
+.controller('groupPatientCtrl', ['$scope', '$rootScope','$http', '$state', 'Storage', '$ionicHistory','Doctor','$ionicLoading','$cordovaLocalNotification', function($scope, $rootScope,$http, $state, Storage, $ionicHistory,Doctor,ionicLoading,$cordovaLocalNotification) {
 
     $scope.grouppatients0 = "";
     $scope.grouppatients1 = "";
@@ -494,6 +505,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.teamId = $state.params.teamId;
         console.log($scope.params);
         $scope.load();
+     //notification test by zyh at 5/18
+     $cordovaLocalNotification.cancel(1).then(function (result) {
+        // ...
+      });
+
     });
     $scope.load = function() {
         Doctor.getGroupPatientList({ teamId: $scope.params.teamId, status: 1 }) //1->进行中
@@ -511,6 +527,34 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log(err)
             })
     }
+     $rootScope.$on('$cordovaLocalNotification:schedule',
+    function (event, notification, state) {
+      console.log(event)
+      console.log(notification)
+      console.log(state)
+      console.log("schedule")
+    });
+    $rootScope.$on('$cordovaLocalNotification:trigger',
+    function (event, notification, state) {
+     console.log(event)
+      console.log(notification)
+      console.log(state)
+      console.log("trigger")
+    });
+     $rootScope.$on('$cordovaLocalNotification:clear',
+    function (event, notification, state) {
+     console.log(event)
+      console.log(notification)
+      console.log(state)
+      console.log("clear")
+    });
+      $rootScope.$on('$cordovaLocalNotification:click',
+    function (event, notification, state) {
+     console.log(event)
+      console.log(notification)
+      console.log(state)
+      console.log("click")
+    });
 
     $scope.doRefresh = function(){
         $scope.load();

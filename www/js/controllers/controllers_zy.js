@@ -2,7 +2,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying///////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce', 'CONFIG','$cordovaLocalNotification',function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce,CONFIG,$cordovaLocalNotification) {
     $scope.barwidth="width:0%";
     $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null){
@@ -51,6 +51,48 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         },function(err){
                           console.log('login fail');
                         })
+
+                        socket = io.connect(CONFIG.socketServer+'chat');
+                        socket.emit('newUser', { user_name: $scope.logOn.username, user_id: data.results.userId });
+                        socket.on('getMsg', function(data) {
+                            $cordovaLocalNotification.schedule({
+                                id: 1,
+                                title: 'Title here',
+                                text: 'Text here',
+                                data: {
+                                  customProperty: 'custom value'
+                                }
+                              }).then(function (result) {
+                                // ...
+                              });
+                    console.info('getMsg');
+                    console.log(data);
+                    if (data.msg.targetType == 'single' && data.msg.fromID == $state.params.chatId) {
+                        $scope.$apply(function() {
+                            $scope.pushMsg(data.msg);
+                        });
+                        if ($scope.params.type != '2' && data.msg.targetType == 'custom' && (data.msg.content.type == 'card' || data.msg.content.type == 'counsel-payment')) {
+                            Communication.getCounselReport({ counselId: data.msg.content.counselId })
+                                .then(function(data) {
+                                    console.log(data)
+                                    $scope.params.counsel = data.results;
+                                    $scope.counseltype = data.results.type == '3' ? '2' : data.results.type;
+                                    $scope.counselstatus = data.results.status;
+                                    $scope.params.realCounselType = data.results.type;
+                                }, function(err) {
+                                    console.log(err);
+                                })
+                        }
+                        if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade') {
+                            $scope.$apply(function() {
+                                $scope.counseltype = '2';
+                            });
+                            $scope.counselstatus = 1;
+                        }
+                        New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, readOrNot: 1 });
+                    }
+                });
+
 
                         $scope.logStatus = "登录成功！";
                         $ionicHistory.clearCache();
