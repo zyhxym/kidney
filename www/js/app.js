@@ -639,7 +639,17 @@ angular.module('kidney',[
     })
 
     // views-tab-me
-
+    //账单
+    .state('tab.bill', {
+        // cache: false,
+        url: '/bill',
+        views: {
+            'tab-me':{
+                controller: 'billCtrl',
+                templateUrl: 'partials/me/bill.html'
+            }
+        }
+    })
     //schedual
     .state('tab.schedual', {
         // cache: false,

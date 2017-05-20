@@ -830,7 +830,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             getSuspendTime:{method:'GET',params:{route:'getSuspendTime'},timeout:10000},
             insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
             deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
-            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000}
+            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000},
+            getDocNum:{method:'GET',params:{route:'getDocNum'},timeout:10000}
         });
     }
 
@@ -914,7 +915,13 @@ angular.module('kidney.services', ['ionic','ngResource'])
             insertNews:{method:'POST', params:{route: 'insertNews'}, timeout: 100000},
             getNewsByReadOrNot:{method:'GET', params:{route: 'getNewsByReadOrNot'}, timeout: 100000}
         });
-    }   
+    }  
+
+    var Expense =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'expense'},{
+            getDocRecords:{method:'GET', params:{route: 'getDocRecords'}, timeout: 100000}
+        });
+    }  
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -935,7 +942,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Communication = Communication();
             serve.User = User();
             serve.Insurance = Insurance();
-            serve.New = New();            
+            serve.New = New();          
+            serve.Expense = Expense();    
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -953,7 +961,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Communication = Communication();
     serve.User = User();
     serve.Insurance = Insurance();
-    serve.New = New();      
+    serve.New = New();  
+    serve.Expense = Expense();        
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -2097,6 +2106,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
+
+    //params->empty
+    self.getDocNum = function(){
+        var deferred = $q.defer();
+        Data.Doctor.getDocNum(
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
   
     return self;
 }])
@@ -2369,3 +2391,26 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 })
+.factory('Expense', ['$q', 'Data', function($q, Data){
+    var self = this;
+
+    //params->0:{
+                    // doctorId:'U201705050009', 
+                    // limit:3, 
+                    // skip:0
+    //          }
+    self.getDocRecords = function(params){
+        var deferred = $q.defer();
+        Data.Expense.getDocRecords(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    return self;
+}])
