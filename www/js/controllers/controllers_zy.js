@@ -2,7 +2,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying///////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','JM','$sce','Doctor', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,JM,$sce,Doctor) {
     $scope.barwidth="width:0%";
     $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null){
@@ -45,13 +45,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     }
                     else if(data.results.mesg=="login success!"){
                         //jmessage
-                        JM.login(data.results.userId)
-                        .then(function(data){ 
-                          console.log(data+" is login");
+                        // JM.login(data.results.userId)
+                        // .then(function(data){ 
+                        //   console.log(data+" is login");
+                        // },function(err){
+                        //   console.log('login fail');
+                        // })
+                        Doctor.getDoctorInfo({userId:data.results.userId})
+                        .then(function(response){
+                            thisDoctor = response.results;
                         },function(err){
-                          console.log('login fail');
-                        })
-
+                            thisDoctor=null;
+                        });
                         $scope.logStatus = "登录成功！";
                         $ionicHistory.clearCache();
                         $ionicHistory.clearHistory();
@@ -279,7 +284,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var a=document.getElementById("agreement");
     // console.log(document.body.clientHeight);
     // console.log(window.screen.height);
-    a.style.height=window.screen.height*0.85+"px";
+    a.style.height=window.screen.height*0.65+"px";
 }])
 
 //设置密码
@@ -1225,6 +1230,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         name:''
     }
     $scope.goSearch = function() {
+        //console.log(123)
         Doctor.getPatientList({ 
             userId:Storage.get('UID'),
             name: $scope.search.name 
@@ -1233,6 +1239,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             //$scope.params.isPatients=true;
             //console.log(data.results)
             $scope.patients = data.results.patients;
+            //console.log($scope.patients)
+            //console.log($scope.allpatients)
+            angular.forEach($scope.patients,
+                function(value,key)
+                {
+                    $scope.patients[key].show=true;
+                }
+            )
             //console.log($scope.patients[0].patientId.name)
             if (data.results.patients.length == 0) {
                 console.log("aaa")
@@ -1243,10 +1257,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
 
-    // $scope.clearSearch = function() {
-    //     $scope.search.name = '';
-    //     $scope.patients = $scope.allpatients;
-    // }
+    $scope.clearSearch = function() {
+        $scope.search.name = '';
+        $scope.patients = $scope.allpatients;
+    }
     //----------------结束搜索患者------------------
     $scope.doRefresh = function(){
         load();

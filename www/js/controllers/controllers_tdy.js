@@ -1824,7 +1824,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
 
     $scope.Goback = function(){
-      $ionicHistory.goBack();
+        $state.go('tab.home')
     }
 
     //患者-医生  获取咨询状态 [status]：1进行中；0已完成  进入聊天：[type]:1=进行中;0=已结束;
@@ -1852,8 +1852,8 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $scope.getTChatDetail = function(Tchat) {
         var msg = JSON.parse(Tchat.url)
         var teamId = msg.teamId
-        var groupId = msg.targetId
-        Communication.getConsultation({consultationId:msg.targetId})
+        var groupId = msg.targetID
+        Communication.getConsultation({consultationId:msg.targetID})
         .then(function(data){
             Storage.set('consultId',data.result.consultId)
             if(data.result.status==1){
