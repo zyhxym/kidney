@@ -155,14 +155,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $q(function(resolve, reject) {
             if (audio.media.src) audio.media.release();
             var time = new Date();
-            audio.src = $filter('date')(time, 'yyyyMMddHHmmss') + '.amr';
+            audio.src = $filter('date')(time, 'yyyyMMddHHmmss') + '.mp3';
             audio.media = new Media(audio.src,
                 function() {
                     console.info("recordAudio():Audio Success");
                     console.log(audio.media);
                     $ionicLoading.hide();
 
-                    fs.mvMedia('voice', audio.src, '.amr')
+                    fs.mvMedia('voice', audio.src, '.mp3')
                         .then(function(fileUrl) {
                             console.log(fileUrl);
                             resolve(fileUrl);
@@ -690,6 +690,37 @@ angular.module('kidney.services', ['ionic','ngResource'])
             // var q = $q.defer();
             //console.log("jinlaile");
             $cordovaFileTransfer.upload(uri,imgURI,options)
+              .then( function(r){
+                console.log("Code = " + r.responseCode);
+                console.log("Response = " + r.response);
+                console.log("Sent = " + r.bytesSent);
+                // var result = "上传成功";
+                resolve(r.response);        
+              }, function(error){
+                console.log(error);
+                alert("An error has occurred: Code = " + error.code);
+                console.log("upload error source " + error.source);
+                console.log("upload error target " + error.target);
+                reject(error);          
+              }, function (progress) {
+                console.log(progress);
+              })
+        })
+    },
+
+    uploadVoice : function(voiURI, temp_voiceaddress){
+        return $q(function(resolve, reject) {
+          var uri = encodeURI("http://121.43.107.106:4050/upload")
+            // var photoname = Storage.get("UID"); // 取出病人的UID作为照片的名字
+            var options = {
+              fileKey : "file",
+              fileName : temp_voiceaddress,
+              chunkedMode : true,
+              mimeType : "audio/mpeg"
+            };
+            // var q = $q.defer();
+            //console.log("jinlaile");
+            $cordovaFileTransfer.upload(uri,voiURI,options)
               .then( function(r){
                 console.log("Code = " + r.responseCode);
                 console.log("Response = " + r.response);

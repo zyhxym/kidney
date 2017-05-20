@@ -425,7 +425,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //"咨询”问题详情
-.controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Account','Counsel','Storage','Doctor','Patient','$q','New','wechat','Account',function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Account, Counsel,Storage,Doctor,Patient,$q,New,wechat,Account) {
+.controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Account','Counsel','Storage','Doctor','Patient','$q','New','wechat','$ionicLoading',function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Account, Counsel,Storage,Doctor,Patient,$q,New,wechat,$ionicLoading) {
     $scope.input = {
         text: ''
     }
@@ -628,7 +628,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //receiving new massage
     $scope.$on('receiveMessage', function(event, msg) {
         if (msg.targetType == 'single' && msg.fromName == $state.params.chatId) {
-            viewUpdate(5);
+            //viewUpdate(5);
         }
     });
 
@@ -899,15 +899,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
     }
     $scope.$on('voice', function(event, args) {
-        console.log(args)
+        console.log(CONFIG.mediaUrl+args[1].src[0])
         event.stopPropagation();
-        $scope.sound = new Media(args[1],
-            function() {
-            },
-            function(err) {
-                console.log(err);
-            })
-        $scope.sound.play();
+        var audio = new Audio(CONFIG.mediaUrl+args[1].src[0]);
+            audio.play();
+
+        // $scope.sound = new Media(args[1],
+        //     function() {
+        //     },
+        //     function(err) {
+        //         console.log(err);
+        //     })
+        // $scope.sound.play();
     })
 
     $scope.$on('holdmsg', function(event, args) {
@@ -1303,12 +1306,27 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         //voice.record() do 2 things: record --- file manipulation 
         voice.record()
             .then(function(fileUrl) {
-
-
+                console.log(fileUrl);
+                var fm = md5(Date.now(), $scope.params.chatId)+ '.mp3',
+                    d = [
+                        'uploads/photos/' + fm
+                        //'uploads/photos/resized' + fm
+                    ],
+                    voiceMsg = msgGen(d,'voice'),
+                    localMsg = localMsgGen(voiceMsg,fileUrl);
+                $scope.pushMsg(localMsg);
+                Camera.uploadVoice(fileUrl, fm)
+                    .then(function(data) {
+                        console.log(data)
+                        socket.emit('message',{msg:voiceMsg,to:$scope.params.chatId,role:'doctor'});
+                    }, function() {
+                        $ionicLoading.show({ template: '语音上传失败', duration: 2000 })
+                    });
                 $scope.params.recording=false;
-                window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
-                viewUpdate(5, true);
+                // window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
+               // viewUpdate(5, true);
             }, function(err) {
+                $ionicLoading.show({ template: '打开语音失败', duration: 2000 })
                 console.log(err);
             });
         $scope.params.recording=true;
