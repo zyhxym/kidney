@@ -287,6 +287,12 @@ angular.module('kidney',[
       templateUrl:'partials/others/userDetail.html',
       controller:'userdetailCtrl'
     })
+    .state('uploadcertificate',{
+      cache:false,
+      url:'/uploadcertificate',
+      templateUrl:'partials/others/uploadcertificate.html',
+      controller:'uploadcertificateCtrl'
+    })
 
     .state('messages',{
       cache:false,

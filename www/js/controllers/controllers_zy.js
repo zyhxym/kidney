@@ -370,9 +370,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         title:"",
         IDNo:"",
         major:"",
-        description:"",
-        certificatePhotoUrl:"",
-        practisingPhotoUrl:""
+        description:""
     };
 
     //------------省市医院读字典表---------------------
@@ -443,7 +441,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.infoSetup = function() 
     {
-        if ($scope.doctor.certificatePhotoUrl&&$scope.doctor.practisingPhotoUrl&&$scope.doctor.name&&$scope.doctor.province&&$scope.doctor.city&&$scope.doctor.workUnit&&$scope.doctor.department&&$scope.doctor.title&&$scope.doctor.IDNo){
+        if ($scope.doctor.name&&$scope.doctor.province&&$scope.doctor.city&&$scope.doctor.workUnit&&$scope.doctor.department&&$scope.doctor.title&&$scope.doctor.IDNo){
             //如果必填信息已填
             var IDreg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;  //身份证号判断
             if ($scope.doctor.IDNo!='' && IDreg.test($scope.doctor.IDNo) == false){
@@ -511,7 +509,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     }).success(function(data) {
                         // console.log(data);
                     });
-                    $state.go('signin');
+                    //zxf
+                    $state.go('uploadcertificate');
                     Storage.set("lt",'bme319');
 
                 },function(err)
@@ -528,6 +527,47 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
     
     };
+    
+
+    // $scope.$on('$ionicView.leave', function() {
+    //     $scope.modal.remove();
+    // })
+}])
+.controller('uploadcertificateCtrl',['Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal',function(Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal){
+    
+    $scope.doctor=""
+    User.logIn({username:Storage.get('RegisterNO'),password:Storage.get('password'),role:"doctor"}).then(function(data){
+        if(data.results.mesg=="login success!"){
+            $scope.doctor.userId=data.results.userId
+        }
+    },function(err){
+        console.log(err);
+    })
+
+    $scope.uploadcetify = function() {
+        if($scope.doctor.userId&&$scope.doctor.certificatePhotoUrl&&$scope.doctor.practisingPhotoUrl){
+            Doctor.editDoctorDetail($scope.doctor)
+            .then(
+                function(data)
+                {
+                    $state.go('signin')
+                    console.log(data)
+                },
+                function(err)
+                {
+                    console.log(err)
+                }
+            );
+        }else{
+            $ionicLoading.show({
+                template: '信息填写不完整,请完善必填信息(红色*)',
+                duration:1000
+            });  
+        }
+        // $scope.ProvinceObject = $scope.doctor.province;
+        // console.log("123"+$scope.ProvinceObject);
+      
+    };
     //0516 zxf
     $scope.flag=0;//判断是给谁传图片 默认是资格证书
     //点击显示大图
@@ -542,14 +582,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     });
 
         
-    // $scope.doctorimgurl="";
-    // $ionicModal.fromTemplateUrl('partials/others/doctorimag.html', {
-    //     scope: $scope,
-    //     animation: 'slide-in-up'
-    // }).then(function(modal) {
-    //     console.log(2222)
-    //     $scope.modal = modal;
-    // });
 
     $scope.onClickCamera = function($event,index){
         $scope.openPopover($event);
@@ -631,7 +663,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $scope.takePicture();
         $scope.closePopover();
     };
-    $scope.isShow=true;
+
     $scope.takePicture = function() {
         Camera.getPicture('cam').then(function(data) {
           var imgURI = data;
@@ -642,31 +674,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })// 照相结束
     }; // function结束
 
-
-
-    // $scope.openModal = function() {
-    //   $scope.modal.show();
-    // };
-    // $scope.closeModal = function() {
-    //   $scope.modal.hide();
-    // };
-    // //Cleanup the modal when we're done with it!
-    // $scope.$on('$destroy', function() {
-    //   $scope.modal.remove();
-    // });
-    // // Execute action on hide modal
-    // $scope.$on('modal.hidden', function() {
-    //   // Execute action
-    // });
-    // // Execute action on remove modal
-    // $scope.$on('modal.removed', function() {
-    //   // Execute action
-    // });
-
-    // //点击图片返回
-    // $scope.imggoback = function(){
-    //     $scope.modal.hide();
-    // };
     $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
@@ -690,11 +697,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.imageHandle.zoomTo(5, true);
         }
     }
-
-    // $scope.$on('$ionicView.leave', function() {
-    //     $scope.modal.remove();
-    // })
 }])
+
 
 //首页
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout','Doctor','New',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout,Doctor,New) {
