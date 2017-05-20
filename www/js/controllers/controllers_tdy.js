@@ -1803,7 +1803,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
 
     $scope.Goback = function(){
-      $ionicHistory.goBack();
+        $state.go('tab.home')
     }
 
     //患者-医生  获取咨询状态 [status]：1进行中；0已完成  进入聊天：[type]:1=进行中;0=已结束;
