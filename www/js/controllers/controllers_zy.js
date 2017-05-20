@@ -284,7 +284,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var a=document.getElementById("agreement");
     // console.log(document.body.clientHeight);
     // console.log(window.screen.height);
-    a.style.height=window.screen.height*0.85+"px";
+    a.style.height=window.screen.height*0.65+"px";
 }])
 
 //设置密码
@@ -1230,6 +1230,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         name:''
     }
     $scope.goSearch = function() {
+        //console.log(123)
         Doctor.getPatientList({ 
             userId:Storage.get('UID'),
             name: $scope.search.name 
@@ -1238,6 +1239,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             //$scope.params.isPatients=true;
             //console.log(data.results)
             $scope.patients = data.results.patients;
+            //console.log($scope.patients)
+            //console.log($scope.allpatients)
+            angular.forEach($scope.patients,
+                function(value,key)
+                {
+                    $scope.patients[key].show=true;
+                }
+            )
             //console.log($scope.patients[0].patientId.name)
             if (data.results.patients.length == 0) {
                 console.log("aaa")
@@ -1248,10 +1257,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         })
     }
 
-    // $scope.clearSearch = function() {
-    //     $scope.search.name = '';
-    //     $scope.patients = $scope.allpatients;
-    // }
+    $scope.clearSearch = function() {
+        $scope.search.name = '';
+        $scope.patients = $scope.allpatients;
+    }
     //----------------结束搜索患者------------------
     $scope.doRefresh = function(){
         load();
