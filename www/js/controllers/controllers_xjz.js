@@ -699,6 +699,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 content:notice
             }
             socket.emit('message',{msg:msgJson,to:$scope.params.chatId,role:'doctor'});
+            $scope.pushMsg(msgJson);
         }
     }
     $scope.getMsg = function(num) {
@@ -1009,6 +1010,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
             socket.emit('message',{msg:msgJson,to:$scope.params.chatId,role:'doctor'});
             $scope.counselstatus='0';
+            $scope.pushMsg(msgJson);
         });
         Counsel.changeCounselStatus({counselId:$state.params.counselId,status:0});
     }
@@ -2207,7 +2209,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //病历结论
-.controller('GroupConclusionCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate','Communication','$ionicLoading','CONFIG','Storage',function($state,$scope,$ionicModal,$ionicScrollDelegate,Communication,$ionicLoading,CONFIG,Storage){
+.controller('GroupConclusionCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate','Communication','$ionicLoading','CONFIG','Storage','Account',function($state,$scope,$ionicModal,$ionicScrollDelegate,Communication,$ionicLoading,CONFIG,Storage,Account){
    
     $scope.input = {
         text: ''
@@ -2222,6 +2224,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.patient = {};
 
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.input.text='';
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
         $scope.params.teamId = $state.params.teamId;
