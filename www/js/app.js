@@ -287,6 +287,12 @@ angular.module('kidney',[
       templateUrl:'partials/others/userDetail.html',
       controller:'userdetailCtrl'
     })
+    .state('uploadcertificate',{
+      cache:false,
+      url:'/uploadcertificate',
+      templateUrl:'partials/others/uploadcertificate.html',
+      controller:'uploadcertificateCtrl'
+    })
 
     .state('messages',{
       cache:false,
@@ -631,7 +637,17 @@ angular.module('kidney',[
     })
 
     // views-tab-me
-
+    //账单
+    .state('tab.bill', {
+        // cache: false,
+        url: '/bill',
+        views: {
+            'tab-me':{
+                controller: 'billCtrl',
+                templateUrl: 'partials/me/bill.html'
+            }
+        }
+    })
     //schedual
     .state('tab.schedual', {
         // cache: false,

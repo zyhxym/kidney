@@ -1853,6 +1853,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         var msg = JSON.parse(Tchat.url)
         var teamId = msg.teamId
         var groupId = msg.targetID
+        if(teamId == groupId) return $state.go("tab.group-chat",{type:0,teamId:teamId,groupId:groupId});
         Communication.getConsultation({consultationId:msg.targetID})
         .then(function(data){
             Storage.set('consultId',data.result.consultId)
@@ -1860,7 +1861,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                 $state.go("tab.group-chat",{type:1,teamId:teamId,groupId:groupId});
             }
             else if(data.result.status==0){
-                $state.go("tab.detail",{type:2,teamId:teamId,groupId:groupId});
+                $state.go("tab.group-chat",{type:2,teamId:teamId,groupId:groupId});
             }
         })
     }
