@@ -36,19 +36,21 @@
                     <div style="display:inline-block;width:70%;">
                         <span>{{p.patientId.name}}</span>
                         <span>{{p.patientId.gender | filterGender}}</span>
-                        <span>{{p.patientId.birthday | filterAge}}岁</span>
+                        <span ng-if = "(p.patientId.birthday)">{{p.patientId.birthday | filterAge}}岁</span>
+                        <span ng-if = "!(p.patientId.birthday)">年龄未知</span>
                         <!-- <span class="mine-msg-right">{{p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name| classname}}</span> -->
-                        <div style="display:inline-block;color:#d81e06;">
+<!--                         <div style="display:inline-block;color:#d81e06;">
                             <i style="" class="iconfont icon-vip f-24" ng-if="p.patientId.VIP==1"></i>
-                        </div>
+                        </div> -->
                         <p>
-                        <i class="y-message bg-12" ng-if="p.patientId.hypertension==1">高血压</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_2'">CKD1-2期</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_3'">CKD3-4期</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_4'">CDK5期</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_6'">腹透</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_5'">血透</i>
-                        <i class="y-message bg-f7" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_1'">肾移植</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_2'">CKD1-2期</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_3'">CKD3-4期</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_4'">CDK5期</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_6'">腹透</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_5'">血透</i>
+                        <i class="y-message bg-12" ng-if="p.patientId.diagnosisInfo[p.patientId.diagnosisInfo.length-1].name=='class_1'">肾移植</i>
+                        <i class="y-message bg-f7" ng-if="p.patientId.hypertension==1">高血压</i>
+                        <i class="y-message bg-a2" ng-if="p.patientId.VIP==1">保险</i>                        
                         </p>
                         <!-- <i class="y-message bg-a2">过敏史</i> -->
                         <!-- <i class="y-message bg-f7">警报</i> -->
