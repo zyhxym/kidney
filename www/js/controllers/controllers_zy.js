@@ -117,7 +117,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var unablebutton = function(){      
      //验证码BUTTON效果
         $scope.isable=true;
-        console.log($scope.isable)
+        //console.log($scope.isable)
         $scope.veritext="60S再次发送"; 
         var time = 59;
         var timer;
@@ -133,6 +133,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
         },1000);
     }
+
     //点击获取验证码
     $scope.getcode=function(Verify){
         $scope.logStatus='';
@@ -154,19 +155,67 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         console.log(Verify.Phone)
         Storage.set('RegisterNO',$scope.Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
-        User.logIn({
-            username:Verify.Phone,
-            password:' ',
-            role:'doctor'
+        User.getUserId({
+            phoneNo:Verify.Phone
         })
         .then(function(succ)
         {
             console.log(succ)
-            if(validMode==0&&succ.mesg=="User password isn't correct!")
+            if(validMode==0)
             {
-                $scope.logStatus="您已经注册过了";
+                if (succ.mesg =="User doesn't Exist!")
+                {
+                    User.sendSMS({
+                        mobile:Verify.Phone,
+                        smsType:2
+                    })
+                    .then(function(data)
+                    {
+                        unablebutton();
+                        if(data.mesg.substr(0,8)=="您的邀请码已发送"){
+                            $scope.logStatus = "您的验证码已发送，重新获取请稍后";
+                        }else if (data.results == 1){
+                            $scope.logStatus = "验证码发送失败，请稍后再试";
+                        }
+                        else{
+                            $scope.logStatus ="验证码发送成功！";
+                        }
+                    },function(err)
+                    {
+                        $scope.logStatus="验证码发送失败！";
+                    })
+                }
+                else 
+                {
+                    if (succ.roles.indexOf('doctor') != -1)
+                    {
+                        $scope.logStatus="您已经注册过了";
+                    }
+                    else
+                    {
+                        User.sendSMS({
+                            mobile:Verify.Phone,
+                            smsType:2
+                        })
+                        .then(function(data)
+                        {
+                            unablebutton();
+                            if(data.mesg.substr(0,8)=="您的邀请码已发送"){
+                                $scope.logStatus = "您的验证码已发送，重新获取请稍后";
+                            }else if (data.results == 1){
+                                $scope.logStatus = "验证码发送失败，请稍后再试";
+                            }
+                            else{
+                                $scope.logStatus ="验证码发送成功！";
+                            }
+                        },function(err)
+                        {
+                            $scope.logStatus="验证码发送失败！";
+                        })
+                    }
+                }
             }
-            else if(validMode==1&&succ.mesg!="User password isn't correct!")
+            else if(validMode==1&&succ.mesg =="User doesn't Exist!")
             {
                 $scope.logStatus="您还没有注册呢！";
             }
@@ -176,20 +225,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     mobile:Verify.Phone,
                     smsType:2
                 })
-                .then(function(validCode)
+                .then(function(data)
                 {
-                    console.log(validCode)
-                    if(validCode.results==0)
-                    {
-                        unablebutton()
-                        if(validCode.mesg.match("您的邀请码")=="您的邀请码")
-                        {
-                            $scope.logStatus="请稍后获取验证码";
-                        }
+                    unablebutton();
+                    if(data.mesg.substr(0,8)=="您的邀请码已发送"){
+                        $scope.logStatus = "您的验证码已发送，重新获取请稍后";
+                    }else if (data.results == 1){
+                        $scope.logStatus = "验证码发送失败，请稍后再试";
                     }
-                    else
-                    {
-                        $scope.logStatus="验证码发送失败！";
+                    else{
+                        $scope.logStatus ="验证码发送成功！";
                     }
                 },function(err)
                 {
