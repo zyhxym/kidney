@@ -46,6 +46,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     baseUrl: 'http://121.196.221.44:4050/',
     mediaUrl: 'http://121.196.221.44:8052/',
     socketServer:'ws://121.196.221.44:4050/',
+    imgThumbUrl: 'http://121.196.221.44:8052/uploads/photos/resize',
+    imgLargeUrl: 'http://121.196.221.44:8052/uploads/photos/',
     cameraOptions: {
         cam: {
             quality: 70,
