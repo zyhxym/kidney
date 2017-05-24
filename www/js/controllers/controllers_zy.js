@@ -755,10 +755,17 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var GetUnread = function(){
         New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
             function(data){
+                // console.log(data.results.length)
                 if(data.results.length){
-                    $scope.HasUnreadMessages = true;
-                    // console.log($scope.HasUnreadMessages);
+                    $scope.hasUnreadMessages = true;
+                    // console.log($scope.hasUnreadMessages);
+
+                }else{
+                    $scope.hasUnreadMessages = false;
+                    // console.log($scope.hasUnreadMessages);
                 }
+
+                // console.log($scope.hasUnreadMessages);
             },function(err){
                     console.log(err);
             });
@@ -2235,6 +2242,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }   
 
     $scope.savefee = function() {
+        if($scope.doctor.charge2<$scope.doctor.charge1){
+            $scope.SaveStatus="咨询收费不得低于问诊收费，请重新设置"
+            return;
+        }
         Doctor.editDoctorDetail($scope.doctor)
         .then(
             function(data)
@@ -2247,7 +2258,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 console.log(err)
             }
         )
-        $state.go('tab.me');  
+        $state.go('tab.me');              
+
     };
 
     $scope.getBill=function()

@@ -768,6 +768,11 @@ angular.module('kidney',[
 
 })
 .controller('tabCtrl',['$state','$scope',function($state,$scope){
+    $scope.goHome = function(){
+        setTimeout(function() {
+        $state.go('tab.home', {});
+      },20);
+    }    
     $scope.goConsult = function(){
         setTimeout(function() {
         $state.go('tab.consult', {});
