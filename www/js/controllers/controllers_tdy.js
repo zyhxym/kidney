@@ -1285,7 +1285,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 
 //健康详情--PXY
-.controller('HealthDetailCtrl', ['ionicDatePicker','$scope','$state','$ionicHistory','$ionicPopup','$stateParams','$ionicPopover','$ionicModal','$ionicScrollDelegate','$ionicLoading','$timeout','Dict','Health','Storage','Camera',function(ionicDatePicker,$scope, $state,$ionicHistory,$ionicPopup,$stateParams,$ionicPopover,$ionicModal,$ionicScrollDelegate,$ionicLoading,$timeout,Dict,Health,Storage,Camera) {
+.controller('HealthDetailCtrl', ['CONFIG','ionicDatePicker','$scope','$state','$ionicHistory','$ionicPopup','$stateParams','$ionicPopover','$ionicModal','$ionicScrollDelegate','$ionicLoading','$timeout','Dict','Health','Storage','Camera',function(CONFIG,ionicDatePicker,$scope, $state,$ionicHistory,$ionicPopup,$stateParams,$ionicPopover,$ionicModal,$ionicScrollDelegate,$ionicLoading,$timeout,Dict,Health,Storage,Camera) {
   $scope.barwidth="width:0%";
   var patientId = Storage.get('getpatientId')
   // var patientId = 'U201702071766'   //测试ID
@@ -1555,7 +1555,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     .then(function(res){
       var data=angular.fromJson(res)
       //图片路径
-      $scope.health.imgurl.push("http://121.43.107.106:8052/"+String(data.path_resized))
+      $scope.health.imgurl.push(CONFIG.mediaUrl+String(data.path_resized))
       // $state.reload("tab.mine")
       // Storage.set('localhealthinfoimg',angular.toJson($scope.health.imgurl));
       console.log($scope.health.imgurl)
@@ -1658,7 +1658,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
-        var originalfilepath="http://121.43.107.106:8052/uploads/photos/"+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
+        var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
         // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
 

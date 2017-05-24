@@ -578,7 +578,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //     $scope.modal.remove();
     // })
 }])
-.controller('uploadcertificateCtrl',['Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal',function(Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal){
+.controller('uploadcertificateCtrl',['CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal',function(CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal){
     
     $scope.doctor=""
     User.logIn({username:Storage.get('RegisterNO'),password:Storage.get('password'),role:"doctor"}).then(function(data){
@@ -645,10 +645,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             var data=angular.fromJson(res)
             //图片路径
             if($scope.flag==0){
-                $scope.doctor.certificatePhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+                $scope.doctor.certificatePhotoUrl=CONFIG.mediaUrl+String(data.path_resized)
             }
             else{
-                $scope.doctor.practisingPhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+                $scope.doctor.practisingPhotoUrl=CONFIG.mediaUrl+String(data.path_resized)
             }
         },function(err){
             console.log(err);
@@ -722,7 +722,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
-        var originalfilepath="http://121.43.107.106:8052/uploads/photos/"+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
+        var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
         // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
 
@@ -1472,7 +1472,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
+.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicLoading','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicLoading,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
@@ -1525,7 +1525,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
-             console.log(data)
+            //console.log(data)
             Storage.set("latestDiagnose","");
             if(data.results.diagnosisInfo.length>0)
             {
@@ -1545,17 +1545,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 Storage.set("latestDiagnose",angular.toJson(lD));
             }
             $scope.patient=data.results; 
-            console.log(data.recentDiagnosis)
+            //console.log(data.recentDiagnosis)
             if (data.recentDiagnosis != null){
-                $scope.RecentDiagnosis=data.recentDiagnosis[0]; 
-                if ($scope.RecentDiagnosis.name == "class_4"){
-                    $scope.RecentDiagnosis.time = null
-                    $scope.RecentDiagnosis.progress = null
-                }else if ($scope.RecentDiagnosis.name == "class_2"|| $scope.RecentDiagnosis.name == "class_3"){
-                    $scope.RecentDiagnosis.time = null
-                }else if ($scope.RecentDiagnosis.name == "class_5"|| $scope.RecentDiagnosis.name == "class_6" || $scope.RecentDiagnosis.name == "class_1"){
-                    $scope.RecentDiagnosis.progress = null
-                }                
+                $scope.RecentDiagnosis=data.recentDiagnosis[0];
+                if($scope.RecentDiagnosis!= null) {
+                    if ($scope.RecentDiagnosis.name == "class_4"){
+                        $scope.RecentDiagnosis.time = null
+                        $scope.RecentDiagnosis.progress = null
+                    }else if ($scope.RecentDiagnosis.name == "class_2"|| $scope.RecentDiagnosis.name == "class_3"){
+                        $scope.RecentDiagnosis.time = null
+                    }else if ($scope.RecentDiagnosis.name == "class_5"|| $scope.RecentDiagnosis.name == "class_6" || $scope.RecentDiagnosis.name == "class_1"){
+                        $scope.RecentDiagnosis.progress = null
+                    }                      
+                }
             }            
             //console.log($scope.RecentDiagnosis)
           
@@ -1584,6 +1586,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.SendInsMsg=function()
     {
+        $ionicLoading.show({
+            template: '推送成功',
+            duration:1000
+        });
         Insurance.updateInsuranceMsg({
             doctorId:Storage.get('UID'),
             patientId:Storage.get('getpatientId'),
@@ -1640,7 +1646,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”页
-.controller('meCtrl', ['Camera','Doctor','$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','$http', function(Camera,Doctor,$scope, $state,$interval,$rootScope,Storage,$ionicPopover,$http) {
+.controller('meCtrl', ['CONFIG','Camera','Doctor','$scope','$state','$interval','$rootScope', 'Storage','$ionicPopover','$http', function(CONFIG,Camera,Doctor,$scope, $state,$interval,$rootScope,Storage,$ionicPopover,$http) {
   $scope.barwidth="width:0%";
    
     //$scope.userid=Storage.get('userid');
@@ -1691,7 +1697,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             var data=angular.fromJson(res)
             //res.path_resized
             //图片路径
-            $scope.doctor.photoUrl="http://121.43.107.106:8052/"+String(data.path_resized)+'?'+new Date().getTime();
+            $scope.doctor.photoUrl=CONFIG.mediaUrl+String(data.path_resized)+'?'+new Date().getTime();
             console.log($scope.doctor.photoUrl)
             // $state.reload("tab.mine")
             // Storage.set('doctor.photoUrlpath',$scope.doctor.photoUrl);
@@ -1810,7 +1816,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 
 //我的个人资料页
-.controller('myinfoCtrl', ['Dict','Camera','Doctor','$scope','Storage','$ionicPopover','$ionicModal','$ionicScrollDelegate', function(Dict,Camera,Doctor,$scope, Storage,$ionicPopover,$ionicModal,$ionicScrollDelegate) {
+.controller('myinfoCtrl', ['CONFIG','Dict','Camera','Doctor','$scope','Storage','$ionicPopover','$ionicModal','$ionicScrollDelegate', function(CONFIG,Dict,Camera,Doctor,$scope, Storage,$ionicPopover,$ionicModal,$ionicScrollDelegate) {
     $scope.hideTabs = true;
     $scope.updateDiv=false;
     $scope.myDiv=true;
@@ -2056,10 +2062,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             var data=angular.fromJson(res)
             //图片路径
             if($scope.flag==0){
-                $scope.doctor.certificatePhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+                $scope.doctor.certificatePhotoUrl=CONFIG.mediaUrl+String(data.path_resized)
             }
             else{
-                $scope.doctor.practisingPhotoUrl="http://121.43.107.106:8052/"+String(data.path_resized)
+                $scope.doctor.practisingPhotoUrl=CONFIG.mediaUrl+String(data.path_resized)
             }
         },function(err){
             console.log(err);
@@ -2158,7 +2164,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
-        var originalfilepath="http://121.43.107.106:8052/uploads/photos/"+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
+        var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
         // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
 
