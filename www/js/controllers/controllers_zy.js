@@ -1472,7 +1472,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"患者”详情子页
-.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicHistory,$state) {
+.controller('patientDetailCtrl', ['New','Insurance','Storage','Doctor','Patient','$scope','$ionicPopup','$ionicLoading','$ionicHistory','$state', function(New,Insurance,Storage,Doctor,Patient,$scope, $ionicPopup,$ionicLoading,$ionicHistory,$state) {
     $scope.hideTabs = true;
 
     // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
@@ -1586,6 +1586,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     $scope.SendInsMsg=function()
     {
+        $ionicLoading.show({
+            template: '推送成功',
+            duration:1000
+        });
         Insurance.updateInsuranceMsg({
             doctorId:Storage.get('UID'),
             patientId:Storage.get('getpatientId'),
