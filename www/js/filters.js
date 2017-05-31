@@ -192,3 +192,23 @@ angular.module('kidney.filters', [])
         return ret;
     }
 }])
+.filter('numberPrecision',[function(){
+    return function(num){
+        var ret=new Number(num);
+        return ret.toFixed(2);
+    }
+}])
+.filter('chargeType',[function()
+{
+    return function(num){
+        var n=new Number(num);
+        var ret=num;
+        switch(n)
+        {
+            case 0:ret='咨询';break;
+            case 1:ret='问诊';break;
+            case 2:ret='升级';break;
+        }
+        return ret;
+    }
+}])
