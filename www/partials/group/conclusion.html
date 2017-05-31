@@ -1,38 +1,30 @@
-<ion-view hide-tabs view-title="会诊结论">
-    <!-- <ion-nav-bar class="bar-positive"> -->
-    <ion-nav-buttons side="right">
-        <button class="button button-icon" ng-click="save()"> 保存</button>
-    </ion-nav-buttons>
-    <!-- </ion-nav-bar> -->
+<ion-view hide-tabs view-title="病历结论">
+    <ion-nav-bar class="bar-positive " align-title="center">
+        <ion-nav-buttons side="left">
+            <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+        </ion-nav-buttons>
+        <ion-nav-buttons side="right">
+            <button class="button button-icon" ng-click="save()">发送</button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
     <ion-content class="gray-back" scroll="false">
         <div style="width:100%;margin:0;max-height:65vh;overflow-y: scroll;" class="list">
             <div class="item item-avatar" style="padding-bottom:10px">
-          <img ng-src="{{patient.patientId.photoUrl || 'img/patient.png'}} ">
-          <div>
-              <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{patient.patientId.name}} </div>
-              <div style="display:inline-block">{{patient.patientId.gender | filterGender}} {{patient.patientId.birthday | filterAge}}岁</div>
-              <div style="display:inline-block;float:right">{{patient.time |msgdate}}</div>
-          </div>
-          <!-- <h2>范德萨user006</h2><span> fahdjksfh</span> -->
-          <p style="width:60%;display:inline-block;">主题：{{patient.diseaseInfo.symptom}}</p>
-         
-      </div>
-     
-      <div class="item item-body">
-          <!-- <div style="display:inline-block;color:#00897b;width:65%">分期 {{patient.diseaseInfo.class | diagname}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">是否高血压 {{patient.diseaseInfo.hypertension | filterhypertension}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">手术时间 {{patient.diseaseInfo.operationTime}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">过敏 {{patient.diseaseInfo.allergic}}</div> -->
-          <div style="display:inline-block;color:#00897b;width:65%">发病时间 {{patient.diseaseInfo.sickTime}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">就诊医院 {{patient.diseaseInfo.hospital}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">就诊时间 {{patient.diseaseInfo.visitDate.substr(0,10)}}</div>
-          <div style="display:inline-block;color:#00897b;width:65%">诊断结果 {{patient.diseaseInfo.diagnosis}}</div>
-
-          <div>
-         问题描述 {{patient.diseaseInfo.help}}
-          </div>
-         <!--  <img style="height:3.5em;width:3.5em;margin:0.4em 0.8em 0 0" ng-repeat="pic in content.pics" ng-src="{{pic}}" ng-click="viewPic(this.pic)" /> -->
-      </div>
+                <img ng-src="{{patient.patientId.photoUrl || 'img/DefaultAvatar.jpg'}} ">
+                <div>
+                    <div style="display:inline-block;margin-right:1.2em;font-size:1.25em">{{patient.patientId.name}} </div>
+                    <div style="display:inline-block">{{patient.patientId.gender | filterGender}} {{patient.patientId.birthday | filterAge}}</div>
+                    <div style="display:inline-block;float:right">{{patient.time |date : 'yyyy-M-d H:m'}}</div>
+                </div>
+                <p style="width:60%;display:inline-block;">主题:{{patient.diseaseInfo.symptom}}</p>
+            </div>
+            <div class="item item-body card-prefix">
+                <p><span>发病时间</span> {{patient.diseaseInfo.sickTime}}</p>
+                <p><span>就诊医院</span> {{patient.diseaseInfo.hospital}}</p>
+                <p><span>就诊时间</span>{{patient.diseaseInfo.visitDate.substr(0,10)}}</p>
+                <p><span>诊断结果</span>{{patient.diseaseInfo.diagnosis}}</p>
+                <p><span>期望的帮助</span>{{patient.diseaseInfo.help}}</p>
+            </div>
         </div>
         <form>
             <div class="item">

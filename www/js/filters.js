@@ -12,9 +12,9 @@ angular.module('kidney.filters', [])
     return function(gender){
         var g="未知";
         if(gender==1)
-        	g='男'
+            g='男'
         if(gender==2)
-        	g='女'
+            g='女'
         return g;
     }
 }])
@@ -45,6 +45,75 @@ angular.module('kidney.filters', [])
         return name;
     }
 }])
+.filter('classname',[function(){
+    return function(type){
+        var name;
+        switch(type)
+        {
+          case "class_2":
+            name="CKD1-2期";
+            break;
+          case "class_3":
+            name="CKD3-4期";
+            break;
+          case "class_4":
+            name="CDK5期未透析";
+            break;
+          case "class_6":
+            name="腹透";
+            break;
+          case "class_5":
+            name="血透";
+            break;
+          case "class_1":
+            name="肾移植";
+            break;
+        }
+        return name;
+    }
+}])
+.filter('progressname',[function(){
+    return function(type){
+        var name;
+        switch(type)
+        {
+          case "stage_5":
+            name="疾病活跃期";
+            break;
+          case "stage_6":
+            name="稳定期";
+            break;
+          case "stage_7":
+            name=">3年";
+            break;
+        }
+        return name;
+    }
+}])
+.filter('filterbloodType',[function(){
+    return function(type){
+        var name;
+        switch(type)
+        {
+          case 1:
+            name="A型";
+            break;
+          case 2:
+            name="B型";
+            break;
+          case 3:
+            name="AB型";
+            break;
+          case 4:
+            name="O型";
+            break;
+          case 5:
+            name="不确定";
+            break;
+        }
+        return name;
+    }
+}])
 .filter('hypertension',[function(){
     return function(type){
         var name="--";
@@ -60,6 +129,7 @@ angular.module('kidney.filters', [])
         return name;
     }
 }])
+
 .filter('filterAge',[function(){
     return function(date){
         var d=new Date(date)
@@ -106,18 +176,38 @@ angular.module('kidney.filters', [])
         var d=new Date(date)
         var ret=""
         if(date==null)
-        	return "-"
+            return "-"
         switch(format)
         {
-        	case "YYYY-MM-DD":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-        		break;
-        	case "MM-DD-YYYY":
-        		ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
-        		break;
-        	case "YYYY-MM-DD h:m":
-        		ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
-        		break;
+            case "YYYY-MM-DD":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+                break;
+            case "MM-DD-YYYY":
+                ret=(d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
+                break;
+            case "YYYY-MM-DD h:m":
+                ret=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes();
+                break;
+        }
+        return ret;
+    }
+}])
+.filter('numberPrecision',[function(){
+    return function(num){
+        var ret=new Number(num);
+        return ret.toFixed(2);
+    }
+}])
+.filter('chargeType',[function()
+{
+    return function(num){
+        var n=new Number(num);
+        var ret=num;
+        switch(n)
+        {
+            case 0:ret='咨询';break;
+            case 1:ret='问诊';break;
+            case 2:ret='升级';break;
         }
         return ret;
     }

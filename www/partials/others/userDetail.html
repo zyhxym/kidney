@@ -1,16 +1,16 @@
 <ion-view view-title="个人信息" >
 
-    <ion-nav-bar class="bar-positive nav-title-slide-ios7" align-title="center">
-        <ion-nav-back-button class="button-clear">
-            <i class="ion-chevron-left"></i>
-        </ion-nav-back-button>
-    </ion-nav-bar>
+  <ion-nav-bar class="bar-positive " align-title="center">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
 
 
     <ion-content>
         <ion-item class="item item-input">
             <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>姓名</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.name">{{doctor.name}}</p>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.name" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
 <!--    <ion-item>
@@ -33,32 +33,82 @@
                 <select class="myinfo-msg-right" ng-model="HosObject" ng-options="Hospital.hospitalName for Hospital in Hospitals track by Hospital._id" style="width:100%" ng-change="test(HosObject)">
                 </select>
         </ion-item>
-
+        <ion-item class="item item-input item-select">
+            <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>职称</span>
+            <select class="myinfo-msg-right" ng-model="doctor.title" ng-options="Title.Name for Title in Titles track by Title.Type" style="width:100%">
+            </select>               
+        </ion-item>
         <ion-item class="item item-input">
             <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>科室</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.department">{{doctor.department}}</p>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.department" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item class="item item-input">
         <ion-item class="item item-input">
-            <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>职称</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.title">{{doctor.title}}</p>
-                <i class="icon ion-edit mine-msg-right"></i>
-        </ion-item>
-        <ion-item class="item item-input">
             <span class="input-label"><i class="icon ion-asterisk" style="color:red;font-size:6px"></i>身份证号</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.IDNo">{{doctor.IDNo}}</p>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.IDNo" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
         <ion-item class="item item-input">
             <span class="input-label" style="margin-left:8px ">擅长</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.major">{{doctor.major}}</p>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.major" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
         <ion-item class="item item-input">
             <span class="input-label" style="margin-left:8px ">简介</span>
-                <p class="myinfo-msg-right"><input type=text ng-model="doctor.description">{{doctor.description}}</p>
+                <p class="myinfo-msg-right"><input type=text ng-model="doctor.description" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
+
+
+        <!-- <div class="row" style="font-size:15px;font-weight: bold;margin-top: 10px"> -->
+        <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
+        <button class="button button-clear" style="color:#666" ng-click="onClickCamera($event,0)" ><i class="icon ion-camera"></i>上传医师资格证书</button>
+        <ion-item style="height:100px,width=100px" >
+            <img ng-src="{{doctor.certificatePhotoUrl}}"  name="Photo1" ng-click="showoriginal(doctor.certificatePhotoUrl)"  style="height:30%; width:30%"  />
+        </ion-item>
+
+        <!-- </div> -->
+    </br>
+
+        <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
+        <button class="button button-clear" style="color:#666" ng-click="onClickCamera($event,1)" ><i class="icon ion-camera"></i>上传医师执业证书</button>
+        <ion-item  style="height:100px,width=100px">
+            <img ng-src="{{doctor.practisingPhotoUrl}}"  name="Photo2" ng-click="showoriginal(doctor.practisingPhotoUrl)"  style="height:30%; width:30%"  />
+        </ion-item>
+        <!-- <ion-item class="row row-wrap" style="border:none; text-align:center; height:100%;margin-top:30px" >
+        <div  class="col col-33" ng-repeat="filepath in health.imgurl track by $index">
+          <img ng-src="{{filepath}}"  name="Photo" ng-click="showoriginal(filepath)"  style="height:90%; width:90%"  /><i ng-if="canEdit" class="icon ion-close-circled" style="width: 5%;float: right;" ng-click="deleteimg($index)"></i>
+        </div>
+             
+        </ion-item>
+        <div style="text-align: center;" ng-if="canEdit">
+               <button class="button button-clear" style="color:#666" ng-click="onClickCamera($event)" ><i class="icon ion-camera"></i>上传图片</button>
+        </div> -->
+
+
+        <script id="my-popover1.html" type="text/ng-template">
+            <ion-popover-view>
+              <ion-header-bar class="bar-calm">
+                  <h1 class="title">上传图片</h1>
+              </ion-header-bar>
+            <ion-content>
+              <ion-list> 
+                <div class = "padding">
+                  <button class="button button-block button-primary " ng-click="getPhoto()"><i class="icon ion-camera"></i>
+                      拍照
+                  </button>
+                
+                  <button class="button button-block button-primary " ng-click="onClickCameraPhotos()"><i class="icon ion-image"></i>
+                      相册
+                  </button>
+                 
+                </div>
+              </ion-list>
+            </ion-content>
+          </ion-popover-view>
+        </script>
+
+
         <button  style="margin-top:20px" class="button button-block button-positive" ng-click ="infoSetup()">
         保存信息
         </button>

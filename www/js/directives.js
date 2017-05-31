@@ -1,12 +1,26 @@
 angular.module('kidney.directives', ['kidney.services'])
+// 输入框清除按钮
+.directive("buttonClearInput", function () {
+    return {
+        restrict: "AE",
+        scope: {
+            input: "=",  //这里可以直接用input获取父scope(包括兄弟元素)中ng-model的值, 传递给本directive创建的isolate scope使用, template也属于当前isolate scope
+            origin: "=",
+            curr:"="
+        },
+        // replace: true,   //使用replace之后, 本元素的click不能删除输入框中的内容, 原因大致可以理解为: 父元素被替换后, scope.$apply没有执行对象
+        template:"<span ng-if='input' class='icon ion-android-close placeholder-icon' on-tap='clearInput()'></span>",
+        controller: function ($scope, $element, $attrs) {
+            $scope.clearInput = function () {
+                $scope.input = "";
+                $scope.curr=$scope.origin
+            };
+        }
+    };
+})
 //消息模版，用于所有消息类型
 //XJZ
-.directive('myMessage',['Storage',function(Storage){
-    var picArr=[
-                {"src":"img/default_user.png","hiRes":"img/avatar.png"},
-                {"src":"img/ionic.png","hiRes":"img/avatar.jpg"},
-                {"src":"img/max.png","hiRes":"img/avatar.png"}
-            ];
+.directive('myMessage',['Storage','CONFIG',function(Storage,CONFIG){
     return {
         template: '<div ng-include="getTemplateUrl()"></div>',
         scope: {
@@ -17,52 +31,83 @@ angular.module('kidney.directives', ['kidney.services'])
         restrict:'AE',
         controller:function($scope){
             var type='';
+            $scope.base=CONFIG.mediaUrl;
+            $scope.msg.direct = $scope.msg.fromID==Storage.get('UID')?'send':'receive';
             $scope.getTemplateUrl = function(){
-                if($scope.msg.contentType=='custom'){
-                    type=$scope.msg.content.contentStringMap.type;
-                    if(type=='card'){
-                        try{
-                            // console.log($scope.msg.content.contentStringMap);
-                            // console.log(JSON.parse($scope.msg.content.contentStringMap.counsel));
-                            $scope.counsel=JSON.parse($scope.msg.content.contentStringMap.counsel);
-                            if($scope.counsel.type==1){$scope.counsel.counseltype="咨询服务，医生只有三次回答机会"}
-                            else if($scope.counsel.type==2){$scope.counsel.counseltype="问诊服务，医生可以不限次回答问题，点击结束按钮结束问诊"};
-                            $scope.picurl=picArr;
-                        }catch(e){
-                            
-                        }
-                    }
-                    return 'templates/msg/'+ type+'.html';
-                }
-                // type=$scope.msg.contentType=='custom'?$scope.msg.content.contentStringMap.type:$scope.msg.contentType;
                 type=$scope.msg.contentType;
+                if(type=='image'){
+                    // if($scope.msg.content['src_thumb']!='')
+                    $scope.msg.content.thumb = $scope.msg.content.localPath || ($scope.base+$scope.msg.content['src_thumb']);
+                }else if(type=='custom'){
+                    type=$scope.msg.content.type;
+                    if(type=='card'){
+                        // try{
+                            $scope.counsel=$scope.msg.content.counsel;
+                            if($scope.msg.targetId!=$scope.msg.content.doctorId){
+                                if($scope.msg.content.consultationId){
+                                    $scope.subtitle= $scope.msg.fromName + '转发'
+                                    $scope.title= $scope.msg.content.patientName + '的病历讨论'
+                                }else{
+                                    $scope.title= $scope.msg.content.patientName + '的病历'
+                                }
+                            }else{
+                                $scope.title= "患者使用在线"+ ($scope.counsel.type=='1'?'咨询':'问诊') + "服务"
+                            }
+
+                        // }catch(e){
+                            // 
+                        // }
+                    }
+                }
                 return 'templates/msg/'+type+'.html';
             }
             
             $scope.emitEvent = function(code){
               $scope.$emit(code,arguments);
-            }
-            // $scope.direct = $scope.msg.fromID==window.JMessage.username?'right':'left';
-            
-            // $scope.showProfile = function(){
-            //     console.log($scope.msg.fromID);
-            // }
-            // $scope.viewImage= function(thumb,url){
-            //     if(type=='image'){
-            //         //image massage
-            //         $scope.$emit('viewImage',type,thumb,$scope.msg.serverMessageId);
-            //     }else{
-            //         //image in card
-            //         $scope.$emit('viewImage',type,thumb,url);
-            //     }
-            // };
-            $scope.picurl=picArr;
-            // $scope.playVoice = function(){
-
-            // }
+            }         
         }
     }
 }])
+// .directive('myMessage',['Storage',function(Storage){
+//     var picArr=[
+//                 {"src":"img/default_user.png","hiRes":"img/avatar.png"},
+//                 {"src":"img/ionic.png","hiRes":"img/avatar.jpg"},
+//                 {"src":"img/max.png","hiRes":"img/avatar.png"}
+//             ];
+//     return {
+//         template: '<div ng-include="getTemplateUrl()"></div>',
+//         scope: {
+//             msg:'=',
+//             photourls:'=',
+//             msgindex:'@'
+//         },
+//         restrict:'AE',
+//         controller:function($scope){
+//             var type=$scope.msg.contentType;
+//             $scope.getTemplateUrl = function(){
+//                 if(type=='custom'){
+//                     type=$scope.msg.content.contentStringMap.type;
+//                     if(type=='card'){
+//                         try{
+//                             $scope.counsel=JSON.parse($scope.msg.content.contentStringMap.counsel);
+//                             if($scope.counsel.type==1){$scope.counsel.counseltype="咨询服务，医生只有三次回答机会"}
+//                             else if($scope.counsel.type==2){$scope.counsel.counseltype="问诊服务，医生可以不限次回答问题，点击结束按钮结束问诊"};
+//                             $scope.picurl=picArr;
+//                         }catch(e){
+                            
+//                         }
+//                     }
+//                     return 'templates/msg/'+ type+'.html';
+//                 }
+//                 return 'templates/msg/'+type+'.html';
+//             }
+            
+//             $scope.emitEvent = function(code){
+//               $scope.$emit(code,arguments);
+//             }
+//         }
+//     }
+// }])
 //聊天输入框的动态样式，如高度自适应，focus|blur状态
 //XJZ
 .directive('dynamicHeight', [function() {
@@ -219,8 +264,42 @@ angular.module('kidney.directives', ['kidney.services'])
     };
 })
 
+//未读消息的小红点
+.directive('headRedPoint', function($compile, $timeout){
+   // Runs during compile
+   return {
+      restrict: 'A', 
+      replace: false,
+      link: function(scope, element, attrs, controller) {
+          var key = attrs.headRedPoint || false;
+          var template ="<span ng-class={true:'head-red-point',false:''}["+key+"]></span>";
+          var html = $compile(template)(scope);  
+          $timeout(function() {
+            var test = angular.element(element).parent().append(html)
+          },100)
+                     
+       }
+   };
+})
+
+.directive('imageRedPoint', function($compile, $timeout){
+   // Runs during compile
+   return {
+      restrict: 'A', 
+      replace: false,
+      link: function(scope, element, attrs, controller) {
+          var key = attrs.imageRedPoint || false;
+          var template ="<span ng-class={true:'image-red-point',false:''}["+key+"]></span>";
+          var html = $compile(template)(scope);  
+          $timeout(function() {
+            var test = angular.element(element).parent().append(html)
+          },100)
+                     
+       }
+   };
+})
 // 写评论的五角星
-.directive('ionicRatings',ionicRatings)
+.directive('ionicRatings',ionicRatings);
 
 
 function ionicRatings() {
