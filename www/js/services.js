@@ -155,14 +155,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $q(function(resolve, reject) {
             if (audio.media.src) audio.media.release();
             var time = new Date();
-            audio.src = $filter('date')(time, 'yyyyMMddHHmmss') + '.mp3';
+            audio.src = $filter('date')(time, 'yyyyMMddHHmmss') + '.amr';
             audio.media = new Media(audio.src,
                 function() {
                     console.info("recordAudio():Audio Success");
                     console.log(audio.media);
                     $ionicLoading.hide();
 
-                    fs.mvMedia('voice', audio.src, '.mp3')
+                    fs.mvMedia('voice', audio.src, '.amr')
                         .then(function(fileUrl) {
                             console.log(fileUrl);
                             resolve(fileUrl);
