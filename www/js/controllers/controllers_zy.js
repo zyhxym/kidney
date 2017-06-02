@@ -104,6 +104,16 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.go('phonevalid');   
     }
 
+    if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
+        User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
+          if(data.results.mesg=="login success!"){
+            Storage.set('isSignIn',"Yes");
+            Storage.set('UID',ret.UserId);//后续页面必要uid
+            Storage.set('bindingsucc','yes')
+            $state.go('tab.home')  
+          }
+        })
+    }
     //0531
     $scope.wxsignIn=function(){
         /*Wechat.isInstalled(function (installed) {
@@ -754,7 +764,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('uploadcertificateCtrl',['CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams',function(CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams){
     
     $scope.doctor={
-        
+
     }
     User.logIn({username:Storage.get('phoneNumber'),password:Storage.get('password'),role:"doctor"}).then(function(data){
         console.log(data)
