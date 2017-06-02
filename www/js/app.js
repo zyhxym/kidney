@@ -842,7 +842,19 @@ angular.module('kidney',[
                 templateUrl: 'partials/me/set/viewAgree.html'
             }
         }
+    })  
+    //意见反馈
+    .state('tab.advice', {
+        // cache: false,
+        url: '/advice',
+        views: {
+            'tab-me':{
+                controller: 'adviceCtrl',
+                templateUrl: 'partials/me/advice.html'
+            }
+        }
     })    
+
     //关于
     .state('tab.about', {
         // cache: false,
