@@ -291,6 +291,7 @@ angular.module('kidney',[
     })
     .state('uploadcertificate',{
       cache:false,
+      params:{last:null},
       url:'/uploadcertificate',
       templateUrl:'partials/others/uploadcertificate.html',
       controller:'uploadcertificateCtrl'
