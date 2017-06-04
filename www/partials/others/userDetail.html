@@ -48,16 +48,33 @@
                 <p class="myinfo-msg-right"><input type=text ng-model="doctor.IDNo" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
-        <ion-item class="item item-input">
+<!--         <ion-item class="item item-input">
             <span class="input-label" style="margin-left:8px ">擅长</span>
                 <p class="myinfo-msg-right"><input type=text ng-model="doctor.major" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item> -->
+        
+        <ion-item class="item item-input item-text-wrap">
+            <span style="position: absolute;top:15px;margin-left: 8px">擅长</span>
+            <div contenteditable="true" ng-model="doctor.major" style="font-size: 15px;position: relative;left:55px;padding: 9px;width:80%; max-height:120px;overflow-y:auto;overflow-x:hidden;">
+            </div>
+            <i class="icon ion-edit mine-msg-right"></i>
         </ion-item>
-        <ion-item class="item item-input">
+
+
+        <ion-item class="item item-input item-text-wrap">
+            <span style="position: absolute;top:15px;margin-left: 8px">简介</span>
+            <div contenteditable="true" ng-model="doctor.description" style="font-size: 15px;position: relative;left:55px;padding: 9px;width:80%; max-height:120px;overflow-y:auto;overflow-x:hidden;">
+            </div>
+            <i class="icon ion-edit mine-msg-right"></i>
+        </ion-item>
+
+
+<!--         <ion-item class="item item-input">
             <span class="input-label" style="margin-left:8px ">简介</span>
                 <p class="myinfo-msg-right"><input type=text ng-model="doctor.description" style="width:100%;text-align: right;"></p>
                 <i class="icon ion-edit mine-msg-right"></i>
-        </ion-item>
+        </ion-item> -->
 
 
         <!-- <div class="row" style="font-size:15px;font-weight: bold;margin-top: 10px"> -->
@@ -109,7 +126,7 @@
         </script>
 
 
-        <button  style="margin-top:20px" class="button button-block button-positive" ng-click ="infoSetup()">
+        <button  style="margin-top:0 ;background: #6ac4f8;width: 80%;margin: 0 auto" class="button button-block button-positive mt-40" ng-click ="infoSetup()">
         保存信息
         </button>
 
