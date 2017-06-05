@@ -811,6 +811,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //     $scope.modal.remove();
     // })
 }])
+
 .controller('uploadcertificateCtrl',['$interval','CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams','socket',function($interval,CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams,socket){
     
     $scope.doctor={
@@ -839,6 +840,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                     text: '確定',
                                     type: 'button-positive',
                                     onTap: function(e) {
+
                                         // alert(Storage.get('UID'))
                                         Doctor.getDoctorInfo({userId:$scope.doctor.userId})
                                         .then(function(response){

@@ -298,6 +298,39 @@ angular.module('kidney.directives', ['kidney.services'])
        }
    };
 })
+
+//多行文本自动增行
+.directive('contenteditable', function() {
+    return {
+        restrict: 'A', // 只用于属性
+        require: '?ngModel', // get a hold of NgModelController
+        link: function(scope, element, attrs, ngModel) {
+    　　　　if (!ngModel) {
+    　　　　　　return;
+    　　　　} 
+    　　　　// Specify how UI should be updated
+    　　　　ngModel.$render = function() {
+    　　　　　　element.html(ngModel.$viewValue || '');
+    　　　　};
+    　　　　// Listen for change events to enable binding
+    　　　　element.on('blur keyup change', function() {
+    　　　　　　scope.$apply(readViewText);
+    　　　　});
+    　　　　// No need to initialize, AngularJS will initialize the text based on ng-model attribute
+    　　　　// Write data to the model
+    　　　　function readViewText() {
+    　　　　　　var html = element.html();
+    　　　　　　// When we clear the content editable the browser leaves a <br> behind
+    　　　　　　// If strip-br attribute is provided then we strip this out
+    　　　　　　if (attrs.stripBr && html === '<br>') {
+    　　　　　　　　html = '';
+    　　　　　　}
+    　　　　　　ngModel.$setViewValue(html);
+    　　　　}
+　　　　}
+    }
+})
+
 // 写评论的五角星
 .directive('ionicRatings',ionicRatings);
 
