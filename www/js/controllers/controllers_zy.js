@@ -816,6 +816,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     
     $scope.doctor={
 
+
     }
     User.logIn({username:Storage.get('phoneNumber'),password:Storage.get('password'),role:"doctor"}).then(function(data){
         console.log(data)
@@ -840,7 +841,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                     text: '確定',
                                     type: 'button-positive',
                                     onTap: function(e) {
-
                                         // alert(Storage.get('UID'))
                                         Doctor.getDoctorInfo({userId:$scope.doctor.userId})
                                         .then(function(response){
