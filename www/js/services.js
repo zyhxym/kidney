@@ -489,7 +489,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     var Mywechat = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'wechat'},{
             messageTemplate:{method:'POST', params:{route: 'messageTemplate'}, timeout: 100000},
-            gettokenbycode:{method:'GET', params:{route: 'gettokenbycode'}, timeout: 100000}
+            gettokenbycode:{method:'GET', params:{route: 'gettokenbycode'}, timeout: 100000},
+            getUserInfo:{method:'GET', params:{route: 'getUserInfo'}, timeout: 100000}
         })
     }
 
@@ -2039,6 +2040,19 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return deferred.promise;
     };
 
+    self.getUserInfo = function(params){
+        var deferred = $q.defer();
+        Data.Mywechat.getUserInfo(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
     return self;
 }])
 
@@ -2240,3 +2254,4 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 }])
+

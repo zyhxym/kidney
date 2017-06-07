@@ -92,6 +92,27 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.go('phonevalid');   
     }
 
+    if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
+        User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
+          if(data.results.mesg=="login success!"){
+            Storage.set('isSignIn',"Yes");
+            Storage.set('UID',ret.UserId);//后续页面必要uid
+            Storage.set('bindingsucc','yes')
+            $state.go('tab.home')
+            Doctor.getDoctorInfo({userId:data.results.userId})
+            .then(function(response){
+                thisDoctor = response.results;
+                $interval(function newuser(){
+                    socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                    return newuser;
+                }(),10000);
+
+            },function(err){
+                thisDoctor=null;
+            });  
+          }
+        })
+    }
     //0531
     $scope.wxsignIn=function(){
         /*Wechat.isInstalled(function (installed) {
@@ -106,7 +127,21 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 Storage.set('isSignIn',"Yes");
                 Storage.set('UID',ret.UserId);//后续页面必要uid
                 Storage.set('bindingsucc','yes')
-                $state.go('tab.home')  
+                User.getUserIDbyOpenId({"openId":Storage.get('doctorunionid')}).then(function(ret){
+                    Storage.set('USERNAME',ret.phoneNo)
+                    $timeout(function(){$state.go('tab.home');},500);
+                })
+                Doctor.getDoctorInfo({userId:data.results.userId})
+                .then(function(response){
+                    thisDoctor = response.results;
+                    $interval(function newuser(){
+                        socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                        return newuser;
+                    }(),10000);
+
+                },function(err){
+                    thisDoctor=null;
+                });  
               }
             })
         }
@@ -117,6 +152,30 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             // you may use response.code to get the access token.
             // alert(JSON.stringify(response));
             // alert(response.code)
+
+            Mywechat.getUserInfo({role:"appPatient",code:response.code}).then(function(persondata){
+                // alert(JSON.stringify(persondata));
+              // alert(persondata.headimgurl)
+              Storage.set('wechatheadimgurl',persondata.result.headimgurl)
+
+              // { 
+              //   "openid":"OPENID",
+              //   "nickname":"NICKNAME",
+              //   "sex":1,
+              //   "province":"PROVINCE",
+              //   "city":"CITY",
+              //   "country":"COUNTRY",
+              //   "headimgurl": "http://wx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0",
+              //   "privilege":[
+              //   "PRIVILEGE1", 
+              //   "PRIVILEGE2"
+              //   ],
+              //   "unionid": " o6_bmasdasdsad6_2sgVt7hMZOPfL"
+
+              //   }
+
+
+            })
             //将code传个后台服务器 获取unionid
             Mywechat.gettokenbycode({role:"appDoctor",code:response.code}).then(function(res){
                 // alert(JSON.stringify(res));
@@ -142,7 +201,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                       Storage.set('UID',ret.UserId);//后续页面必要uid
                       Storage.set("doctorunionid",$scope.unionid);//自动登录使用
                       Storage.set('bindingsucc','yes')
-                      $state.go('tab.home')  
+                      Storage.set('USERNAME',ret.phoneNo)
+                      $state.go('tab.home')
+                      Doctor.getDoctorInfo({userId:data.results.userId})
+                        .then(function(response){
+                            thisDoctor = response.results;
+                            $interval(function newuser(){
+                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                                return newuser;
+                            }(),10000);
+
+                        },function(err){
+                            thisDoctor=null;
+                        });  
                     }
                   })
                 }else{
@@ -211,6 +282,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     {
         console.log(Verify.Phone)
         Storage.set('RegisterNO',$scope.Verify.Phone)
+        Storage.set('USERNAME',$scope.Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
         User.getUserId({
             phoneNo:Verify.Phone
@@ -739,10 +811,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //     $scope.modal.remove();
     // })
 }])
-.controller('uploadcertificateCtrl',['CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams',function(CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams){
+
+.controller('uploadcertificateCtrl',['$interval','CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams','socket',function($interval,CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams,socket){
     
     $scope.doctor={
-        
+
+
     }
     User.logIn({username:Storage.get('phoneNumber'),password:Storage.get('password'),role:"doctor"}).then(function(data){
         console.log(data)
@@ -767,6 +841,18 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                     text: '確定',
                                     type: 'button-positive',
                                     onTap: function(e) {
+                                        // alert(Storage.get('UID'))
+                                        Doctor.getDoctorInfo({userId:$scope.doctor.userId})
+                                        .then(function(response){
+                                            thisDoctor = response.results;
+                                            $interval(function newuser(){
+                                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                                                return newuser;
+                                            }(),10000);
+
+                                        },function(err){
+                                            thisDoctor=null;
+                                        });
                                         $state.go('tab.home');
                                     }
                                }
@@ -1840,6 +1926,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //     $scope.doRefresh();
     // });
     
+
+
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
@@ -1848,6 +1936,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         {
           // console.log(data)
             $scope.doctor=data.results;
+            if($scope.doctor.photoUrl==""||$scope.doctor.photoUrl==null||$scope.doctor.photoUrl==undefined){
+                $scope.doctor.photoUrl='img/doctor.png'
+                if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
+                    $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
+                }
+            }
         },
         function(err)
         {
@@ -2907,6 +3001,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     $scope.deliverAdvice = function(advice){        
         Advice.postAdvice({userId:Storage.get('UID'),role:"doctor",topic:advice.topic,content:advice.content}).then(
             function(data){
+                console.log(data)
                 if(data.result == "新建成功"){
                     $ionicLoading.show({
                         template: '提交成功',
