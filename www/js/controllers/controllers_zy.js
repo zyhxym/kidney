@@ -151,7 +151,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Wechat.auth(wxscope, wxstate, function (response) {
             // you may use response.code to get the access token.
             // alert(JSON.stringify(response));
-            alert(response.code)
+            // alert(response.code)
 
             Mywechat.getUserInfo({role:"appDoctor",code:response.code}).then(function(persondata){
                 alert(JSON.stringify(persondata));
