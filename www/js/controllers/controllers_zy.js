@@ -205,6 +205,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
             Mywechat.getUserInfo({role:"appDoctor",code:response.code}).then(function(persondata){
 
+
               // alert(persondata.headimgurl)
               Storage.set('wechatheadimgurl',persondata.results.headimgurl)
 
