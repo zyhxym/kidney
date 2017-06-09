@@ -2164,7 +2164,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”二维码页
-.controller('QRcodeCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage',  function(Doctor,$scope, $state,$interval,$rootScope,Storage) {
+.controller('QRcodeCtrl', ['Doctor','$scope','$state','$interval','$rootScope', 'Storage', 'Mywechat', function(Doctor,$scope, $state,$interval,$rootScope,Storage,Mywechat) {
+        
+
     //$scope.hideTabs = true;
     //$scope.userid=Storage.get('userid');
     // $scope.doctor=meFactory.GetDoctorInfo($scope.userid);
@@ -2181,19 +2183,61 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     //   })
     // };
 
-    $scope.params = {
-        // groupId:$state.params.groupId
-        userId:Storage.get('UID')
-    }
+    // $scope.params = {
+    //     // groupId:$state.params.groupId
+    //     userId:Storage.get('UID')
+    // }
 
+    // Doctor.getDoctorInfo({
+    //     userId:Storage.get('UID')
+    // })
+    // .then(
+    //     function(data)
+    //     {
+    //         // console.log(data)
+    //         $scope.doctor=data.results;
+    //     },
+    //     function(err)
+    //     {
+    //         console.log(err)
+    //     }
+    // );
+
+    $scope.doctor = "";
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
     .then(
         function(data)
         {
+            console.log(data)
             // console.log(data)
             $scope.doctor=data.results;
+            if (angular.isDefined($scope.doctor.TDCticket) != true)
+            {
+                var params = {
+                    "role":"doctor",
+                    "userId":Storage.get('UID'),
+                    "postdata":{
+                        "action_name": "QR_LIMIT_STR_SCENE", 
+                        "action_info": {
+                            "scene": {
+                                "scene_str": Storage.get('UID')
+                            }
+                        }
+                    }
+                }
+                Mywechat.createTDCticket(params).then(function(data){
+                    $scope.doctor.TDCticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + data.results.TDCticket
+                },
+                function(err)
+                {
+                    console.log(err)
+                })
+            }
+            else{
+                $scope.doctor.TDCticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + $scope.doctor.TDCticket
+            }
         },
         function(err)
         {
