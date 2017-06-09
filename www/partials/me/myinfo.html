@@ -65,6 +65,14 @@
 	            		</div>
             		</p>
             	</ion-item>
+<!-- 				<ion-item>
+		            <span class="msg">擅长</span>
+					<p class="myinfo-msg-right top16 right15">{{doctor.major}}</p>
+		        </ion-item>
+				<ion-item>
+		            <span class="msg">简介</span>		   
+					<p class="myinfo-msg-right top16 right15">{{doctor.description}}</p>
+		        </ion-item>  -->           	
 		        <ion-item>
 		            <span class="msg">医师资格证书</span>
 					<img ng-src="{{doctor.certificatePhotoUrl}}"  name="Photo1" ng-click="showoriginal(doctor.certificatePhotoUrl)"  style="height:30%; width:30%"  />
@@ -139,17 +147,24 @@
 				<span class="input-label">科室</span>
 				<input type=text ng-model="doctor.department" style="width:100%;text-align: right;">
 			</ion-item>
-			<ion-item class="item item-input">
+<!-- 			<ion-item class="item item-input">
 				<span style="position: absolute;top:15px;">擅长</span>
 				<div contenteditable="true" ng-model="doctor.major" style="font-size: 15px;position: relative;left:55px;padding: 9px;width:80%; max-height:120px;overflow-y:auto;overflow-x:hidden;">
             	</div>
-				<!-- <input type=text ng-model="doctor.major" style="width:100%;text-align: right;"> -->
 			</ion-item>
  			<ion-item class="item item-input item-text-wrap">
 				<span style="position: absolute;top:15px;">简介</span>
 				<div contenteditable="true" ng-model="doctor.description" style="font-size: 15px;position: relative;left:55px;padding: 9px;width:80%; max-height:120px;overflow-y:auto;overflow-x:hidden;">
             	</div>
+			</ion-item> -->
+			<ion-item class="item item-input">
+				<span class="input-label">擅长</span>
+				<textarea ng-model="doctor.major" ng-attr-rows="{{row || '1'}}" ng-focus="row=2" ng-blur="row=1" cols="1" style = "width: 60%"></textarea>
 			</ion-item>
+			<ion-item class="item item-input">
+				<span class="input-label">简介</span>
+				<textarea ng-model="doctor.description" ng-attr-rows="{{row || '1'}}" ng-focus="row=2" ng-blur="row=1" cols="1" style = "width: 60%"></textarea>
+			</ion-item>			
 			<ion-item>
 	            <!-- <span class="msg">医师资格证书</span> -->
 	            <button class="button button-clear" style="color:#666" ng-click="onClickCamera($event,0)" ><i class="icon ion-camera"></i>上传医师资格证书</button>
