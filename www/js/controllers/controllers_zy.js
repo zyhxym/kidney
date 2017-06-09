@@ -5,12 +5,62 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 .controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','$sce','Doctor','$rootScope','notify','$interval','socket','Mywechat', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,$sce,Doctor,$rootScope,notify,$interval,socket,Mywechat) {
     $scope.barwidth="width:0%";
     $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
-    if(Storage.get('USERNAME')!=null){
+    if(Storage.get('USERNAME')!=null&&Storage.get('USERNAME')!=undefined){
         $scope.logOn={username:Storage.get('USERNAME'),password:""};
     }
     else{
         $scope.logOn={username:"",password:""};
     }
+
+
+    if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
+    User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
+      if(data.results.mesg=="login success!"){
+        Storage.set('isSignIn',true);
+        Storage.set('UID',data.results.userId);//后续页面必要uid
+        Storage.set('bindingsucc','yes')
+        Doctor.getDoctorInfo({userId:data.results.userId})
+        .then(function(response){
+            thisDoctor = response.results;
+            $interval(function newuser(){
+                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                return newuser;
+            }(),10000);
+
+        },function(err){
+            thisDoctor=null;
+        }); 
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory(); 
+        $state.go('tab.home')  
+      }
+    })
+  }else if(Storage.get('USERNAME')!=null&&Storage.get('USERNAME')!=undefined&&Storage.get('password')!=null&&Storage.get('password')!=undefined){
+    User.logIn({username:Storage.get('USERNAME'),password:Storage.get('password'),role:"doctor"}).then(function(data){
+      if(data.results.mesg=="login success!"){
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+        Storage.set('isSignIn',true);
+        Storage.set('UID',data.results.userId);//后续页面必要uid
+        // Storage.set('bindingsucc','yes')
+        Doctor.getDoctorInfo({userId:data.results.userId})
+        .then(function(response){
+            thisDoctor = response.results;
+            $interval(function newuser(){
+                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                return newuser;
+            }(),10000);
+
+        },function(err){
+            thisDoctor=null;
+        });
+        Storage.set('USERNAME',Storage.get('USERNAME'));
+        // alert(Storage.get('UID')+Storage.get('USERNAME'))
+        $timeout(function(){$state.go('tab.home');},500);
+      }
+    })
+  }
+
     $scope.signIn = function(logOn) {  
         $scope.logStatus='';
 
@@ -33,7 +83,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
-
+                        Storage.set('password',logOn.password)
                         Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
@@ -92,27 +142,27 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.go('phonevalid');   
     }
 
-    if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
-        User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
-          if(data.results.mesg=="login success!"){
-            Storage.set('isSignIn',"Yes");
-            Storage.set('UID',ret.UserId);//后续页面必要uid
-            Storage.set('bindingsucc','yes')
-            $state.go('tab.home')
-            Doctor.getDoctorInfo({userId:data.results.userId})
-            .then(function(response){
-                thisDoctor = response.results;
-                $interval(function newuser(){
-                    socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                    return newuser;
-                }(),10000);
+    // if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
+    //     User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
+    //       if(data.results.mesg=="login success!"){
+    //         Storage.set('isSignIn',"Yes");
+    //         Storage.set('UID',data.results.UserId);//后续页面必要uid
+    //         Storage.set('bindingsucc','yes')
+    //         Doctor.getDoctorInfo({userId:data.results.userId})
+    //         .then(function(response){
+    //             thisDoctor = response.results;
+    //             $interval(function newuser(){
+    //                 socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+    //                 return newuser;
+    //             }(),10000);
 
-            },function(err){
-                thisDoctor=null;
-            });  
-          }
-        })
-    }
+    //         },function(err){
+    //             thisDoctor=null;
+    //         });  
+    //         $state.go('tab.home')
+    //       }
+    //     })
+    // }
     //0531
     $scope.wxsignIn=function(){
         /*Wechat.isInstalled(function (installed) {
@@ -121,30 +171,30 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             alert("Failed: " + reason);
         });*/
         //先判断localstorage是否有unionid
-        if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
-            User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
-              if(data.results.mesg=="login success!"){
-                Storage.set('isSignIn',"Yes");
-                Storage.set('UID',ret.UserId);//后续页面必要uid
-                Storage.set('bindingsucc','yes')
-                User.getUserIDbyOpenId({"openId":Storage.get('doctorunionid')}).then(function(ret){
-                    Storage.set('USERNAME',ret.phoneNo)
-                    $timeout(function(){$state.go('tab.home');},500);
-                })
-                Doctor.getDoctorInfo({userId:data.results.userId})
-                .then(function(response){
-                    thisDoctor = response.results;
-                    $interval(function newuser(){
-                        socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                        return newuser;
-                    }(),10000);
+        // if(Storage.get('doctorunionid')!=undefined&&Storage.get('bindingsucc')=='yes'){
+        //     User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
+        //       if(data.results.mesg=="login success!"){
+        //         Storage.set('isSignIn',"Yes");
+        //         Storage.set('UID',ret.UserId);//后续页面必要uid
+        //         Storage.set('bindingsucc','yes')
+        //         User.getUserIDbyOpenId({"openId":Storage.get('doctorunionid')}).then(function(ret){
+        //             Storage.set('USERNAME',ret.phoneNo)
+        //             $timeout(function(){$state.go('tab.home');},500);
+        //         })
+        //         Doctor.getDoctorInfo({userId:data.results.userId})
+        //         .then(function(response){
+        //             thisDoctor = response.results;
+        //             $interval(function newuser(){
+        //                 socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+        //                 return newuser;
+        //             }(),10000);
 
-                },function(err){
-                    thisDoctor=null;
-                });  
-              }
-            })
-        }
+        //         },function(err){
+        //             thisDoctor=null;
+        //         });  
+        //       }
+        //     })
+        // }
         // if(1==2){
         var wxscope = "snsapi_userinfo",
         wxstate = "_" + (+new Date());
@@ -154,7 +204,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             // alert(response.code)
 
             Mywechat.getUserInfo({role:"appDoctor",code:response.code}).then(function(persondata){
-                alert(JSON.stringify(persondata));
+
+                // alert(JSON.stringify(persondata));
+
               // alert(persondata.headimgurl)
               Storage.set('wechatheadimgurl',persondata.results.headimgurl)
 
@@ -613,6 +665,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         })
                         .then(function(succ)
                         {
+                            Storage.set('password',password.newPass);
                             console.log(succ)
                             $state.go('signin')
                         },function(err)
@@ -2705,6 +2758,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         //Storage.set('IsSignIn','NO');
         $state.logStatus="用户已注销";
         //清除登陆信息
+        Storage.rm('password');
+        Storage.rm('doctorunionid');
         Storage.rm('IsSignIn');
         //Storage.rm('USERNAME');
         Storage.rm('PASSWORD');
