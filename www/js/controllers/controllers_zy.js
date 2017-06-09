@@ -204,7 +204,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             // alert(response.code)
 
             Mywechat.getUserInfo({role:"appDoctor",code:response.code}).then(function(persondata){
-                // alert(JSON.stringify(persondata));
+
               // alert(persondata.headimgurl)
               Storage.set('wechatheadimgurl',persondata.results.headimgurl)
 
@@ -916,6 +916,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     
     $scope.doctor={
 
+
     }
     User.logIn({username:Storage.get('phoneNumber'),password:Storage.get('password'),role:"doctor"}).then(function(data){
         console.log(data)
@@ -940,7 +941,6 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                     text: '確定',
                                     type: 'button-positive',
                                     onTap: function(e) {
-
                                         // alert(Storage.get('UID'))
                                         Doctor.getDoctorInfo({userId:$scope.doctor.userId})
                                         .then(function(response){
@@ -1182,6 +1182,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
         })
     }
+    $scope.forumPermission=false;
+    $scope.goToPersonalInfo=function()
+    {
+        console.log("go to pers Info")
+    }
     Doctor.getDoctorInfo({
         userId:Storage.get('UID')
     })
@@ -1189,6 +1194,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         function(data)
         {
             console.log(data)
+            if(data.hasOwnProperty("results")&&data.results.hasOwnProperty("name")&&data.results.name!="")
+                $scope.forumPermission=true;
             $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username="+data.results.name+Storage.get('USERNAME').slice(7)+"&password="+data.results.name+Storage.get('USERNAME').slice(7));
             $scope.navigation=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/");
         },

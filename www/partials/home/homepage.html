@@ -9,10 +9,10 @@
   </ion-nav-bar>
 	<ion-slides  options="options" slider="data.slider" style="margin-top: 44px;height: 100px;" ng-show="!isfullScreen">
 		<ion-slide-page>
-			<div class="box"><img src="img/banner02.png"></div>
+			<div class="box"><img src="img/banner02@2x.png"></div>
 		</ion-slide-page>
 		<ion-slide-page>
-			<div class="box"><img src="img/banner02.png"></div>
+			<div class="box"><img src="img/banner02@2x.png"></div>
 		</ion-slide-page>
 	</ion-slides>
 <!--     <div class="button-bar bar-positive" style="">
@@ -32,7 +32,12 @@
 	<!-- <a class="button" style="z-index: 20;" ng-click="importDocs()">import user 2 forum</a> -->
 	<ion-content style="padding:0px;" ng-style="isWriting">
 
-	    <iframe id="bbsframe" ng-src ='{{navigation}}' height="100%" width="100%">
+		<div style="text-align:center" ng-if="!forumPermission">
+			<p style="margin-top: 20px;">您需要先填写个人信息才能访问论坛!</p>
+			<button ng-click="goToPersonalInfo()">去完善个人信息</button>
+		</div>
+		
+	    <iframe id="bbsframe" ng-src ='{{navigation}}' height="100%" width="100%" ng-show="forumPermission">
 			<p>Your browser does not support iframes.</p>
 	    </iframe>
 
