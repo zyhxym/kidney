@@ -240,19 +240,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(noCrop) opt.allowEdit = false;
             $cordovaCamera.getPicture(opt).then(function(imageUrl) {
               console.log(imageUrl)
+              resolve(imageUrl)
               // file manipulation
-              var tail=imageUrl.lastIndexOf('?');
-              if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
-              else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
-              fs.mvMedia('image',fileName,'.jpg')
-              .then(function(res){
-                console.log(res);
-                //res: file URL
-                resolve(res);
-              },function(err){
-                console.log(err);
-                reject(err);
-              })
+              // var tail=imageUrl.lastIndexOf('?');
+              // if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
+              // else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
+              // fs.mvMedia('image',fileName,'.jpg')
+              // .then(function(res){
+              //   console.log(res);
+              //   //res: file URL
+              //   resolve(res);
+              // },function(err){
+              //   console.log(err);
+              //   reject(err);
+              // })
           }, function(err) {
             console.log(err);
               reject('fail to get image');
@@ -264,19 +265,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $q(function(resolve, reject) {
             $cordovaCamera.getPicture(CONFIG.cameraOptions[type]).then(function(imageUrl) {
               console.log(imageUrl)
+              resolve(imageUrl)
               // file manipulation
-              var tail=imageUrl.lastIndexOf('?');
-              if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
-              else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
-              fs.mvMedia('image',fileName,'.jpg')
-              .then(function(res){
-                console.log(res);
-                //res: file URL
-                resolve(res);
-              },function(err){
-                console.log(err);
-                reject(err);
-              })
+              // var tail=imageUrl.lastIndexOf('?');
+              // if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
+              // else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
+              // fs.mvMedia('image',fileName,'.jpg')
+              // .then(function(res){
+              //   console.log(res);
+              //   //res: file URL
+              //   resolve(res);
+              // },function(err){
+              //   console.log(err);
+              //   reject(err);
+              // })
           }, function(err) {
             console.log(err);
               reject('fail to get image');
@@ -489,9 +491,17 @@ angular.module('kidney.services', ['ionic','ngResource'])
     var Mywechat = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'wechat'},{
             messageTemplate:{method:'POST', params:{route: 'messageTemplate'}, timeout: 100000},
-            gettokenbycode:{method:'GET', params:{route: 'gettokenbycode'}, timeout: 100000}
+            gettokenbycode:{method:'GET', params:{route: 'gettokenbycode'}, timeout: 100000},
+            getUserInfo:{method:'GET', params:{route: 'getUserInfo'}, timeout: 100000},
+            createTDCticket:{method:'POST', params:{route: 'createTDCticket'}, timeout: 100000}
         })
     }
+
+    var Advice =function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{path:'advice'},{
+            postAdvice:{method:'POST', params:{route: 'postAdvice'}, timeout: 100000}
+        });
+    }    
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -514,7 +524,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Mywechat = Mywechat();
             serve.Insurance = Insurance();
             serve.New = New();          
-            serve.Expense = Expense();    
+            serve.Expense = Expense();   
+            serve.Advice = Advice();  
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -534,7 +545,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Mywechat = Mywechat();
     serve.Insurance = Insurance();
     serve.New = New();  
-    serve.Expense = Expense();        
+    serve.Expense = Expense();    
+    serve.Advice = Advice();    
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -1851,6 +1863,24 @@ angular.module('kidney.services', ['ionic','ngResource'])
     return self;
 }])
 
+
+.factory('Advice', ['$q', 'Data', function($q, Data){
+    var self = this;
+    self.postAdvice = function(params){
+        var deferred = $q.defer();
+        Data.Advice.postAdvice(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return self;
+}])
+
 .factory('New', ['$q', 'Data', function($q, Data){
     var self = this;
     self.getNews = function(params){
@@ -2013,6 +2043,32 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return deferred.promise;
     };
 
+    self.getUserInfo = function(params){
+        var deferred = $q.defer();
+        Data.Mywechat.getUserInfo(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.createTDCticket = function(params){
+        var deferred = $q.defer();
+        Data.Mywechat.createTDCticket(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
     return self;
 }])
 
@@ -2163,54 +2219,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
                         return schedulNote(msg,note);
                     }
                 });
-                // .then(function(res){
-                //     console.log(res);
-                //     $cordovaLocalNotification.getAll()
-                //     .then(function(notes){
-                //         console.log(notes);
-                //     });
-                // },function(err){
-                //     console.log(err);
-                // })
 
-
-            // var url = CONFIG.mediaUrl+'uploads/photos/resized'+msg.fromID+'_myAvatar.jpg',
-            //     targetPath = cordova.file.dataDirectory + 'resized'+msg.fromID+'_myAvatar.jpg',
-            //     trustHosts = true,
-            //     options = {};
-
-            // var opt = {
-            //     id:msg.createTimeInMillis,
-            //     title:msg.fromName,
-            //     text:msg.content.text,
-            //     data:msg,
-            //     led:'0000FF',
-            //     // icon:iconPath,
-            //     iconUri:iconPath
-            // }
-            // $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-            // .then(function(data){
-            //     console.log(data);
-            // },function(err){
-            //     console.log(err);
-            //     opt.icon=iconPath;
-            // });
-            
-            // $cordovaLocalNotification.schedule(opt)
-            // .then(function(result){
-            //     // result  = 'OK'
-            //     $cordovaLocalNotification.getAll()
-            //     .then(function(notes){
-            //         console.log(notes);
-            //     },function(err){
-            //         console.error(err);
-            //     })
-            // });
-            // if(getNote(msg))
         },
         remove:function(id){
             var matchId=Number(id.slice(1));
             return $cordovaLocalNotification.cancel(matchId);
         }
     }
+
 }])
