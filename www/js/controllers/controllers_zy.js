@@ -83,7 +83,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
-                        Storage.set('password',logOn.password)
+                        Storage.set('password',logOn.password);
                         Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
