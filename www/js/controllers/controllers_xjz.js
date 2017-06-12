@@ -635,6 +635,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     //     }
     // });
 
+    
+    //receiving new massage
+    // $scope.$on('receiveMessage', function(event, msg) {
+    //     if (msg.targetType == 'single' && msg.fromName == $state.params.chatId) {
+    //         viewUpdate(5);
+    //     }
+    // });
+
     function sendNotice(type,status,cnt){
         // var t = setTimeout(function(){
             return sendCnNotice(type,status,cnt);
@@ -1457,7 +1465,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             })
         }
     })
-
     function getConsultation(){
         Communication.getConsultation({ consultationId: $scope.params.groupId })
         .then(function(data) {
@@ -1476,7 +1483,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 });
         });
     }
-    $scope.counselMsgs = [];
     function viewChatFn(DID,PID){
         return function(){
             $state.go('tab.view-chat',{doctorId:DID,patientId:PID});

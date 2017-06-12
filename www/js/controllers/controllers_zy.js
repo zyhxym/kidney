@@ -83,7 +83,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
-                        Storage.set('password',logOn.password)
+                        Storage.set('password',logOn.password);
                         Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
@@ -1114,6 +1114,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //首页
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout','Doctor','New',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout,Doctor,New) {
     $scope.barwidth="width:0%";
+    $scope.sliderStyle={'margin-top':'44px','height':'100px'}
+    if(ionic.Platform.isIOS()){
+        $scope.sliderStyle={'margin-top':'64px','height':'100px'}
+    }
     var windowHeight=$(window).height();
     console.log(Storage.get('USERNAME'));    
     $scope.hasUnreadMessages = false;
