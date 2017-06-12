@@ -240,19 +240,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(noCrop) opt.allowEdit = false;
             $cordovaCamera.getPicture(opt).then(function(imageUrl) {
               console.log(imageUrl)
+              resolve(imageUrl)
               // file manipulation
-              var tail=imageUrl.lastIndexOf('?');
-              if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
-              else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
-              fs.mvMedia('image',fileName,'.jpg')
-              .then(function(res){
-                console.log(res);
-                //res: file URL
-                resolve(res);
-              },function(err){
-                console.log(err);
-                reject(err);
-              })
+              // var tail=imageUrl.lastIndexOf('?');
+              // if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
+              // else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
+              // fs.mvMedia('image',fileName,'.jpg')
+              // .then(function(res){
+              //   console.log(res);
+              //   //res: file URL
+              //   resolve(res);
+              // },function(err){
+              //   console.log(err);
+              //   reject(err);
+              // })
           }, function(err) {
             console.log(err);
               reject('fail to get image');
@@ -264,19 +265,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $q(function(resolve, reject) {
             $cordovaCamera.getPicture(CONFIG.cameraOptions[type]).then(function(imageUrl) {
               console.log(imageUrl)
+              resolve(imageUrl)
               // file manipulation
-              var tail=imageUrl.lastIndexOf('?');
-              if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
-              else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
-              fs.mvMedia('image',fileName,'.jpg')
-              .then(function(res){
-                console.log(res);
-                //res: file URL
-                resolve(res);
-              },function(err){
-                console.log(err);
-                reject(err);
-              })
+              // var tail=imageUrl.lastIndexOf('?');
+              // if(tail!=-1) var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1,tail);
+              // else var fileName=imageUrl.slice(imageUrl.lastIndexOf('/')+1);
+              // fs.mvMedia('image',fileName,'.jpg')
+              // .then(function(res){
+              //   console.log(res);
+              //   //res: file URL
+              //   resolve(res);
+              // },function(err){
+              //   console.log(err);
+              //   reject(err);
+              // })
           }, function(err) {
             console.log(err);
               reject('fail to get image');
@@ -2144,7 +2146,16 @@ angular.module('kidney.services', ['ionic','ngResource'])
     return mySocket;
 }])
 .factory('notify',['$cordovaLocalNotification','$cordovaFileTransfer','CONFIG','arrTool',function($cordovaLocalNotification,$cordovaFileTransfer,CONFIG,arrTool){
+<<<<<<< HEAD
     var COUNT_REG = /^\[([1-9]+[0-9]*)\]/;
+=======
+    var notices = {},
+        iconPath = 'file://img/default_user.png',
+        COUNT_REG = /^\[([1-9]+[0-9]*)\]/;
+    function getNote(msg){
+        console.log($cordovaLocalNotification.getAll());
+    }
+>>>>>>> bme/master
     function nextCount(text){
         var matchs = text.match(COUNT_REG);
         return matchs===null?2:Number(matchs[1])+1;
@@ -2212,11 +2223,20 @@ angular.module('kidney.services', ['ionic','ngResource'])
                         return schedulNote(msg,note);
                     }
                 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> bme/master
         },
         remove:function(id){
             var matchId=Number(id.slice(1));
             return $cordovaLocalNotification.cancel(matchId);
         }
     }
+<<<<<<< HEAD
 }])
 
+=======
+
+}])
+>>>>>>> bme/master
