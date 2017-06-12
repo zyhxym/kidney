@@ -2667,8 +2667,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }   
 
     $scope.savefee = function() {
-        if($scope.doctor.charge2<$scope.doctor.charge1){
-            $scope.SaveStatus="咨询收费不得低于问诊收费，请重新设置"
+        if($scope.doctor.charge2<=$scope.doctor.charge1){
+            $scope.SaveStatus="问诊收费应高于咨询收费，请重新设置"
             return;
         }
         Doctor.editDoctorDetail($scope.doctor)
