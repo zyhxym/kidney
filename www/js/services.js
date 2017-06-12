@@ -2219,55 +2219,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
                         return schedulNote(msg,note);
                     }
                 });
-                // .then(function(res){
-                //     console.log(res);
-                //     $cordovaLocalNotification.getAll()
-                //     .then(function(notes){
-                //         console.log(notes);
-                //     });
-                // },function(err){
-                //     console.log(err);
-                // })
 
-
-            // var url = CONFIG.mediaUrl+'uploads/photos/resized'+msg.fromID+'_myAvatar.jpg',
-            //     targetPath = cordova.file.dataDirectory + 'resized'+msg.fromID+'_myAvatar.jpg',
-            //     trustHosts = true,
-            //     options = {};
-
-            // var opt = {
-            //     id:msg.createTimeInMillis,
-            //     title:msg.fromName,
-            //     text:msg.content.text,
-            //     data:msg,
-            //     led:'0000FF',
-            //     // icon:iconPath,
-            //     iconUri:iconPath
-            // }
-            // $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-            // .then(function(data){
-            //     console.log(data);
-            // },function(err){
-            //     console.log(err);
-            //     opt.icon=iconPath;
-            // });
-            
-            // $cordovaLocalNotification.schedule(opt)
-            // .then(function(result){
-            //     // result  = 'OK'
-            //     $cordovaLocalNotification.getAll()
-            //     .then(function(notes){
-            //         console.log(notes);
-            //     },function(err){
-            //         console.error(err);
-            //     })
-            // });
-            // if(getNote(msg))
         },
         remove:function(id){
             var matchId=Number(id.slice(1));
             return $cordovaLocalNotification.cancel(matchId);
         }
     }
-}])
 
+}])
