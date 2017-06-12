@@ -23,7 +23,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(function(response){
             thisDoctor = response.results;
             $interval(function newuser(){
-                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
                 return newuser;
             }(),10000);
 
@@ -47,7 +47,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(function(response){
             thisDoctor = response.results;
             $interval(function newuser(){
-                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
                 return newuser;
             }(),10000);
 
@@ -88,7 +88,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         .then(function(response){
                             thisDoctor = response.results;
                             $interval(function newuser(){
-                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
                                 return newuser;
                             }(),10000);
 
@@ -228,7 +228,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         .then(function(response){
                             thisDoctor = response.results;
                             $interval(function newuser(){
-                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
                                 return newuser;
                             }(),10000);
 
@@ -947,7 +947,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                         .then(function(response){
                                             thisDoctor = response.results;
                                             $interval(function newuser(){
-                                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
+                                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
                                                 return newuser;
                                             }(),10000);
 
