@@ -2233,3 +2233,4 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
 }])
 
+}])
