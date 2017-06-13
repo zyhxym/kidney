@@ -2146,12 +2146,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     return mySocket;
 }])
 .factory('notify',['$cordovaLocalNotification','$cordovaFileTransfer','CONFIG','arrTool',function($cordovaLocalNotification,$cordovaFileTransfer,CONFIG,arrTool){
-    var notices = {},
-        iconPath = 'file://img/default_user.png',
-        COUNT_REG = /^\[([1-9]+[0-9]*)\]/;
-    function getNote(msg){
-        console.log($cordovaLocalNotification.getAll());
-    }
+    var COUNT_REG = /^\[([1-9]+[0-9]*)\]/;
     function nextCount(text){
         var matchs = text.match(COUNT_REG);
         return matchs===null?2:Number(matchs[1])+1;
@@ -2219,12 +2214,23 @@ angular.module('kidney.services', ['ionic','ngResource'])
                         return schedulNote(msg,note);
                     }
                 });
-
         },
         remove:function(id){
             var matchId=Number(id.slice(1));
             return $cordovaLocalNotification.cancel(matchId);
         }
     }
-
 }])
+.factory('mySocket',['socket','$interval',function(socket,$interval){
+    return {
+        newUser:function(userId){
+            $interval(function newuser(){
+                socket.emit('newUser',{ user_name: '', user_id: userId, client:'app'})
+                // socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
+                return newuser;
+            }(),60000);
+        }
+    }
+}])
+
+
