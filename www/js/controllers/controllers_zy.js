@@ -2,7 +2,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying///////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','$sce','Doctor','$rootScope','notify','$interval','socket','Mywechat', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,$sce,Doctor,$rootScope,notify,$interval,socket,Mywechat) {
+.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','$sce','Doctor','$rootScope','notify','$interval','socket','Mywechat','mySocket', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,$sce,Doctor,$rootScope,notify,$interval,socket,Mywechat,mySocket) {
     $scope.barwidth="width:0%";
     $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null&&Storage.get('USERNAME')!=undefined){
@@ -22,10 +22,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Doctor.getDoctorInfo({userId:data.results.userId})
         .then(function(response){
             thisDoctor = response.results;
-            $interval(function newuser(){
-                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                return newuser;
-            }(),10000);
+            mySocket.newUser(response.results.userId);
+            // $interval(function newuser(){
+            //     socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
+            //     return newuser;
+            // }(),10000);
 
         },function(err){
             thisDoctor=null;
@@ -46,10 +47,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Doctor.getDoctorInfo({userId:data.results.userId})
         .then(function(response){
             thisDoctor = response.results;
-            $interval(function newuser(){
-                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                return newuser;
-            }(),10000);
+            mySocket.newUser(response.results.userId);
 
         },function(err){
             thisDoctor=null;
@@ -83,16 +81,11 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
-
                         Storage.set('password',logOn.password)
-
                         Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
-                            $interval(function newuser(){
-                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                                return newuser;
-                            }(),10000);
+                            mySocket.newUser(response.results.userId);
 
                         },function(err){
                             thisDoctor=null;
@@ -229,10 +222,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                       Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
-                            $interval(function newuser(){
-                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                                return newuser;
-                            }(),10000);
+                            mySocket.newUser(response.results.userId);
 
                         },function(err){
                             thisDoctor=null;
@@ -915,7 +905,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     // })
 }])
 
-.controller('uploadcertificateCtrl',['$interval','CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams','socket',function($interval,CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams,socket){
+.controller('uploadcertificateCtrl',['$interval','CONFIG','Dict','Doctor','$scope','$state','$ionicHistory','$timeout' ,'Storage', '$ionicPopup','$ionicLoading','$ionicPopover','$ionicScrollDelegate','User','$http','Camera','$ionicModal','$stateParams','socket','mySocket',function($interval,CONFIG,Dict,Doctor,$scope,$state,$ionicHistory,$timeout,Storage, $ionicPopup,$ionicLoading, $ionicPopover,$ionicScrollDelegate,User,$http,Camera,$ionicModal,$stateParams,socket,mySocket){
     
     $scope.doctor={
 
@@ -948,10 +938,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                                         Doctor.getDoctorInfo({userId:$scope.doctor.userId})
                                         .then(function(response){
                                             thisDoctor = response.results;
-                                            $interval(function newuser(){
-                                                socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
-                                                return newuser;
-                                            }(),10000);
+                                            mySocket.newUser(response.results.userId);
 
                                         },function(err){
                                             thisDoctor=null;
@@ -1866,7 +1853,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     // $scope.goback=function(){
     //     $ionicHistory.goBack();
     // }
-
+    $scope.barStyle={'margin-top':'40px'}
+    if(ionic.Platform.isIOS()){
+        $scope.barStyle={'margin-top':'60px'}
+    }  
     $scope.backview=$ionicHistory.viewHistory().backView
         $scope.backstateId=null;
         if($scope.backview!=null){
@@ -2673,8 +2663,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     }   
 
     $scope.savefee = function() {
-        if($scope.doctor.charge2<$scope.doctor.charge1){
-            $scope.SaveStatus="咨询收费不得低于问诊收费，请重新设置"
+        if($scope.doctor.charge2<=$scope.doctor.charge1){
+            $scope.SaveStatus="问诊收费应高于咨询收费，请重新设置"
             return;
         }
         Doctor.editDoctorDetail($scope.doctor)

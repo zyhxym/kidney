@@ -2,6 +2,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 /////////////////////////tongdanyang/////////////////
 .controller('DoctorDiagnoseCtrl', ['Task','$scope', 'Storage','ionicDatePicker','Patient','$state', function (Task,$scope, Storage,ionicDatePicker,Patient,$state) {
+  $scope.barStyle={'margin-top':'40px'}
+  if(ionic.Platform.isIOS()){
+      $scope.barStyle={'margin-top':'60px'}
+  }
   $scope.BacktoPD = function(){
     $state.go('tab.patientDetail');
   }
@@ -301,6 +305,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 //测量记录
 .controller('TestRecordCtrl', ['$state','$scope', '$http','$stateParams','Storage','VitalSign', function ($state,$scope,$http,$stateParams,Storage,VitalSign) {
+  $scope.barStyle={'margin-top':'40px'}
+  if(ionic.Platform.isIOS()){
+      $scope.barStyle={'margin-top':'60px'}
+  }
   $scope.BacktoPD = function(){
     $state.go('tab.patientDetail');
   }  
@@ -921,6 +929,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 //任务设置--GL
 .controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
+  $scope.barStyle={'margin-top':'40px'}
+  if(ionic.Platform.isIOS()){
+      $scope.barStyle={'margin-top':'60px'}
+  }
   $scope.BacktoPD = function(){
     $state.go('tab.patientDetail');
   }
@@ -1154,6 +1166,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 //健康信息--PXY
 .controller('HealthInfoCtrl', ['$state','$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict',function($state,$scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict) {
+  $scope.barStyle={'margin-top':'40px'}
+  if(ionic.Platform.isIOS()){
+      $scope.barStyle={'margin-top':'60px'}
+  }
   $scope.barwidth="width:0%";
   $scope.BacktoPD = function(){
     $state.go('tab.patientDetail');
