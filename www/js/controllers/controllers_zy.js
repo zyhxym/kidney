@@ -81,7 +81,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                         }
                     }
                     else if(data.results.mesg=="login success!"){
-                        Storage.set('password',logOn.password);
+                        Storage.set('password',logOn.password)
                         Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
@@ -1853,7 +1853,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     // $scope.goback=function(){
     //     $ionicHistory.goBack();
     // }
-
+    $scope.barStyle={'margin-top':'40px'}
+    if(ionic.Platform.isIOS()){
+        $scope.barStyle={'margin-top':'60px'}
+    }  
     $scope.backview=$ionicHistory.viewHistory().backView
         $scope.backstateId=null;
         if($scope.backview!=null){
