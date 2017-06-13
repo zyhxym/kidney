@@ -62,7 +62,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 .controller('GroupsSearchCtrl', ['$scope', '$state','Communication','$ionicLoading', function($scope, $state,Communication,$ionicLoading) {
     $scope.search='';
     $scope.noteam=0;
-
+    $scope.searchStyle={'margin-top':'44px'}
+    if(ionic.Platform.isIOS()){
+        $scope.searchStyle={'margin-top':'64px'}
+    }
     $scope.Searchgroup = function() {
         $scope.noteam = 0;
         Communication.getTeam({ teamId: $scope.search })
@@ -80,7 +83,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 //医生查找
 .controller('DoctorSearchCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG) {
-
+    $scope.searchStyle={'margin-top':'44px'}
+    if(ionic.Platform.isIOS()){
+        $scope.searchStyle={'margin-top':'64px'}
+    }
+    $scope.docStyle={'margin-top':'opx'}
+    if(ionic.Platform.isIOS()){
+        $scope.docStyle={'margin-top':'20px'}
+    } 
     //get groupId via $state.params.groupId
     $scope.moredata = true;
     $scope.issearching = true;
@@ -375,7 +385,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //"咨询”问题详情
+
 .controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify',function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify) {
+
 
     $scope.input = {
         text: ''
@@ -479,7 +491,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
         $scope.getMsg(15).then(function(data) {
             $scope.msgs = data;
-            toBottom(true, 400);
+            toBottom(false, 400);
             $scope.params.loaded = true;
         });
     });
@@ -602,6 +614,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 $scope.counselstatus = 1;
             }
             New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, readOrNot: 1 });
+
         }
     });
     $scope.$on('im:messageRes',function(event,data){
@@ -627,13 +640,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         }
     });
-    
-    //receiving new massage
-    // $scope.$on('receiveMessage', function(event, msg) {
-    //     if (msg.targetType == 'single' && msg.fromName == $state.params.chatId) {
-    //         viewUpdate(5);
-    //     }
-    // });
 
     
     //receiving new massage
@@ -1221,7 +1227,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 //添加成员
 .controller('GroupAddMemberCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG) {
-
+    $scope.searchStyle={'margin-top':'44px'}
+    if(ionic.Platform.isIOS()){
+        $scope.searchStyle={'margin-top':'64px'}
+    }
+    $scope.memStyle={'padding':'3px 16px','position':'absolute','top':'88px','height':'50px','width':'100%','margin':'0','max-height':'30vh','overflow-y':'scroll'}
+    if(ionic.Platform.isIOS()){
+        $scope.memStyle={'padding':'3px 16px','position':'absolute','top':'108px','height':'50px','width':'100%','margin-top':'0px','max-height':'30vh','overflow-y':'scroll'}
+    } 
     //get groupId via $state.params.groupId
     $scope.moredata = true;
     $scope.issearching = true;
@@ -1425,7 +1438,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $rootScope.conversation.id = $scope.params.groupId;
             $scope.getMsg(15).then(function(data){
                 $scope.msgs=data;
-                toBottom(true,400);
+                toBottom(false,400);
             });
             imgModalInit();
         })
@@ -1910,6 +1923,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 
+
 .controller('selectDocCtrl', ['$state', '$scope', '$ionicPopup','$ionicLoading','$ionicScrollDelegate','Patient', 'Storage', 'Communication','CONFIG','Mywechat','socket',function($state, $scope, $ionicPopup,$ionicLoading,$ionicScrollDelegate,Patient, Storage,Communication,CONFIG,Mywechat,socket) {
 
     $scope.params={
@@ -2183,7 +2197,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
         $scope.getMsg(15).then(function (data) {
             $scope.msgs = data;
-            toBottom(true, 400);
+            toBottom(false, 400);
         });
     });
 
