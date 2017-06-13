@@ -2220,5 +2220,5 @@ angular.module('kidney.services', ['ionic','ngResource'])
             return $cordovaLocalNotification.cancel(matchId);
         }
     }
-}])
 
+}])
