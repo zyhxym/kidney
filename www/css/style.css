@@ -1087,3 +1087,7 @@ display: inline-block;
   background-image: none !important;
   border:0px !important;
 }
+
+.ios-sub{
+  top:64px !important;
+}
