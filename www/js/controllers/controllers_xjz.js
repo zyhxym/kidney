@@ -386,8 +386,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 //"咨询”问题详情
 
-.controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify',function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify) {
-
+.controller('detailCtrl', ['$ionicPlatform','$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify',function($ionicPlatform,$scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify) {
+    if($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true);
 
     $scope.input = {
         text: ''
@@ -1366,7 +1366,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 
 //团队聊天
-.controller('GroupChatCtrl', ['$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover','$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor','$q','CONFIG','arrTool','New','socket','notify', function($scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover,$ionicLoading, $ionicPopup, Camera, voice, Communication,Storage,Doctor,$q,CONFIG,arrTool,New,socket,notify) {
+.controller('GroupChatCtrl', ['$ionicPlatform','$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover','$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor','$q','CONFIG','arrTool','New','socket','notify', function($ionicPlatform,$scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover,$ionicLoading, $ionicPopup, Camera, voice, Communication,Storage,Doctor,$q,CONFIG,arrTool,New,socket,notify) {
+    if($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true);
     $scope.input = {
         text: ''
     };
@@ -1902,7 +1903,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //病历结论
-.controller('GroupConclusionCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate','Communication','$ionicLoading','CONFIG','Storage','Account','socket','mySocket',function($state,$scope,$ionicModal,$ionicScrollDelegate,Communication,$ionicLoading,CONFIG,Storage,Account,socket,mySocket){
+.controller('GroupConclusionCtrl',['$state','$scope','$ionicModal','$ionicScrollDelegate','Communication','$ionicLoading','CONFIG','Storage','Account','socket','mySocket','Counsel',function($state,$scope,$ionicModal,$ionicScrollDelegate,Communication,$ionicLoading,CONFIG,Storage,Account,socket,mySocket,Counsel){
    
     $scope.input = {
         text: ''
@@ -1957,21 +1958,22 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         }
                         if(res.results.type!='1'){
                             //暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
-                            var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
+                            // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
                             // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
                             socket.emit('message', { msg: msgJson, to: PID ,role:'doctor'});
-                            resetUserAsAppUser();
+                            // resetUserAsAppUser();
 
-                            $ionicLoading.show({ template: '回复成功', duration: 1500 });
+                            $ionicLoading.show({ template: '回复成功'});
                             setTimeout(function() {
+                                $ionicLoading.hide();
                                 $state.go('tab.groups', { type: '0' });
-                            }, 1500);
+                            }, 1000);
                         }else{
                             Account.modifyCounts({doctorId:DID,patientId:PID,modify:'-1'})
                             .then(function(){
                                 Account.getCounts({doctorId:DID,patientId:PID})
                                 .then(function(response){
-                                    var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
+                                    // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
                                     // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
                                     socket.emit('message', { msg: msgJson, to: PID ,role:'doctor'});
 
@@ -2001,13 +2003,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                             content:endlMsg
                                         }
                                         socket.emit('message', { msg: endJson, to: PID ,role:'doctor'});
-                                        Counsel.changeCounselStatus({counselId:res.results.counselId,status:0})
+                                        Counsel.changeStatus({doctorId:DID,patientId:PID,type:res.results.type,status:0});
                                     }
-                                    resetUserAsAppUser();
-                                    $ionicLoading.show({ template: '回复成功', duration: 1500 });
+                                    // resetUserAsAppUser();
+                                    $ionicLoading.show({ template: '回复成功'});
                                     setTimeout(function() {
+                                        $ionicLoading.hide();
                                         $state.go('tab.groups', { type: '0' });
-                                    }, 1500);
+                                    }, 1000);
 
                                 });
 
@@ -2345,11 +2348,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         if ($scope.msgs.length!=0) $scope.msgs[0].diff = ($scope.msgs[0].createTimeInMillis - res[0].createTimeInMillis) > 300000 ? true : false;
                         for (var i = 0; i < res.length - 1; ++i) {
                             if(res[i].contentType=='image') res[i].content.thumb=CONFIG.mediaUrl+res[i].content['src_thumb'];
-                            res[i].direct = res[i].fromID==$scope.params.UID?'send':'receive';
+                            res[i].direct = res[i].fromID==$scope.params.doctorId?'send':'receive';
                             res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
                             $scope.msgs.unshift(res[i]);
                         }
-                        res[i].direct = res[i].fromID==$scope.params.UID?'send':'receive';
+                        res[i].direct = res[i].fromID==$scope.params.doctorId?'send':'receive';
                         res[i].diff = true;
                         $scope.msgs.unshift(res[i]);
                     // });
