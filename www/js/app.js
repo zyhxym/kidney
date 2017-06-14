@@ -21,6 +21,7 @@ angular.module('kidney',[
 .run(['$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket', function($ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket) {
     $ionicPlatform.ready(function() {
         //记录message当前会话
+        $rootScope.isIOS = $ionicPlatform.is('ios');
         $rootScope.conversation = {
             type: null,
             id: ''
