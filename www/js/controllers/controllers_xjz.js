@@ -385,7 +385,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //"咨询”问题详情
+
 .controller('detailCtrl', ['$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify',function($scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify) {
+
 
     $scope.input = {
         text: ''
@@ -489,7 +491,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         });
         $scope.getMsg(15).then(function(data) {
             $scope.msgs = data;
-            toBottom(true, 400);
+            toBottom(false, 400);
             $scope.params.loaded = true;
         });
     });
@@ -612,6 +614,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 $scope.counselstatus = 1;
             }
             New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, readOrNot: 1 });
+
         }
     });
     $scope.$on('im:messageRes',function(event,data){
@@ -637,6 +640,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         }
     });
+
     
     //receiving new massage
     // $scope.$on('receiveMessage', function(event, msg) {
@@ -1434,7 +1438,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             $rootScope.conversation.id = $scope.params.groupId;
             $scope.getMsg(15).then(function(data){
                 $scope.msgs=data;
-                toBottom(true,400);
+                toBottom(false,400);
             });
             imgModalInit();
         })
@@ -1919,6 +1923,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 
+
 .controller('selectDocCtrl', ['$state', '$scope', '$ionicPopup','$ionicLoading','$ionicScrollDelegate','Patient', 'Storage', 'Communication','CONFIG','Mywechat','socket',function($state, $scope, $ionicPopup,$ionicLoading,$ionicScrollDelegate,Patient, Storage,Communication,CONFIG,Mywechat,socket) {
 
     $scope.params={
@@ -2192,7 +2197,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
         $scope.getMsg(15).then(function (data) {
             $scope.msgs = data;
-            toBottom(true, 400);
+            toBottom(false, 400);
         });
     });
 

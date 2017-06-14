@@ -2221,4 +2221,16 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 }])
+.factory('mySocket',['socket','$interval',function(socket,$interval){
+    return {
+        newUser:function(userId){
+            $interval(function newuser(){
+                socket.emit('newUser',{ user_name: '', user_id: userId, client:'app'})
+                // socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
+                return newuser;
+            }(),60000);
+        }
+    }
+}])
+
 
