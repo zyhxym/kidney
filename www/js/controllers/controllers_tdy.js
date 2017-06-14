@@ -1585,7 +1585,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       // ionicPopover functions 弹出框的预定义
         //--------------------------------------------
         // .fromTemplateUrl() method
-  $ionicPopover.fromTemplateUrl('my-popover1.html', {
+  $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(popover) {
