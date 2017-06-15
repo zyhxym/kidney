@@ -9,7 +9,7 @@
             <a class="button button-icon icon ion-android-people ng-hide" ng-click="viewGroup()" ng-hide="params.isDiscuss"></a>
         </ion-nav-buttons>
     </ion-nav-bar>
-    <div style="position:absolute;top:44px;width:100%;margin:0;min-height:35vh;max-height:55vh;overflow-y: scroll;" ng-hide="params.hidePanel" class="list card ng-hide hide-animate">
+    <div style="position:absolute;top:44px;width:100%;margin:0;min-height:35vh;max-height:55vh;overflow-y: scroll;" ng-hide="params.hidePanel" class="list card ng-hide hide-animate" ng-class="isIOS?'ios-sub':''">
         <div class="item item-avatar" style="padding-bottom:10px">
             <img ng-src="{{patient.patientId.photoUrl || 'img/DefaultAvatar.jpg'}} " ng-click="viewPatient(patient.patientId.userId)">
             <div>
@@ -42,7 +42,7 @@
         <div style="float:left;width:100%;padding-top:70px"></div>
     </ion-content>
     <form ng-if="!params.isOver" name="sendMessageForm" novalidate>
-        <div class="chat-bar">
+        <ion-footer-bar class="chat-bar" keyboard-attach>
             <div class="chat-top">
                 <!-- <button style="position: absolute;bottom: 2px;z-index: 999" class="button button-icon iconfont  icon-yuyin" ng-init="showVoice=false;" ng-click="showVoice==false?showVoice=true:showVoice=false;showMore=false;" ng-model="showVoice"></button> -->
                 <div class="chat-input" style="position: absolute;bottom: 4px;width: 100%;padding-left:3vw;padding-right:13vw;">
@@ -68,6 +68,6 @@
               <img src="../../img/icon_card@2x.png" alt="">
             </span> -->
             </div>
-        </div>
+        </ion-footer-bar>
     </form>
 </ion-view>

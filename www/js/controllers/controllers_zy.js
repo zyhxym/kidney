@@ -1012,7 +1012,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     };
     ////-----------------------上传头像---------------------
     // ionicPopover functions 弹出框的预定义
-    $ionicPopover.fromTemplateUrl('my-popover1.html', {
+    $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
         scope: $scope,
         animation: 'slide-in-up'
     }).then(function(popover) {
@@ -1130,7 +1130,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             });
     }
     GetUnread();
-    RefreshUnread = $interval(GetUnread,2000);
+    RefreshUnread = $interval(GetUnread,5000);
     $scope.isfullScreen=false;
     $scope.fullScreen=function()
     {
@@ -2092,7 +2092,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     // ionicPopover functions 弹出框的预定义
     //--------------------------------------------
     // .fromTemplateUrl() method
-    $ionicPopover.fromTemplateUrl('my-popover.html', {
+    $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
         scope: $scope,
         animation: 'slide-in-up'
     }).then(function(popover) {
@@ -2497,7 +2497,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     };
     ////-----------------------上传头像---------------------
     // ionicPopover functions 弹出框的预定义
-    $ionicPopover.fromTemplateUrl('my-popover1.html', {
+    $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
         scope: $scope,
         animation: 'slide-in-up'
     }).then(function(popover) {
@@ -2792,7 +2792,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”设置页
-.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage','$sce','socket',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage,$sce,socket) {
+.controller('setCtrl', ['$scope','$ionicPopup','$state','$timeout','$stateParams', 'Storage','$sce','socket','mySocket',function($scope, $ionicPopup,$state,$timeout,$stateParams,Storage,$sce,socket,mySocket) {
     $scope.hideTabs = true; 
     $scope.logout = function() {
         socket.emit('disconnect');
@@ -2806,6 +2806,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.rm('PASSWORD');
         Storage.rm('userid');
         console.log($state);
+        mySocket.cancelAll();
         $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
         $timeout(function(){$state.go('signin');},500);
     };
