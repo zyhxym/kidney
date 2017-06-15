@@ -41,8 +41,8 @@
         <div style="float:left;width:100%" ng-style="{'padding-top':'{{params.helpDivHeight}}px'}"></div>
         <div style="float:left;width:100%;padding-top:70px"></div>
     </ion-content>
-    <form ng-if="!params.isOver" name="sendMessageForm" novalidate>
-        <ion-footer-bar class="chat-bar" keyboard-attach>
+    <!--<form ng-if="!params.isOver" name="sendMessageForm" novalidate>-->
+        <ion-footer-bar ng-if="!params.isOver" class="chat-bar" keyboard-attach>
             <div class="chat-top">
                 <!-- <button style="position: absolute;bottom: 2px;z-index: 999" class="button button-icon iconfont  icon-yuyin" ng-init="showVoice=false;" ng-click="showVoice==false?showVoice=true:showVoice=false;showMore=false;" ng-model="showVoice"></button> -->
                 <div class="chat-input" style="position: absolute;bottom: 4px;width: 100%;padding-left:3vw;padding-right:13vw;">
@@ -69,5 +69,5 @@
             </span> -->
             </div>
         </ion-footer-bar>
-    </form>
+    <!--</form>-->
 </ion-view>
