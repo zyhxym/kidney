@@ -842,6 +842,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
                     //填写个人信息
                     $scope.doctor.userId = Storage.get('UID')
+                    $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
                     Doctor.postDocBasic($scope.doctor)
                     .then(
                         function(data)
@@ -2037,9 +2038,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.doctor=data.results;
             if($scope.doctor.photoUrl==""||$scope.doctor.photoUrl==null||$scope.doctor.photoUrl==undefined){
                 $scope.doctor.photoUrl='img/doctor.png'
-                if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
-                    $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
-                }
+                // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
+                //     $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
+                // }
             }
         },
         function(err)
