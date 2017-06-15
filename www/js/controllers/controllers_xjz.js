@@ -59,7 +59,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //团队查找
-.controller('GroupsSearchCtrl', ['$scope', '$state','Communication','$ionicLoading', function($scope, $state,Communication,$ionicLoading) {
+.controller('GroupsSearchCtrl', ['$scope', '$state','Communication','$ionicLoading','QRScan', function($scope, $state,Communication,$ionicLoading,QRScan) {
     $scope.search='';
     $scope.noteam=0;
     $scope.searchStyle={'margin-top':'44px'}
@@ -79,6 +79,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }, function(err) {
                 console.log(err);
             })
+    }
+    $scope.QRscan = function(){
+        QRScan.getCode()
+        .then(function(teamId){
+            if(teamId){
+                $state.go('tab.group-add',{teamId:teamId});
+            }
+        },function(err){
+
+        })
     }
 }])
 //医生查找
@@ -339,13 +349,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 .controller('GroupAddCtrl', ['$scope', '$state','$ionicHistory','Communication','$ionicPopup', 'Storage','Doctor','$ionicLoading','CONFIG',function($scope, $state,$ionicHistory,Communication,$ionicPopup,Storage,Doctor,$ionicLoading,CONFIG) {
     $scope.$on('$ionicView.beforeEnter', function() {
+        $scope.alreadyIn = true;
+        var inGroup = false,me = Storage.get('UID');
         $scope.me = [{ userId: '', name: '', photoUrl: '' }];
         Communication.getTeam({ teamId: $state.params.teamId })
             .then(function(data) {
                 console.log(data)
                 $scope.group = data.results;
-                if (data.results.sponsorId == Storage.get('UID')) $scope.imnotin = false;
-                else $scope.imnotin = true;
+
+                if (data.results.sponsorId == me) inGroup = true;
+                for(var i in data.results.members){
+                    if(data.results.members[i].userId==me) inGroup = true;
+                }
+                $scope.alreadyIn = inGroup;
             }, function(err) {
                 console.log(err);
             })

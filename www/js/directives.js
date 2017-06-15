@@ -129,6 +129,9 @@ angular.module('kidney.directives', ['kidney.services'])
                 this.style.borderBottomColor = '#AAA';
                 // this.setAttribute("style", "border-color: #AAA");
             });
+            scope.$on('keyboardshow',function(){
+                elem[0].focus();
+            })
         }
     }
 }])
