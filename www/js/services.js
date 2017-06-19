@@ -2234,6 +2234,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
     return {
         newUser:function(userId,name){
+            socket.connect();
             currentUser.id=userId;
             currentUser.name = name;
             timer = $interval(function newuser(){

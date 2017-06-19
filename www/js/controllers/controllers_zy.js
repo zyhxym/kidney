@@ -2837,6 +2837,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.rm('userid');
         console.log($state);
         mySocket.cancelAll();
+        socket.emit('disconnect');
+        socket.disconnect();
         $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
         $timeout(function(){$state.go('signin');},500);
     };
