@@ -2607,8 +2607,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”个人收费页
-.controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage) {
+.controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage','User' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage,User) {
     $scope.hideTabs = true;
+    $scope.alipay="";
+    $scope.alipayIcon="img/alipay.png";
+    $scope.wechat="";
+    $scope.wechatIcon="img/wechat.png";
     var load = function(){
         Doctor.getDoctorInfo({
             userId:Storage.get('UID')
@@ -2648,6 +2652,35 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 console.log(err)
             }
         )        
+
+        //获取用户的支付宝账号
+        Doctor.getAliPayAccount({
+            userId:Storage.get('UID')
+        })
+        .then(function(data){
+            // console.log(data)
+            if(data.hasOwnProperty("results")&&data.results!="")
+            {
+                $scope.alipay=data.results;
+                $scope.alipayIcon='img/alipay_2.jpg';
+            }
+        },function(err){
+            console.log(err)
+        })
+        //获取用户的微信unionId
+        User.One({username:Storage.get('UID')})
+        .then(function(data){
+            // console.log(data);
+            // console.log(Storage.get('UID'))
+            if(data.results.hasOwnProperty('openId'))
+            {
+                $scope.wechat='ok';
+                $scope.wechatIcon='img/wechat_2.png';
+            }
+        },function(err){
+            console.log(err);
+        })
+        
     }
     $scope.$on('$ionicView.enter', function() {
         load();
@@ -2685,6 +2718,54 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.go("tab.bill")
     }
 
+    $scope.bindAliPay = function()
+    {
+        // console.log("bind alipay");
+        $scope.ap={a:$scope.alipay};
+        var cm = $ionicPopup.show({   
+            title: '修改支付宝账号',
+            cssClass:'popupWithKeyboard',
+            template:'<input type=text ng-model="ap.a">',
+            scope:$scope,
+            buttons: [
+                {
+                    text: '確定',
+                    type: 'button-positive',
+                    onTap: function(event) {
+                        var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+                        var emailReg=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+                        //手机正则表达式验证
+                        if(!phoneReg.test($scope.ap.a) && !emailReg.test($scope.ap.a))
+                        {
+                            $ionicPopup.alert({
+                                cssClass:'popupWithKeyboard',
+                                title: '支付宝账号为邮箱或者手机号',
+                                okText: '确定'
+                            });
+                            return;
+                        }
+                        $scope.alipay=$scope.ap.a;
+                        Doctor.editAliPayAccount({userId:Storage.get('UID'),aliPayAccount:$scope.ap.a})
+                        .then(function(succ){
+                            // console.log(succ)
+                            $scope.alipay=$scope.ap.a;
+                            $scope.alipayIcon='img/alipay_2.jpg';
+                        },function(err){
+                            console.log(err)
+                        })
+                        // console.log($scope.alipay);
+                    }
+                },
+                {
+                    text: '取消',
+                    type: 'button-assert',
+                    onTap: function(){
+                        // console.log("cancle")
+                    }
+                }
+            ]
+        });
+    }
 
   
 }])
