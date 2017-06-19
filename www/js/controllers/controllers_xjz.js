@@ -645,9 +645,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         console.log(arguments);
         console.info('getMsg');
         console.log(data);
-        if (data.msg.targetType == 'single' && data.msg.fromID == $state.params.chatId) {
+        if (data.msg.targetType == 'single' && data.msg.fromID == $state.params.chatId && data.msg.newsType == $scope.params.newsType) {
             $scope.$apply(function() {
-                $scope.pushMsg(data.msg);
+                insertMsg(data.msg);
             });
             if ($scope.params.type != '2' && data.msg.contentType == 'custom' && (data.msg.content.type == 'card' || data.msg.content.type == 'counsel-payment')) {
                 Communication.getCounselReport({ counselId: data.msg.content.counselId })
@@ -675,9 +675,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         console.log(arguments);
         console.info('messageRes');
         console.log(data);
-        if (data.msg.targetType == 'single' && data.msg.targetID == $state.params.chatId) {
+        if (data.msg.targetType == 'single' && data.msg.targetID == $state.params.chatId && data.msg.newsType == $scope.params.newsType) {
             $scope.$apply(function() {
-                $scope.updateMsg(data.msg);
+                insertMsg(data.msg);
             });
             if ($scope.counselstatus == 1 && $scope.counseltype == 1 && !(data.msg.contentType == 'custom' && data.msg.content.type == 'count-notice')) {
                 Account.modifyCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId, modify: '-1' })
@@ -995,10 +995,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             }
         });
     };
-    $scope.updateMsg = function(msg){
+    $scope.updateMsg = function(msg,pos){
         console.info('updateMsg');
-        var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
-        if(pos!=-1){
+        // var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
+        // if(pos!=-1){
             // if(msg.contentType=='image') msg.content.thumb=CONFIG.mediaUrl+msg.content['src_thumb'];
             msg.diff=$scope.msgs[pos].diff;
             // $scope.$apply(function(){
@@ -1006,7 +1006,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 msg.direct = msg.fromID==$scope.params.UID?'send':'receive';
                 $scope.msgs[pos]=msg;
             // });
-        }
+        // }
         // $scope.msgs=$scope.msgs;
     };
     $scope.pushMsg = function(msg){
@@ -1036,9 +1036,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         setTimeout(function(){
             var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
             if(pos!=-1 && $scope.msgs[pos].status=='send_going') $scope.msgs[pos].status='send_fail';
-        },20000);
+        },10000);
     };
-
+    function insertMsg(msg){
+        var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
+        if(pos==-1){
+            $scope.pushMsg(msg);
+        }else{
+            $scope.updateMsg(msg,pos);
+        }
+    }
     // send message--------------------------------------------------------------------------------
     //
     function msgGen(content,type){
@@ -1543,7 +1550,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         console.log(data);
         if (data.msg.targetType == 'group' && data.msg.targetID == $state.params.groupId) {
             $scope.$apply(function(){
-                $scope.pushMsg(data.msg);
+                insertMsg(data.msg);
             });
             New.insertNews({userId:$scope.params.UID,sendBy:$scope.params.groupId,type:$scope.params.newsType,readOrNot:1});
         }
@@ -1553,7 +1560,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         console.log(data);
         if (data.msg.targetType == 'group' && data.msg.targetID == $state.params.groupId) {
             $scope.$apply(function(){
-                $scope.updateMsg(data.msg);
+                insertMsg(data.msg);
             })
         }
     })
@@ -1752,17 +1759,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         Storage.set('groupChatParams',JSON.stringify(statep));
         $state.go('tab.patientDetail');
     }
-    $scope.updateMsg = function(msg){
+    $scope.updateMsg = function(msg,pos){
         console.info('updateMsg');
-        var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
-        if(pos!=-1){
+        // var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
+        // if(pos!=-1){
             // if(msg.contentType=='image') msg.content.thumb=CONFIG.mediaUrl+msg.content['src_thumb'];
             msg.diff=$scope.msgs[pos].diff;
             // $scope.$apply(function(){
                 msg.direct = msg.fromID==$scope.params.UID?'send':'receive';
                 $scope.msgs[pos]=msg;
             // });
-        }
+        // }
         // $scope.msgs=$scope.msgs;
     }
     $scope.pushMsg = function(msg){
@@ -1787,9 +1794,16 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         setTimeout(function(){
             var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
             if(pos!=-1 && $scope.msgs[pos].status=='send_going') $scope.msgs[pos].status='send_fail';
-        },20000);
+        },10000);
     }
-
+    function insertMsg(msg){
+        var pos=arrTool.indexOf($scope.msgs,'createTimeInMillis',msg.createTimeInMillis);
+        if(pos==-1){
+            $scope.pushMsg(msg);
+        }else{
+            $scope.updateMsg(msg,pos);
+        }
+    }
     function msgGen(content, type) {
         var data = {};
         if (type == 'text') {
