@@ -1111,27 +1111,27 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     var windowHeight=$(window).height();
     console.log(Storage.get('USERNAME'));    
     $scope.hasUnreadMessages = false;
-    var RefreshUnread;
-    var GetUnread = function(){
-        New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
-            function(data){
-                // console.log(data.results.length)
-                if(data.results.length){
-                    $scope.hasUnreadMessages = true;
-                    // console.log($scope.hasUnreadMessages);
+    // var RefreshUnread;
+    // var GetUnread = function(){
+    //     New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
+    //         function(data){
+    //             // console.log(data.results.length)
+    //             if(data.results.length){
+    //                 $scope.hasUnreadMessages = true;
+    //                 // console.log($scope.hasUnreadMessages);
 
-                }else{
-                    $scope.hasUnreadMessages = false;
-                    // console.log($scope.hasUnreadMessages);
-                }
+    //             }else{
+    //                 $scope.hasUnreadMessages = false;
+    //                 // console.log($scope.hasUnreadMessages);
+    //             }
 
-                // console.log($scope.hasUnreadMessages);
-            },function(err){
-                    console.log(err);
-            });
-    }
-    GetUnread();
-    RefreshUnread = $interval(GetUnread,5000);
+    //             // console.log($scope.hasUnreadMessages);
+    //         },function(err){
+    //                 console.log(err);
+    //         });
+    // }
+    // GetUnread();
+    // RefreshUnread = $interval(GetUnread,5000);
     $scope.isfullScreen=false;
     $scope.fullScreen=function()
     {
@@ -1282,6 +1282,35 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
         })
     }
+    var RefreshUnread;
+    var GetUnread = function(){
+      // console.log(new Date());
+      New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
+          function(data){
+              // console.log(data);
+              if(data.results.length){
+                  $scope.hasUnreadMessages = true;
+                  // console.log($scope.HasUnreadMessages);
+              }else{
+                  $scope.hasUnreadMessages = false;
+              }
+          },function(err){
+                  console.log(err);
+          });
+    }
+
+    $scope.$on('$ionicView.leave', function ()
+    {
+      console.log('destroy');
+
+      $interval.cancel(RefreshUnread);
+
+
+    });
+    $scope.$on('$ionicView.enter', function() {
+      console.log("enter");
+      RefreshUnread = $interval(GetUnread,2000);
+    });
     // $scope.testRestful=function()
     // {
     //     Communication.removeMember({
