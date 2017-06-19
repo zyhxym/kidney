@@ -1407,7 +1407,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType:'',//消息字段
         targetName:'',//消息字段
         moreMsgs: true,
-        recording:false
+        recording:false,
+        loaded:false
         // ismyturn:0 //是我转发到群里的，具有结论权限
     }
     $rootScope.patient = {};
@@ -1427,18 +1428,20 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.params.type = $state.params.type;
         $scope.params.groupId = $state.params.groupId;
         $scope.params.teamId = $state.params.teamId;
+        $scope.params.loaded = false;
         try{
             notify.remove($scope.params.groupId);
         }catch(e){}
+        
 
-        var loadWatcher = $scope.$watch('msgs.length',function(newv,oldv){
-            if(newv) {
-                loadWatcher();
-                var lastMsg=$scope.msgs[$scope.msgs.length-1];
-                if(lastMsg.fromID==$scope.params.UID) return;
-                return New.insertNews({userId:$scope.params.UID,sendBy:lastMsg.targetID,type:$scope.params.newsType,readOrNot:1});
-            }
-        });
+        // var loadWatcher = $scope.$watch('msgs.length',function(newv,oldv){
+        //     if(newv) {
+        //         loadWatcher();
+        //         var lastMsg=$scope.msgs[$scope.msgs.length-1];
+        //         if(lastMsg.fromID==$scope.params.UID) return;
+        //         return New.insertNews({userId:$scope.params.UID,sendBy:lastMsg.targetID,type:$scope.params.newsType,readOrNot:1});
+        //     }
+        // });
 
         Doctor.getDoctorInfo({userId:Storage.get('UID')})
             .then(function(data){
@@ -1502,9 +1505,19 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
          console.log($scope.photoUrls);
             $rootScope.conversation.type = 'group';
             $rootScope.conversation.id = $scope.params.groupId;
+            var loadWatcher = $scope.$watch('params.loaded', function(newv, oldv) {
+                if (newv) {
+                    loadWatcher();
+                    if($scope.msgs.length==0) return;
+                    var lastMsg = $scope.msgs[$scope.msgs.length - 1];
+                    if (lastMsg.fromID == $scope.params.UID) return;
+                    return New.insertNews({userId:$scope.params.UID,sendBy:lastMsg.targetID,type:$scope.params.newsType,readOrNot:1});
+                }
+            });
             $scope.getMsg(15).then(function(data){
                 $scope.msgs=data;
                 toBottom(true,400);
+                $scope.params.loaded = true;
             });
             imgModalInit();
         })
