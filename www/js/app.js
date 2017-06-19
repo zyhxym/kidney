@@ -197,6 +197,9 @@ angular.module('kidney',[
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
+    
+    //ios 白屏可能问题配置
+    $ionicConfigProvider.views.swipeBackEnabled(false);
 
     //android导航栏在顶部解决办法
     $ionicConfigProvider.platform.android.tabs.style('standard');
@@ -319,7 +322,6 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        cache: false,
         url: '/me',
         views: {
             'tab-me':{
