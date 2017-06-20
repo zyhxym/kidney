@@ -2,7 +2,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
 /////////////////////////////zhangying///////////////////////
 //登录
-.controller('SignInCtrl', ['User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','$sce','Doctor','$rootScope','notify','$interval','socket','Mywechat','mySocket', function(User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,$sce,Doctor,$rootScope,notify,$interval,socket,Mywechat,mySocket) {
+.controller('SignInCtrl', ['$ionicLoading','User','$scope','$timeout','$state','Storage','loginFactory','$ionicHistory','$sce','Doctor','$rootScope','notify','$interval','socket','Mywechat','mySocket', function($ionicLoading,User,$scope, $timeout,$state,Storage,loginFactory,$ionicHistory,$sce,Doctor,$rootScope,notify,$interval,socket,Mywechat,mySocket) {
     $scope.barwidth="width:0%";
     $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
     if(Storage.get('USERNAME')!=null&&Storage.get('USERNAME')!=undefined){
@@ -125,7 +125,14 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.logStatus="请输入完整信息！";
         }
     }
-
+    var ionicLoadingshow = function() {
+        $ionicLoading.show({
+        template: '登录中...'
+        });
+    };
+    var ionicLoadinghide = function(){
+        $ionicLoading.hide();
+    };
     $scope.toRegister = function(){
         console.log($state);
         Storage.set('validMode',0);//注册
@@ -210,6 +217,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 // alert(JSON.stringify(ret))
                 //用户已经存在id 说明公众号注册过
                 if(ret.results==0&&ret.roles.indexOf("doctor")!=-1){//直接登录
+                    ionicLoadingshow();
                   User.logIn({username:$scope.unionid,password:"112233",role:"doctor"}).then(function(data){
                     // alert(JSON.stringify(data));
                     if(data.results.mesg=="login success!"){
@@ -218,7 +226,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                       Storage.set("doctorunionid",$scope.unionid);//自动登录使用
                       Storage.set('bindingsucc','yes')
                       Storage.set('USERNAME',ret.phoneNo)
-                      $state.go('tab.home')
+                      $timeout(function(){
+                            ionicLoadinghide();
+                            $state.go('tab.home');
+                        },500);
                       Doctor.getDoctorInfo({userId:data.results.userId})
                         .then(function(response){
                             thisDoctor = response.results;
