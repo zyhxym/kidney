@@ -69,6 +69,57 @@ angular.module('kidney.directives', ['kidney.services'])
         }
     }
 }])
+
+//ZYH 团队专用的消息模板
+.directive('groupMessage',['Storage','CONFIG',function(Storage,CONFIG){
+    return {
+        template: '<div ng-include="getTemplateUrl()"></div>',
+        scope: {
+            msg:'=',
+            photourls:'=',
+            msgindex:'@'
+        },
+        restrict:'AE',
+        controller:function($scope){
+            var type='',
+                sender=Storage.get('chatSender') || Storage.get('UID');
+            $scope.base=CONFIG.mediaUrl;
+            $scope.msg.direct = $scope.msg.fromID==sender?'send':'receive';
+            $scope.getTemplateUrl = function(){
+                type=$scope.msg.contentType;
+                if(type=='image'){
+                    // if($scope.msg.content['src_thumb']!='')
+                    $scope.msg.content.thumb = $scope.msg.content.localPath || ($scope.base+$scope.msg.content['src_thumb']);
+                }else if(type=='custom'){
+                    type=$scope.msg.content.type;
+                    if(type=='card'){
+                        // try{
+                            $scope.counsel=$scope.msg.content.counsel;
+                            if($scope.msg.targetId!=$scope.msg.content.doctorId){
+                                if($scope.msg.content.consultationId){
+                                    $scope.subtitle= $scope.msg.fromName + '转发'
+                                    $scope.title= $scope.msg.content.patientName + '的病历讨论'
+                                }else{
+                                    $scope.title= $scope.msg.content.patientName + '的病历'
+                                }
+                            }else{
+                                $scope.title= "患者使用在线"+ ($scope.counsel.type=='1'?'咨询':'问诊') + "服务"
+                            }
+
+                        // }catch(e){
+                            // 
+                        // }
+                    }
+                }
+                return 'templates/groupMsg/'+type+'.html';
+            }
+            
+            $scope.emitEvent = function(code){
+              $scope.$emit(code,arguments);
+            }         
+        }
+    }
+}])
 // .directive('myMessage',['Storage',function(Storage){
 //     var picArr=[
 //                 {"src":"img/default_user.png","hiRes":"img/avatar.png"},
