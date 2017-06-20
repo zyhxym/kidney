@@ -206,10 +206,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
               $scope.unionid=persondata.results.unionid;
 
-              User.getUserIDbyOpenId({"openId":$scope.unionid}).then(function(ret){
+              User.getUserId({username:$scope.unionid}).then(function(ret){
                 // alert(JSON.stringify(ret))
                 //用户已经存在id 说明公众号注册过
-                if(ret.results==0&&ret.role.indexOf("doctor")!=-1){//直接登录
+                if(ret.results==0&&ret.roles.indexOf("doctor")!=-1){//直接登录
                   User.logIn({username:$scope.unionid,password:"112233",role:"doctor"}).then(function(data){
                     // alert(JSON.stringify(data));
                     if(data.results.mesg=="login success!"){
@@ -331,7 +331,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.set('USERNAME',$scope.Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
         User.getUserId({
-            phoneNo:Verify.Phone
+            username:Verify.Phone
         })
         .then(function(succ)
         {
