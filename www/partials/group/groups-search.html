@@ -9,7 +9,7 @@
   </ion-nav-bar>
 
    
-        <div class="bar item-input-inset" style="position:absolute;top:44px;z-index:999">
+        <div class="bar item-input-inset" ng-style="searchStyle">
             <div class="item-input-wrapper">
                 <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
                 <input type="search" ng-blur="doResume()" ng-model="search" placeholder="搜索群号">
@@ -22,7 +22,7 @@
         <ion-content style="padding-top:20px" class="has-subheader gray-back" >
         <div class="list ng-hide" ng-hide="noteam">
             <a ng-repeat="team in teamresult" class="item item-avatar context-pading" href="#tab/groups/add/{{team.teamId}}">
-                <img class="avatar-icon" ng-src="img/avatar.png">
+                <img class="avatar-icon" ng-src="{{team.photoUrl ||'img/doctor_group.png'}}">
                 <h3>{{team.name}}</h3><p>{{team.teamId}}</p>
                 <span class="mg-top10 defa-bg  padding-5"><i class="iconfont icon-ren">{{team.number}}</i></span>
                 <div style="display:inline-block;margin-top: 5px"><span style="font-size: 12px;border-radius: 3px;display:inline-block;margin:0 0.2em 0 0.5em ;background-color:#f15124;color:#FFF">创建者</span>{{team.sponsorName}}</div>

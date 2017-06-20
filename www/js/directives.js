@@ -30,9 +30,10 @@ angular.module('kidney.directives', ['kidney.services'])
         },
         restrict:'AE',
         controller:function($scope){
-            var type='';
+            var type='',
+                sender=Storage.get('chatSender') || Storage.get('UID');
             $scope.base=CONFIG.mediaUrl;
-            $scope.msg.direct = $scope.msg.fromID==Storage.get('UID')?'send':'receive';
+            $scope.msg.direct = $scope.msg.fromID==sender?'send':'receive';
             $scope.getTemplateUrl = function(){
                 type=$scope.msg.contentType;
                 if(type=='image'){
@@ -60,6 +61,56 @@ angular.module('kidney.directives', ['kidney.services'])
                     }
                 }
                 return 'templates/msg/'+type+'.html';
+            }
+            
+            $scope.emitEvent = function(code){
+              $scope.$emit(code,arguments);
+            }         
+        }
+    }
+}])
+//ZYH 团队专用的消息模板
+.directive('groupMessage',['Storage','CONFIG',function(Storage,CONFIG){
+    return {
+        template: '<div ng-include="getTemplateUrl()"></div>',
+        scope: {
+            msg:'=',
+            photourls:'=',
+            msgindex:'@'
+        },
+        restrict:'AE',
+        controller:function($scope){
+            var type='',
+                sender=Storage.get('chatSender') || Storage.get('UID');
+            $scope.base=CONFIG.mediaUrl;
+            $scope.msg.direct = $scope.msg.fromID==sender?'send':'receive';
+            $scope.getTemplateUrl = function(){
+                type=$scope.msg.contentType;
+                if(type=='image'){
+                    // if($scope.msg.content['src_thumb']!='')
+                    $scope.msg.content.thumb = $scope.msg.content.localPath || ($scope.base+$scope.msg.content['src_thumb']);
+                }else if(type=='custom'){
+                    type=$scope.msg.content.type;
+                    if(type=='card'){
+                        // try{
+                            $scope.counsel=$scope.msg.content.counsel;
+                            if($scope.msg.targetId!=$scope.msg.content.doctorId){
+                                if($scope.msg.content.consultationId){
+                                    $scope.subtitle= $scope.msg.fromName + '转发'
+                                    $scope.title= $scope.msg.content.patientName + '的病历讨论'
+                                }else{
+                                    $scope.title= $scope.msg.content.patientName + '的病历'
+                                }
+                            }else{
+                                $scope.title= "患者使用在线"+ ($scope.counsel.type=='1'?'咨询':'问诊') + "服务"
+                            }
+
+                        // }catch(e){
+                            // 
+                        // }
+                    }
+                }
+                return 'templates/groupMsg/'+type+'.html';
             }
             
             $scope.emitEvent = function(code){
@@ -128,6 +179,9 @@ angular.module('kidney.directives', ['kidney.services'])
                 this.style.borderBottomColor = '#AAA';
                 // this.setAttribute("style", "border-color: #AAA");
             });
+            scope.$on('keyboardshow',function(){
+                elem[0].focus();
+            })
         }
     }
 }])
@@ -298,6 +352,39 @@ angular.module('kidney.directives', ['kidney.services'])
        }
    };
 })
+
+//多行文本自动增行
+.directive('contenteditable', function() {
+    return {
+        restrict: 'A', // 只用于属性
+        require: '?ngModel', // get a hold of NgModelController
+        link: function(scope, element, attrs, ngModel) {
+    　　　　if (!ngModel) {
+    　　　　　　return;
+    　　　　} 
+    　　　　// Specify how UI should be updated
+    　　　　ngModel.$render = function() {
+    　　　　　　element.html(ngModel.$viewValue || '');
+    　　　　};
+    　　　　// Listen for change events to enable binding
+    　　　　element.on('blur keyup change', function() {
+    　　　　　　scope.$apply(readViewText);
+    　　　　});
+    　　　　// No need to initialize, AngularJS will initialize the text based on ng-model attribute
+    　　　　// Write data to the model
+    　　　　function readViewText() {
+    　　　　　　var html = element.html();
+    　　　　　　// When we clear the content editable the browser leaves a <br> behind
+    　　　　　　// If strip-br attribute is provided then we strip this out
+    　　　　　　if (attrs.stripBr && html === '<br>') {
+    　　　　　　　　html = '';
+    　　　　　　}
+    　　　　　　ngModel.$setViewValue(html);
+    　　　　}
+　　　　}
+    }
+})
+
 // 写评论的五角星
 .directive('ionicRatings',ionicRatings);
 

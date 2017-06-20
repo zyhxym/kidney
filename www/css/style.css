@@ -648,6 +648,24 @@ display: inline-block;
   top: 1.5em;
 }
 
+.msgbox-send .msg-name {
+  float: right;
+  text-align:right;
+}
+
+.msgbox-receive .msg-name {
+  float: left;
+}
+
+.msgbox .msg-name {
+  position: relative;
+  display: table;
+  margin: 0px 0.7em; 
+  font-size: 0.9em;
+  color: #aaa;
+  width: 70%;
+}
+
 .msgbox-receive .msg-body:after {
   border-width: 0.5em 0.5em 0.5em 0;
   border-color: transparent #FFF;
@@ -995,7 +1013,6 @@ display: inline-block;
 
 .qr-code .title {
   font-size: 1.1em;
-  padding-left: 0.5em;
   display: inline-block;
   vertical-align: middle;
 }
@@ -1087,4 +1104,8 @@ display: inline-block;
   background-color:transparent !important;
   background-image: none !important;
   border:0px !important;
+}
+
+.ios-sub{
+  top:64px !important;
 }
