@@ -393,7 +393,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
             insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
             deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
             getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000},
-            getDocNum:{method:'GET',params:{route:'getDocNum'},timeout:10000}
+            getDocNum:{method:'GET',params:{route:'getDocNum'},timeout:10000},
+            getAliPayAccount:{method:'GET', params:{route: 'getAliPayAccount'},timeout:10000},
+            editAliPayAccount:{method:'POST', params:{route: 'editAliPayAccount'},timeout:10000}
         });
     }
 
@@ -403,13 +405,14 @@ angular.module('kidney.services', ['ionic','ngResource'])
             changePassword:{method:'POST', params:{route: 'reset',phoneNo:'@phoneNo',password:'@password'}, timeout: 100000},
             logIn:{method:'POST', params:{route: 'login'}, timeout: 100000},
             logOut:{method:'POST', params:{route: 'logout',userId:'@userId'}, timeout: 100000},
-            getUserId:{method:'GET', params:{route: 'getUserID',phoneNo:'@phoneNo'}, timeout: 100000},
+            getUserId:{method:'GET', params:{route: 'getUserID',username:'@username'}, timeout: 100000},
             sendSMS:{method:'POST', params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType'}, timeout: 100000},//第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
             verifySMS:{method:'GET', params:{route: 'verifySMS',mobile:'@mobile',smsType:'@smsType',smsCode:'@smsCode'}, timeout: 100000},
             getAgree:{method:'GET', params:{route: 'getUserAgreement',userId:'@userId'}, timeout: 100000},
             updateAgree:{method:'POST', params:{route: 'updateUserAgreement'}, timeout: 100000},
             getUserIDbyOpenId:{method:'GET', params:{route: 'getUserIDbyOpenId'}, timeout: 100000},
-            setOpenId:{method:'POST', params:{route: 'setOpenId'}, timeout: 100000}
+            setOpenId:{method:'POST', params:{route: 'setOpenId'}, timeout: 100000},
+            One:{method:'GET', params:{route: 'one'}, timeout: 10000}
         });
     }
 
@@ -1136,6 +1139,24 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     }
+
+    //params-> username:'doc01'
+    self.One = function(params)
+    {
+        var deferred = $q.defer();
+        Data.User.One(
+            params,
+            function(data, headers)
+            {
+                deferred.resolve(data);
+            },
+            function(err)
+            {
+                deferred.reject(err);
+            }
+        );
+        return deferred.promise;
+    }
     
     return self;
 }])
@@ -1742,7 +1763,34 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-  
+    //params->userId:'doc01'
+    self.getAliPayAccount = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getAliPayAccount(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{userId:'doc01',aliPayAccount:'abc@def.com'}
+    self.editAliPayAccount = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.editAliPayAccount(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+            }
+        );
+        return deferred.promise;
+    };
+
     return self;
 }])
 .factory('Counsel', ['$q', 'Data', function($q, Data){
@@ -2234,6 +2282,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
     return {
         newUser:function(userId,name){
+            socket.connect();
             currentUser.id=userId;
             currentUser.name = name;
             timer = $interval(function newuser(){

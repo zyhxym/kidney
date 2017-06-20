@@ -206,10 +206,10 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
               $scope.unionid=persondata.results.unionid;
 
-              User.getUserIDbyOpenId({"openId":$scope.unionid}).then(function(ret){
+              User.getUserId({username:$scope.unionid}).then(function(ret){
                 // alert(JSON.stringify(ret))
                 //用户已经存在id 说明公众号注册过
-                if(ret.results==0&&ret.role.indexOf("doctor")!=-1){//直接登录
+                if(ret.results==0&&ret.roles.indexOf("doctor")!=-1){//直接登录
                   User.logIn({username:$scope.unionid,password:"112233",role:"doctor"}).then(function(data){
                     // alert(JSON.stringify(data));
                     if(data.results.mesg=="login success!"){
@@ -331,7 +331,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.set('USERNAME',$scope.Verify.Phone)
         //验证手机号是否注册，没有注册的手机号不允许重置密码
         User.getUserId({
-            phoneNo:Verify.Phone
+            username:Verify.Phone
         })
         .then(function(succ)
         {
@@ -2636,8 +2636,12 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 }])
 
 //"我”个人收费页
-.controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage) {
+.controller('myfeeCtrl', ['Account','Doctor','$scope','$ionicPopup','$state','Storage','User' ,function(Account,Doctor,$scope, $ionicPopup,$state,Storage,User) {
     $scope.hideTabs = true;
+    $scope.alipay="";
+    $scope.alipayIcon="img/alipay.png";
+    $scope.wechat="";
+    $scope.wechatIcon="img/wechat.png";
     var load = function(){
         Doctor.getDoctorInfo({
             userId:Storage.get('UID')
@@ -2677,6 +2681,35 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                 console.log(err)
             }
         )        
+
+        //获取用户的支付宝账号
+        Doctor.getAliPayAccount({
+            userId:Storage.get('UID')
+        })
+        .then(function(data){
+            // console.log(data)
+            if(data.hasOwnProperty("results")&&data.results!="")
+            {
+                $scope.alipay=data.results;
+                $scope.alipayIcon='img/alipay_2.jpg';
+            }
+        },function(err){
+            console.log(err)
+        })
+        //获取用户的微信unionId
+        User.One({username:Storage.get('UID')})
+        .then(function(data){
+            // console.log(data);
+            // console.log(Storage.get('UID'))
+            if(data.results.hasOwnProperty('openId'))
+            {
+                $scope.wechat='ok';
+                $scope.wechatIcon='img/wechat_2.png';
+            }
+        },function(err){
+            console.log(err);
+        })
+        
     }
     $scope.$on('$ionicView.enter', function() {
         load();
@@ -2714,6 +2747,54 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.go("tab.bill")
     }
 
+    $scope.bindAliPay = function()
+    {
+        // console.log("bind alipay");
+        $scope.ap={a:$scope.alipay};
+        var cm = $ionicPopup.show({   
+            title: '修改支付宝账号',
+            cssClass:'popupWithKeyboard',
+            template:'<input type=text ng-model="ap.a">',
+            scope:$scope,
+            buttons: [
+                {
+                    text: '確定',
+                    type: 'button-positive',
+                    onTap: function(event) {
+                        var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+                        var emailReg=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+                        //手机正则表达式验证
+                        if(!phoneReg.test($scope.ap.a) && !emailReg.test($scope.ap.a))
+                        {
+                            $ionicPopup.alert({
+                                cssClass:'popupWithKeyboard',
+                                title: '支付宝账号为邮箱或者手机号',
+                                okText: '确定'
+                            });
+                            return;
+                        }
+                        $scope.alipay=$scope.ap.a;
+                        Doctor.editAliPayAccount({userId:Storage.get('UID'),aliPayAccount:$scope.ap.a})
+                        .then(function(succ){
+                            // console.log(succ)
+                            $scope.alipay=$scope.ap.a;
+                            $scope.alipayIcon='img/alipay_2.jpg';
+                        },function(err){
+                            console.log(err)
+                        })
+                        // console.log($scope.alipay);
+                    }
+                },
+                {
+                    text: '取消',
+                    type: 'button-assert',
+                    onTap: function(){
+                        // console.log("cancle")
+                    }
+                }
+            ]
+        });
+    }
 
   
 }])
@@ -2837,6 +2918,8 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         Storage.rm('userid');
         console.log($state);
         mySocket.cancelAll();
+        socket.emit('disconnect');
+        socket.disconnect();
         $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
         $timeout(function(){$state.go('signin');},500);
     };
