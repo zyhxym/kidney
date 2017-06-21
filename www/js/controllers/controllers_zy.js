@@ -2675,7 +2675,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         .then(
             function(data)
             {
-                //console.log(data)
+                console.log(data)
                 //console.log(data.results[0].money)
                 $scope.account={money:data.results.length==0?0:data.results[0].money};
                 // if (data.results.length!=0)
