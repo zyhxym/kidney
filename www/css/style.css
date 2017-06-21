@@ -619,6 +619,24 @@ display: inline-block;
   word-wrap: break-word;
 }
 
+.msgbox-send .msg-name {
+  float: right;
+  text-align:right;
+}
+
+.msgbox-receive .msg-name {
+  float: left;
+}
+
+.msgbox .msg-name {
+  position: relative;
+  display: table;
+  margin: 0px 0.7em; 
+  font-size: 0.9em;
+  color: #aaa;
+  width: 70%;
+}
+
 .msgbox-receive .msg-body {
   float: left;
   background: #FFF;
@@ -790,6 +808,12 @@ display: inline-block;
     border-style:solid;
     border-width:1px 0px 0px 0px;
     /*margin: 3px 0px 2px 0px;*/
+}
+.small-text {
+  font-size: 0.75em;
+  padding-left:0.2em;
+  color:#aaa;
+  margin-bottom:0 !important;
 }
 
 .media-endl {

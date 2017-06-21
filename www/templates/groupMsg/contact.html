@@ -4,18 +4,21 @@
 	<!-- avatar -->
 	<img class="avatar" ng-src="{{photourls[msg.fromID] || 'img/DefaultAvatar.jpg'}}" ng-click="emitEvent('profile',msg)"/>
 	<!-- chat bubble -->
-	<div class="msg-body" on-hold="emitEvent('holdmsg',msg.createTimeInMillis,$event)">
-		<!-- text content -->
-		<div class="media-contact">
-			<img ng-src="{{msg.fromUser.avatarPath || 'img/max.png'}}"/>
-			<div >
-				<p class="name">{{msg.content.contentStringMap.name}}</p>
-				<p class="info">{{msg.content.contentStringMap.description}}</p>
+	<div>
+        <div ng-if="msg.direct=='receive'" class="msg-name">{{msg.fromName}}</div>
+		<div class="msg-body" on-hold="emitEvent('holdmsg',msg.createTimeInMillis,$event)">
+			<!-- text content -->
+			<div class="media-contact">
+				<img ng-src="{{msg.fromUser.avatarPath || 'img/max.png'}}"/>
+				<div >
+					<p class="name">{{msg.content.contentStringMap.name}}</p>
+					<p class="info">{{msg.content.contentStringMap.description}}</p>
+				</div>
+				<hr/>
+				<p class="footer">联系人名片</p>
 			</div>
-			<hr/>
-			<p class="footer">联系人名片</p>
+			
 		</div>
-		
 	</div>
 	<div my-small-spin="msg.status" class="status"></div>
 	<div ng-if="msg.status=='send_fail'"  class="msg-fail"><span><i class="icon ion-android-warning"></i>发送失败</span></div>

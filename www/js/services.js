@@ -2020,9 +2020,11 @@ angular.module('kidney.services', ['ionic','ngResource'])
             .then(function(res){
                 var msgs=res.results;
                 arr.map(function(item){
-                    var pos = getIndex(msgs,item[keyName][idName]);
-                    if(pos!=-1){
-                        item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                    if(item[keyName]!=null){
+                        var pos = getIndex(msgs,item[keyName][idName]);
+                        if(pos!=-1){
+                            item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                        }
                     }
                     return item;
                 });

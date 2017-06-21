@@ -37,7 +37,7 @@
     <ion-content delegate-handle="myContentScroll" class="gray-back">
         <ion-refresher on-refresh="DisplayMore()"></ion-refresher>
         <div class="text-center padding hide-animate ng-hide" ng-hide="params.moreMsgs">没有更多消息了</div>
-        <my-message ng-repeat="msg in msgs track by $index" msg="msg" photourls='photoUrls' msgindex='{{$index}}'></my-message>
+        <group-message ng-repeat="msg in msgs track by $index" msg="msg" photourls='photoUrls' msgindex='{{$index}}'></group-message>
         <div style="float:left;width:100%" ng-style="{'padding-top':'{{params.helpDivHeight}}px'}"></div>
         <div style="float:left;width:100%;padding-top:70px"></div>
     </ion-content>
@@ -52,12 +52,12 @@
                 <button style="width:2.6em;position:absolute;right:4px;bottom: 4px;padding:0" class="button button-icon  iconfont icon-add" type="submit" ng-show="!input.text || input.text === ''" ng-init="showMore=false;" ng-click="showMore==false?showMore=true:showMore=false;showVoice=false;" ng-model="showMore"></button>
                 <button style="width:2.6em;position:absolute;bottom:8px;right:9px;padding:0;font-size: 12px;min-height: 30px;height: 30px" class="button button-positive" type="submit" ng-hide="!input.text || input.text === ''" ng-click="submitMsg()">发送</button>
             </div>
-            <div class="voice-box" ng-show="showVoice">
+            <div class="voice-box ng-hide" ng-show="showVoice">
                 <span class="chat-close" ng-click="showVoice=false;showMore=false;" ng-model="showVoice">×</span>
                 <p>{{params.recording?'正在录音...':'按住开始说话'}}</p>
                 <img src="img/icon_voice2@2x.png" alt="" on-hold="getVoice()" on-release="stopAndSend()">
             </div>
-            <div class="chat-more" ng-show="showMore">
+            <div class="chat-more ng-hide" ng-show="showMore">
                 <span>
               <img src="img/icon_photo@2x.png" ng-click="showMore=false;getImage('gallery')" alt="">
             </span>
