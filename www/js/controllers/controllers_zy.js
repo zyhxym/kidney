@@ -206,7 +206,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             // alert(response.code)
 
             Mywechat.getUserInfo({role:"appDoctor",code:response.code}).then(function(persondata){
-
+                // alert(JSON.stringify(persondata))
 
               // alert(persondata.headimgurl)
               Storage.set('wechatheadimgurl',persondata.results.headimgurl)
@@ -223,6 +223,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
                     if(data.results.mesg=="login success!"){
                       Storage.set('isSignIn',"Yes");
                       Storage.set('UID',ret.UserId);//后续页面必要uid
+                      // alert(Storage.get('UID'))
                       Storage.set("doctorunionid",$scope.unionid);//自动登录使用
                       Storage.set('bindingsucc','yes')
                       Storage.set('USERNAME',ret.phoneNo)
@@ -2074,6 +2075,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
     .then(
         function(data)
         {
+            // alert(Storage.get('UID')+JSON.stringify(data))
           // console.log(data)
             $scope.doctor=data.results;
             if($scope.doctor.photoUrl==""||$scope.doctor.photoUrl==null||$scope.doctor.photoUrl==undefined){
@@ -2922,6 +2924,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         $state.logStatus="用户已注销";
         //清除登陆信息
         Storage.rm('password');
+        // Storage.rm('UID');
         Storage.rm('doctorunionid');
         Storage.rm('IsSignIn');
         //Storage.rm('USERNAME');
