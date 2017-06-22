@@ -1622,9 +1622,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     $scope.updateMsg = function(msg,pos){
         console.info('updateMsg');
-        if($scope.msgs[pos].hasOwnProperty('diff')){
-            msg.diff=$scope.msgs[pos].diff;
-        }else if(pos !=0 && msg.hasOwnProperty('time') && $scope.msgs[pos-1].hasOwnProperty('time')){
+        if (pos == 0) {
+            msg.diff = true;
+        }else if(msg.hasOwnProperty('time') && $scope.msgs[pos-1].hasOwnProperty('time')){
             msg.diff = (msg.time - $scope.msgs[pos-1].time) > 300000 ? true : false;
         }
         msg.content.src=$scope.msgs[pos].content.src;
@@ -1639,9 +1639,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 msg.diff=true;
             }else{
                 var m = $scope.msgs[len-1];
-                if(m.contentType == 'custom' && m.content.type =='count-notice') {
-                    m=$scope.msgs[len-2];
-                }
                 if(m.hasOwnProperty('time')){
                     msg.diff=(msg.time - m.time) > 300000 ? true : false;
                 }
@@ -2251,11 +2248,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 else{
                     $scope.params.msgCount += res.length;
                     // $scope.$apply(function() {
-                        if ($scope.msgs.length!=0) $scope.msgs[0].diff = ($scope.msgs[0].createTimeInMillis - res[0].createTimeInMillis) > 300000 ? true : false;
+                        if ($scope.msgs.length!=0) $scope.msgs[0].diff = ($scope.msgs[0].time - res[0].time) > 300000 ? true : false;
                         for (var i = 0; i < res.length - 1; ++i) {
                             if(res[i].contentType=='image') res[i].content.thumb=CONFIG.mediaUrl+res[i].content['src_thumb'];
                             res[i].direct = res[i].fromID==$scope.params.doctorId?'send':'receive';
-                            res[i].diff = (res[i].createTimeInMillis - res[i + 1].createTimeInMillis) > 300000 ? true : false;
+                            res[i].diff = (res[i].time - res[i + 1].time) > 300000 ? true : false;
                             $scope.msgs.unshift(res[i]);
                         }
                         res[i].direct = res[i].fromID==$scope.params.doctorId?'send':'receive';
