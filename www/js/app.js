@@ -273,7 +273,7 @@ angular.module('kidney',[
     
     //主页面
     .state('tab.home', {
-        //cache: false,
+        cache: false,
         url: '/home',
         views: {
             'tab-home':{
@@ -323,6 +323,7 @@ angular.module('kidney',[
     //"我"页面
     .state('tab.me', {
         url: '/me',
+        cache:false,
         views: {
             'tab-me':{
                 controller: 'meCtrl',
@@ -637,7 +638,7 @@ angular.module('kidney',[
             
     //我的信息
     .state('tab.myinfo', {
-        // cache: false,
+        cache: false,
         url: '/myinfo',
         views: {
             'tab-me':{
