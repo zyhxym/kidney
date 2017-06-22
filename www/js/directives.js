@@ -31,7 +31,7 @@ angular.module('kidney.directives', ['kidney.services'])
         restrict:'AE',
         controller:function($scope){
             var type='',
-                sender=Storage.get('chatSender') || Storage.get('UID');
+                sender=Storage.get('UID');
             $scope.base=CONFIG.mediaUrl;
             $scope.msg.direct = $scope.msg.fromID==sender?'send':'receive';
             $scope.getTemplateUrl = function(){
@@ -70,7 +70,7 @@ angular.module('kidney.directives', ['kidney.services'])
     }
 }])
 
-//ZYH 团队专用的消息模板
+//ZYH 团队专用的消息模板,有名字
 .directive('groupMessage',['Storage','CONFIG',function(Storage,CONFIG){
     return {
         template: '<div ng-include="getTemplateUrl()"></div>',
@@ -81,9 +81,10 @@ angular.module('kidney.directives', ['kidney.services'])
         },
         restrict:'AE',
         controller:function($scope){
-            var type='',
-                sender=Storage.get('chatSender') || Storage.get('UID');
+            $scope.me = Storage.get('UID');
             $scope.base=CONFIG.mediaUrl;
+            var type='',
+                sender=Storage.get('chatSender') || $scope.me;
             $scope.msg.direct = $scope.msg.fromID==sender?'send':'receive';
             $scope.getTemplateUrl = function(){
                 type=$scope.msg.contentType;

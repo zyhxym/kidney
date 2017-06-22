@@ -634,7 +634,9 @@ display: inline-block;
   margin: 0px 0.7em; 
   font-size: 0.9em;
   color: #aaa;
-  width: 70%;
+  width: -webkit-calc(100% - 5em);
+  width:    -moz-calc(100% - 5em);
+  width:         calc(100% - 5em);
 }
 
 .msgbox-receive .msg-body {
