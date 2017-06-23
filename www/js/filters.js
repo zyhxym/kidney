@@ -5,8 +5,8 @@ angular.module('kidney.filters', [])
         if(milliseconds==null) return '';
         var curTime = new Date();
         var msgTime = new Date(milliseconds);
-        if(curTime.toDateString()==msgTime.toDateString()) return $filter('date')(msgTime, 'h:mm a');
-        return $filter('date')(msgTime, 'M/d/yy h:mm a');
+        if(curTime.toDateString()==msgTime.toDateString()) return $filter('date')(msgTime, 'H:mm');
+        return $filter('date')(msgTime, 'M/d/yy H:mm');
     }
 }])
 .filter('filterGender',[function(){
