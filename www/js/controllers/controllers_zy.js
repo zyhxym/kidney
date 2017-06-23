@@ -1116,9 +1116,9 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 //首页
 .controller('homeCtrl', ['Communication','$scope','$state','$interval','$rootScope', 'Storage','$http','$sce','$timeout','Doctor','New',function(Communication,$scope, $state,$interval,$rootScope,Storage,$http,$sce,$timeout,Doctor,New) {
     $scope.barwidth="width:0%";
-    $scope.sliderStyle={'margin-top':'44px','height':'100px'}
+    $scope.sliderStyle={'margin-top':'44px','height':'170px'}
     if(ionic.Platform.isIOS()){
-        $scope.sliderStyle={'margin-top':'64px','height':'100px'}
+        $scope.sliderStyle={'margin-top':'64px','height':'170px'}
     }
     var windowHeight=$(window).height();
     console.log(Storage.get('USERNAME'));    
@@ -1151,7 +1151,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         if($scope.isfullScreen)
         {
             $scope.isfullScreen=false;
-            $scope.isWriting={'margin-top': '100px'};
+            $scope.isWriting={'margin-top': '170px'};
         }
         else
         {
@@ -1159,7 +1159,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             $scope.isWriting={'margin-top': '0px','z-index':'20'};
         }
     }
-    $scope.isWriting={'margin-top': '100px'};
+    $scope.isWriting={'margin-top': '170px'};
     if(!sessionStorage.addKBEvent)
     {
         // console.log("true")
