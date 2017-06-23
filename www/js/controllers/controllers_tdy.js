@@ -1,7 +1,7 @@
 angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker'])
 
 /////////////////////////tongdanyang/////////////////
-.controller('DoctorDiagnoseCtrl', ['Task','$scope', 'Storage','ionicDatePicker','Patient','$state', function (Task,$scope, Storage,ionicDatePicker,Patient,$state) {
+.controller('DoctorDiagnoseCtrl', ['Task','$scope', 'Storage','ionicDatePicker','Patient','$state','$ionicLoading', function (Task,$scope, Storage,ionicDatePicker,Patient,$state,$ionicLoading) {
   $scope.barStyle={'margin-top':'40px'}
   if(ionic.Platform.isIOS()){
       $scope.barStyle={'margin-top':'60px'}
@@ -259,6 +259,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
   $scope.saveDiagnose=function()
   {
+    $ionicLoading.show({
+      template: '提交中...',
+      duration:10000
+    });    
     $scope.Diagnose.patientId=Storage.get('getpatientId');
     $scope.Diagnose.doctorId=Storage.get('UID');
     $scope.Diagnose.diagname=decodeDiseases($scope.Diagnose.diagname);
@@ -295,6 +299,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
       tmpDiagnose=angular.copy($scope.Diagnose);
       $scope.canEdit();
+    $ionicLoading.hide()
       // $state.go('tab.patientDetail');
     },function(err)
     {
@@ -928,7 +933,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   
 }])
 //任务设置--GL
-.controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task', function ($scope, $state, $ionicPopup, Storage, Task) {
+.controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task','$ionicLoading', function ($scope, $state, $ionicPopup, Storage, Task,$ionicLoading) {
   $scope.barStyle={'margin-top':'40px'}
   if(ionic.Platform.isIOS()){
       $scope.barStyle={'margin-top':'60px'}
@@ -1077,9 +1082,18 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
   //确定按钮
     $scope.OkClick = function()
-    {       
-       UpdateUserTask();                  
+    {  
+      $ionicLoading.show({
+        template: '提交中...',
+        duration:10000
+      });           
+       UpdateUserTask();                 
     }
+  
+    $scope.$on('$ionicView.beforeLeave',function(){
+       $ionicLoading.hide();
+     })
+
 
   //编辑任务描述
     $scope.showPopup = function(task) {
@@ -1428,11 +1442,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //   $scope.showflag=true;
   // }
 
-  
+  $scope.$on('$ionicView.beforeLeave',function(){
+    $ionicLoading.hide();
+  })  
   console.log($ionicHistory.backView())
   $scope.HealthInfoSetup = function(){
     if($scope.health.label!=""&&$scope.health.text!=""&&$scope.health.date!=""){
       console.log($stateParams.id)
+      $ionicLoading.show({
+        template: '上传中...'
+      });      
         if($stateParams.id==null||$stateParams==""){
             Health.createHealth({userId:patientId,type:$scope.health.label.code,time:$scope.health.date,url:$scope.health.imgurl,label:$scope.health.label.name,description:$scope.health.text,comments:""}).then(
               function(data)
