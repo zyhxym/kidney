@@ -1442,15 +1442,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //   $scope.showflag=true;
   // }
 
-  $scope.$on('$ionicView.beforeLeave',function(){
-    $ionicLoading.hide();
-  })  
+  // $scope.$on('$ionicView.beforeLeave',function(){
+  //   $ionicLoading.hide();
+  // })  
   console.log($ionicHistory.backView())
   $scope.HealthInfoSetup = function(){
     if($scope.health.label!=""&&$scope.health.text!=""&&$scope.health.date!=""){
       console.log($stateParams.id)
       $ionicLoading.show({
-        template: '上传中...'
+        template: '上传中...',
+        duration:10000
       });      
         if($stateParams.id==null||$stateParams==""){
             Health.createHealth({userId:patientId,type:$scope.health.label.code,time:$scope.health.date,url:$scope.health.imgurl,label:$scope.health.label.name,description:$scope.health.text,comments:""}).then(
@@ -1496,6 +1497,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               }
             )
         }
+      $ionicLoading.hide();
     }
     else{
         $ionicLoading.show({
