@@ -353,7 +353,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             var option1 = {
               title : {
                   text : '血压',
-                  subtext : 'mmHg'
+                  subtext : 'mmHg',
+                  textStyle :{
+                    fontSize :14
+                  }
               },
               tooltip : {
                   trigger: 'axis'
@@ -409,7 +412,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                                        + '<td>' + series[0].name + '</td>'
                                        + '<td>' + series[1].name + '</td>'
                                        + '</tr>';
-                          for (var i = 0, l = axisData.length; i < l; i++) {
+                          for (var i = axisData.length-1, l = axisData.length; i >=0 ; i--) {
                             var td1,td2;
                             td1=(axisData[i][1]==undefined?"空":axisData[i][1])
                             td2=(axisData[i][2]==undefined?"空":axisData[i][2])
@@ -423,11 +426,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                           table += '</tbody></table>';
                           return table;
                       }
-                      },
+                      }
 
                       // magicType : {show: true, type: ['line', 'bar']},
                       // restore : {show: true},
-                      saveAsImage : {show: true}
+                      // saveAsImage : {show: true}
                   }
               },
               series : [
@@ -482,7 +485,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             var option1 = {
                   title : {
                       text : '体温',
-                      subtext : '℃'
+                      subtext : '℃',
+                      textStyle :{
+                        fontSize :14
+                      }
                   },
                   tooltip : {
                       trigger: 'axis'
@@ -536,7 +542,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                                            + '<td>时间</td>'
                                            + '<td>' + series[0].name + '</td>'
                                            + '</tr>';
-                              for (var i = 0, l = axisData.length; i < l; i++) {
+                              for (var i = axisData.length-1, l = axisData.length; i >= 0; i--) {
                                   table += '<tr>'
                                            + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate()+' '+new Date(axisData[i][0]).getHours()+':'+new Date(axisData[i][0]).getMinutes() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
                                            + '<td>' + axisData[i][1] + '</td>'
@@ -545,11 +551,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                               table += '</tbody></table>';
                               return table;
                           }
-                          },
+                          }
 
                           // magicType : {show: true, type: ['line', 'bar']},
                           // restore : {show: true},
-                          saveAsImage : {show: true}
+                          // saveAsImage : {show: true}
                       }
                   },
                   series : [
@@ -597,7 +603,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             var option1 = {
                   title : {
                       text : '体重',
-                      subtext : 'kg'
+                      subtext : 'kg',
+                      textStyle :{
+                        fontSize :14
+                      }
                   },
                   tooltip : {
                       trigger: 'axis'
@@ -650,7 +659,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                                            + '<td>时间</td>'
                                            + '<td>' + series[0].name + '</td>'
                                            + '</tr>';
-                              for (var i = 0, l = axisData.length; i < l; i++) {
+                              for (var i = axisData.length-1, l = axisData.length; i >= 0; i--) {
                                   table += '<tr>'
                                            + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate()+' '+new Date(axisData[i][0]).getHours()+':'+new Date(axisData[i][0]).getMinutes() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
                                            + '<td>' + axisData[i][1] + '</td>'
@@ -659,11 +668,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                               table += '</tbody></table>';
                               return table;
                           }
-                          },
+                          }
 
                           // magicType : {show: true, type: ['line', 'bar']},
                           // restore : {show: true},
-                          saveAsImage : {show: true}
+                          // saveAsImage : {show: true}
                       }
                   },
                   series : [
@@ -710,7 +719,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             var option1 = {
               title : {
                   text : '尿量',
-                  subtext : 'ml'
+                  subtext : 'ml',
+                  textStyle :{
+                    fontSize :14
+                  }
               },
               tooltip : {
                   trigger: 'axis'
@@ -759,11 +771,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                           var axisData = $scope.ChartData5;
                           console.log(axisData)
                           var series = opt.series;
-                          var table = '<table style="width:10%;text-align:center"><tbody><tr>'
+                          var table = '<table style="width:100%;text-align:center"><tbody><tr>'
                                        + '<td>时间</td>'
                                        + '<td>' + series[0].name + '</td>'
                                        + '</tr>';
-                          for (var i = 0, l = axisData.length; i < l; i++) {
+                          for (var i = axisData.length-1, l = axisData.length; i >= 0; i--) {
                               table += '<tr>'
                                        + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate()+' '+new Date(axisData[i][0]).getHours()+':'+new Date(axisData[i][0]).getMinutes() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
                                        + '<td>' + axisData[i][1] + '</td>'
@@ -772,11 +784,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                           table += '</tbody></table>';
                           return table;
                       }
-                      },
+                      }
 
                       // magicType : {show: true, type: ['line', 'bar']},
                       // restore : {show: true},
-                      saveAsImage : {show: true}
+                      // saveAsImage : {show: true}
                   }
               },
               series : [
@@ -823,7 +835,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             var option1 = {
                   title : {
                       text : '心率',
-                      subtext : '次/分钟'
+                      subtext : '次/分钟',
+                      textStyle :{
+                        fontSize :14
+                      }
                   },
                   tooltip : {
                       trigger: 'axis'
@@ -876,7 +891,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                                            + '<td>时间</td>'
                                            + '<td>' + series[0].name + '</td>'
                                            + '</tr>';
-                              for (var i = 0, l = axisData.length; i < l; i++) {
+                              for (var i = axisData.length-1, l = axisData.length; i >= 0; i--) {
                                   table += '<tr>'
                                            + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate()+' '+new Date(axisData[i][0]).getHours()+':'+new Date(axisData[i][0]).getMinutes() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
                                            + '<td>' + axisData[i][1] + '</td>'
@@ -885,11 +900,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                               table += '</tbody></table>';
                               return table;
                           }
-                          },
+                          }
 
                           // magicType : {show: true, type: ['line', 'bar']},
                           // restore : {show: true},
-                          saveAsImage : {show: true}
+                          // saveAsImage : {show: true}
                       }
                   },
                   series : [
