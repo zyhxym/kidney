@@ -434,6 +434,7 @@ angular.module('kidney',[
         params:{PatinetId:null},
         views: {
             'tab-patient':{
+                cache:true,
                 controller: 'TestRecordCtrl',
                 templateUrl: 'partials/patient/testrecord.html'
             }
