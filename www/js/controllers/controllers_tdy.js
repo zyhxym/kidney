@@ -398,6 +398,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               //new date(axisData[i]).getFullYear()+'-'+(new date(axisData[i]).getMonth()+1)+'-'+new date(axisData[i]).getDate()+' '+new date(axisData[i]).getHours()+':'+new date(axisData[i]).getMinutes()
               toolbox: {
                   show : true,
+                  right :30,
                   feature : {
                       // mark : {show: true},
                       dataView : {
@@ -529,6 +530,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                   ],
                   toolbox: {
                       show : true,
+                      right :30,
                       feature : {
                           // mark : {show: true},
                           dataView : {
@@ -646,6 +648,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                   ],
                   toolbox: {
                       show : true,
+                      right :30,
                       feature : {
                           // mark : {show: true},
                           dataView : {
@@ -762,6 +765,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               ],
               toolbox: {
                   show : true,
+                  right :30,
                   feature : {
                       // mark : {show: true},
                       dataView : {
@@ -878,6 +882,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                   ],
                   toolbox: {
                       show : true,
+                      right :30,
                       feature : {
                           // mark : {show: true},
                           dataView : {
