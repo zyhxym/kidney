@@ -323,7 +323,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       var load =  function(){
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
           function(Data){
-            $scope.ChartData5=[];
+            $scope.ChartDatas=[];
             $scope.ChartData1=[];
             $scope.ChartData2=[];
             console.log(Data.results.length)
@@ -331,7 +331,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               if(Data.results[i].code=="血压"){
                 for(var j=0;j<Data.results[i].data.length;j++){
                   if(Data.results[i].data[j].value||Data.results[i].data[j].value2){
-                    $scope.ChartData5.push([new Date(new Date(Data.results[i].data[j].time)),Data.results[i].data[j].value,Data.results[i].data[j].value2])
+                    $scope.ChartDatas.push([new Date(new Date(Data.results[i].data[j].time)),Data.results[i].data[j].value,Data.results[i].data[j].value2])
                   }
                   if(Data.results[i].data[j].value){
                     $scope.ChartData1.push([new Date(new Date(Data.results[i].data[j].time)),Data.results[i].data[j].value])
@@ -401,7 +401,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                         show: true, 
                         readOnly: true,
                         optionToContent: function(opt) {
-                          var axisData = $scope.ChartData5;
+                          var axisData = $scope.ChartDatas;
                           console.log(axisData)
                           var series = opt.series;
                           var table = '<table style="width:100%;text-align:center"><tbody><tr>'
@@ -759,7 +759,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                           var axisData = $scope.ChartData5;
                           console.log(axisData)
                           var series = opt.series;
-                          var table = '<table style="width:100%;text-align:center"><tbody><tr>'
+                          var table = '<table style="width:10%;text-align:center"><tbody><tr>'
                                        + '<td>时间</td>'
                                        + '<td>' + series[0].name + '</td>'
                                        + '</tr>';
