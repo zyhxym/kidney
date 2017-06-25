@@ -306,6 +306,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       console.log(err)
     })
   }
+  $scope.gototestrecord=function(){
+      console.log(Storage.get('getpatientId'))
+      $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
+  }
 
 }])
 //测量记录
@@ -1195,6 +1199,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       }      
     }
 
+    $scope.gototestrecord=function(){
+        console.log(Storage.get('getpatientId'))
+        $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
+    }
+
 }])
 
 
@@ -1323,6 +1332,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
   }
 
+  $scope.gototestrecord=function(){
+      // console.log(Storage.get('getpatientId'))
+      $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
+  }
   // $scope.EditHealth = function(editId){
   //   console.log("健康信息");
   //   console.log(editId);

@@ -1928,6 +1928,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
         }
 
     $scope.gototestrecord=function(){
+        console.log(Storage.get('getpatientId'))
         $state.go('tab.TestRecord',{PatinetId:Storage.get('getpatientId')});
     }
     // console.log(Storage.get('getpatientId'))
