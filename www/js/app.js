@@ -745,12 +745,18 @@ angular.module('kidney',[
     $urlRouterProvider.otherwise('/signin');
 
 })
-.controller('tabCtrl',['$state','$scope',function($state,$scope){
+.controller('tabCtrl',['$state','$scope','$interval',function($state,$scope,$interval){
     $scope.goHome = function(){
         setTimeout(function() {
         $state.go('tab.home', {});
       },20);
-    }    
+    } 
+    $scope.destroy=function(){
+      console.log('destroy');
+      if(RefreshUnread){
+        $interval.cancel(RefreshUnread);
+      }      
+    }       
     $scope.goConsult = function(){
         setTimeout(function() {
         $state.go('tab.consult', {});
