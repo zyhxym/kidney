@@ -1294,7 +1294,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
             }
         })
     }
-    var RefreshUnread;
+
     var GetUnread = function(){
       // console.log(new Date());
       New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
@@ -1311,18 +1311,19 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
           });
     }
 
-    $scope.$on('$ionicView.leave', function ()
-    {
-      console.log('destroy');
-
-      $interval.cancel(RefreshUnread);
-
-
-    });
     $scope.$on('$ionicView.enter', function() {
       console.log("enter");
       RefreshUnread = $interval(GetUnread,2000);
     });
+
+    $scope.$on('$ionicView.leave', function ()
+    {
+      console.log('destroy');
+      if(RefreshUnread){
+        $interval.cancel(RefreshUnread);
+      }
+    });
+
     // $scope.testRestful=function()
     // {
     //     Communication.removeMember({
