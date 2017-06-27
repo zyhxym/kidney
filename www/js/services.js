@@ -260,10 +260,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
           });
       })
     },
-    getPictureFromPhotos: function(type){
+    getPictureFromPhotos: function(type,noCrop){
       console.log(type);
         return $q(function(resolve, reject) {
-            $cordovaCamera.getPicture(CONFIG.cameraOptions[type]).then(function(imageUrl) {
+          var opt = CONFIG.cameraOptions[type];
+            if(noCrop) opt.allowEdit = false;
+            $cordovaCamera.getPicture(opt).then(function(imageUrl) {
               console.log(imageUrl)
               resolve(imageUrl)
               // file manipulation
