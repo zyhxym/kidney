@@ -1671,7 +1671,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    $scope.closePopover();
   };      
   $scope.choosePhotos = function() {
-  Camera.getPictureFromPhotos('gallery').then(function(data) {
+  Camera.getPictureFromPhotos('gallery',true).then(function(data) {
       // data里存的是图像的地址
       // console.log(data);
       var imgURI = data; 
@@ -1691,7 +1691,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   };
   $scope.isShow=true;
   $scope.takePicture = function() {
-   Camera.getPicture('cam').then(function(data) {
+   Camera.getPicture('cam',true).then(function(data) {
       var imgURI = data;
       photo_upload_display(imgURI);
     }, function(err) {
