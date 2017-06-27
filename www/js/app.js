@@ -18,7 +18,7 @@ angular.module('kidney',[
     'btford.socket-io'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket','mySocket', function($ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket,mySocket) {
+.run(['$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket','mySocket','$ionicPopup','session', function($ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket,mySocket,$ionicPopup,session) {
     $ionicPlatform.ready(function() {
         //记录message当前会话
         $rootScope.isIOS = $ionicPlatform.is('ios');
@@ -53,10 +53,14 @@ angular.module('kidney',[
             mySocket.newUserOnce(id,name);
             // socket.emit('newUser',{ user_name: name, user_id: id, client:'app'});
         });
-        socket.on('kicked', function() {
-            mySocket.cancelAll();
-            Storage.set('isSignIN','');
-            $state.go('signin');
+        socket.on('kick', function() {
+            session.logOut();
+            $ionicPopup.alert({
+                title: '请重新登录',
+            }).then(function(){
+                // $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
+                $state.go('signin');
+            })
         });
 
         socket.on('getMsg', listenGetMsg);
