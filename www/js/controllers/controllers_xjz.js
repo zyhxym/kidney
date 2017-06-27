@@ -537,6 +537,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
     $scope.$on('keyboardhide', function(event) {
         $scope.params.helpDivHeight = 0;
+        $scope.scrollHandle.resize();
     });
     $scope.$on('$ionicView.beforeLeave', function() {
         for(var i in $scope.timer) clearTimeout($scope.timer[i]);
@@ -1400,6 +1401,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     $scope.$on('keyboardhide', function(event) {
         $scope.params.helpDivHeight = 0;
+        $scope.scrollHandle.resize();
     })
     $scope.$on('$ionicView.beforeLeave', function() {
         if ($scope.popover) $scope.popover.hide();

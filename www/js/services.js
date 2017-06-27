@@ -2293,7 +2293,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 newUserOnce(userId,name);
                 // socket.emit('newUser',{ user_name:n , user_id: userId, client:'app'});
                 return newuser;
-            }(),60000);
+            }(),600000);
         },
         newUserOnce:newUserOnce,
         newUserForTempUse:function(userId,name){
@@ -2316,5 +2316,22 @@ angular.module('kidney.services', ['ionic','ngResource'])
         }
     }
 }])
-
+.factory('session',['Storage','socket','mySocket',function(Storage,socket,mySocket){
+    return {
+        logOut:function(){
+                //Storage.set('IsSignIn','NO');
+                // $state.logStatus="用户已注销";
+                //清除登陆信息
+                Storage.rm('password');
+                Storage.rm('doctorunionid');
+                Storage.rm('IsSignIn');
+                Storage.rm('PASSWORD');
+                Storage.rm('userid');
+                mySocket.cancelAll();
+                socket.emit('disconnect');
+                socket.disconnect();
+                // resolve(true);
+        }
+    }
+}])
 
