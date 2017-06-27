@@ -92,15 +92,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
 }])
 //医生查找
-.controller('DoctorSearchCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG) {
+.controller('DoctorSearchCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG','Storage', function($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG, Storage) {
     $scope.searchStyle={'margin-top':'44px'}
     if(ionic.Platform.isIOS()){
         $scope.searchStyle={'margin-top':'64px'}
-    }
-    $scope.docStyle={'margin-top':'opx'}
-    if(ionic.Platform.isIOS()){
         $scope.docStyle={'margin-top':'20px'}
-    } 
+    }
+    $scope.docStyle={'margin-top':'0px'}
+   
     //get groupId via $state.params.groupId
     $scope.moredata = true;
     $scope.issearching = true;
@@ -145,7 +144,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log(err);
             })
     }
- 
+    //directive <button-clear-input>新建了scope， 导致clearSearch不能正确bind，不能触发
+    //影响使用体验
     $scope.clearSearch = function() {
         $scope.search.name = '';
         $scope.issearching = true;
@@ -154,7 +154,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         $scope.doctors = $scope.alldoctors;
     }
     $scope.doctorClick = function(doc) {
-        $state.go('tab.detail', { type: '2', chatId:doc });
+        if(doc == Storage.get('UID')) $state.go('tab.me');
+        else $state.go('tab.detail', { type: '2', chatId:doc });
     }
 }])
 
@@ -401,7 +402,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
 }])
 //"咨询”问题详情
-.controller('detailCtrl', ['$ionicPlatform','$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify',function($ionicPlatform,$scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify) {
+.controller('detailCtrl', ['$ionicPlatform','$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication','Counsel','Storage','Doctor','Patient','$q','New','Mywechat','Account','socket','notify','$timeout',function($ionicPlatform,$scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel,Storage,Doctor,Patient,$q,New,Mywechat,Account,socket,notify,$timeout) {
     if($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true);
 
     $scope.input = {
@@ -428,7 +429,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
     function toBottom(animate,delay){
         if(!delay) delay=100;
-        setTimeout(function(){
+        $timeout(function(){
             $scope.scrollHandle.scrollBottom(animate);
         },delay)
     }
@@ -507,11 +508,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, readOrNot: 1 });
             }
         });
-        $scope.getMsg(15).then(function(data) {
-            $scope.msgs = data;
-            toBottom(true, 400);
-            $scope.params.loaded = true;
-        });
     });
 
 
@@ -528,6 +524,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 console.log(err);
             })
         imgModalInit();
+        $scope.getMsg(15).then(function(data) {
+            $scope.msgs = data;
+            toBottom(true, 400);
+            $scope.params.loaded = true;
+        });
     })
 
     $scope.$on('keyboardshow', function(event, height) {
@@ -1074,8 +1075,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         $ionicLoading.show({ template: '图片上传失败', duration: 2000 })
                     });
             }, function(err) {
-                $ionicLoading.show({ template: '打开图片失败', duration: 2000 })
-                console.error(err);
+                // console.error(err);
             });
     };
 
@@ -1289,7 +1289,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 }])
 
 //团队聊天
-.controller('GroupChatCtrl', ['$ionicPlatform','$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover','$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor','$q','CONFIG','arrTool','New','socket','notify', function($ionicPlatform,$scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover,$ionicLoading, $ionicPopup, Camera, voice, Communication,Storage,Doctor,$q,CONFIG,arrTool,New,socket,notify) {
+.controller('GroupChatCtrl', ['$ionicPlatform','$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover','$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication','Storage','Doctor','$q','CONFIG','arrTool','New','socket','notify', '$timeout',function($ionicPlatform,$scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover,$ionicLoading, $ionicPopup, Camera, voice, Communication,Storage,Doctor,$q,CONFIG,arrTool,New,socket,notify,$timeout) {
     if($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true);
     $scope.itemStyle={'position':'absolute','top':'44px','width':'100%','margin':'0','min-height':'35vh','max-height':'55vh','overflow-y': 'scroll'}
     if(ionic.Platform.isIOS()){
@@ -1322,7 +1322,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll');
     function toBottom(animate,delay){
         if(!delay) delay=100;
-        setTimeout(function(){
+        $timeout(function(){
             $scope.scrollHandle.scrollBottom(animate);
         },delay)
     }
@@ -1386,12 +1386,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1 });
             }
         });
+        imgModalInit();
         $scope.getMsg(15).then(function (data) {
             $scope.msgs = data;
             toBottom(true, 400);
             $scope.params.loaded = true;
         });
-        imgModalInit();
     })
 
     $scope.$on('keyboardshow', function(event, height) {
@@ -1588,7 +1588,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     });
     $scope.$on('profile', function(event, args) {
         event.stopPropagation();
-        $state.go('tab.group-profile', { memberId: args[1].fromID });
+        if(args[1].direct=='receive'){
+            $state.go('tab.group-profile', { memberId: args[1].fromID });
+        }
     })
 
     $scope.$on('viewcard', function(event, args) {
@@ -1605,10 +1607,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
     });
 
-    $scope.toolChoose = function(data) {
-        if (data == 0) $state.go('tab.selectDoc');
-        if (data == 1) $state.go('tab.selectTeam');
-    }
+    // $scope.toolChoose = function(data) {
+    //     if (data == 0) $state.go('tab.selectDoc');
+    //     if (data == 1) $state.go('tab.selectTeam');
+    // }
 
     $scope.viewPatient = function(pid){
         Storage.set('getpatientId',pid);
@@ -1760,7 +1762,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         $ionicLoading.show({ template: '图片上传失败', duration: 2000 })
                     });
             }, function(err) {
-                $ionicLoading.show({ template: '打开图片失败', duration: 2000 })
                 console.error(err);
             })
     };
