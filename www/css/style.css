@@ -978,14 +978,15 @@ display: inline-block;
 /*group member avatar list div -----------------------------------*/
 .avatar-item {
   display: inline-block;
-  width: 20%;
-  padding: 3px 7px;
+  width: 4.5em;
+  padding: 3px 6px;
   text-align: center;
 }
 
 .avatar-item img {
-  height: 100%;
+  height: 3.5em;
   width: 100%;
+  object-fit：cover;
 }
 
 .avatar-item div {
