@@ -1864,7 +1864,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         // );
 
         //获取所有类别聊天消息 type=chat  分类别type11患者-医生  type12医生-医生  type13团队-医生
-        New.getNewsByReadOrNot({userId:receiver,type:'chat',readOrNot:0}).then(
+        New.getNewsByReadOrNot({userId:receiver,type:'chat',readOrNot:0,userRole:'doctor'}).then(
             function(data){
                 //console.log(data.results)
                 if(data.results.length){
