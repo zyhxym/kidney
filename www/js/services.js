@@ -2370,7 +2370,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
           };
           var VersionParams = {
             versionName: version,
-            versionType: 'app'
+            versionType: 'appdoctor'
           };
           // alert(JSON.stringify(VersionParams));
 
