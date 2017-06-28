@@ -1992,7 +1992,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
             var q={
                 userId:userId,
-                type:type
+                type:type,
+                userRole:'doctor'
             }
             self.getNews(q)
             .then(function(res){
@@ -2016,7 +2017,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
             var q={
                 userId:userId,
-                type:type
+                type:type,
+                userRole:'doctor'
             }
             self.getNews(q)
             .then(function(res){

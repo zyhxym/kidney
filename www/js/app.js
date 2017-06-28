@@ -37,6 +37,9 @@ angular.module('kidney',[
         }
         function onResume(){
             appState.background = false;
+            var id = Storage.get('UID'),
+                name = thisDoctor===null?'':thisDoctor.name;
+            mySocket.newUserOnce(id,name);
         }
         socket.on('error', function(data) {
             console.error('socket error');
