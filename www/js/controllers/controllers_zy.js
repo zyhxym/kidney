@@ -1297,7 +1297,7 @@ angular.module('zy.controllers', ['ionic','kidney.services'])
 
     var GetUnread = function(){
       // console.log(new Date());
-      New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0}).then(//
+      New.getNewsByReadOrNot({userId:Storage.get('UID'),readOrNot:0,userRole:'doctor'}).then(//
           function(data){
               // console.log(data);
               if(data.results.length){
