@@ -2377,9 +2377,9 @@ angular.module('kidney.services', ['ionic','ngResource'])
           getVersion(VersionParams).then(function(data){
             // alert(JSON.stringify(data.results));
             if (angular.isArray(data.results.msg)){
-              json.title = "APP版本更新"
+              json.title = "肾事联盟有更新啦";
               for(x in data.results.msg){
-                json.template += data.results.msg[x].versionName + "更新: " + data.results.msg[x].content + "\n";
+                json.template +=  "<p style = 'padding-left:15px;'>" + "V" + data.results.msg[x].versionName + " 更新: " + data.results.msg[x].content + "</p>";
               }
               return $ionicPopup.alert({
                 title: json.title,
@@ -2387,8 +2387,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
                 scope: scope,
                 buttons: [
                   {
-                    text: '好的',
-                    type: 'button-clear button-assertive',
+                    text: '我知道了',
+                    type: 'button button-block bg-6a fc-ff',
                     onTap: function () {
                       return 'ok';
                     }
