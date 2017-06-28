@@ -20,6 +20,7 @@ angular.module('kidney',[
 
 .run(['$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket','mySocket','$ionicPopup','session', function($ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket,mySocket,$ionicPopup,session) {
     $ionicPlatform.ready(function() {
+        version.checkUpdate($rootScope);//在app.js的ready里加
         //记录message当前会话
         $rootScope.isIOS = $ionicPlatform.is('ios');
         $rootScope.conversation = {
