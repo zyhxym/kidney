@@ -506,7 +506,13 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'advice'},{
             postAdvice:{method:'POST', params:{route: 'postAdvice'}, timeout: 100000}
         });
-    }    
+    }
+
+    var version = function(){
+        return $resource(CONFIG.baseUrl + ':path',{path:'version'},{
+            getVersion:{method:'GET', params:{}, timeout: 100000}
+        });
+    }
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -530,7 +536,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Insurance = Insurance();
             serve.New = New();          
             serve.Expense = Expense();   
-            serve.Advice = Advice();  
+            serve.Advice = Advice(); 
+            serve.version = version();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -551,7 +558,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Insurance = Insurance();
     serve.New = New();  
     serve.Expense = Expense();    
-    serve.Advice = Advice();    
+    serve.Advice = Advice(); 
+    serve.version = version();  
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -2337,3 +2345,63 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
 }])
 
+.factory('version', ['$q', 'Data', '$cordovaAppVersion','$ionicPopup',  function($q, Data, $cordovaAppVersion, $ionicPopup){
+    var self = this;
+    
+    var getVersion = function(params){
+        var deferred = $q.defer();
+        Data.version.getVersion(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.checkUpdate = function(scope){
+        $cordovaAppVersion.getAppVersion().then(function (version) {
+          // alert(version);
+          var json = {
+            title: "",
+            template: ""
+          };
+          var VersionParams = {
+            versionName: version,
+            versionType: 'app'
+          };
+          // alert(JSON.stringify(VersionParams));
+
+          getVersion(VersionParams).then(function(data){
+            // alert(JSON.stringify(data.results));
+            if (angular.isArray(data.results.msg)){
+              json.title = "APP版本更新"
+              for(x in data.results.msg){
+                json.template += data.results.msg[x].versionName + "更新: " + data.results.msg[x].content + "\n";
+              }
+              return $ionicPopup.alert({
+                title: json.title,
+                template: json.template,
+                scope: scope,
+                buttons: [
+                  {
+                    text: '好的',
+                    type: 'button-clear button-assertive',
+                    onTap: function () {
+                      return 'ok';
+                    }
+                  },
+                ]
+              });
+            }
+          },function(err){
+            // alert("err");
+          });
+          
+        });
+    }
+    
+    return self;
+}])
