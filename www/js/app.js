@@ -18,8 +18,9 @@ angular.module('kidney',[
     'btford.socket-io'
 ])
 
-.run(['$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket', function($ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket) {
+.run(['version','$ionicPlatform', '$state', 'Storage','$rootScope','CONFIG','Communication','notify','$interval','socket','mySocket','$ionicPopup','session', function(version,$ionicPlatform, $state, Storage,$rootScope,CONFIG,Communication,notify,$interval,socket,mySocket,$ionicPopup,session) {
     $ionicPlatform.ready(function() {
+        version.checkUpdate($rootScope);//在app.js的ready里加
         //记录message当前会话
         $rootScope.isIOS = $ionicPlatform.is('ios');
         $rootScope.conversation = {
@@ -37,8 +38,10 @@ angular.module('kidney',[
         }
         function onResume(){
             appState.background = false;
+            var id = Storage.get('UID'),
+                name = thisDoctor===null?'':thisDoctor.name;
+            mySocket.newUserOnce(id,name);
         }
-        // socket = io.connect(CONFIG.socketServer+'chat');
         socket.on('error', function(data) {
             console.error('socket error');
             console.log(data);
@@ -51,40 +54,29 @@ angular.module('kidney',[
             console.info('reconnect: ' + attempt);
             var id = Storage.get('UID'),
                 name = thisDoctor===null?'':thisDoctor.name;
-            socket.emit('newUser',{ user_name: name, user_id: id, client:'app'});
+            mySocket.newUserOnce(id,name);
+            // socket.emit('newUser',{ user_name: name, user_id: id, client:'app'});
+        });
+        socket.on('kick', function() {
+            session.logOut();
+            $ionicPopup.alert({
+                title: '请重新登录',
+            }).then(function(){
+                // $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
+                $state.go('signin');
+            })
         });
 
         socket.on('getMsg', listenGetMsg);
-        // socket.on('messageRes', listenMessageRes);
-        // console.log(socket.listeners());
-        // $rootScope.$on('getMsg', listenGetMsg);
-        // $rootScope.$on('messageRes', listenMessageRes);
+
         function listenGetMsg(data){
             console.info('getMsg');
-            // console.log(event);
             console.log(data);
             // $rootScope.$broadcast('im:getMsg',data);
-            // if((($rootScope.conversation.type == 'single' && $rootScope.conversation.id==data.msg.fromID) || ($rootScope.conversation.type == 'group' && $rootScope.conversation.id==data.msg.targetID))) return;
             if(!appState.background && (($rootScope.conversation.type == 'single' && $rootScope.conversation.id==data.msg.fromID) || ($rootScope.conversation.type == 'group' && $rootScope.conversation.id==data.msg.targetID))) return;
             notify.add(data.msg);
         }
-        // function listenMessageRes(data){
-            // console.info('messageRes');
-            // console.log(event);
-            // console.log(data);
-            // $rootScope.$broadcast('im:messageRes',data);
-        // }
 
-        // $interval(function(){
-        //     // if(socket.disconnected) 
-        //     console.log(socket.listeners('getMsg'));
-        //     socket.off('getMsg');
-        //     // if(!socket.hasListeners('getMsg')) socket.on('getMsg', listenGetMsg);
-        //     socket.on('getMsg', listenGetMsg);
-        //     socket.off('messageRes');
-        //     // if(!socket.hasListeners('messageRes')) socket.on('messageRes', listenMessageRes);
-        //     socket.on('messageRes', listenMessageRes);
-        // },30000);
         //是否登陆
         var isSignIN = Storage.get("isSignIN");
         if (isSignIN == 'YES') {
@@ -213,6 +205,9 @@ angular.module('kidney',[
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
+    
+    //ios 白屏可能问题配置
+    $ionicConfigProvider.views.swipeBackEnabled(false);
 
     //android导航栏在顶部解决办法
     $ionicConfigProvider.platform.android.tabs.style('standard');
@@ -286,7 +281,7 @@ angular.module('kidney',[
     
     //主页面
     .state('tab.home', {
-        //cache: false,
+        cache: false,
         url: '/home',
         views: {
             'tab-home':{
@@ -335,8 +330,8 @@ angular.module('kidney',[
 
     //"我"页面
     .state('tab.me', {
-        cache: false,
         url: '/me',
+        cache:false,
         views: {
             'tab-me':{
                 controller: 'meCtrl',
@@ -447,6 +442,7 @@ angular.module('kidney',[
         params:{PatinetId:null},
         views: {
             'tab-patient':{
+                cache:true,
                 controller: 'TestRecordCtrl',
                 templateUrl: 'partials/patient/testrecord.html'
             }
@@ -651,7 +647,7 @@ angular.module('kidney',[
             
     //我的信息
     .state('tab.myinfo', {
-        // cache: false,
+        cache: false,
         url: '/myinfo',
         views: {
             'tab-me':{
@@ -757,12 +753,18 @@ angular.module('kidney',[
     $urlRouterProvider.otherwise('/signin');
 
 })
-.controller('tabCtrl',['$state','$scope',function($state,$scope){
+.controller('tabCtrl',['$state','$scope','$interval',function($state,$scope,$interval){
     $scope.goHome = function(){
         setTimeout(function() {
         $state.go('tab.home', {});
       },20);
-    }    
+    } 
+    $scope.destroy=function(){
+      console.log('destroy');
+      if(RefreshUnread){
+        $interval.cancel(RefreshUnread);
+      }      
+    }       
     $scope.goConsult = function(){
         setTimeout(function() {
         $state.go('tab.consult', {});
