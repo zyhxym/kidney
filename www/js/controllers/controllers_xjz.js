@@ -66,11 +66,11 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     })
             })
   }
-/**
- * 跳转到添加人头页面按键
- * @Author   xjz
- * @DateTime 2017-07-05
- */
+  /**
+   * 跳转到添加人头页面按键
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   */
   $scope.addMember = function () {
     $state.go('tab.group-add-member', { type: 'new' })
   }
@@ -383,7 +383,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {element}  ele  点击的元素
-   * @param    {array}    team 被点击的那个医生的信息
+   * @param    {array}    doc 被点击的那个医生的信息
    * @return   {[type]}
    */
   $scope.doctorClick = function (ele, doc) {
@@ -570,9 +570,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
   $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll')
   /**
-   * 到底事件
+   * 滚动到底部
    * @Author   xjz
    * @DateTime 2017-07-05
+   * @param    {bool}   animate 是否要动画
+   * @param    {number}   delay   延时
+   * @return   {null}           
    */
   function toBottom (animate, delay) {
     if (!delay) delay = 100
@@ -695,6 +698,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $rootScope.conversation.type = null
     $rootScope.conversation.id = ''
   })
+  /**
+   * 收到消息事件
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    event
+   * @param    {object}   data     消息体
+   * @return   {null}            
+   */
   $scope.$on('im:getMsg', function (event, data) {
     console.log(arguments)
     console.info('getMsg')
@@ -724,6 +735,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, readOrNot: 1 })
     }
   })
+  /**
+   * 收到消息回执事件
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    event
+   * @param    {object}   data     消息体
+   * @return   {null}            
+   */
   $scope.$on('im:messageRes', function (event, data) {
     console.log(arguments)
     console.info('messageRes')
@@ -762,6 +781,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * 提示剩余条数的通知
    * @Author   xjz
    * @DateTime 2017-07-05
+   */
+  /**
+   * [sendCnNotice description]
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {string}   type   咨询/问诊
+   * @param    {string}   status 是否进行中
+   * @param    {number}   cnt    剩余次数
+   * @return   {null}          
    */
   function sendCnNotice (type, status, cnt) {
     var len = $scope.msgs.length
@@ -822,7 +850,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {num}   num   获取的数量
-   * @return   {fun}   noMore  没有更多了 函数
+   * @return   {promise}
    */
   $scope.getMsg = function (num) {
     console.info('getMsg')
@@ -962,6 +990,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.imageHandle.zoomTo(5, true)
     }
   }
+  /**
+   * 事件：听语音消息
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    事件
+   * @param    {array}    args     ['voice',msg.content]
+   * @return   {null}            
+   */
   $scope.$on('voice', function (event, args) {
     console.log(args)
     event.stopPropagation()
@@ -973,14 +1009,28 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             })
     $scope.sound.play()
   })
-
+  /**
+   * 事件：长按消息
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    事件
+   * @param    {array}    args     ['holdmsg',msg.createTimeInMillis,$event]
+   * @return   {null}            
+   */
   $scope.$on('holdmsg', function (event, args) {
     event.stopPropagation()
     $scope.holdId = args[1]
     console.log(args)
     $scope.popover.show(args[2])
   })
-
+  /**
+   * 事件：点击card
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    事件
+   * @param    {array}    args     ['viewcard',msg,$event]
+   * @return   {null}            
+   */
   $scope.$on('viewcard', function (event, args) {
     event.stopPropagation()
     console.log(args[2])
@@ -1004,7 +1054,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         // $state.go('tab.consult-detail',{consultId:args[1]});
   })
   /**
-   * 选转发给谁
+   * 选转发给团队/医生
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {num}  data  两种选择
@@ -1016,6 +1066,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     if (data == 0) $state.go('tab.selectDoc', { msg: content })
     if (data == 1) $state.go('tab.selectTeam', { msg: content })
   }
+  /**
+   * 事件：点击头像
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   event    事件
+   * @param    {array}    args     ['profile',msg]
+   * @return   {null}            
+   */
   $scope.$on('profile', function (event, args) {
     event.stopPropagation()
     if (args[1].direct == 'receive') {
@@ -1102,12 +1160,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
   }
   /**
-   * 更新消息
+   * 更新一条消息
    * @Author   xjz
    * @DateTime 2017-07-05
-   * @param    {[type]}
-   * @param    {[type]}
-   * @return   {[type]}
+   * @param    {object}   msg 消息体
+   * @param    {number}   pos msg在msgs中的下标
+   * @return   {null}       
    */
   $scope.updateMsg = function (msg, pos) {
     console.info('updateMsg')
@@ -1166,8 +1224,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * 插入消息
    * @Author   xjz
    * @DateTime 2017-07-05
-   * @param    {[type]}
-   * @return   {[type]}
+   * @param    {object}   msg 消息
+   * @return   {null}       
    */
   function insertMsg (msg) {
     var pos = arrTool.indexOf($scope.msgs, 'createTimeInMillis', msg.createTimeInMillis)
@@ -1179,11 +1237,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   }
     // send message--------------------------------------------------------------------------------
     //
-    /**
-     * 发送消息
-     * @Author   xjz
-     * @DateTime 2017-07-05
-     */
+  /**
+   * 生成消息体
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   content 用于生成msg.content字段
+   * @param    {string}   type    msg type
+   * @return   {[type]}           [description]
+   */
   function msgGen (content, type) {
     var data = {}
     if (type == 'text') {
@@ -1219,6 +1280,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
     return msgJson
   }
+  /**
+   * 生成消息体，用于消息发送成功前，页面显示。发送成功后，$scope.updateMsg更新该消息
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   msg 消息
+   * @param    {string}   url 资源本地路径（图片等）
+   * @return   {[type]}       [description]
+   */
   function localMsgGen (msg, url) {
     var d = {},
       type = msg.contentType
@@ -1246,13 +1315,26 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       content: d
     }
   }
+  /**
+   * 发送消息
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   content msg.content相关
+   * @param    {string}   type    消息类型
+   * @return   {[type]}           [description]
+   */
   function sendmsg (content, type) {
     var msgJson = msgGen(content, type)
     console.info('[socket.connected]', socket.connected)
     socket.emit('message', {msg: msgJson, to: $scope.params.chatId, role: 'doctor'})
     $scope.pushMsg(msgJson)
   }
-
+  /**
+   * 点击输入框提交按钮
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @return   {[type]}   [description]
+   */
   $scope.submitMsg = function () {
     var template = {
       'userId': $scope.params.chatId, // 患者的UID
@@ -1385,17 +1467,40 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               console.log(err)
             })
   })
-
+  /**
+   * 团队加人
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   */
   $scope.addMember = function () {
     console.log($scope.team.teamId)
     $state.go('tab.group-add-member', {teamId: $scope.team.teamId})
   }
+  /**
+   * 查看医生信息
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @param    {object}   member doctor
+   * @return   {[type]}          [description]
+   */
   $scope.viewProfile = function (member) {
     $state.go('tab.group-profile', {memberId: member.userId})
   }
+  /**
+   * 查看团队二维码
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @return   {[type]}   [description]
+   */
   $scope.showQRCode = function () {
     $state.go('tab.group-qrcode', { team: $scope.team })
   }
+  /**
+   * state.go团队踢人 
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @return   {[type]}   [description]
+   */
   $scope.gokick = function () {
     $state.go('tab.group-kick', { teamId: $scope.team.teamId })
   }
@@ -2503,7 +2608,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
 }])
 /**
- * 转发前的聊天记录页面，从病例讨论过来的
+ * 转发前的聊天记录页面，从病例讨论过来的，参见detailCtrl
  * @Author   xjz
  * @DateTime 2017-07-05
  */
