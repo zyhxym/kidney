@@ -41,7 +41,7 @@ angular.module('kidney.services', ['ionic','ngResource'])
   };
 }])
 .constant('CONFIG', {
-    baseUrl: 'http://121.43.107.106:4050/',
+    baseUrl: 'http://121.43.107.106:4050/api/v1/',
     mediaUrl: 'http://121.43.107.106:8052/',
     socketServer:'ws://121.43.107.106:4050/',
     imgThumbUrl: 'http://121.43.107.106:8052/uploads/photos/resize',
@@ -260,10 +260,12 @@ angular.module('kidney.services', ['ionic','ngResource'])
           });
       })
     },
-    getPictureFromPhotos: function(type){
+    getPictureFromPhotos: function(type,noCrop){
       console.log(type);
         return $q(function(resolve, reject) {
-            $cordovaCamera.getPicture(CONFIG.cameraOptions[type]).then(function(imageUrl) {
+          var opt = CONFIG.cameraOptions[type];
+            if(noCrop) opt.allowEdit = false;
+            $cordovaCamera.getPicture(opt).then(function(imageUrl) {
               console.log(imageUrl)
               resolve(imageUrl)
               // file manipulation
@@ -340,11 +342,11 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Task2 = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'tasks'},{
-            changeTaskstatus:{method:'GET', params:{route: 'status'}, timeout: 100000},
-            changeTasktime:{method:'GET', params:{route: 'time'}, timeout: 100000},
-            insertTask:{method:'POST', params:{route: 'insertTaskModel'}, timeout: 100000},
-            getUserTask:{method:'GET', params:{route: 'getUserTask'}, timeout: 100000},
-            updateUserTask:{method:'POST', params:{route: 'updateUserTask'}, timeout: 100000}
+            changeTaskstatus:{method:'post', params:{route: 'status'}, timeout: 100000},
+            changeTasktime:{method:'post', params:{route: 'time'}, timeout: 100000},
+            insertTask:{method:'POST', params:{route: 'taskModel'}, timeout: 100000},
+            getUserTask:{method:'GET', params:{route: 'task'}, timeout: 100000},
+            updateUserTask:{method:'POST', params:{route: 'task'}, timeout: 100000}
         });
     };
 
@@ -357,43 +359,45 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var Counsel = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'counsel'},{
-            getCounsels:{method:'GET', params:{route: 'getCounsels'}, timeout: 100000},
+            getCounsels:{method:'GET', params:{route: 'counsels'}, timeout: 100000},
             questionaire:{method:'POST', params:{route: 'questionaire'}, timeout: 100000},
             changeCounselStatus:{method:'POST', params:{route: 'changeCounselStatus'}, timeout: 100000},
-            getStatus:{method:'GET', params:{route: 'getStatus'}, timeout: 100000},
-            changeStatus:{method:'POST', params:{route: 'changeStatus'}, timeout: 100000}
+            getStatus:{method:'GET', params:{route: 'status'}, timeout: 100000},
+            changeStatus:{method:'POST', params:{route: 'status'}, timeout: 100000}
         });
     };
 
     var Patient =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'patient'},{
-            getPatientDetail:{method:'GET', params:{route: 'getPatientDetail'}, timeout: 100000},
-            getMyDoctors:{method:'GET',params:{route:'getMyDoctors'},timeout:10000},
-            getDoctorLists:{method:'GET',params:{route:'getDoctorLists'},timeout:10000},
-            getCounselRecords:{method:'GET',params:{route:'getCounselRecords'},timeout:10000},
-            insertDiagnosis:{method:'POST',params:{route:'insertDiagnosis'},timeout:10000},
-            newPatientDetail:{method:'POST',params:{route:'newPatientDetail'},timeout:10000},
-            editPatientDetail:{method:'POST',params:{route:'editPatientDetail'},timeout:10000}
+            getPatientDetail:{method:'GET', params:{route: 'detail'}, timeout: 100000},
+            getMyDoctors:{method:'GET',params:{route:'myDoctors'},timeout:10000},
+            getDoctorLists:{method:'GET',params:{route:'doctors'},timeout:10000},
+            getCounselRecords:{method:'GET',params:{route:'counselRecords'},timeout:10000},
+            insertDiagnosis:{method:'POST',params:{route:'diagnosis'},timeout:10000},
+            newPatientDetail:{method:'POST',params:{route:'detail'},timeout:10000},
+            editPatientDetail:{method:'POST',params:{route:'editDetail'},timeout:10000}
         });
     }
 
     var Doctor =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'doctor'},{
-            postDocBasic:{method:'POST', params:{route: 'postDocBasic'}, timeout: 100000},
-            getPatientList:{method:'GET', params:{route: 'getPatientList'}, timeout: 100000},
-            getDoctorInfo:{method:'GET', params:{route: 'getDoctorInfo'}, timeout: 100000},
-            getMyGroupList:{method:'GET', params:{route: 'getMyGroupList'}, timeout: 100000},
-            getGroupPatientList:{method:'GET', params:{route: 'getGroupPatientList'}, timeout: 100000},
-            getRecentDoctorList:{method:'GET', params:{route: 'getRecentDoctorList'}, timeout: 100000},
-            editDoctorDetail:{method:'POST',params:{route:'editDoctorDetail'},timeout:10000},
-            insertSchedule:{method:'POST',params:{route:'insertSchedule'},timeout:10000},
-            getSchedules:{method:'GET',params:{route:'getSchedules'},timeout:10000},
+            postDocBasic:{method:'POST', params:{route: 'detail'}, timeout: 100000},
+            getPatientList:{method:'GET', params:{route: 'myPatients'}, timeout: 100000},
+            getDoctorInfo:{method:'GET', params:{route: 'detail'}, timeout: 100000},
+            getMyGroupList:{method:'GET', params:{route: 'myTeams'}, timeout: 100000},
+            getGroupPatientList:{method:'GET', params:{route: 'teamPatients'}, timeout: 100000},
+            getRecentDoctorList:{method:'GET', params:{route: 'myRecentDoctors'}, timeout: 100000},
+            editDoctorDetail:{method:'POST',params:{route:'editDetail'},timeout:10000},
+            insertSchedule:{method:'POST',params:{route:'schedule'},timeout:10000},
+            getSchedules:{method:'GET',params:{route:'schedules'},timeout:10000},
             deleteSchedule:{method:'POST',params:{route:'deleteSchedule'},timeout:10000},
-            getSuspendTime:{method:'GET',params:{route:'getSuspendTime'},timeout:10000},
-            insertSuspendTime:{method:'POST',params:{route:'insertSuspendTime'},timeout:10000},
+            getSuspendTime:{method:'GET',params:{route:'suspendTime'},timeout:10000},
+            insertSuspendTime:{method:'POST',params:{route:'suspendTime'},timeout:10000},
             deleteSuspendTime:{method:'POST',params:{route:'deleteSuspendTime'},timeout:10000},
-            getPatientByDate:{method:'GET',params:{route:'getPatientByDate'},timeout:10000},
-            getDocNum:{method:'GET',params:{route:'getDocNum'},timeout:10000}
+            getPatientByDate:{method:'GET',params:{route:'myPatientsByDate'},timeout:10000},
+            getDocNum:{method:'GET',params:{route:'numbers'},timeout:10000},
+            getAliPayAccount:{method:'GET', params:{route: 'AliPayAccount'},timeout:10000},
+            editAliPayAccount:{method:'POST', params:{route: 'AliPayAccount'},timeout:10000}
         });
     }
 
@@ -403,22 +407,23 @@ angular.module('kidney.services', ['ionic','ngResource'])
             changePassword:{method:'POST', params:{route: 'reset',phoneNo:'@phoneNo',password:'@password'}, timeout: 100000},
             logIn:{method:'POST', params:{route: 'login'}, timeout: 100000},
             logOut:{method:'POST', params:{route: 'logout',userId:'@userId'}, timeout: 100000},
-            getUserId:{method:'GET', params:{route: 'getUserID',phoneNo:'@phoneNo'}, timeout: 100000},
-            sendSMS:{method:'POST', params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType'}, timeout: 100000},//第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
-            verifySMS:{method:'GET', params:{route: 'verifySMS',mobile:'@mobile',smsType:'@smsType',smsCode:'@smsCode'}, timeout: 100000},
-            getAgree:{method:'GET', params:{route: 'getUserAgreement',userId:'@userId'}, timeout: 100000},
-            updateAgree:{method:'POST', params:{route: 'updateUserAgreement'}, timeout: 100000},
+            getUserId:{method:'GET', params:{route: 'userID',username:'@username'}, timeout: 100000},
+            sendSMS:{method:'POST', params:{route: 'sms',mobile:'@mobile',smsType:'@smsType'}, timeout: 100000},//第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
+            verifySMS:{method:'GET', params:{route: 'sms',mobile:'@mobile',smsType:'@smsType',smsCode:'@smsCode'}, timeout: 100000},
+            getAgree:{method:'GET', params:{route: 'agreement',userId:'@userId'}, timeout: 100000},
+            updateAgree:{method:'POST', params:{route: 'agreement'}, timeout: 100000},
             getUserIDbyOpenId:{method:'GET', params:{route: 'getUserIDbyOpenId'}, timeout: 100000},
-            setOpenId:{method:'POST', params:{route: 'setOpenId'}, timeout: 100000}
+            setOpenId:{method:'POST', params:{route: 'unionid'}, timeout: 100000},
+            One:{method:'GET', params:{route: 'one'}, timeout: 10000}
         });
     }
 
     var Health = function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'healthInfo'},{
-            createHealth:{method:'POST', params:{route: 'insertHealthInfo',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments'}, timeout: 100000},
-            modifyHealth:{method:'POST', params:{route:'modifyHealthDetail',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments',insertTime:'@insertTime'},timeout:100000},
-            getHealthDetail:{method:'GET', params:{route:'getHealthDetail',userId:'@userId',insertTime:'@insertTime'},timeout:100000},
-            getAllHealths:{method:'GET', params:{route:'getAllHealthInfo',userId:'@userId'},timeout:100000},
+            createHealth:{method:'POST', params:{route: 'healthInfo',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments'}, timeout: 100000},
+            modifyHealth:{method:'POST', params:{route:'healthDetail',userId:'@userId',type:'@type',time:'@time',url:'@url',label:'@label',description:'@description',comments:'@comments',insertTime:'@insertTime'},timeout:100000},
+            getHealthDetail:{method:'GET', params:{route:'healthDetail',userId:'@userId',insertTime:'@insertTime'},timeout:100000},
+            getAllHealths:{method:'GET', params:{route:'healthInfos',userId:'@userId'},timeout:100000},
             deleteHealth:{method:'POST', params:{route:'deleteHealthDetail',userId:'@userId',insertTime:'@insertTime'},timeout:100000}
 
         });
@@ -432,59 +437,59 @@ angular.module('kidney.services', ['ionic','ngResource'])
 
     var VitalSign =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'vitalSign'},{
-            getVitalSigns:{method:'GET', params:{route: 'getVitalSigns'}, timeout: 100000}
+            getVitalSigns:{method:'GET', params:{route: 'vitalSigns'}, timeout: 100000}
         });
     }
 
     var Account =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'account'},{
             getAccountInfo:{method:'GET', params:{route: 'getAccountInfo'}, timeout: 100000},
-            modifyCounts:{method:'POST', params:{route:'modifyCounts'}, timeout: 100000},
-            getCounts:{method:'GET', params:{route: 'getCounts'}, timeout: 100000}
+            modifyCounts:{method:'POST', params:{route:'counts'}, timeout: 100000},
+            getCounts:{method:'GET', params:{route: 'counts'}, timeout: 100000}
         });
     }
 
     var Message =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'message'},{
-            getMessages:{method:'GET', params:{route: 'getMessages'}, timeout: 100000}
+            getMessages:{method:'GET', params:{route: 'messages'}, timeout: 100000}
         });
     }
 
     var Communication =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'communication'},{
             conclusion:{method:'POST', params:{route: 'conclusion'}, timeout: 100000},
-            getCommunication:{method:'GET', params:{route: 'getCommunication'}, timeout: 100000},
-            getCounselReport:{method:'GET', params:{route: 'getCounselReport'}, timeout: 100000},
-            getTeam:{method:'GET', params:{route: 'getTeam'}, timeout: 100000},
+            getCommunication:{method:'GET', params:{route: 'communication'}, timeout: 100000},
+            getCounselReport:{method:'GET', params:{route: 'counselReport'}, timeout: 100000},
+            getTeam:{method:'GET', params:{route: 'team'}, timeout: 100000},
             insertMember:{method:'POST', params:{route: 'insertMember'}, timeout: 100000},
-            newConsultation:{method:'POST', params:{route: 'newConsultation'}, timeout: 100000},
-            newTeam:{method:'POST', params:{route: 'newTeam'}, timeout: 100000},
+            newConsultation:{method:'POST', params:{route: 'consultation'}, timeout: 100000},
+            newTeam:{method:'POST', params:{route: 'team'}, timeout: 100000},
             removeMember:{method:'POST', params:{route: 'removeMember'}, timeout: 100000},
             updateLastTalkTime:{method:'POST', params:{route: 'updateLastTalkTime'}, timeout: 100000},
-            getConsultation:{method:'GET', params:{route: 'getConsultation'}, timeout: 100000},
-            postCommunication:{method:'POST', params:{route: 'postCommunication'}, timeout: 100000}
+            getConsultation:{method:'GET', params:{route: 'consultation'}, timeout: 100000},
+            postCommunication:{method:'POST', params:{route: 'communication'}, timeout: 100000}
         });
     }
 
 
     var Insurance =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'insurance'},{
-            getInsMsg:{method:'GET', params:{route: 'getInsMsg'}, timeout: 100000},
-            updateInsuranceMsg:{method:'POST', params:{route: 'updateInsuranceMsg'}, timeout: 100000}
+            getInsMsg:{method:'GET', params:{route: 'message'}, timeout: 100000},
+            updateInsuranceMsg:{method:'POST', params:{route: 'message'}, timeout: 100000}
         });
     }
 
     var New =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'new'},{
-            getNews:{method:'GET', params:{route: 'getNews'}, timeout: 100000},
-            insertNews:{method:'POST', params:{route: 'insertNews'}, timeout: 100000},
-            getNewsByReadOrNot:{method:'GET', params:{route: 'getNewsByReadOrNot'}, timeout: 100000}
+            getNews:{method:'GET', params:{route: 'news'}, timeout: 100000},
+            insertNews:{method:'POST', params:{route: 'news'}, timeout: 100000},
+            getNewsByReadOrNot:{method:'GET', params:{route: 'newsByReadOrNot'}, timeout: 100000}
         });
     }  
 
     var Expense =function(){
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'expense'},{
-            getDocRecords:{method:'GET', params:{route: 'getDocRecords'}, timeout: 100000}
+            getDocRecords:{method:'GET', params:{route: 'docRecords'}, timeout: 100000}
         });
     }
 
@@ -501,7 +506,13 @@ angular.module('kidney.services', ['ionic','ngResource'])
         return $resource(CONFIG.baseUrl + ':path/:route',{path:'advice'},{
             postAdvice:{method:'POST', params:{route: 'postAdvice'}, timeout: 100000}
         });
-    }    
+    }
+
+    var version = function(){
+        return $resource(CONFIG.baseUrl + ':path',{path:'version'},{
+            getVersion:{method:'GET', params:{}, timeout: 100000}
+        });
+    }
 
     serve.abort = function ($scope) {
         abort.resolve();
@@ -525,7 +536,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             serve.Insurance = Insurance();
             serve.New = New();          
             serve.Expense = Expense();   
-            serve.Advice = Advice();  
+            serve.Advice = Advice(); 
+            serve.version = version();
         }, 0, 1);
     };
     serve.Dict = Dict();
@@ -546,7 +558,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
     serve.Insurance = Insurance();
     serve.New = New();  
     serve.Expense = Expense();    
-    serve.Advice = Advice();    
+    serve.Advice = Advice(); 
+    serve.version = version();  
     return serve;
 }])
 .factory('Dict', ['$q', 'Data', function($q, Data){
@@ -1134,6 +1147,24 @@ angular.module('kidney.services', ['ionic','ngResource'])
             function(err){
                 deferred.reject(err);
         });
+        return deferred.promise;
+    }
+
+    //params-> username:'doc01'
+    self.One = function(params)
+    {
+        var deferred = $q.defer();
+        Data.User.One(
+            params,
+            function(data, headers)
+            {
+                deferred.resolve(data);
+            },
+            function(err)
+            {
+                deferred.reject(err);
+            }
+        );
         return deferred.promise;
     }
     
@@ -1742,7 +1773,34 @@ angular.module('kidney.services', ['ionic','ngResource'])
         });
         return deferred.promise;
     };
-  
+    //params->userId:'doc01'
+    self.getAliPayAccount = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.getAliPayAccount(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    //params->{userId:'doc01',aliPayAccount:'abc@def.com'}
+    self.editAliPayAccount = function(params){
+        var deferred = $q.defer();
+        Data.Doctor.editAliPayAccount(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+            }
+        );
+        return deferred.promise;
+    };
+
     return self;
 }])
 .factory('Counsel', ['$q', 'Data', function($q, Data){
@@ -1942,7 +2000,8 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
             var q={
                 userId:userId,
-                type:type
+                type:type,
+                userRole:'doctor'
             }
             self.getNews(q)
             .then(function(res){
@@ -1966,15 +2025,18 @@ angular.module('kidney.services', ['ionic','ngResource'])
             if(!Array.isArray(arr) || arr.length==0) return resolve(arr);
             var q={
                 userId:userId,
-                type:type
+                type:type,
+                userRole:'doctor'
             }
             self.getNews(q)
             .then(function(res){
                 var msgs=res.results;
                 arr.map(function(item){
-                    var pos = getIndex(msgs,item[keyName][idName]);
-                    if(pos!=-1){
-                        item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                    if(item[keyName]!=null){
+                        var pos = getIndex(msgs,item[keyName][idName]);
+                        if(pos!=-1){
+                            item.lastMsg= addLastMsg(type,userId,msgs[pos]);
+                        }
                     }
                     return item;
                 });
@@ -2222,15 +2284,124 @@ angular.module('kidney.services', ['ionic','ngResource'])
     }
 }])
 .factory('mySocket',['socket','$interval',function(socket,$interval){
+    var timer = null;
+    var currentUser ={
+        id:'',
+        name:''
+    };
+    function newUserOnce(userId,name){
+        if(userId=='') return;
+        var n = name || '';
+        socket.emit('newUser',{ user_name:n , user_id: userId, client:'doctor'});
+    }
     return {
-        newUser:function(userId){
-            $interval(function newuser(){
-                socket.emit('newUser',{ user_name: '', user_id: userId, client:'app'})
-                // socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId, client:'app'});
+        newUser:function(userId,name){
+            socket.connect();
+            currentUser.id=userId;
+            currentUser.name = name;
+            timer = $interval(function newuser(){
+                newUserOnce(userId,name);
+                // socket.emit('newUser',{ user_name:n , user_id: userId, client:'app'});
                 return newuser;
-            }(),60000);
+            }(),600000);
+        },
+        newUserOnce:newUserOnce,
+        newUserForTempUse:function(userId,name){
+            $interval.cancel(timer);
+            newUserOnce(userId,name);
+            return function(){
+                socket.emit('disconnect');
+                setTimeout(function(){
+                    newUser(currentUser.id,currentUser.name);
+                },1000);
+                // socket.emit('newUser',{ user_name:currentUser.name , user_id: currentUser.id, client:'app'});
+            }
+        },
+        cancelAll:function(){
+            if(timer!=null){
+                $interval.cancel(timer);
+                timers = null;
+            }
+            currentUser.id = '';
+        }
+    }
+}])
+.factory('session',['Storage','socket','mySocket',function(Storage,socket,mySocket){
+    return {
+        logOut:function(){
+                //Storage.set('IsSignIn','NO');
+                // $state.logStatus="用户已注销";
+                //清除登陆信息
+                Storage.rm('password');
+                Storage.rm('doctorunionid');
+                Storage.rm('IsSignIn');
+                Storage.rm('PASSWORD');
+                Storage.rm('userid');
+                mySocket.cancelAll();
+                socket.emit('disconnect');
+                socket.disconnect();
+                // resolve(true);
         }
     }
 }])
 
+.factory('version', ['$q', 'Data', '$cordovaAppVersion','$ionicPopup',  function($q, Data, $cordovaAppVersion, $ionicPopup){
+    var self = this;
+    
+    var getVersion = function(params){
+        var deferred = $q.defer();
+        Data.version.getVersion(
+            params,
+            function(data, headers){
+                deferred.resolve(data);
+            },
+            function(err){
+                deferred.reject(err);
+        });
+        return deferred.promise;
+    };
 
+    self.checkUpdate = function(scope){
+        $cordovaAppVersion.getAppVersion().then(function (version) {
+          // alert(version);
+          var json = {
+            title: "",
+            template: ""
+          };
+          var VersionParams = {
+            versionName: version,
+            versionType: 'appdoctor'
+          };
+          // alert(JSON.stringify(VersionParams));
+
+          getVersion(VersionParams).then(function(data){
+            // alert(JSON.stringify(data.results));
+            if (angular.isArray(data.results.msg)){
+              json.title = "肾事联盟有更新啦";
+              for(x in data.results.msg){
+                json.template +=  "<p style = 'padding-left:15px;'>" + "V" + data.results.msg[x].versionName + " 更新: " + data.results.msg[x].content + "</p>";
+              }
+              return $ionicPopup.alert({
+                title: json.title,
+                template: json.template,
+                scope: scope,
+                buttons: [
+                  {
+                    text: '我知道了',
+                    type: 'button button-block bg-6a fc-ff',
+                    onTap: function () {
+                      return 'ok';
+                    }
+                  },
+                ]
+              });
+            }
+          },function(err){
+            // alert("err");
+          });
+          
+        });
+    }
+    
+    return self;
+}])
