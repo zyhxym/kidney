@@ -1,5 +1,5 @@
 angular.module('kidney.directives', ['kidney.services'])
-// 输入框清除按钮
+// 输入框清除按钮-zy
 .directive('buttonClearInput', function () {
   return {
     restrict: 'AE',
@@ -106,10 +106,9 @@ angular.module('kidney.directives', ['kidney.services'])
             } else {
               $scope.title = '患者使用在线' + ($scope.counsel.type == '1' ? '咨询' : '问诊') + '服务'
             }
-
-                        // }catch(e){
-                            //
-                        // }
+            // }catch(e){
+                //
+            // }
           }
         }
         return 'templates/groupMsg/' + type + '.html'
@@ -319,7 +318,7 @@ angular.module('kidney.directives', ['kidney.services'])
   }
 })
 
-// 未读消息的小红点
+// 未读消息的小红点-zy
 .directive('headRedPoint', function ($compile, $timeout) {
    // Runs during compile
   return {
@@ -352,7 +351,7 @@ angular.module('kidney.directives', ['kidney.services'])
   }
 })
 
-// 多行文本自动增行
+// 多行文本自动增行-zy
 .directive('contenteditable', function () {
   return {
     restrict: 'A', // 只用于属性

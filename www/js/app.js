@@ -21,7 +21,7 @@ angular.module('kidney', [
 .run(['version', '$ionicPlatform', '$state', 'Storage', '$rootScope', 'CONFIG', 'Communication', 'notify', '$interval', 'socket', 'mySocket', '$ionicPopup', 'session', function (version, $ionicPlatform, $state, Storage, $rootScope, CONFIG, Communication, notify, $interval, socket, mySocket, $ionicPopup, session) {
   $ionicPlatform.ready(function () {
     version.checkUpdate($rootScope)// 在app.js的ready里加
-        // 记录message当前会话
+    // 记录message当前会话
     $rootScope.isIOS = $ionicPlatform.is('ios')
     $rootScope.conversation = {
       type: null,
@@ -99,77 +99,77 @@ angular.module('kidney', [
     if (window.StatusBar) {
       StatusBar.backgroundColorByHexString('#33bbff')
     }
-            // 显示通知栏消息
-            // custom消息内容
-            // 患者发送咨询：{
-            //     counsel:data.results,
-                        // {
-                        //     counselId : "CL201704280021"
-                        //     diagnosisPhotoUrl : Array(0)
-                        //     doctorId : "58eb2ee11e152b523139e723"
-                        //     help : ""
-                        //     hospital : "折腾"
-                        //     messages : Array(0)
-                        //     patientId : "58eb86b9a177a0eab3fbff38"
-                        //     revisionInfo : Object
-                        //     sickTime : "2017-04-20"
-                        //     status : 1
-                        //     symptom : ""
-                        //     symptomPhotoUrl : Array(0)
-                        //     time : "2017-04-28T14:36:40.403Z"
-                        //     type : 1
-                        //     visitDate : "2017-04-28T00:00:00.000Z"
-                        //     __v : 0
-                        //     _id : "5903537836408c33ae0663be"
-                        // }
-            //     type:'card',
-            //     counselId:'',
-            //     patientId:patientId,
-            //     patientName:patientname,
-            //     doctorId:DoctorId,
-            //     //转发信息
-            //     fromId:
-            //     targetId:
-            // }
-            // 咨询转发医生：{
-            //     counsel:data.results,
-            //     type:'card',
-            //     counselId:'',
-            //     patientId:patientId,
-            //     patientName:patientname,
-            //     doctorId:DoctorId,
-            //     //转发信息
-            //     targetId:DoctorId,
-            //     fromId
-            // }
-            // 咨询转发团队：{
-            //     counsel:data.results,
-            //     type:'card',
-            //     counselId:'',
-            //     patientId:patientId,
-            //     patientName:patientname,
-            //     doctorId:DoctorId,
-            //     //转发信息
-            //     targetId:teamId,
-            //     fromId:doctorId,
-            //     //consultation info
-            //     consultationId:
-            // }
-            // 名片{
-            //     type:'contact',
-            //     doctorInfo:{},
-            //     //转发信息
-            //     fromId:
-            //     targetId:
-            // }
-            // 结束消息{
-            //    type:'endl',
-            //    info:
-            //    docId:
-            //    counseltype:1或2
-            //    counselId:
-            // }
-            // 显示通知栏消息
+    // 显示通知栏消息
+    // custom消息内容
+    // 患者发送咨询：{
+    //     counsel:data.results,
+                // {
+                //     counselId : "CL201704280021"
+                //     diagnosisPhotoUrl : Array(0)
+                //     doctorId : "58eb2ee11e152b523139e723"
+                //     help : ""
+                //     hospital : "折腾"
+                //     messages : Array(0)
+                //     patientId : "58eb86b9a177a0eab3fbff38"
+                //     revisionInfo : Object
+                //     sickTime : "2017-04-20"
+                //     status : 1
+                //     symptom : ""
+                //     symptomPhotoUrl : Array(0)
+                //     time : "2017-04-28T14:36:40.403Z"
+                //     type : 1
+                //     visitDate : "2017-04-28T00:00:00.000Z"
+                //     __v : 0
+                //     _id : "5903537836408c33ae0663be"
+                // }
+    //     type:'card',
+    //     counselId:'',
+    //     patientId:patientId,
+    //     patientName:patientname,
+    //     doctorId:DoctorId,
+    //     //转发信息
+    //     fromId:
+    //     targetId:
+    // }
+    // 咨询转发医生：{
+    //     counsel:data.results,
+    //     type:'card',
+    //     counselId:'',
+    //     patientId:patientId,
+    //     patientName:patientname,
+    //     doctorId:DoctorId,
+    //     //转发信息
+    //     targetId:DoctorId,
+    //     fromId
+    // }
+    // 咨询转发团队：{
+    //     counsel:data.results,
+    //     type:'card',
+    //     counselId:'',
+    //     patientId:patientId,
+    //     patientName:patientname,
+    //     doctorId:DoctorId,
+    //     //转发信息
+    //     targetId:teamId,
+    //     fromId:doctorId,
+    //     //consultation info
+    //     consultationId:
+    // }
+    // 名片{
+    //     type:'contact',
+    //     doctorInfo:{},
+    //     //转发信息
+    //     fromId:
+    //     targetId:
+    // }
+    // 结束消息{
+    //    type:'endl',
+    //    info:
+    //    docId:
+    //    counseltype:1或2
+    //    counselId:
+    // }
+    // 显示通知栏消息
     $rootScope.$on('$cordovaLocalNotification:click', function (event, note, state) {
       console.log(arguments)
       var msg = JSON.parse(note.data)
@@ -200,12 +200,12 @@ angular.module('kidney', [
 
 // --------路由, url模式设置----------------
 .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
-    // Ionic uses AngularUI Router which uses the concept of states
-    // Learn more here: https://github.com/angular-ui/ui-router
-    // Set up the various states which the app can be in.
-    // Each state's controller can be found in controllers.js
+  // Ionic uses AngularUI Router which uses the concept of states
+  // Learn more here: https://github.com/angular-ui/ui-router
+  // Set up the various states which the app can be in.
+  // Each state's controller can be found in controllers.js
 
-    // ios 白屏可能问题配置
+  // ios 白屏可能问题配置
   $ionicConfigProvider.views.swipeBackEnabled(false)
 
     // android导航栏在顶部解决办法
