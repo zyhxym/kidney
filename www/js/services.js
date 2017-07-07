@@ -67,7 +67,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             targetHeight: 1000
         }
     }
-  }
 })
 
 // 自定义函数
