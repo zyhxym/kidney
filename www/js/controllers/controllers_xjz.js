@@ -575,7 +575,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {bool}   animate 是否要动画
    * @param    {number}   delay   延时
-   * @return   {null}
+   * @return   {null}           
    */
   function toBottom (animate, delay) {
     if (!delay) delay = 100
@@ -588,8 +588,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.timer = []
     $scope.photoUrls = {}
     $scope.msgs = []
-    $scope.imgIndex = 0  // 当前显示的图片在消息队列中的位置
-    $scope.imgPosition = 0
     $scope.params.chatId = $state.params.chatId
     $scope.params.counselId = $state.params.counselId
     $scope.params.type = $state.params.type
@@ -706,7 +704,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    event
    * @param    {object}   data     消息体
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('im:getMsg', function (event, data) {
     console.log(arguments)
@@ -743,7 +741,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    event
    * @param    {object}   data     消息体
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('im:messageRes', function (event, data) {
     console.log(arguments)
@@ -791,7 +789,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @param    {string}   type   咨询/问诊
    * @param    {string}   status 是否进行中
    * @param    {number}   cnt    剩余次数
-   * @return   {null}
+   * @return   {null}          
    */
   function sendCnNotice (type, status, cnt) {
     var len = $scope.msgs.length
@@ -968,9 +966,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     console.log(args)
     event.stopPropagation()
     $scope.imageHandle.zoomTo(1, true)
-    $scope.imgIndex = $scope.msgs.indexOf(args[2])
-    $scope.imgPosition = $scope.imgIndex
-    $scope.imageUrl = args[2].content.localPath || (CONFIG.mediaUrl + (args[2].content.src || args[2].content.src_thumb))
+    $scope.imageUrl = args[2].localPath || (CONFIG.mediaUrl + (args[2].src || args[2].src_thumb))
     $scope.modal.show()
   })
   /**
@@ -984,7 +980,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.modal.hide()
   }
   /**
-   * 双击调整缩放
+   * 调整缩放
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}
@@ -995,50 +991,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   }
   /**
-   * 右划图片
-   * @Author   zyh
-   * @DateTime 2017-07-07
-   * @return   {[type]}   [description]
-   */
-  $scope.onSwipeRight = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex--
-      if ($scope.imgIndex >= 0) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeRight()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
-    }
-  }
-  /**
-   * 左划图片
-   * @Author   zyh
-   * @DateTime 2017-07-07
-   * @return   {[type]}   [description]
-   */
-  $scope.onSwipeLeft = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex++
-      if ($scope.imgIndex < $scope.msgs.length) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeLeft()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
-    }
-  }
-  /**
    * 事件：听语音消息
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['voice',msg.content]
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('voice', function (event, args) {
     console.log(args)
@@ -1057,7 +1015,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['holdmsg',msg.createTimeInMillis,$event]
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('holdmsg', function (event, args) {
     event.stopPropagation()
@@ -1071,7 +1029,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['viewcard',msg,$event]
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('viewcard', function (event, args) {
     event.stopPropagation()
@@ -1114,7 +1072,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['profile',msg]
-   * @return   {null}
+   * @return   {null}            
    */
   $scope.$on('profile', function (event, args) {
     event.stopPropagation()
@@ -1207,7 +1165,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   msg 消息体
    * @param    {number}   pos msg在msgs中的下标
-   * @return   {null}
+   * @return   {null}       
    */
   $scope.updateMsg = function (msg, pos) {
     console.info('updateMsg')
@@ -1267,7 +1225,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {object}   msg 消息
-   * @return   {null}
+   * @return   {null}       
    */
   function insertMsg (msg) {
     var pos = arrTool.indexOf($scope.msgs, 'createTimeInMillis', msg.createTimeInMillis)
@@ -1454,6 +1412,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.record()
             .then(function (fileUrl) {
               $scope.params.recording = false
+                // window.JMessage.sendSingleVoiceMessage($state.params.chatId, fileUrl, $scope.params.key, onSendSuccess, onSendErr);
+              viewUpdate(5, true)
             }, function (err) {
               console.log(err)
             })
@@ -1536,7 +1496,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $state.go('tab.group-qrcode', { team: $scope.team })
   }
   /**
-   * state.go团队踢人
+   * state.go团队踢人 
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}   [description]
@@ -1770,8 +1730,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.photoUrls = {}
     $rootScope.patient = {}
     $scope.msgs = []
-    $scope.imgIndex = 0  // 当前显示的图片在消息队列中的位置
-    $scope.imgPosition = 0
     $scope.params.msgCount = 0
     $scope.params.type = $state.params.type
     $scope.params.groupId = $state.params.groupId
@@ -2019,32 +1977,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.imageHandle.zoomTo(5, true)
     }
   }
-  $scope.onSwipeRight = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex--
-      if ($scope.imgIndex >= 0) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeRight()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
-    }
-  }
-  $scope.onSwipeLeft = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex++
-      if ($scope.imgIndex < $scope.msgs.length) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeLeft()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
-    }
-  }
 
   $scope.$on('voice', function (event, args) {
     console.log(args)
@@ -2064,9 +1996,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     console.log(args)
     event.stopPropagation()
     $scope.imageHandle.zoomTo(1, true)
-    $scope.imgIndex = $scope.msgs.indexOf(args[2])
-    $scope.imgPosition = $scope.imgIndex
-    $scope.imageUrl = args[2].content.localPath || (CONFIG.mediaUrl + (args[2].content.src || args[2].content.src_thumb))
+    $scope.imageUrl = args[2].localPath || (CONFIG.mediaUrl + (args[2].src || args[2].src_thumb))
     $scope.modal.show()
   })
   $scope.$on('profile', function (event, args) {
@@ -2262,6 +2192,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     function (res) {
                       console.log(res)
                       $scope.params.recording = false
+                      viewUpdate(5, true)
                       Communication.postCommunication({messageType: 2, sendBy: Storage.get('UID'), receiver: $scope.params.groupId, content: JSON.parse(res)})
                                   .then(function (data) {
                                     console.log(data)
@@ -2272,6 +2203,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     function (err) {
                       console.log(err)
                     })
+              viewUpdate(5, true)
             }, function (err) {
               console.log(err)
             })
@@ -2702,8 +2634,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   $scope.$on('$ionicView.beforeEnter', function () {
     $scope.photoUrls = {}
     $scope.msgs = []
-    $scope.imgIndex = 0  // 当前显示的图片在消息队列中的位置
-    $scope.imgPosition = 0
     $scope.params.chatId = $state.params.patientId
     $scope.params.doctorId = $state.params.doctorId
     Storage.set('chatSender', $scope.params.doctorId)
@@ -2833,9 +2763,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     console.log(args)
     event.stopPropagation()
     $scope.imageHandle.zoomTo(1, true)
-    $scope.imgIndex = $scope.msgs.indexOf(args[2])
-    $scope.imgPosition = $scope.imgIndex
-    $scope.imageUrl = args[2].content.localPath || (CONFIG.mediaUrl + (args[2].content.src || args[2].content.src_thumb))
+    $scope.imageUrl = args[2].localPath || (CONFIG.mediaUrl + (args[2].src || args[2].src_thumb))
     $scope.modal.show()
   })
 
@@ -2846,32 +2774,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   $scope.switchZoomLevel = function () {
     if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin) { $scope.imageHandle.zoomTo(1, true) } else {
       $scope.imageHandle.zoomTo(5, true)
-    }
-  }
-  $scope.onSwipeRight = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex--
-      if ($scope.imgIndex >= 0) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeRight()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
-    }
-  }
-  $scope.onSwipeLeft = function () {
-    if ($scope.imageHandle.getScrollPosition().zoom === $scope.zoomMin) {  // 没有缩放时才允许切换
-      $scope.imgIndex++
-      if ($scope.imgIndex < $scope.msgs.length) {
-        if ($scope.msgs[$scope.imgIndex].contentType === 'image') {
-          $scope.imgPosition = $scope.imgIndex
-          $scope.imageUrl = (CONFIG.mediaUrl + ($scope.msgs[$scope.imgIndex].content.src || $scope.msgs[$scope.imgIndex].content.src_thumb))
-        } else {
-          $scope.onSwipeLeft()
-        }
-      } else { $scope.imgIndex = $scope.imgPosition }
     }
   }
   $scope.$on('voice', function (event, args) {
