@@ -974,7 +974,8 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   var loadAssay =  function(){
       labtestImport.getLabtestImport({
       patientId: Storage.get("getpatientId"),
-      token:Storage.get("TOKEN")
+      token:Storage.get("TOKEN"),
+      sort:'time' //根据时间降序排序
       }).then(function(Data){
         console.log(Data)
             $scope.ChartDatas=[];
@@ -1549,7 +1550,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   // $scope.test = function(){
   //   console.log($scope.datepickerObject4);
   // }
-
+  $scope.Images = [];
   $scope.Goback = function(){
     if($scope.canEdit==true){
       $scope.canEdit = false;
@@ -1610,6 +1611,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             //console.log(data.results.url)
             $scope.health.imgurl = data.results.url
             // $scope.showflag=true;
+            for (i = 0; i < data.results.url.length; i++) {
+              $scope.Images[i] = CONFIG.imgLargeUrl+data.results.url[i].slice(data.results.url[i].lastIndexOf('/')+1).substr(7)
+              //console.log($scope.Images)
+            } 
           }
         }
         console.log($scope.health);
@@ -1845,46 +1850,81 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //   $scope.modal.hide();
   // };
 
-  //点击显示大图
-  $scope.zoomMin = 1;
-  $scope.imageUrl = '';
-  $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
-      scope: $scope
-  }).then(function(modal) {
-      $scope.modal = modal;
-      // $scope.modal.show();
-      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
-  }); 
+  //---------点击显示大图------------
+  //图片模块初始化
+  function imgModalInit () {
+    $scope.zoomMin = 1;
+    $scope.imageUrl = '';
+    $scope.imageIndex = -1;//当前展示的图片
+    $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal = modal;
+        // $scope.modal.show();
+        $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
+    }); 
+  }
 
   $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
-        // console.log(resizedpath)
+        //console.log(resizedpath)
+        $scope.imageIndex = 0;
+        //console.log($scope.imageIndex)
         var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
-        // console.log(originalfilepath)
+        //console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
         $scope.imageHandle.zoomTo(1, true);
         $scope.imageUrl = originalfilepath;
         $scope.modal.show();
     }
-    $scope.closeModal = function() {
-        $scope.imageHandle.zoomTo(1, true);
-        $scope.modal.hide();
-        // $scope.modal.remove()
-    };
-    $scope.switchZoomLevel = function() {
-        if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin)
-            $scope.imageHandle.zoomTo(1, true);
-        else {
-            $scope.imageHandle.zoomTo(5, true);
-        }
+  //关掉图片
+  $scope.closeModal = function() {
+      $scope.imageHandle.zoomTo(1, true);
+      $scope.modal.hide();
+      // $scope.modal.remove()
+  };
+  //双击调整缩放
+  $scope.switchZoomLevel = function() {
+      if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin)
+          $scope.imageHandle.zoomTo(1, true);
+      else {
+          $scope.imageHandle.zoomTo(5, true);
+      }
+  }
+  //右划图片
+  $scope.onSwipeRight = function () {
+    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0)
+      $scope.imageIndex = $scope.imageIndex - 1;
+    else {
+      //如果图片已经是第一张图片了，则取index = Images.length-1
+      $scope.imageIndex = $scope.Images.length - 1;
     }
-    
+    $scope.imageUrl = $scope.Images[$scope.imageIndex];
+  }
+
+  //左划图片
+  $scope.onSwipeLeft = function () {
+    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0)
+      $scope.imageIndex = $scope.imageIndex + 1;
+    else {
+      //如果图片已经是最后一张图片了，则取index = 0
+      $scope.imageIndex = 0;
+    }
+    //替换url，展示图片
+    $scope.imageUrl = $scope.Images[$scope.imageIndex];
+  }  
+  
+
   $scope.deleteimg=function(index){
     //somearray.removeByValue("tue");
     console.log($scope.health.imgurl)
     $scope.health.imgurl.splice(index, 1)
     // Storage.set('tempimgrul',angular.toJson($scope.images));
   }
+
+  $scope.$on('$ionicView.enter', function() {
+    imgModalInit ();
+  })
 
   $scope.$on('$ionicView.leave', function() {
     $scope.modal.remove();
