@@ -314,7 +314,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 
 //测量记录-zxf
-.controller('TestRecordCtrl', ['$state','$scope', '$http','$stateParams','Storage','VitalSign', function ($state,$scope,$http,$stateParams,Storage,VitalSign) {
+.controller('TestRecordCtrl', ['$state','$scope', '$http','$stateParams','Storage','VitalSign','labtestImport', function ($state,$scope,$http,$stateParams,Storage,VitalSign,labtestImport) {
   $scope.barStyle={'margin-top':'40px'}
   if(ionic.Platform.isIOS()){
       $scope.barStyle={'margin-top':'60px'}
@@ -323,7 +323,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $state.go('tab.patientDetail');
   }  
 
-      console.log($stateParams.PatinetId)
+      //console.log($stateParams.PatinetId)
       console.log(Storage.get("getpatientId"))
       var load =  function(){
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
@@ -331,7 +331,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
             $scope.ChartDatas=[];
             $scope.ChartData1=[];
             $scope.ChartData2=[];
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
               if(Data.results[i].code=="血压"){
                 for(var j=0;j<Data.results[i].data.length;j++){
@@ -473,7 +473,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体温'}).then(
           function(Data){
             $scope.ChartData3=[];
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
               if(Data.results[i].code=="体温"){
                 for(var j=0;j<Data.results[i].data.length;j++){
@@ -593,7 +593,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体重'}).then(
           function(Data){
             $scope.ChartData4=[];
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
               if(Data.results[i].code=="体重"){
                 for(var j=0;j<Data.results[i].data.length;j++){
@@ -710,7 +710,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'尿量'}).then(
           function(Data){
             $scope.ChartData5=[];
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
               if(Data.results[i].code=="尿量"){
                 for(var j=0;j<Data.results[i].data.length;j++){
@@ -827,7 +827,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'心率'}).then(
           function(Data){
             $scope.ChartData6=[];
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
               if(Data.results[i].code=="心率"){
                 for(var j=0;j<Data.results[i].data.length;j++){
@@ -954,7 +954,190 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         load();
     })
 
+  // --------------化验信息-zy------------------
+  $scope.params = {
+    isTests: true,
+    updateTime: 0
+  }
+  // 点亮测量记录标签
+  $scope.showTests = function () {
+    $scope.params.isTests = true
+    load()
+  }
+  // 点亮化验信息标签
+  $scope.showAssays = function () {
+    $scope.params.isTests = false
+    loadAssay()
+  }
 
+  //  SCr: 血肌酐, mm; GFR: 肾小球滤过率, df; ALB: 血白蛋白, qk/a; PRO: 尿蛋白, idii
+  var loadAssay =  function(){
+      labtestImport.getLabtestImport({
+      patientId: Storage.get("getpatientId"),
+      token:Storage.get("TOKEN")
+      }).then(function(Data){
+        console.log(Data)
+            $scope.ChartDatas=[];
+            $scope.ChartData1=[];
+            $scope.ChartData2=[]; 
+            $scope.ChartData3=[];
+            $scope.ChartData4=[];         
+            console.log(Data.results.length)
+            for(var i=0;i<Data.results.length;i++){
+                  if(Data.results[i].type=="SCr"||Data.results[i].type=="GFR"||Data.results[i].type=="df"||Data.results[i].type=="PRO"){
+                    $scope.ChartDatas.push([new Date(new Date(Data.results[i].time)),Data.results[i].type,Data.results[i].value])
+                    console.log($scope.ChartDatas)
+                  }
+                  if(Data.results[i].type=="SCr"){
+                    $scope.ChartData1.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])                   
+                    console.log($scope.ChartData1)
+                  }
+                  if(Data.results[i].type=="GFR"){
+                    $scope.ChartData2.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
+                    console.log($scope.ChartData2)
+                  }
+                  if(Data.results[i].type=="ALB"){
+                    $scope.ChartData3.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
+                    console.log($scope.ChartData3)
+                  }
+                  if(Data.results[i].type=="PRO"){
+                    $scope.ChartData4.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
+                    console.log($scope.ChartData4)
+                  }
+            }
+            var option1 = {
+              title : {
+                  text : '化验蛋白',
+                  //subtext : 'mmHg',
+                  textStyle :{
+                    fontSize :12
+                  }
+              },
+              tooltip : {
+                  trigger: 'axis'
+                  // formatter : function (params) {
+                  //     var date = new Date(params.value[0]);
+                  //     data = date.getFullYear() + '-'
+                  //            + (date.getMonth() + 1) + '-'
+                  //            + date.getDate() + ' '
+                  //            + date.getHours() + ':'
+                  //            + date.getMinutes();
+                  //     return data + '<br/>'
+                  //            + params.value[1] + ', ' 
+                  //            + params.value[2];
+                  // }
+              },
+              dataZoom: {
+                  show: true
+                  // start : 50
+              },
+              legend : {
+                  data : ['血肌酐(SCr)','肾小球滤过率(GFR)','血白蛋白(ALB)','尿蛋白(PRO)']
+              },
+              grid: {
+                  y2: 80
+              },
+              xAxis : [
+                  {
+                      type : 'time',
+                      //min: 'dataMin'
+                      // splitNumber:8//分割的个数
+                  }
+              ],
+              yAxis : [
+                  {
+                      type : 'value',
+                      min:0,
+                      max:5
+                  }
+              ],
+              //new date(axisData[i]).getFullYear()+'-'+(new date(axisData[i]).getMonth()+1)+'-'+new date(axisData[i]).getDate()+' '+new date(axisData[i]).getHours()+':'+new date(axisData[i]).getMinutes()
+              toolbox: {
+                  show : true,
+                  right :30,
+                  feature : {
+                      // mark : {show: true},
+                      dataView : {
+                        show: true, 
+                        readOnly: true,
+                        optionToContent: function(opt) {
+                          var axisData = $scope.ChartDatas;
+                          console.log(axisData)
+                          var series = opt.series;
+                          var table = '<table style="width:100%;text-align:center"><tbody><tr>'
+                                       + '<td>时间</td>'
+                                       // + '<td>' + series[0].name + '</td>'
+                                       // + '<td>' + series[1].name + '</td>'
+                                       // + '<td>' + series[2].name + '</td>'
+                                       // + '<td>' + series[3].name + '</td>'
+                                       + '<td>类别</td>'
+                                       + '<td>数值</td>' 
+                                       + '</tr>';
+                          for (var i = axisData.length-1, l = axisData.length; i >=0 ; i--) {
+                            var td1,td2;
+                            td1=(axisData[i][1]==undefined?"空":axisData[i][1])
+                            td2=(axisData[i][2]==undefined?"空":axisData[i][2])
+                            // td3=(axisData[i][3]==undefined?"空":axisData[i][3])
+                            // td4=(axisData[i][4]==undefined?"空":axisData[i][4])
+                            console.log(td1)
+                            table += '<tr>'
+                                     + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
+                                     + '<td>' + td1 + '</td>'
+                                     + '<td>' + td2 + '</td>'
+                                     // + '<td>' + td3 + '</td>'
+                                     // + '<td>' + td4 + '</td>'
+                                     + '</tr>';
+                          }
+                          table += '</tbody></table>';
+                          return table;
+                      }
+                      }
+                  }
+              },
+              series : [
+                  {
+                      name: '血肌酐(SCr)',
+                      type: 'line',
+                      symbol:'roundRect',
+                      symbolSize :8,
+                      data: $scope.ChartData1
+                  },{
+                      name:'肾小球滤过率(GFR)',
+                      type: 'line',
+                      symbol:'diamond',
+                      symbolSize :8,
+                      data: $scope.ChartData2
+                  },{
+                      name: '血白蛋白(ALB)',
+                      type: 'line',
+                      symbol:'bar',
+                      symbolSize :8,
+                      data: $scope.ChartData3
+                  },{
+                      name:'尿蛋白(PRO)',
+                      type: 'line',
+                      symbol:'diamond',
+                      symbolSize :8,
+                      data: $scope.ChartData4
+                  }
+              ]
+          };
+      var myChart = echarts.init(document.getElementById('chartdiv11'));
+      myChart.setOption(option1);      
+    }, function(e) {  
+    });
+  }
+
+  // $scope.test = function(){
+  //   labtestImport.getLabtestImport({
+  //     patientId: 'U201705170020',
+  //     token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OTE0NzY1MjQ0MDBlZjEzYzA1ZmY5MzEiLCJ1c2VySWQiOiJVMjAxNzA1MTEwMDAxIiwicm9sZSI6ImRvY3RvciIsImV4cCI6MTQ5OTY3MDI0NDkxNiwiaWF0IjoxNDk5NjY2NjQ0fQ.mwJq-IrB1RNSW5XILWMgKCwUhaMSIsZPBr-jQkHzGrU'
+  //   }) .then(function (data) {
+  //     console.log(data)
+  //   }, function (err) {
+  //     console.log(err)
+  //   })
+  // }
   
 }])
 
@@ -1381,17 +1564,6 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }        
   }
 
-  //点击显示大图
-  $scope.zoomMin = 1;
-  $scope.imageUrl = '';
-  $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
-      scope: $scope
-  }).then(function(modal) {
-      $scope.modal = modal;
-      // $scope.modal.show();
-      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
-  }); 
-
   $scope.edit = function(){
       $scope.canEdit = true;
   }
@@ -1672,6 +1844,18 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   // $scope.imggoback = function(){
   //   $scope.modal.hide();
   // };
+
+  //点击显示大图
+  $scope.zoomMin = 1;
+  $scope.imageUrl = '';
+  $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
+      scope: $scope
+  }).then(function(modal) {
+      $scope.modal = modal;
+      // $scope.modal.show();
+      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
+  }); 
+
   $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
