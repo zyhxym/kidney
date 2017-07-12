@@ -41,6 +41,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:4050/api/v1/',
+  baseTwoUrl: 'http://121.43.107.106:4060/api/v2/',
   mediaUrl: 'http://121.43.107.106:8052/',
   socketServer: 'ws://121.43.107.106:4050/',
   imgThumbUrl: 'http://121.43.107.106:8052/uploads/photos/resize',
@@ -527,6 +528,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
+  var labtestImport = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path', {path: 'labtestImport'}, {
+      getLabtestImport: {method: 'GET', params: {}, timeout: 100000}
+    })
+  }
+
   serve.abort = function ($scope) {
     abort.resolve()
     $interval(function () {
@@ -551,6 +558,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Expense = Expense()
       serve.Advice = Advice()
       serve.version = version()
+      serve.labtestImport = labtestImport()
     }, 0, 1)
   }
   serve.Dict = Dict()
@@ -573,6 +581,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Expense = Expense()
   serve.Advice = Advice()
   serve.version = version()
+  serve.labtestImport = labtestImport()
   return serve
 }])
 .factory('Dict', ['$q', 'Data', function ($q, Data) {
@@ -2403,5 +2412,22 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
+  return self
+}])
+
+.factory('labtestImport', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.getLabtestImport = function (params) {
+    var deferred = $q.defer()
+    Data.labtestImport.getLabtestImport(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
   return self
 }])
