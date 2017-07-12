@@ -544,7 +544,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout) {
+.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
   if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
 
   $scope.input = {
@@ -1041,14 +1041,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {null}
    */
   $scope.$on('voice', function (event, args) {
-    console.log(args)
+    console.log(CONFIG.mediaUrl + args[1].src[0])
     event.stopPropagation()
-    $scope.sound = new Media(args[1],
-            function () {
-            },
-            function (err) {
-              console.log(err)
-            })
+    $scope.sound = new Media(CONFIG.mediaUrl + args[1].src[0],
+             function () {
+             },
+             function (err) {
+               console.log(err)
+             })
     $scope.sound.play()
   })
   /**
@@ -1454,7 +1454,24 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.record()
             .then(function (fileUrl) {
               $scope.params.recording = false
+              console.log(fileUrl)
+              var fm = md5(Date.now(), $scope.params.chatId) + '.amr',
+                d = [
+                  'uploads/photos/' + fm
+                         // 'uploads/photos/resized' + fm
+                ],
+                voiceMsg = msgGen(d, 'voice'),
+                localMsg = localMsgGen(voiceMsg, fileUrl)
+              $scope.pushMsg(localMsg)
+              Camera.uploadVoice(fileUrl, fm)
+                     .then(function (data) {
+                       console.log(data)
+                       socket.emit('message', {msg: voiceMsg, to: $scope.params.chatId, role: 'doctor'})
+                     }, function () {
+                       $ionicLoading.show({ template: '语音上传失败', duration: 2000 })
+                     })
             }, function (err) {
+              $ionicLoading.show({ template: '打开语音失败', duration: 2000 })
               console.log(err)
             })
     $scope.params.recording = true

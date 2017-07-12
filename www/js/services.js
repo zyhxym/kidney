@@ -159,14 +159,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
                         .then(function (fileUrl) {
                           console.log(fileUrl)
                           resolve(fileUrl)
-                            // window.JMessage.sendSingleVoiceMessage(receiver, fileUrl, CONFIG.appKey,
-                            //     function(res) {
-                            //         resolve(res);
-                            //     },
-                            //     function(err) {
-                            //         reject(err)
-                            //     });
-                            // resolve(fileUrl.substr(fileUrl.lastIndexOf('/')+1));
                         }, function (err) {
                           console.log(err)
                           reject(err)
@@ -307,6 +299,36 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
               }, function (progress) {
                 console.log(progress)
               })
+      })
+    },
+
+    uploadVoice: function (voiURI, temp_voiceaddress) {
+      return $q(function (resolve, reject) {
+        var uri = encodeURI(CONFIG.baseUrl + 'upload')
+        var options = {
+          fileKey: 'file',
+          fileName: temp_voiceaddress,
+          chunkedMode: true,
+          mimeType: 'audio/mpeg'
+        }
+             // var q = $q.defer();
+             // console.log("jinlaile");
+        $cordovaFileTransfer.upload(uri, voiURI, options)
+               .then(function (r) {
+                 console.log('Code = ' + r.responseCode)
+                 console.log('Response = ' + r.response)
+                 console.log('Sent = ' + r.bytesSent)
+                 // var result = "上传成功";
+                 resolve(r.response)
+               }, function (error) {
+                 console.log(error)
+                 alert('An error has occurred: Code = ' + error.code)
+                 console.log('upload error source ' + error.source)
+                 console.log('upload error target ' + error.target)
+                 reject(error)
+               }, function (progress) {
+                 console.log(progress)
+               })
       })
     }
   }
