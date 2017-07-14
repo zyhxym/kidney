@@ -544,7 +544,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout) {
+.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
   if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
 
   $scope.input = {
@@ -802,8 +802,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           bodyDoc = '您仍可以向患者追加回答，该消息不计费'
           bodyPat = '您没有提问次数了。如需提问，请新建咨询或问诊'
         } else {
-          bodyDoc = '患者提问不限次数'
-          bodyPat = '您可以不限次数进行提问'
+          bodyDoc = '患者对您进行问诊，询问次数不限，如您认为回答结束，请点击右上角结束。请在24小时内回复患者。'
+          bodyPat = '您询问该医生的次数不限，最后由医生结束此次问诊，请尽量详细描述病情和需求。医生会在24小时内回答，如超过24小时医生未作答，本次咨询关闭，且不收取费用。'
         }
       } else {
         if (cnt <= 0 || status == '0') {
@@ -812,6 +812,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         } else {
           bodyDoc = '您还需要回答' + cnt + '个问题'
           bodyPat = '您还有' + cnt + '次提问机会'
+          if (cnt == 3) {
+            bodyDoc = '患者对您进行咨询，您最多需做三次回答，答满三次后，本次咨询结束；如不满三个问题，24小时后本次咨询关闭。请在24小时内回复患者。您还需要回答' + cnt + '个问题。'
+            bodyPat = '根据您提供的问题及描述，医生最多做三次回答，答满三次后，本次咨询结束，请尽量详细描述病情和需求；如不满三个问题，24小时后本次咨询关闭。医生会在24小时内回答，如超过24小时医生未作答，本次咨询关闭，且不收取费用。您还有' + cnt + '次提问机会。'
+          }
         }
       }
 
@@ -1041,14 +1045,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {null}
    */
   $scope.$on('voice', function (event, args) {
-    console.log(args)
+    console.log(CONFIG.mediaUrl + args[1].src[0])
     event.stopPropagation()
-    $scope.sound = new Media(args[1],
-            function () {
-            },
-            function (err) {
-              console.log(err)
-            })
+    $scope.sound = new Media(CONFIG.mediaUrl + args[1].src[0],
+             function () {
+             },
+             function (err) {
+               console.log(err)
+             })
     $scope.sound.play()
   })
   /**
@@ -1454,7 +1458,24 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.record()
             .then(function (fileUrl) {
               $scope.params.recording = false
+              console.log(fileUrl)
+              var fm = md5(Date.now(), $scope.params.chatId) + '.amr',
+                d = [
+                  'uploads/photos/' + fm
+                         // 'uploads/photos/resized' + fm
+                ],
+                voiceMsg = msgGen(d, 'voice'),
+                localMsg = localMsgGen(voiceMsg, fileUrl)
+              $scope.pushMsg(localMsg)
+              Camera.uploadVoice(fileUrl, fm)
+                     .then(function (data) {
+                       console.log(data)
+                       socket.emit('message', {msg: voiceMsg, to: $scope.params.chatId, role: 'doctor'})
+                     }, function () {
+                       $ionicLoading.show({ template: '语音上传失败', duration: 2000 })
+                     })
             }, function (err) {
+              $ionicLoading.show({ template: '打开语音失败', duration: 2000 })
               console.log(err)
             })
     $scope.params.recording = true
