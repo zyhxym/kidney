@@ -326,6 +326,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       console.log($stateParams.PatinetId)
       console.log(Storage.get("getpatientId"))
       var load =  function(){
+        /**
+         * *[根据pid和type获取用户的某一类]
+         * @Author   ZXF
+         * @DateTime 2017-07-14
+         * @param    {Array}    Data){                         $scope.ChartDatas [description]
+         * @return   {[type]}           [返回的数据一个时间对应两条数据分别是舒张压和收缩压]
+         * 根据echarts的画图需求需要改变数据格式为一个时间对应一个数据
+         */
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
           function(Data){
             $scope.ChartDatas=[];
@@ -348,6 +356,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                 }
               }
             }
+            //本来需要做到没有数据不显示 暂时没有实现
             if($scope.ChartData1.length||$scope.ChartData2.length){
               
             // $scope.chartdiv1=true;
@@ -355,7 +364,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
               console.log(222)
               // $scope.chartdiv1=false;
             }
+            //echarts的参数设置
             var option1 = {
+              //标题 副标题 标题字号
               title : {
                   text : '血压',
                   subtext : 'mmHg',
@@ -377,6 +388,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                   //            + params.value[2];
                   // }
               },
+              //图表下方的收缩条
               dataZoom: {
                   show: true
                   // start : 50
@@ -401,6 +413,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                   }
               ],
               //new date(axisData[i]).getFullYear()+'-'+(new date(axisData[i]).getMonth()+1)+'-'+new date(axisData[i]).getDate()+' '+new date(axisData[i]).getHours()+':'+new date(axisData[i]).getMinutes()
+              //点击右上角查看图表的元数据
               toolbox: {
                   show : true,
                   right :30,
@@ -469,7 +482,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           }, function(e) {  
           });
 
-
+          
+          /**
+           * *获取用户的体温数据
+           * @Author   ZXF
+           * @DateTime 2017-07-14
+           * @param    {Array}    Data){                         $scope.ChartData3 [description]
+           * @return   {[type]}           [description]
+           */
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体温'}).then(
           function(Data){
             $scope.ChartData3=[];
@@ -590,6 +610,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
+          /**
+           * *获取用户的体重数据
+           * @Author   ZXF
+           * @DateTime 2017-07-14
+           * @param    {Array}    Data){                         $scope.ChartData3 [description]
+           * @return   {[type]}           [description]
+           */
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体重'}).then(
           function(Data){
             $scope.ChartData4=[];
@@ -707,6 +734,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
+          /**
+           * *获取用户的尿量数据
+           * @Author   ZXF
+           * @DateTime 2017-07-14
+           * @param    {Array}    Data){                         $scope.ChartData3 [description]
+           * @return   {[type]}           [description]
+           */
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'尿量'}).then(
           function(Data){
             $scope.ChartData5=[];
@@ -824,6 +858,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
+            /**
+           * *获取用户的心率数据
+           * @Author   ZXF
+           * @DateTime 2017-07-14
+           * @param    {Array}    Data){                         $scope.ChartData3 [description]
+           * @return   {[type]}           [description]
+           */
           VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'心率'}).then(
           function(Data){
             $scope.ChartData6=[];
@@ -1273,7 +1314,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.$on('$ionicView.enter', function() {
       load();
   })
-
+  //s下拉刷新
   $scope.doRefresh = function(){
       load();
       // Stop the ion-refresher from spinning
@@ -1584,10 +1625,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       reject(err);
     })
   };
-//-----------------------上传头像---------------------
-      // ionicPopover functions 弹出框的预定义
-        //--------------------------------------------
-        // .fromTemplateUrl() method
+  //点击上传图片的弹出框
   $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1618,7 +1656,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    // console.log("选个照片"); 
    $scope.choosePhotos();
    $scope.closePopover();
-  };      
+  }; 
+  /**
+   * *从手机相册选择图片
+   * @Author   ZXF
+   * @DateTime 2017-07-14
+   * @return   {[type]}   [description]
+   */
   $scope.choosePhotos = function() {
   Camera.getPictureFromPhotos('gallery',true).then(function(data) {
       // data里存的是图像的地址
@@ -1639,6 +1683,12 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $scope.closePopover();
   };
   $scope.isShow=true;
+  /**
+   * *调用用户相机获取图片
+   * @Author   ZXF
+   * @DateTime 2017-07-14
+   * @return   {[type]}   [description]
+   */
   $scope.takePicture = function() {
    Camera.getPicture('cam',true).then(function(data) {
       var imgURI = data;
@@ -1668,10 +1718,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //     // Execute action
   //   });
 
-  // //点击图片返回
-  // $scope.imggoback = function(){
-  //   $scope.modal.hide();
-  // };
+  // //点击图片返回 点击查看大图
   $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         // console.log(resizedpath)
