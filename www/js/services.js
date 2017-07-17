@@ -41,11 +41,11 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:4060/api/v1/',
-  baseTwoUrl: 'http://121.43.107.106:4060/api/v2/',
-  mediaUrl: 'http://121.43.107.106:8052/',
-  socketServer: 'ws://121.43.107.106:4050/',
-  imgThumbUrl: 'http://121.43.107.106:8052/uploads/photos/resize',
-  imgLargeUrl: 'http://121.43.107.106:8052/uploads/photos/',
+  baseTwoUrl: 'http://121.43.107.106:4060/api/v1/',
+  mediaUrl: 'http://121.43.107.106:8054/',
+  socketServer: 'ws://121.43.107.106:4060/',
+  imgThumbUrl: 'http://121.43.107.106:8054/uploads/photos/resize',
+  imgLargeUrl: 'http://121.43.107.106:8054/uploads/photos/',
   cameraOptions: {
     cam: {
       quality: 70,
