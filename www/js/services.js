@@ -2266,7 +2266,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
         color: '1199dd'
       }
     }
-    return $cordovaLocalNotification.schedule(note)
+    return $cordovaLocalNotification.add(note)
   }
   return {
     add: function (msg) {
