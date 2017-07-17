@@ -937,7 +937,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 function (data) {
                   if ($stateParams.last == 'wechatsignin') {
                     $ionicPopup.show({
-                      title: '微信账号绑定手机账号成功，您的初始密码是123456，您以后也可以用手机号码登录！',
+                      title: '感谢您注册肾事联盟，您的微信账号绑定手机号申请已经提交，申请通过后您也可以用手机号登录，初始密码是123456，请耐心等待审核结果',
                       buttons: [
                         {
                           text: '確定',
@@ -950,15 +950,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                             }, function (err) {
                               thisDoctor = null
                             })
-                            $state.go('tab.home')
+                            $state.go('signin')
                           }
                         }
                       ]
                     })
                   } else {
-                    $state.go('signin')
+                    $ionicPopup.show({
+                      title: '感谢您注册肾事联盟，您的注册申请已经提交，请耐心等待审核结果',
+                      buttons: [
+                        {
+                          text: '確定',
+                          type: 'button-positive',
+                          onTap: function (e) {
+                            $state.go('signin')
+                          }
+                        }
+                      ]
+                    })
                   }
-                  console.log(data)
+                  // console.log(data)
                 },
                 function (err) {
                   console.log(err)
@@ -1000,7 +1011,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     Camera.uploadPicture(imgURI, temp_photoaddress).then(function (res) {
       var data = angular.fromJson(res)
-            // 图片路径
+      // 图片路径
       if ($scope.flag == 0) {
         $scope.doctor.certificatePhotoUrl = CONFIG.mediaUrl + String(data.path_resized)
       } else {
