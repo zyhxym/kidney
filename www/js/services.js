@@ -40,33 +40,33 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 }])
 .constant('CONFIG', {
-  baseUrl: 'http://121.43.107.106:4050/api/v1/',
-  mediaUrl: 'http://121.43.107.106:8052/',
-  socketServer: 'ws://121.43.107.106:4050/',
-  imgThumbUrl: 'http://121.43.107.106:8052/uploads/photos/resize',
-  imgLargeUrl: 'http://121.43.107.106:8052/uploads/photos/',
-  cameraOptions: {
-    cam: {
-      quality: 70,
-      destinationType: 1,
-      sourceType: 1,
-      allowEdit: true,
-      encodingType: 0,
-      targetWidth: 1000,
-      targetHeight: 1000,
-      popoverOptions: false,
-      saveToPhotoAlbum: false
-    },
-    gallery: {
-      quality: 70,
-      destinationType: 1,
-      sourceType: 0,
-      allowEdit: true,
-      encodingType: 0,
-      targetWidth: 1000,
-      targetHeight: 1000
+    baseUrl: 'https://appserviceserver.haihonghospitalmanagement.com/api/v1/',
+    mediaUrl: 'https://appmediaservice.haihonghospitalmanagement.com/',
+    socketServer: 'https://appserviceserver.haihonghospitalmanagement.com/',
+    imgThumbUrl: 'https://appmediaservice.haihonghospitalmanagement.com/uploads/photos/resize',
+    imgLargeUrl: 'https://appmediaservice.haihonghospitalmanagement.com/uploads/photos/',
+      cameraOptions: {
+        cam: {
+            quality: 70,
+            destinationType: 1,
+            sourceType: 1,
+            allowEdit: true,
+            encodingType: 0,
+            targetWidth: 1000,
+            targetHeight: 1000,
+            popoverOptions: false,
+            saveToPhotoAlbum: false
+        },
+        gallery: {
+            quality: 70,
+            destinationType: 1,
+            sourceType: 0,
+            allowEdit: true,
+            encodingType: 0,
+            targetWidth: 1000,
+            targetHeight: 1000
+        }
     }
-  }
 })
 
 // 自定义函数
@@ -290,12 +290,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
           mimeType: 'image/jpeg'
         }
             // var q = $q.defer();
-            // console.log("jinlaile");
-        $cordovaFileTransfer.upload(uri, imgURI, options)
-              .then(function (r) {
-                console.log('Code = ' + r.responseCode)
-                console.log('Response = ' + r.response)
-                console.log('Sent = ' + r.bytesSent)
+            //console.log("jinlaile");
+            $cordovaFileTransfer.upload(uri,imgURI,options,true)
+              .then( function(r){
+                console.log("Code = " + r.responseCode);
+                console.log("Response = " + r.response);
+                console.log("Sent = " + r.bytesSent);
                 // var result = "上传成功";
                 resolve(r.response)
               }, function (error) {
