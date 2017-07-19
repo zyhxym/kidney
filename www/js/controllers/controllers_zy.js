@@ -876,8 +876,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           })
 
           // 注册论坛
-          //发送http请求，请求的地址是从论坛中抽出来的api
-          //参数：username->用户名->医生端用的是医生姓名+手机号后四位
+          // 发送http请求，请求的地址是从论坛中抽出来的api
+          // 参数：username->用户名->医生端用的是医生姓名+手机号后四位
           //     password->密码->密码和用户名一样
           //     password2->密码的确认->同上
           //     email->这里随便取得，邮箱的域名不一定有效
@@ -1175,9 +1175,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }).then(function (data) {
     console.log(data)
     if (data.hasOwnProperty('results') && data.results.hasOwnProperty('name') && data.results.name != '') { $scope.forumPermission = true }
-    //这个是用来登录论坛的，在html页面上有两个iframe标签，一个用来登录，一个用来指向论坛主页，不要问我为什么这样做，我也不想这么麻烦的,但这样能解决这sb的问题
+    // 这个是用来登录论坛的，在html页面上有两个iframe标签，一个用来登录，一个用来指向论坛主页，不要问我为什么这样做，我也不想这么麻烦的,但这样能解决这sb的问题
     $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username=' + data.results.name + Storage.get('USERNAME').slice(7) + '&password=' + data.results.name + Storage.get('USERNAME').slice(7))
-    //这个就是用来指向论坛主页的
+    // 这个就是用来指向论坛主页的
     $scope.navigation = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/')
   }, function (err) {
     console.log(err)
@@ -1208,7 +1208,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     //         // console.log(data);
     // });
   }
-  //用来导入以前的论坛用户
+  // 用来导入以前的论坛用户
   var forumReg = function (phone, role) {
         // console.log(phone.userName+phone.phoneNo.slice(7))
     var un = phone.userName + phone.phoneNo.slice(7)
@@ -1233,7 +1233,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       console.log(s)
     })
   }
-  //配合导入以前的论坛用户
+  // 配合导入以前的论坛用户
   $scope.importDocs = function () {
     $http({
       method: 'GET',
@@ -2185,7 +2185,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.doctor = data.results
     if (angular.isDefined($scope.doctor.TDCticket) != true) {
       var params = {
-        'role': 'doctor',
+        'role': 'patient',
         'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
