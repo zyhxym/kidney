@@ -2196,7 +2196,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.doctor = data.results
     if (angular.isDefined($scope.doctor.TDCticket) != true) {
       var params = {
-        'role': 'doctor',
+        'role': 'patient',
         'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
