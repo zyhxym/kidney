@@ -2307,7 +2307,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
                         }
                       }
-                      var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxab9c316b3076535d&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + Storage.get('UID') + '_' +res.results.counselId+ '&#wechat_redirect'
+                      var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxab9c316b3076535d&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' +res.results.counselId+ '&#wechat_redirect'
                       var template = {
                           'userId': PID, // 患者的UID
                           'role': 'patient',
@@ -2328,7 +2328,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 'color': '#173177'
                               },
                               'keyword3': {
-                                'value': thisDoctor.name, // 回复医生的姓名
+                                'value': res.results.doctorId.name, // 回复医生的姓名
                                 'color': '#173177'
                               },
                               'remark': {
