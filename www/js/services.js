@@ -41,7 +41,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:4060/api/v1/',
-  baseTwoUrl: 'http://121.43.107.106:4060/api/v1/',
+  baseTwoUrl: 'http://121.43.107.106:4060/api/v2/',
   mediaUrl: 'http://121.43.107.106:8054/',
   socketServer: 'ws://121.43.107.106:4060/',
   imgThumbUrl: 'http://121.43.107.106:8054/uploads/photos/resize',
@@ -534,6 +534,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
+  var services = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'services'}, {
+      setSchedules: {method: 'POST', params: {route: 'setSchedule'}, timeout: 100000},
+      getStatus: {method: 'GET', params: {}, timeout: 100000},
+      setStatus: {method: 'POST', params: {route: 'status'}, timeout: 100000},
+      setCharge: {method: 'POST', params: {route: 'charge'}, timeout: 100000},
+      getSchedules: {method: 'GET', params: {route: 'mySchedules'}, timeout: 100000},
+      deleteSchedules: {method: 'POST', params: {route: ''}, timeout: 100000},
+      relayTarget: {method: 'POST', params: {route: 'relayTarget'}, timeout: 100000},
+    })
+  }
+
   serve.abort = function ($scope) {
     abort.resolve()
     $interval(function () {
@@ -559,6 +571,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Advice = Advice()
       serve.version = version()
       serve.labtestImport = labtestImport()
+      serve.services = services()
     }, 0, 1)
   }
   serve.Dict = Dict()
@@ -582,6 +595,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Advice = Advice()
   serve.version = version()
   serve.labtestImport = labtestImport()
+  serve.services = services()
   return serve
 }])
 .factory('Dict', ['$q', 'Data', function ($q, Data) {
@@ -2429,5 +2443,100 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
+  return self
+}])
+
+.factory('services', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.setSchedules = function (params) {
+    var deferred = $q.defer()
+    Data.services.setSchedules(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.setStatus = function (params) {
+    var deferred = $q.defer()
+    Data.services.setStatus(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.setCharge = function (params) {
+    var deferred = $q.defer()
+    Data.services.setCharge(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.getStatus = function (params) {
+    var deferred = $q.defer()
+    Data.services.getStatus(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.getSchedules = function (params) {
+    var deferred = $q.defer()
+    Data.services.getSchedules(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.deleteSchedules = function (params) {
+    var deferred = $q.defer()
+    Data.services.deleteSchedules(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+   self.relayTarget = function (params) {
+    var deferred = $q.defer()
+    Data.services.relayTarget(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  } 
   return self
 }])
