@@ -1596,7 +1596,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "患者”页-zy
-.controller('patientCtrl', ['Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', function (Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover) {
+.controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover) {
   $scope.barwidth = 'width:0%'
   var patients = []
   $scope.params = {
@@ -1604,6 +1604,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     updateTime: 0
   }
 
+  var load = function () {
+    Counsel.getCounsels({
+      userId: Storage.get('UID'),
+      status: 1
+    }).then(function (data) {
+      $scope.consultNum = data.results.length
+    },
+            function (err) {
+              console.log(err)
+            }
+        )
   /**
    * [获取该医生所有患者列表]
    * @Author   ZY
@@ -1611,7 +1622,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @param    userId: string
    * @return   data.results(患者列表信息)
    */
-  var load = function () {
     Doctor.getPatientList({
       userId: Storage.get('UID')
     }).then(function (data) {
@@ -2186,7 +2196,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.doctor = data.results
     if (angular.isDefined($scope.doctor.TDCticket) != true) {
       var params = {
-        'role': 'doctor',
+        'role': 'patient',
         'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
