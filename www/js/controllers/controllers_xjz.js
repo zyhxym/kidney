@@ -1152,7 +1152,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             info: '咨询已结束',
             docId: thisDoctor.userId,
             counseltype: 1,
-            counselId:$scope.params.counselId
+            counselId: $scope.params.counselId
           }
           if (type == 2 || type == 3) {
             endlMsg.info = '问诊已结束'
@@ -1383,7 +1383,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}   [description]
    */
   $scope.submitMsg = function () {
-    if ($scope.params.newsType == '11'){
+    if ($scope.params.newsType == '11') {
       var targetRole = 'patient'
       var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=' + targetRole + '_' + $scope.params.newsType + '_' + $state.params.type + '_' + $scope.params.UID + '_' + $state.params.counselId + '&#wechat_redirect'
 
@@ -2339,7 +2339,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   zyh
  * @DateTime 2017-07-05
  */
-.controller('GroupConclusionCtrl', ['$state', '$scope', '$ionicModal', '$ionicScrollDelegate', 'Communication', '$ionicLoading', 'CONFIG', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel','Mywechat', function ($state, $scope, $ionicModal, $ionicScrollDelegate, Communication, $ionicLoading, CONFIG, Storage, Account, socket, mySocket, Counsel,Mywechat) {
+.controller('GroupConclusionCtrl', ['$state', '$scope', '$ionicModal', '$ionicScrollDelegate', 'Communication', '$ionicLoading', 'CONFIG', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', function ($state, $scope, $ionicModal, $ionicScrollDelegate, Communication, $ionicLoading, CONFIG, Storage, Account, socket, mySocket, Counsel, Mywechat) {
   $scope.input = {
     text: ''
   }
@@ -2400,37 +2400,37 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             // 暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
                             // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
                             // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
-                        var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' +res.results.counselId+ '&#wechat_redirect'
+                        var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' + res.results.counselId + '&#wechat_redirect'
                         var template = {
-                            'userId': PID, // 患者的UID
-                            'role': 'patient',
-                            'postdata': {
-                              'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
-                              'url': actionUrl,
-                              'data': {
-                                'first': {
-                                  'value': '您的' + (res.results.type == 1 ? '咨询' : '问诊') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
-                                  'color': '#173177'
-                                },
-                                'keyword1': {
-                                  'value': res.results.help, // 咨询的问题
-                                  'color': '#173177'
-                                },
-                                'keyword2': {
-                                  'value': $scope.input.text, // 医生的回复
-                                  'color': '#173177'
-                                },
-                                'keyword3': {
-                                  'value': res.results.doctorId.name, // 回复医生的姓名
-                                  'color': '#173177'
-                                },
-                                'remark': {
-                                  'value': '感谢您的使用！',
-                                  'color': '#173177'
-                                }
+                          'userId': PID, // 患者的UID
+                          'role': 'patient',
+                          'postdata': {
+                            'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
+                            'url': actionUrl,
+                            'data': {
+                              'first': {
+                                'value': '您的' + (res.results.type == 1 ? '咨询' : '问诊') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                                'color': '#173177'
+                              },
+                              'keyword1': {
+                                'value': res.results.help, // 咨询的问题
+                                'color': '#173177'
+                              },
+                              'keyword2': {
+                                'value': $scope.input.text, // 医生的回复
+                                'color': '#173177'
+                              },
+                              'keyword3': {
+                                'value': res.results.doctorId.name, // 回复医生的姓名
+                                'color': '#173177'
+                              },
+                              'remark': {
+                                'value': '感谢您的使用！',
+                                'color': '#173177'
                               }
                             }
                           }
+                        }
                         Mywechat.messageTemplate(template)
                         socket.emit('message', { msg: msgJson, to: PID, role: 'doctor'})
                             // resetUserAsAppUser();
@@ -2454,7 +2454,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                       type: 'endl',
                                       info: '咨询已结束',
                                       docId: DID,
-                                      counseltype: 1
+                                      counseltype: 1,
+                                      counselId: $scope.patient.diseaseInfo.counselId
+
                                     }
                                     var endJson = {
                                       clientType: 'doctor',
