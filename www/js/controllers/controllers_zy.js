@@ -3224,7 +3224,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       template: '审核完成',
       duration: 1000
     })
-    load()
   }
 
   $scope.rejectApplication = function (id) {
@@ -3292,7 +3291,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           template: '审核完成',
           duration: 1000
         })
-        load()
       } else {
         $state.go('tab.review')
       }
