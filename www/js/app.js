@@ -213,6 +213,27 @@ angular.module('kidney', [
         }
       }
     })
+
+    if ($ionicPlatform.is('ios')) {
+      cordova.plugins.notification.local.on('click', function (note, state) {
+        alert(note.id + ' was clicked')
+        var msg = JSON.parse(note.data)
+        if (msg.targetType == 'group') {
+                // '0':团队交流  '1': 未结束病历  '2':已结束病历
+          if (msg.teamId == msg.targetID) {
+            $state.go('tab.group-chat', { type: '0', groupId: msg.targetID, teamId: msg.teamId})
+          } else {
+            $state.go('tab.group-chat', { type: '1', groupId: msg.targetID, teamId: msg.teamId})
+          }
+        } else {
+          if (msg.newsType == '12') {
+            $state.go('tab.detail', { type: '2', chatId: msg.fromID})
+          } else {
+            $state.go('tab.detail', { type: '1', chatId: msg.fromID})
+          }
+        }
+      }, this)
+    }
         // 聊天用，防止消息被keyboard遮挡
     window.addEventListener('native.keyboardshow', function (e) {
       $rootScope.$broadcast('keyboardshow', e.keyboardHeight)
