@@ -974,7 +974,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   var loadAssay =  function(){
       labtestImport.getLabtestImport({
       patientId: Storage.get("getpatientId"),
-      token:Storage.get("TOKEN"),
+      // token:Storage.get("TOKEN"),
       sort:'time' //根据时间降序排序
       }).then(function(Data){
         console.log(Data)
