@@ -3415,9 +3415,9 @@ var getStatus = function () {
       console.log(err)
     })
     console.log($scope.workStatus)
-    Doctor.getSuspendTime({userId: Storage.get('UID')}).then(function (data) {
-      console.log(data.results.suspendTime)
-      if (data.results.suspendTime.length == 0) {
+      services.getStatus({token: Storage.get('TOKEN'),userId: Storage.get('UID')}).then(function (data) {
+      console.log(data.results.serviceSuspendTime)
+      if (data.results.serviceSuspendTime.length == 0) {
         $scope.stausText = '接诊中...'
         $scope.stausButtontText = '设置停诊'
       } else {
@@ -3427,8 +3427,8 @@ var getStatus = function () {
         date.getDate() < 10 ? dateNow += '0' + date.getDate() : dateNow += date.getDate()
         console.log(dateNow)
 
-        $scope.begin = data.results.suspendTime[0].start
-        $scope.end = data.results.suspendTime[0].end
+        $scope.begin = data.results.serviceSuspendTime[data.results.serviceSuspendTime.length-1].start
+        $scope.end = data.results.serviceSuspendTime[data.results.serviceSuspendTime.length-1].end
 
         date = new Date($scope.begin)
         var dateB = '' + date.getFullYear();
@@ -3526,12 +3526,12 @@ var getStatus = function () {
       $scope.showSchedual = false
     } else {
       var param = {
-        userId: Storage.get('UID'),
+        token: Storage.get('TOKEN'),
         start: $scope.begin,
         end: $scope.end
       }
-      // console.log(param)
-      Doctor.deleteSuspendTime(param).then(function (data) {
+      console.log(param)
+      services.deleteSuspend(param).then(function (data) {
         console.log(data)
         $scope.stausButtontText = '设置停诊'
         $scope.stausText = '接诊中...'
@@ -3547,14 +3547,14 @@ var getStatus = function () {
     }
     if ($scope.begin != undefined && $scope.end != undefined) {
       var param = {
-        userId: Storage.get('UID'),
+        token: Storage.get('TOKEN'),
         start: $scope.begin,
         end: $scope.end
       }
       // console.log(param)
-      Doctor.insertSuspendTime(param).then(function (data) {
+      services.setSuspend(param).then(function (data) {
         $scope.showSchedual = true
-        getSchedual()
+        getSchedules()
       }, function (err) {
         console.log(err)
       })
@@ -3583,6 +3583,8 @@ var getStatus = function () {
           console.log('index', index)
           $scope.workStatus[index].number = 0
           $scope.workStatus[index].style = {'background-color':'white'}
+          $scope.workStatus[index].status = 0
+
           }, function (err) {
             console.log(err)
           })

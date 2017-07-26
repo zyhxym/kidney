@@ -541,8 +541,10 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       setStatus: {method: 'POST', params: {route: 'status'}, timeout: 100000},
       setCharge: {method: 'POST', params: {route: 'charge'}, timeout: 100000},
       getSchedules: {method: 'GET', params: {route: 'mySchedules'}, timeout: 100000},
-      deleteSchedules: {method: 'POST', params: {route: ''}, timeout: 100000},
+      deleteSchedules: {method: 'POST', params: {route: 'deleteSchedule'}, timeout: 100000},
       relayTarget: {method: 'POST', params: {route: 'relayTarget'}, timeout: 100000},
+      deleteSuspend: {method: 'POST', params: {route: 'deleteSuspend'}, timeout: 100000},
+      setSuspend: {method: 'POST', params: {route: 'setSuspend'}, timeout: 100000},
     })
   }
 
@@ -2529,6 +2531,32 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
    self.relayTarget = function (params) {
     var deferred = $q.defer()
     Data.services.relayTarget(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  } 
+
+   self.deleteSuspend = function (params) {
+    var deferred = $q.defer()
+    Data.services.deleteSuspend(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  } 
+
+   self.setSuspend = function (params) {
+    var deferred = $q.defer()
+    Data.services.setSuspend(
             params,
             function (data, headers) {
               deferred.resolve(data)
