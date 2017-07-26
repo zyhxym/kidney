@@ -466,7 +466,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var Message = function () {
     return $resource(CONFIG.baseUrl + ':path/:route', {path: 'message'}, {
-      getMessages: {method: 'GET', params: {route: 'messages'}, timeout: 100000}
+      getMessages: {method: 'GET', params: {route: 'messages'}, timeout: 100000},
+      insertMessages: {method: 'POST', params: {route: 'message'}, timeout: 100000}
     })
   }
 
@@ -544,7 +545,13 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       deleteSchedules: {method: 'POST', params: {route: 'deleteSchedule'}, timeout: 100000},
       relayTarget: {method: 'POST', params: {route: 'relayTarget'}, timeout: 100000},
       deleteSuspend: {method: 'POST', params: {route: 'deleteSuspend'}, timeout: 100000},
-      setSuspend: {method: 'POST', params: {route: 'setSuspend'}, timeout: 100000},
+      setSuspend: {method: 'POST', params: {route: 'setSuspend'}, timeout: 100000}
+
+  var Doctor2 = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
+      getReviewList: {method: 'GET', params: {route: 'myPatientsToReview'}, timeout: 100000},
+      saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000}
+
     })
   }
 
@@ -574,6 +581,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.version = version()
       serve.labtestImport = labtestImport()
       serve.services = services()
+      serve.Doctor2 = Doctor2()
     }, 0, 1)
   }
   serve.Dict = Dict()
@@ -598,6 +606,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.version = version()
   serve.labtestImport = labtestImport()
   serve.services = services()
+  serve.Doctor2 = Doctor2()
   return serve
 }])
 .factory('Dict', ['$q', 'Data', function ($q, Data) {
@@ -1318,6 +1327,20 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
+
+  self.insertMessages = function (params) {
+    var deferred = $q.defer()
+    Data.Message.insertMessages(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
   return self
 }])
 .factory('Account', ['$q', 'Data', function ($q, Data) {
@@ -2282,7 +2305,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
         color: '1199dd'
       }
     }
-    return $cordovaLocalNotification.schedule(note)
+    return $cordovaLocalNotification.add(note)
   }
   return {
     add: function (msg) {
@@ -2453,6 +2476,11 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.setSchedules = function (params) {
     var deferred = $q.defer()
     Data.services.setSchedules(
+.factory('Doctor2', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.getReviewList = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor2.getReviewList(
             params,
             function (data, headers) {
               deferred.resolve(data)
@@ -2466,6 +2494,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.setStatus = function (params) {
     var deferred = $q.defer()
     Data.services.setStatus(
+  self.saveReviewInfo = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor2.saveReviewInfo(
             params,
             function (data, headers) {
               deferred.resolve(data)

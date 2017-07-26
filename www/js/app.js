@@ -19,6 +19,31 @@ angular.module('kidney', [
 ])
 
 .run(['version', '$ionicPlatform', '$state', 'Storage', '$rootScope', 'CONFIG', 'Communication', 'notify', '$interval', 'socket', 'mySocket', '$ionicPopup', 'session', function (version, $ionicPlatform, $state, Storage, $rootScope, CONFIG, Communication, notify, $interval, socket, mySocket, $ionicPopup, session) {
+  // 虚拟返回键显示退出提示框
+  $ionicPlatform.registerBackButtonAction(function (e) {
+    e.preventDefault()
+
+    function showConfirm () {
+      var confirmPopup = $ionicPopup.confirm({
+        title: '<strong>退出应用?</strong>',
+        template: '你确定要退出应用吗?',
+        okText: '退出',
+        cancelText: '取消'
+      })
+
+      confirmPopup.then(function (res) {
+        if (res) {
+          ionic.Platform.exitApp()
+        } else {
+                        // Don't close
+        }
+      })
+    }
+    showConfirm()
+
+    return false
+  }, 101)
+
   $ionicPlatform.ready(function () {
     version.checkUpdate($rootScope)// 在app.js的ready里加
     // 记录message当前会话
@@ -188,6 +213,27 @@ angular.module('kidney', [
         }
       }
     })
+
+    if ($ionicPlatform.is('ios')) {
+      cordova.plugins.notification.local.on('click', function (note, state) {
+        alert(note.id + ' was clicked')
+        var msg = JSON.parse(note.data)
+        if (msg.targetType == 'group') {
+                // '0':团队交流  '1': 未结束病历  '2':已结束病历
+          if (msg.teamId == msg.targetID) {
+            $state.go('tab.group-chat', { type: '0', groupId: msg.targetID, teamId: msg.teamId})
+          } else {
+            $state.go('tab.group-chat', { type: '1', groupId: msg.targetID, teamId: msg.teamId})
+          }
+        } else {
+          if (msg.newsType == '12') {
+            $state.go('tab.detail', { type: '2', chatId: msg.fromID})
+          } else {
+            $state.go('tab.detail', { type: '1', chatId: msg.fromID})
+          }
+        }
+      }, this)
+    }
         // 聊天用，防止消息被keyboard遮挡
     window.addEventListener('native.keyboardshow', function (e) {
       $rootScope.$broadcast('keyboardshow', e.keyboardHeight)
@@ -477,6 +523,18 @@ angular.module('kidney', [
         'tab-patient': {
           controller: 'HealthDetailCtrl',
           templateUrl: 'partials/patient/editHealthInfo.html'
+        }
+      }
+    })
+
+// 主管医生审核申请--rzx
+    .state('tab.review', {
+        // cache: false,
+      url: '/review',
+      views: {
+        'tab-patient': {
+          controller: 'reviewCtrl',
+          templateUrl: 'partials/patient/review.html'
         }
       }
     })
