@@ -182,14 +182,14 @@ angular.module('kidney.filters', [])
   }
 }])
 .filter('chargeType', [function () {
-  return function (num) {
-    var n = new Number(num)
-    var ret = num
-    switch (n) {
-      case 0:ret = '咨询'; break
-      case 1:ret = '问诊'; break
-      case 2:ret = '升级'; break
-    }
-    return ret
+  return function (type) {
+    var g = '未知'
+    if (type == 1) { g = '咨询' }
+    if (type == 2) { g = '问诊' }
+    if (type == 3) { g = '加急咨询' }
+    if (type == 2) { g = '主管医生' }
+    if (type == 2) { g = '面诊' }
+    if (type == 2) { g = '咨询升级问诊' }
+    return g
   }
 }])

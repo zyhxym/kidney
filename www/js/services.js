@@ -502,9 +502,15 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
-  var Expense = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'expense'}, {
-      getDocRecords: {method: 'GET', params: {route: 'docRecords'}, timeout: 100000}
+  // var Expense = function () {
+  //   return $resource(CONFIG.baseUrl + ':path/:route', {path: 'expense'}, {
+  //     getDocRecords: {method: 'GET', params: {route: 'docRecords'}, timeout: 100000}
+  //   })
+  // }
+
+  var Order = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'order'}, {
+      order: {method: 'GET', params: {route: 'order'}, timeout: 100000}
     })
   }
 
@@ -578,7 +584,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Mywechat = Mywechat()
       serve.Insurance = Insurance()
       serve.New = New()
-      serve.Expense = Expense()
+      // serve.Expense = Expense()
+      serve.Order = Order()
       serve.Advice = Advice()
       serve.version = version()
       serve.labtestImport = labtestImport()
@@ -603,7 +610,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Mywechat = Mywechat()
   serve.Insurance = Insurance()
   serve.New = New()
-  serve.Expense = Expense()
+  // serve.Expense = Expense()
+  serve.Order = Order()
   serve.Advice = Advice()
   serve.version = version()
   serve.labtestImport = labtestImport()
@@ -1380,6 +1388,23 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.getCounts = function (params) {
     var deferred = $q.defer()
     Data.Account.getCounts(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  return self
+}])
+
+.factory('Order', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.order = function (params) {
+    var deferred = $q.defer()
+    Data.Order.order(
             params,
             function (data, headers) {
               deferred.resolve(data)

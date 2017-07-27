@@ -3811,10 +3811,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 }])
 
-// 账户详情-zxf
-.controller('billCtrl', ['$scope', 'Storage', '$http', '$ionicScrollDelegate', 'Expense', function ($scope, Storage, $http, $ionicScrollDelegate, Expense) {
+// 账户详情-zxf,zy
+.controller('billCtrl', ['$scope', 'Storage', '$http', '$ionicScrollDelegate', 'Order', function ($scope, Storage, $http, $ionicScrollDelegate, Order) {
   var doc = {
-    doctorId: Storage.get('UID'),
+    // doctorId: Storage.get('UID'),
     skip: 0,
     limit: 10
   }
@@ -3825,7 +3825,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.doRefresh = function () {
     doc.skip = 0
     $scope.doc.hasMore = false
-    Expense.getDocRecords(doc).then(function (data) {
+    Order.order(doc).then(function (data) {
       $scope.doc.bills = data.results
       doc.skip += data.results.length
       data.results.length == doc.limit ? $scope.doc.hasMore = true : $scope.doc.hasMore = false
@@ -3837,7 +3837,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
   $scope.doRefresh()
   $scope.loadMore = function () {
-    Expense.getDocRecords(doc).then(function (data) {
+    Order.order(doc).then(function (data) {
       $scope.doc.bills = $scope.doc.bills.concat(data.results)
       doc.skip += data.results.length
       data.results.length == doc.limit ? $scope.doc.hasMore = true : $scope.doc.hasMore = false
