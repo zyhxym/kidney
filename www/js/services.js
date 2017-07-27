@@ -397,7 +397,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   var Doctor = function () {
     return $resource(CONFIG.baseUrl + ':path/:route', {path: 'doctor'}, {
       postDocBasic: {method: 'POST', params: {route: 'detail'}, timeout: 100000},
-      getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
+      // getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
       getDoctorInfo: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       getMyGroupList: {method: 'GET', params: {route: 'myTeams'}, timeout: 100000},
       getGroupPatientList: {method: 'GET', params: {route: 'teamPatients'}, timeout: 100000},
@@ -552,8 +552,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   var Doctor2 = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
       getReviewList: {method: 'GET', params: {route: 'myPatientsToReview'}, timeout: 100000},
-      saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000}
-
+      saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000},
+      getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000}
     })
   }
 
@@ -1598,18 +1598,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     // params->0:{
        //   userId:'doc01'
        // }
-  self.getPatientList = function (params) {
-    var deferred = $q.defer()
-    Data.Doctor.getPatientList(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.getPatientList = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Doctor.getPatientList(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
 
     // params->0:{
        //   userId:'doc01'
@@ -2511,7 +2511,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
-  
+
   self.setCharge = function (params) {
     var deferred = $q.defer()
     Data.services.setCharge(
@@ -2564,7 +2564,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return deferred.promise
   }
 
-   self.relayTarget = function (params) {
+  self.relayTarget = function (params) {
     var deferred = $q.defer()
     Data.services.relayTarget(
             params,
@@ -2575,9 +2575,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
               deferred.reject(err)
             })
     return deferred.promise
-  } 
+  }
 
-   self.deleteSuspend = function (params) {
+  self.deleteSuspend = function (params) {
     var deferred = $q.defer()
     Data.services.deleteSuspend(
             params,
@@ -2588,9 +2588,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
               deferred.reject(err)
             })
     return deferred.promise
-  } 
+  }
 
-   self.setSuspend = function (params) {
+  self.setSuspend = function (params) {
     var deferred = $q.defer()
     Data.services.setSuspend(
             params,
@@ -2601,7 +2601,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
               deferred.reject(err)
             })
     return deferred.promise
-  } 
+  }
   return self
 }])
 
@@ -2623,6 +2623,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.saveReviewInfo = function (params) {
     var deferred = $q.defer()
     Data.Doctor2.saveReviewInfo(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.getPatientList = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor2.getPatientList(
             params,
             function (data, headers) {
               deferred.resolve(data)
