@@ -53,7 +53,7 @@
                 <span>全部患者：{{patients.length + patientsInCharge.length}}</span>
             </a>
             <a ng-class="{'high-light':!params.isPatients}" class="item col-50 " style="border-right:0px" ng-click="ShowTodays()">
-                <span>今日新增：{{Todays.length}}</span>
+                <span>今日新增：{{Todays.length + TodaysInCharge.length}}</span>
             </a>
         </div>
         <div ng-if="params.isPatients" class="list">
@@ -119,6 +119,28 @@
 
 
         <div ng-if="!params.isPatients" class="list">
+            <div ng-repeat="ti in TodaysInCharge |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(ti.patientId.userId)" ng-show="ti.show">
+                <img ng-src="{{ti.patientId.photoUrl||'img/patient.png'}}">
+                    <div style="">
+                        <span>{{ti.patientId.name}}</span>
+                        <span>{{ti.patientId.gender | filterGender}}</span>
+                        <span ng-if = "(ti.patientId.birthday)">{{t.patientId.birthday | filterAge}}岁</span>
+                        <span ng-if = "!(ti.patientId.birthday)">年龄未知</span>
+                        <span style="float: right">{{ti.dpRelationTime |dateFormat:"YYYY-MM-DD"}}</span>
+                        <p>
+                        <i class="y-message bg-6a">主管</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_2'">CKD1-2期</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_3'">CKD3-4期</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_4'">CDK5期</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_6'">腹透</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_5'">血透</i>
+                        <i class="y-message bg-12" ng-if="ti.patientId.class=='class_1'">肾移植</i>
+                        <i class="y-message bg-f7" ng-if="ti.patientId.hypertension==1">高血压</i>
+                        <i class="y-message bg-a2" ng-if="ti.patientId.VIP==1">保险</i>                        
+                        </p>
+                    </div>
+            </div>
+
             <div ng-repeat="t in Todays |orderBy:filter.propertyName" collection-item-height="94px" class="item item-avatar" type="item-text-wrap" ng-click="getPatientDetail(t.patientId.userId)" ng-show="t.show">
                 <img ng-src="{{t.patientId.photoUrl||'img/patient.png'}}">
                     <div style="">
