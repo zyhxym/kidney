@@ -409,7 +409,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       getSuspendTime: {method: 'GET', params: {route: 'suspendTime'}, timeout: 10000},
       insertSuspendTime: {method: 'POST', params: {route: 'suspendTime'}, timeout: 10000},
       deleteSuspendTime: {method: 'POST', params: {route: 'deleteSuspendTime'}, timeout: 10000},
-      getPatientByDate: {method: 'GET', params: {route: 'myPatientsByDate'}, timeout: 10000},
+      // getPatientByDate: {method: 'GET', params: {route: 'myPatientsByDate'}, timeout: 10000},
       getDocNum: {method: 'GET', params: {route: 'numbers'}, timeout: 10000},
       getAliPayAccount: {method: 'GET', params: {route: 'AliPayAccount'}, timeout: 10000},
       editAliPayAccount: {method: 'POST', params: {route: 'AliPayAccount'}, timeout: 10000}
@@ -559,7 +559,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
       getReviewList: {method: 'GET', params: {route: 'myPatientsToReview'}, timeout: 100000},
       saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000},
-      getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000}
+      getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
+      getPatientByDate: {method: 'GET', params: {route: 'myPatientsByDate'}, timeout: 10000}
     })
   }
 
@@ -1623,22 +1624,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     // params->0:{
        //   userId:'doc01'
        // }
-  // self.getPatientList = function (params) {
-  //   var deferred = $q.defer()
-  //   Data.Doctor.getPatientList(
-  //           params,
-  //           function (data, headers) {
-  //             deferred.resolve(data)
-  //           },
-  //           function (err) {
-  //             deferred.reject(err)
-  //           })
-  //   return deferred.promise
-  // }
-
-    // params->0:{
-       //   userId:'doc01'
-       // }
   self.getRecentDoctorList = function (params) {
     var deferred = $q.defer()
     Data.Doctor.getRecentDoctorList(
@@ -1823,22 +1808,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.deleteSuspendTime = function (params) {
     var deferred = $q.defer()
     Data.Doctor.deleteSuspendTime(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
-
-    // params->0:{
-           //   userId:'doc01',
-           // }
-  self.getPatientByDate = function (params) {
-    var deferred = $q.defer()
-    Data.Doctor.getPatientByDate(
             params,
             function (data, headers) {
               deferred.resolve(data)
@@ -2661,6 +2630,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.getPatientList = function (params) {
     var deferred = $q.defer()
     Data.Doctor2.getPatientList(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.getPatientByDate = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor2.getPatientByDate(
             params,
             function (data, headers) {
               deferred.resolve(data)
