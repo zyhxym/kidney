@@ -384,7 +384,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var Patient = function () {
     return $resource(CONFIG.baseUrl + ':path/:route', {path: 'patient'}, {
-      getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
+      // getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       getMyDoctors: {method: 'GET', params: {route: 'myDoctors'}, timeout: 10000},
       getDoctorLists: {method: 'GET', params: {route: 'doctors'}, timeout: 10000},
       getCounselRecords: {method: 'GET', params: {route: 'counselRecords'}, timeout: 10000},
@@ -551,7 +551,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       deleteSchedules: {method: 'POST', params: {route: 'deleteSchedule'}, timeout: 100000},
       relayTarget: {method: 'POST', params: {route: 'relayTarget'}, timeout: 100000},
       deleteSuspend: {method: 'POST', params: {route: 'deleteSuspend'}, timeout: 100000},
-      setSuspend: {method: 'POST', params: {route: 'setSuspend'}, timeout: 100000}
+      setSuspend: {method: 'POST', params: {route: 'setSuspend'}, timeout: 100000},
+      myPDpatients: {method: 'GET', params: {route: 'myPDpatients'}, timeout: 100000},
+      PDConfirmation: {method: 'POST', params: {route: 'PDConfirmation'}, timeout: 100000}
     })
   }
 
@@ -561,6 +563,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000},
       getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
       getPatientByDate: {method: 'GET', params: {route: 'myPatientsByDate'}, timeout: 10000}
+    })
+  }
+
+  var Patient2 = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'patient'}, {
+      getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000}
     })
   }
 
@@ -592,6 +600,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.labtestImport = labtestImport()
       serve.services = services()
       serve.Doctor2 = Doctor2()
+      serve.Patient2 = Patient2()
     }, 0, 1)
   }
   serve.Dict = Dict()
@@ -618,6 +627,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.labtestImport = labtestImport()
   serve.services = services()
   serve.Doctor2 = Doctor2()
+  serve.Patient2 = Patient2()
   return serve
 }])
 .factory('Dict', ['$q', 'Data', function ($q, Data) {
@@ -1457,18 +1467,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 .factory('Patient', ['$q', 'Data', function ($q, Data) {
   var self = this
     // params->0:{userId:'p01'}
-  self.getPatientDetail = function (params) {
-    var deferred = $q.defer()
-    Data.Patient.getPatientDetail(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.getPatientDetail = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Patient.getPatientDetail(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
 
     // params->0:{userId:'p01'}
   self.getMyDoctors = function (params) {
@@ -2596,6 +2606,32 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
+
+  self.myPDpatients = function (params) {
+    var deferred = $q.defer()
+    Data.services.myPDpatients(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.PDConfirmation = function (params) {
+    var deferred = $q.defer()
+    Data.services.PDConfirmation(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
   return self
 }])
 
@@ -2643,6 +2679,23 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.getPatientByDate = function (params) {
     var deferred = $q.defer()
     Data.Doctor2.getPatientByDate(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  return self
+}])
+
+.factory('Patient2', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.getPatientDetail = function (params) {
+    var deferred = $q.defer()
+    Data.Patient2.getPatientDetail(
             params,
             function (data, headers) {
               deferred.resolve(data)
