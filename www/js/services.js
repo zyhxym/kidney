@@ -465,7 +465,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Message = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'message'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'message'}, {
       getMessages: {method: 'GET', params: {route: 'messages'}, timeout: 100000},
       insertMessages: {method: 'POST', params: {route: 'message'}, timeout: 100000}
     })
@@ -495,7 +495,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var New = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'new'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'new'}, {
       getNews: {method: 'GET', params: {route: 'news'}, timeout: 100000},
       insertNews: {method: 'POST', params: {route: 'news'}, timeout: 100000},
       getNewsByReadOrNot: {method: 'GET', params: {route: 'newsByReadOrNot'}, timeout: 100000}

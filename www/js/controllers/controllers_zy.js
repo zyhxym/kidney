@@ -4163,6 +4163,44 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 未咨询报表推送列表-zy
-.controller('nocounselCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', function ($scope, $state, $interval, $rootScope, Storage) {
+.controller('nocounselCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  var load = function () {
+    Message.getMessages({
+      type: 14 // 14是为及时咨询报告消息
+    }).then(function (data) {
+      $scope.noCounsels = data.results
+    }, function (err) {
+      console.log(err)
+    })
+  }
 
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  // 查看详情
+  $scope.getDetail = function (noCounsel) {
+    Storage.set('noCounselurl', noCounsel.url)
+    $state.go('tab.nocodetail')
+  }
+}])
+
+// 未咨询报表推送详情-zy
+.controller('nocodetailCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', '$http', function ($scope, $state, $interval, $rootScope, Storage, Message, $http) {
+  var noCounselurl = Storage.get('noCounselurl')
+  // console.log(noCounselurl)
+  $http({
+    method: 'GET',
+    url: noCounselurl
+  }).success(function (data) {
+    // console.log(data)
+    $scope.details = data.results
+  })
 }])
