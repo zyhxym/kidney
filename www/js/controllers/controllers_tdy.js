@@ -1934,7 +1934,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 
 //消息中心--ZY
-.controller('messageCtrl', ['$ionicPopup','$q','$scope','$state','$ionicHistory','New','Storage','Doctor','Patient','Communication','Counsel',function($ionicPopup,$q,$scope, $state,$ionicHistory,New,Storage,Doctor,Patient,Communication,Counsel) {
+.controller('messageCtrl', ['$ionicPopup','$q','$scope','$state','$ionicHistory','New','Storage','Doctor','Patient2','Communication','Counsel',function($ionicPopup,$q,$scope, $state,$ionicHistory,New,Storage,Doctor,Patient2,Communication,Counsel) {
   $scope.barwidth="width:0%";
 
   /**
@@ -1946,7 +1946,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    */
   var getPatNamePhoto = function(sender,patient){
     console.log(patient)
-    Patient.getPatientDetail({userId:sender}).then(function(data){
+    Patient2.getPatientDetail({userId:sender}).then(function(data){
       if(data.results){
         if(data.results.photoUrl){
           patient.Name = data.results.name;
@@ -2061,9 +2061,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       console.log(err);
     });           
   }
-
-       
-     
+           
   $scope.$on('$ionicView.enter', function() {
     Lastnews();
   })
@@ -2134,15 +2132,19 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 // 未咨询报表推送消息-zy
 .controller('nocomessCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  $scope.noCounsels = []
   var load = function () {
     Message.getMessages({
       type: 14 // 14是为及时咨询报告消息
     }).then(function (data) {
-      for (var i = 0; i < data.results.length; i++) {
-        if (data.results[i].readOrNot==1) {
-          $scope.noCounsels = data.results
-        }
-      }      
+      console.log(data)
+      // for (var i = 0; i < data.results.length; i++) {        
+      //   if (data.results[i].readOrNot==0) {
+      //     $scope.noCounsels.push(data.results[i])
+      //     console.log($scope.noCounsels)
+      //   }
+      // }
+     $scope.noCounsels=data.results  
     }, function (err) {
       console.log(err)
     })
@@ -2159,7 +2161,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   }
 
   // 查看详情
-  $scope.getDetail = function () {
+  $scope.getDetail = function (noCounsel) {
+    Storage.set('noCounselurl', noCounsel.url)
+    Storage.set('noCounselMes', noCounsel.messageId)
     $state.go('tab.nocodetail')
   }
 }])
