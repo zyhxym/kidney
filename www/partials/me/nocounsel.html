@@ -10,7 +10,7 @@
     <ion-list>
       <ion-item  ng-repeat="c in noCounsels"  class="item item-avatar card bg-f0" ng-click="getDetail(c)">
         <!-- <img ng-src="{{chat.Photo}}" image-red-point="!chat.readOrNot"> -->
-        <img src="img/time.png">
+        <img src="img/time.png" image-red-point="(c.readOrNot==0)">
         <h2 class="groud-d row" style="margin-top: 3px">{{c.title}}</h2>
         <span class="row" style="margin-top: 2px">{{c.description}}</span>
         <i class="icon ion-ios-arrow-right mine-msg-right" style="top:24px"></i>
