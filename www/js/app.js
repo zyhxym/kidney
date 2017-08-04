@@ -302,18 +302,19 @@ angular.module('kidney', [
       templateUrl: 'partials/others/uploadcertificate.html',
       controller: 'uploadcertificateCtrl'
     })
-
+    // 未读消息列表
     .state('messages', {
       cache: false,
       url: '/messages',
       templateUrl: 'partials/others/AllMessage.html',
       controller: 'messageCtrl'
     })
-    .state('messagesDetail', {
-      cache: false,
-      url: '/messagesDetail',
-      templateUrl: 'partials/others/VaryMessage.html',
-      controller: 'VaryMessageCtrl'
+    // 未读未及时回复咨询列表
+    .state('nocomess', {
+      // cache: false,
+      url: '/nocomess',
+      templateUrl: 'partials/others/nocomess.html',
+      controller: 'nocomessCtrl'
     })
 
     // 选项卡
@@ -854,6 +855,17 @@ angular.module('kidney', [
         'tab-me': {
           controller: 'nocounselCtrl',
           templateUrl: 'partials/me/nocounsel.html'
+        }
+      }
+    })
+    // 未及时回复咨询报告详情
+    .state('tab.nocodetail', {
+        // cache: false,
+      url: '/nocodetail',
+      views: {
+        'tab-me': {
+          controller: 'nocodetailCtrl',
+          templateUrl: 'partials/me/nocodetail.html'
         }
       }
     })

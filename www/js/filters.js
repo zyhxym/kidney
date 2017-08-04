@@ -207,3 +207,11 @@ angular.module('kidney.filters', [])
     return name
   }
 }])
+.filter('timeType', [function () {
+  return function (type) {
+    var g = '未知'
+    if (type == 1) { g = '超过24h未回复' }
+    if (type == 2) { g = '超过18h未回复' }
+    return g
+  }
+}])
