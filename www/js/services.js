@@ -564,6 +564,13 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
+  var getPatientData = function(){
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'report'},{
+      ReportData: {method: 'GET', params: {route: 'vitalSigns'}, timeout: 10000},
+      SaveReport: {method: 'POST', params: {route: 'report'}, timeout: 10000}
+    })
+  }
+
   serve.abort = function ($scope) {
     abort.resolve()
     $interval(function () {
@@ -592,6 +599,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.labtestImport = labtestImport()
       serve.services = services()
       serve.Doctor2 = Doctor2()
+      serve.getPatientData = getPatientData()
     }, 0, 1)
   }
   serve.Dict = Dict()
@@ -618,6 +626,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.labtestImport = labtestImport()
   serve.services = services()
   serve.Doctor2 = Doctor2()
+  serve.getPatientData = getPatientData()
   return serve
 }])
 .factory('Dict', ['$q', 'Data', function ($q, Data) {
@@ -2648,6 +2657,35 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
               deferred.resolve(data)
             },
             function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  return self
+}])
+
+.factory('getPatientData', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.ReportData = function (params) {
+    var deferred = $q.defer()
+    Data.getPatientData.ReportData(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  self.SaveReport = function(params) {
+    var deferred = $q.defer()
+    Data.getPatientData.SaveReport(
+            params,
+            function (data, headers) {
+              deferred.resovle(data)
+            },
+            function (err){
               deferred.reject(err)
             })
     return deferred.promise

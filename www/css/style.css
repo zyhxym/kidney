@@ -276,6 +276,44 @@ display: inline-block;
   font-size: 40px!important;
   margin-left: -13px;
 }
+
+/*患者病情报告*/
+button.periodBtn{
+  width:25%;
+  border-color: #ddd;
+  color: #444;
+  height: 30px;
+  font-size:14px;
+  margin: 1px;
+  border-radius: 2px;
+  text-align: center;
+  background-color: transparent;
+  border-width: thin;
+  border-style: solid;
+}
+button.arrowBtn{
+  width:33%;
+  border-color: #FFF;
+  color: #444;
+  height: 30px;
+  font-size:20px;
+  margin: 1px;
+  border-radius: 2px;
+  text-align: center;
+  background-color: transparent;
+  border-width: thin;
+  border-style: solid;
+}
+.doctorAdvice span{
+  float: left;
+  border: 0px;
+}
+input.MeasureData{
+  width: 35px;
+  height: 18px;
+  float: left;
+}
+
 /*患者信息*/
 .patient-active {
   width: 50px;
