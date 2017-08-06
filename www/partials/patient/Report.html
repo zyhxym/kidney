@@ -23,38 +23,82 @@
     <div>
       <div style="margin-top: 0px; min-width: 300px; " id="container1"></div><!-- //体温 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周体温记录{{Temp.recordTimes}}次，发热{{Temp.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='week'">本周体温记录{{Temp.recordTimes}}次，发热{{Temp.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='month'">本月体温记录{{Temp.recordTimes}}次，发热{{Temp.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='season'">本季度体温记录{{Temp.recordTimes}}次，发热{{Temp.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='year'">本年体温记录{{Temp.recordTimes}}次，发热{{Temp.outOfRangeTimes1}}次</div>
+
         <div><span>医生建议：</span><span>体温高于37.3为发热</span></div>
       </div>
 
       <div style="margin-top: 0px; min-width: 300px; " id="container2"></div><!-- //体重 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周体重记录{{Weight.recordDays}}天，{{Weight.recordTimes}}次，平均体重{{Weight.average1}}kg,最高值{{Weight.max1}}kg，最低值{{Weight.min1}}kg</div>
-        <div class="doctorAdvice"><span>医生建议：建议下周体重控制在</span><input ng-model="WeightLow" type="number" class="MeasureData" value={{Weight.recommendValue2}}><span>-</span><input ng-model="WeightHigh" type="number" class="MeasureData" value={{Weight.recommendValue1}}></div>
+        <div ng-if="type=='week'">本周体重记录{{Weight.recordDays}}天，{{Weight.recordTimes}}次，平均体重{{Weight.average1}}kg,最高值{{Weight.max1}}kg，最低值{{Weight.min1}}kg</div>
+        <div class="doctorAdvice" ng-if="type=='week'"><span>医生建议：建议下周体重控制在</span><input ng-model="WeightLow" type="number" class="MeasureData" value={{Weight.recommendValue2}}><span>-</span><input ng-model="WeightHigh" type="number" class="MeasureData" value={{Weight.recommendValue1}}></div>
+        
+        <div ng-if="type=='month'">本月体重记录{{Weight.recordDays}}天，{{Weight.recordTimes}}次，平均体重{{Weight.average1}}kg,最高值{{Weight.max1}}kg，最低值{{Weight.min1}}kg</div>
+        <div class="doctorAdvice" ng-if="type=='month'"><span>医生建议：建议下月体重控制在</span><input ng-model="WeightLow" type="number" class="MeasureData" value={{Weight.recommendValue2}}><span>-</span><input ng-model="WeightHigh" type="number" class="MeasureData" value={{Weight.recommendValue1}}></div>
+
+        <div ng-if="type=='season'">本季度体重记录{{Weight.recordDays}}天，{{Weight.recordTimes}}次，平均体重{{Weight.average1}}kg,最高值{{Weight.max1}}kg，最低值{{Weight.min1}}kg</div>
+        <div class="doctorAdvice" ng-if="type=='season'"><span>医生建议：建议下季度体重控制在</span><input ng-model="WeightLow" type="number" class="MeasureData" value={{Weight.recommendValue2}}><span>-</span><input ng-model="WeightHigh" type="number" class="MeasureData" value={{Weight.recommendValue1}}></div>
+
+        <div ng-if="type=='year'">本年体重记录{{Weight.recordDays}}天，{{Weight.recordTimes}}次，平均体重{{Weight.average1}}kg,最高值{{Weight.max1}}kg，最低值{{Weight.min1}}kg</div>
+        <div class="doctorAdvice" ng-if="type=='year'"><span>医生建议：建议下年体重控制在</span><input ng-model="WeightLow" type="number" class="MeasureData" value={{Weight.recommendValue2}}><span>-</span><input ng-model="WeightHigh" type="number" class="MeasureData" value={{Weight.recommendValue1}}></div>
       </div>
 
       <div style="margin-top: 0px; min-width: 300px; " id="container3"></div><!-- //血压 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周血压记录{{BP.recordDays}}天，{{BP.recordTimes}}次，平均血压{{BP.average1}}/{{BP.average2}}mmHg,最高血压{{BP.max1}}/{{BP.max2}}mmHg，最低血压{{BP.min1}}/{{BP.min2}}mmHg，建议控制血压在{{BP.recommendValue2}}-{{BP.recommendValue1}}/{{BP.recommendValue4}}-{{BP.recommendValue3}}mmHg，超出范围{{BP.outOfRangeTimes1}}次</div>
-        <div class="doctorAdvice"><span>医生建议：建议下周血压控制在</span><input ng-model="BPH1" type="number" class="MeasureData" value={{BP.recommendValue2}}><span>-</span><input ng-model="BPH2" type="number" class="MeasureData" value={{BP.recommendValue1}}><span>/</span><input ng-model="BPL1" type="number" class="MeasureData" value={{BP.recommendValue4}}><span>-</span><input ng-model="BPL2" type="number" class="MeasureData" value={{BP.recommendValue3}}></div>
+        <div ng-if="type=='week'">本周血压记录{{BP.recordDays}}天，{{BP.recordTimes}}次，平均血压{{BP.average1}}/{{BP.average2}}mmHg,最高血压{{BP.max1}}/{{BP.max2}}mmHg，最低血压{{BP.min1}}/{{BP.min2}}mmHg，建议控制血压在{{BP.recommendValue2}}-{{BP.recommendValue1}}/{{BP.recommendValue4}}-{{BP.recommendValue3}}mmHg，超出范围{{BP.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='week'"><span>医生建议：建议下周血压控制在</span><input ng-model="BPH1" type="number" class="MeasureData" value={{BP.recommendValue2}}><span>-</span><input ng-model="BPH2" type="number" class="MeasureData" value={{BP.recommendValue1}}><span>/</span><input ng-model="BPL1" type="number" class="MeasureData" value={{BP.recommendValue4}}><span>-</span><input ng-model="BPL2" type="number" class="MeasureData" value={{BP.recommendValue3}}></div>
+
+        <div ng-if="type=='month'">本月血压记录{{BP.recordDays}}天，{{BP.recordTimes}}次，平均血压{{BP.average1}}/{{BP.average2}}mmHg,最高血压{{BP.max1}}/{{BP.max2}}mmHg，最低血压{{BP.min1}}/{{BP.min2}}mmHg，建议控制血压在{{BP.recommendValue2}}-{{BP.recommendValue1}}/{{BP.recommendValue4}}-{{BP.recommendValue3}}mmHg，超出范围{{BP.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='month'"><span>医生建议：建议下月血压控制在</span><input ng-model="BPH1" type="number" class="MeasureData" value={{BP.recommendValue2}}><span>-</span><input ng-model="BPH2" type="number" class="MeasureData" value={{BP.recommendValue1}}><span>/</span><input ng-model="BPL1" type="number" class="MeasureData" value={{BP.recommendValue4}}><span>-</span><input ng-model="BPL2" type="number" class="MeasureData" value={{BP.recommendValue3}}></div>
+
+        <div ng-if="type=='season'">本季度血压记录{{BP.recordDays}}天，{{BP.recordTimes}}次，平均血压{{BP.average1}}/{{BP.average2}}mmHg,最高血压{{BP.max1}}/{{BP.max2}}mmHg，最低血压{{BP.min1}}/{{BP.min2}}mmHg，建议控制血压在{{BP.recommendValue2}}-{{BP.recommendValue1}}/{{BP.recommendValue4}}-{{BP.recommendValue3}}mmHg，超出范围{{BP.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='season'"><span>医生建议：建议下季度血压控制在</span><input ng-model="BPH1" type="number" class="MeasureData" value={{BP.recommendValue2}}><span>-</span><input ng-model="BPH2" type="number" class="MeasureData" value={{BP.recommendValue1}}><span>/</span><input ng-model="BPL1" type="number" class="MeasureData" value={{BP.recommendValue4}}><span>-</span><input ng-model="BPL2" type="number" class="MeasureData" value={{BP.recommendValue3}}></div>
+
+        <div ng-if="type=='year'">本年血压记录{{BP.recordDays}}天，{{BP.recordTimes}}次，平均血压{{BP.average1}}/{{BP.average2}}mmHg,最高血压{{BP.max1}}/{{BP.max2}}mmHg，最低血压{{BP.min1}}/{{BP.min2}}mmHg，建议控制血压在{{BP.recommendValue2}}-{{BP.recommendValue1}}/{{BP.recommendValue4}}-{{BP.recommendValue3}}mmHg，超出范围{{BP.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='year'"><span>医生建议：建议下年血压控制在</span><input ng-model="BPH1" type="number" class="MeasureData" value={{BP.recommendValue2}}><span>-</span><input ng-model="BPH2" type="number" class="MeasureData" value={{BP.recommendValue1}}><span>/</span><input ng-model="BPL1" type="number" class="MeasureData" value={{BP.recommendValue4}}><span>-</span><input ng-model="BPL2" type="number" class="MeasureData" value={{BP.recommendValue3}}></div>
       </div>
 
       <div style="margin-top: 0px; min-width: 300px; " id="container4"></div><!-- //尿量 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周尿量记录{{Vol.recordDays}}天，尿量最少{{Vol.min1}}mL，最多{{Vol.max1}}mL，平均尿量{{Vol.average1}}mL，发生少尿{{Vol.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='week'">本周尿量记录{{Vol.recordDays}}天，尿量最少{{Vol.min1}}mL，最多{{Vol.max1}}mL，平均尿量{{Vol.average1}}mL，发生少尿{{Vol.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='month'">本月尿量记录{{Vol.recordDays}}天，尿量最少{{Vol.min1}}mL，最多{{Vol.max1}}mL，平均尿量{{Vol.average1}}mL，发生少尿{{Vol.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='season'">本季度尿量记录{{Vol.recordDays}}天，尿量最少{{Vol.min1}}mL，最多{{Vol.max1}}mL，平均尿量{{Vol.average1}}mL，发生少尿{{Vol.outOfRangeTimes1}}次</div>
+        <div ng-if="type=='year'">本年尿量记录{{Vol.recordDays}}天，尿量最少{{Vol.min1}}mL，最多{{Vol.max1}}mL，平均尿量{{Vol.average1}}mL，发生少尿{{Vol.outOfRangeTimes1}}次</div>
+        
         <div class="doctorAdvice"><span>医生建议：少尿为小于500mL（腹透、血透病人除外）</span></div>
       </div>
 
       <div style="margin-top: 0px; min-width: 300px; " id="container5"></div><!-- //心率 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周心率记录{{HR.recordDays}}天，{{HR.recordTimes}}次，平均心率{{HR.average1}}次/分，最高心率{{HR.max1}}次/分，最低心率{{HR.min1}}次/分，建议控制心率{{HR.recommendValue2}}-{{HR.recommendValue1}}次/分，超出范围{{HR.outOfRangeTimes1}}次</div>
-        <div class="doctorAdvice"><span>医生建议：建议下周心率控制在</span><input ng-model="HRL" type="number" class="MeasureData" value={{HR.recommendValue1}}><span>-</span><input ng-model="HRH" type="number" class="MeasureData" value={{HR.recommendValue2}}></div>
+        <div ng-if="type=='week'">本周心率记录{{HR.recordDays}}天，{{HR.recordTimes}}次，平均心率{{HR.average1}}次/分，最高心率{{HR.max1}}次/分，最低心率{{HR.min1}}次/分，建议控制心率{{HR.recommendValue2}}-{{HR.recommendValue1}}次/分，超出范围{{HR.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='week'"><span>医生建议：建议下周心率控制在</span><input ng-model="HRL" type="number" class="MeasureData" value={{HR.recommendValue1}}><span>-</span><input ng-model="HRH" type="number" class="MeasureData" value={{HR.recommendValue2}}></div>
+
+        <div ng-if="type=='month'">本月心率记录{{HR.recordDays}}天，{{HR.recordTimes}}次，平均心率{{HR.average1}}次/分，最高心率{{HR.max1}}次/分，最低心率{{HR.min1}}次/分，建议控制心率{{HR.recommendValue2}}-{{HR.recommendValue1}}次/分，超出范围{{HR.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='month'"><span>医生建议：建议下月心率控制在</span><input ng-model="HRL" type="number" class="MeasureData" value={{HR.recommendValue1}}><span>-</span><input ng-model="HRH" type="number" class="MeasureData" value={{HR.recommendValue2}}></div>
+
+        <div ng-if="type=='season'">本季度心率记录{{HR.recordDays}}天，{{HR.recordTimes}}次，平均心率{{HR.average1}}次/分，最高心率{{HR.max1}}次/分，最低心率{{HR.min1}}次/分，建议控制心率{{HR.recommendValue2}}-{{HR.recommendValue1}}次/分，超出范围{{HR.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='season'"><span>医生建议：建议下季度心率控制在</span><input ng-model="HRL" type="number" class="MeasureData" value={{HR.recommendValue1}}><span>-</span><input ng-model="HRH" type="number" class="MeasureData" value={{HR.recommendValue2}}></div>
+
+        <div ng-if="type=='year'">本年心率记录{{HR.recordDays}}天，{{HR.recordTimes}}次，平均心率{{HR.average1}}次/分，最高心率{{HR.max1}}次/分，最低心率{{HR.min1}}次/分，建议控制心率{{HR.recommendValue2}}-{{HR.recommendValue1}}次/分，超出范围{{HR.outOfRangeTimes1}}次</div>
+        <div class="doctorAdvice" ng-if="type=='year'"><span>医生建议：建议下年心率控制在</span><input ng-model="HRL" type="number" class="MeasureData" value={{HR.recommendValue1}}><span>-</span><input ng-model="HRH" type="number" class="MeasureData" value={{HR.recommendValue2}}></div>
       </div>
 
       <div style="margin-top: 0px; min-width: 300px; " id="container6"></div><!-- //腹透 -->
       <div ng-if="modify">
-        <div ng-if="type == 'week'">本周记录腹透超滤量{{PD.recordDays}}天，腹透超滤量平均{{PD.average1}}mL，最高{{PD.max1}}mL，最低{{PD.min1}}mL，出量平均{{PD.average2}}mL，最高{{PD.max2}}mL，最低{{PD.min2}}mL</div>
-        <div class="doctorAdvice"><span>医生建议：建议下周超滤量控制在</span><input ng-model="PDL" type="number" class="MeasureData" value={{PD.recommendValue1}}><span>-</span><input ng-model="PDH" type="number" class="MeasureData" value={{PD.recommendValue2}}></div>
+        <div ng-if="type=='week'">本周记录腹透超滤量{{PD.recordDays}}天，腹透超滤量平均{{PD.average1}}mL，最高{{PD.max1}}mL，最低{{PD.min1}}mL，出量平均{{PD.average2}}mL，最高{{PD.max2}}mL，最低{{PD.min2}}mL</div>
+        <div class="doctorAdvice" ng-if="type=='week'"><span>医生建议：建议下周超滤量控制在</span><input ng-model="PDL" type="number" class="MeasureData" value={{PD.recommendValue1}}><span>-</span><input ng-model="PDH" type="number" class="MeasureData" value={{PD.recommendValue2}}></div>
+
+        <div ng-if="type=='month'">本月记录腹透超滤量{{PD.recordDays}}天，腹透超滤量平均{{PD.average1}}mL，最高{{PD.max1}}mL，最低{{PD.min1}}mL，出量平均{{PD.average2}}mL，最高{{PD.max2}}mL，最低{{PD.min2}}mL</div>
+        <div class="doctorAdvice" ng-if="type=='month'"><span>医生建议：建议下月超滤量控制在</span><input ng-model="PDL" type="number" class="MeasureData" value={{PD.recommendValue1}}><span>-</span><input ng-model="PDH" type="number" class="MeasureData" value={{PD.recommendValue2}}></div>
+
+        <div ng-if="type=='season'">本季度记录腹透超滤量{{PD.recordDays}}天，腹透超滤量平均{{PD.average1}}mL，最高{{PD.max1}}mL，最低{{PD.min1}}mL，出量平均{{PD.average2}}mL，最高{{PD.max2}}mL，最低{{PD.min2}}mL</div>
+        <div class="doctorAdvice" ng-if="type=='season'"><span>医生建议：建议下季度超滤量控制在</span><input ng-model="PDL" type="number" class="MeasureData" value={{PD.recommendValue1}}><span>-</span><input ng-model="PDH" type="number" class="MeasureData" value={{PD.recommendValue2}}></div>
+
+        <div ng-if="type=='year'">本年记录腹透超滤量{{PD.recordDays}}天，腹透超滤量平均{{PD.average1}}mL，最高{{PD.max1}}mL，最低{{PD.min1}}mL，出量平均{{PD.average2}}mL，最高{{PD.max2}}mL，最低{{PD.min2}}mL</div>
+        <div class="doctorAdvice" ng-if="type=='year'"><span>医生建议：建议下年超滤量控制在</span><input ng-model="PDL" type="number" class="MeasureData" value={{PD.recommendValue1}}><span>-</span><input ng-model="PDH" type="number" class="MeasureData" value={{PD.recommendValue2}}></div>
       </div>
     </div>
 
