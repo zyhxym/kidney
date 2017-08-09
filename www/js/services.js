@@ -2678,14 +2678,14 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
-  self.SaveReport = function(params) {
+  self.SaveReport = function (params) {
     var deferred = $q.defer()
     Data.getPatientData.SaveReport(
             params,
             function (data, headers) {
-              deferred.resovle(data)
+              deferred.resolve(data)
             },
-            function (err){
+            function (err) {
               deferred.reject(err)
             })
     return deferred.promise
