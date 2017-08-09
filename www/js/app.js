@@ -303,18 +303,19 @@ angular.module('kidney', [
       templateUrl: 'partials/others/uploadcertificate.html',
       controller: 'uploadcertificateCtrl'
     })
-
+    // 未读消息列表
     .state('messages', {
       cache: false,
       url: '/messages',
       templateUrl: 'partials/others/AllMessage.html',
       controller: 'messageCtrl'
     })
-    .state('messagesDetail', {
-      cache: false,
-      url: '/messagesDetail',
-      templateUrl: 'partials/others/VaryMessage.html',
-      controller: 'VaryMessageCtrl'
+    // 未读未及时回复咨询列表
+    .state('nocomess', {
+      // cache: false,
+      url: '/nocomess',
+      templateUrl: 'partials/others/nocomess.html',
+      controller: 'nocomessCtrl'
     })
 
     // 选项卡
@@ -415,16 +416,7 @@ angular.module('kidney', [
       }
         // params:{counselId:null}
     })
-    // .state('tab.consult-detail', {
-    //     // cache: false,
-    //     url: '/consult/detail/:consultId',
-    //     views: {
-    //         'tab-consult':{
-    //             controller: 'consultDetailCtrl',
-    //             templateUrl: 'partials/consult/consult-detail.html'
-    //         }
-    //     }
-    // })
+
     .state('tab.selectDoc', {
         // cache: false,
       url: '/selectdoc',
@@ -546,6 +538,18 @@ angular.module('kidney', [
         'tab-patient': {
           controller: 'reviewCtrl',
           templateUrl: 'partials/patient/review.html'
+        }
+      }
+    })
+
+// 预约面诊列表
+    .state('tab.face', {
+        // cache: false,
+      url: '/face',
+      views: {
+        'tab-patient': {
+          controller: 'faceCtrl',
+          templateUrl: 'partials/patient/face.html'
         }
       }
     })
@@ -761,40 +765,40 @@ angular.module('kidney', [
       }
     })
 
-    //我的服务
+    // 我的服务
     .state('tab.myservice', {
         // cache: false,
-        url: '/myservice',
-        views: {
-            'tab-me':{
-                controller: 'myserviceCtrl',
-                templateUrl: 'partials/me/myservice.html'
-            }
+      url: '/myservice',
+      views: {
+        'tab-me': {
+          controller: 'myserviceCtrl',
+          templateUrl: 'partials/me/myservice.html'
         }
+      }
     })
 
-    //自动转发页
+    // 自动转发页
     .state('tab.forwarding', {
         // cache: false,
-        url: '/me/forwarding',
-        views: {
-            'tab-me':{
-                controller: 'forwardingCtrl',
-                templateUrl: 'partials/me/forwarding.html'
-            }
+      url: '/me/forwarding',
+      views: {
+        'tab-me': {
+          controller: 'forwardingCtrl',
+          templateUrl: 'partials/me/forwarding.html'
         }
+      }
     })
-    
-    //面诊服务页面
+
+    // 面诊服务页面
     .state('tab.faceconsult', {
         // cache: false,
-        url: '/me/faceconsult',
-        views: {
-            'tab-me':{
-                controller: 'faceconsultCtrl',
-                templateUrl: 'partials/me/faceconsult.html'
-            }
+      url: '/me/faceconsult',
+      views: {
+        'tab-me': {
+          controller: 'faceconsultCtrl',
+          templateUrl: 'partials/me/faceconsult.html'
         }
+      }
     })
 
     // 设置
@@ -853,6 +857,29 @@ angular.module('kidney', [
       }
     })
 
+    // 科室管理
+    .state('tab.nocounsel', {
+        // cache: false,
+      url: '/nocounsel',
+      views: {
+        'tab-me': {
+          controller: 'nocounselCtrl',
+          templateUrl: 'partials/me/nocounsel.html'
+        }
+      }
+    })
+    // 未及时回复咨询报告详情
+    .state('tab.nocodetail', {
+        // cache: false,
+      url: '/nocodetail',
+      views: {
+        'tab-me': {
+          controller: 'nocodetailCtrl',
+          templateUrl: 'partials/me/nocodetail.html'
+        }
+      }
+    })
+
   $urlRouterProvider.otherwise('/signin')
 })
 .controller('tabCtrl', ['$state', '$scope', '$interval', function ($state, $scope, $interval) {
@@ -862,7 +889,7 @@ angular.module('kidney', [
     }, 20)
   }
   $scope.destroy = function () {
-    //console.log('destroy')
+    // console.log('destroy')
     if (RefreshUnread) {
       $interval.cancel(RefreshUnread)
     }
@@ -961,21 +988,21 @@ angular.module('kidney', [
                       // console.log("凭证不存在!")
               console.log(options)
               $ionicPopup.show({
-                  title: '您离开太久了，请重新登录',
-                  buttons: [
-                    {
-                      text: '取消',
-                      type: 'button'
-                    },
-                    {
-                      text: '確定',
-                      type: 'button-positive',
-                      onTap: function (e) {
-                        $state.go('signin')
-                      }
+                title: '您离开太久了，请重新登录',
+                buttons: [
+                  {
+                    text: '取消',
+                    type: 'button'
+                  },
+                  {
+                    text: '確定',
+                    type: 'button-positive',
+                    onTap: function (e) {
+                      $state.go('signin')
                     }
-                  ]
-                })
+                  }
+                ]
+              })
             }
                     // sessionStorage.removeItem('token');
                     // sessionStorage.removeItem('refreshToken');

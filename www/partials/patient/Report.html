@@ -75,6 +75,10 @@
         <div ng-if="labTestData=='正常'">本{{typeC}}行血常规、尿常规、肝肾功能、血脂等检查未见明显异常</div> 
         <div ng-if="labTestData=='信息缺失'">本{{typeC}}未行血常规、尿常规、肾肝功能、血脂等检查</div>
       </div>
+      <div ng-if="type=='season'||type=='year'">
+        <span>化验指标：本季度肌酐范围{{LT.}}</span>
+
+      </div>
       <div ng-if="type=='season'||type=='year'" style="margin-top: 30px">
          <span>医生报告：</span>
          <textarea id="doctorReport" type="text" style="height: 60px;width: 100%">定时记录生命体征及用药情况。下次门诊就诊时间建议为****-**-**</textarea>

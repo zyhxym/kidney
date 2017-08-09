@@ -1932,29 +1932,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   
 }])
 
-//消息类型-zy
-.controller('VaryMessageCtrl', ['$scope','$state','$ionicHistory','Storage',function($scope, $state,$ionicHistory,Storage) {
-  var messageType = Storage.get("getMessageType")
-  $scope.messages=angular.fromJson(Storage.get("allMessages"))[messageType]
-  //console.log($scope.messages)
-
-  if(messageType=='ZF')
-      $scope.avatar='payment.png'
-  else if(messageType=='JB')
-      $scope.avatar='alert.png'
-  else if(messageType=='RW')
-      $scope.avatar='task.png'
-  else if(messageType=='BX')
-      $scope.avatar='security.png'
-
-  $scope.Goback = function(){
-      $ionicHistory.goBack();
-  }
-
-}])
 
 //消息中心--ZY
-.controller('messageCtrl', ['$ionicPopup','$q','$scope','$state','$ionicHistory','New','Storage','Doctor','Patient','Communication','Counsel',function($ionicPopup,$q,$scope, $state,$ionicHistory,New,Storage,Doctor,Patient,Communication,Counsel) {
+.controller('messageCtrl', ['$ionicPopup','$q','$scope','$state','$ionicHistory','New','Storage','Doctor','Patient2','Communication','Counsel',function($ionicPopup,$q,$scope, $state,$ionicHistory,New,Storage,Doctor,Patient2,Communication,Counsel) {
   $scope.barwidth="width:0%";
 
   /**
@@ -1966,7 +1946,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    */
   var getPatNamePhoto = function(sender,patient){
     console.log(patient)
-    Patient.getPatientDetail({userId:sender}).then(function(data){
+    Patient2.getPatientDetail({userId:sender}).then(function(data){
       if(data.results){
         if(data.results.photoUrl){
           patient.Name = data.results.name;
@@ -2071,9 +2051,17 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       }
     },function(err){
       console.log(err);
-    });        
+    });  
+
+    // 获取未及时回复咨询推送
+    New.getNewsByReadOrNot({type:'14',readOrNot:1}).then(function(data){
+      $scope.noCounsels=data.results;
+      //console.log($scope.noCounsels[0].readOrNot)
+    },function(err){
+      console.log(err);
+    });           
   }
-     
+           
   $scope.$on('$ionicView.enter', function() {
     Lastnews();
   })
@@ -2125,16 +2113,57 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   }
 
   // 根据type进入不同聊天页面
-  $scope.getChatDetail = function(chat){
-    console.log(chat.type);
-    if(chat.type==11){
-        getPChatDetail(chat)
+  $scope.getChatDetail = function(mes){
+    console.log(mes.type);
+    if(mes.type==11){
+        getPChatDetail(mes)
     }
-    else if(chat.type==12){
-        getDChatDetail(chat)
+    else if(mes.type==12){
+        getDChatDetail(mes)
     }
-    else if(chat.type==13){
-        getTChatDetail(chat)
+    else if(mes.type==13){
+        getTChatDetail(mes)
+    } 
+    else if(mes.type==14){
+        $state.go('nocomess')
     }        
+  }
+}])
+
+// 未咨询报表推送消息-zy
+.controller('nocomessCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  $scope.noCounsels = []
+  var load = function () {
+    Message.getMessages({
+      type: 14 // 14是为及时咨询报告消息
+    }).then(function (data) {
+      console.log(data)
+      // for (var i = 0; i < data.results.length; i++) {        
+      //   if (data.results[i].readOrNot==0) {
+      //     $scope.noCounsels.push(data.results[i])
+      //     console.log($scope.noCounsels)
+      //   }
+      // }
+     $scope.noCounsels=data.results  
+    }, function (err) {
+      console.log(err)
+    })
+  }
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  // 查看详情
+  $scope.getDetail = function (noCounsel) {
+    Storage.set('noCounselurl', noCounsel.url)
+    Storage.set('noCounselMes', noCounsel.messageId)
+    $state.go('tab.nocodetail')
   }
 }])

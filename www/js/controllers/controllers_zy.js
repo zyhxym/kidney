@@ -1597,7 +1597,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "患者”页-zy
-.controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor2', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor2) {
+.controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor2', 'services', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor2, services) {
   $scope.barwidth = 'width:0%'
   var patients = []
   $scope.params = {
@@ -1631,6 +1631,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }).then(function (data) {
         // console.log(data)
       $scope.reviewNum = data.numberToReview
+    }, function (err) {
+      console.log(err)
+    })
+
+  // 获取未核销面诊患者 0未核销 1已核销
+    services.myPDpatients({
+      // token: Storage.get('TOKEN')
+      status: 0
+    }).then(function (data) {
+        // console.log(data)
+      $scope.PDNum = data.results.length
     }, function (err) {
       console.log(err)
     })
@@ -1951,7 +1962,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "患者”详情子页-zy
-.controller('patientDetailCtrl', ['New', 'Insurance', 'Storage', 'Doctor', 'Patient', '$scope', '$ionicPopup', '$ionicLoading', '$ionicHistory', '$state', function (New, Insurance, Storage, Doctor, Patient, $scope, $ionicPopup, $ionicLoading, $ionicHistory, $state) {
+.controller('patientDetailCtrl', ['New', 'Insurance', 'Storage', 'Doctor', '$scope', '$ionicPopup', '$ionicLoading', '$ionicHistory', '$state', 'Patient2', function (New, Insurance, Storage, Doctor, $scope, $ionicPopup, $ionicLoading, $ionicHistory, $state, Patient2) {
   $scope.hideTabs = true
   // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
   // $scope.doctor = doc;
@@ -2009,7 +2020,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @param    userId(患者userId): string
    * @return   data.results(患者详情信息)
    */
-  Patient.getPatientDetail({
+  Patient2.getPatientDetail({
     userId: Storage.get('getpatientId')
          // 'U201705090001'
   }).then(function (data) {
@@ -4049,4 +4060,158 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         // Stop the ion-refresher from spinning
     $scope.$broadcast('scroll.refreshComplete')
   }
+}])
+
+// 医生核销面诊-zy
+.controller('faceCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'services', '$ionicPopup', '$ionicLoading', function ($scope, $state, $interval, $rootScope, Storage, services, $ionicPopup, $ionicLoading) {
+  $scope.params = {
+    Confirming: true,
+    updateTime: 0
+  }
+  var load = function () {
+    services.myPDpatients({
+      // token: Storage.get('TOKEN')
+      status: 0 // 0未核销
+    }).then(function (data) {
+      // console.log(data)
+      $scope.confirmFace = data.results
+      $scope.confirmNum = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
+
+    services.myPDpatients({
+      // token: Storage.get('TOKEN')
+      status: 1 // 1已核销
+    }).then(function (data) {
+      // console.log(data)
+      $scope.history = data.results
+      $scope.historyNum = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
+  }
+
+  // 点亮全部患者标签 显示全部患者
+  $scope.ShowConfirming = function () {
+    $scope.params.Confirming = true
+  }
+  // 点亮今日新增标签 显示今日新增患者
+  $scope.ShowHistory = function () {
+    $scope.params.Confirming = false
+  }
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  // 核销
+  $scope.confirm = function (diagId) {
+    // console.log(diagId)
+    $scope.face = {}
+    var myPopup = $ionicPopup.show({
+      template: '<textarea style="height:25px;" ng-model="face.code"></textarea>',
+      title: '请输入核销验证码:',
+      scope: $scope,
+      buttons: [
+      { text: '取消' },
+        { text: '确定',
+          type: 'button-positive',
+          onTap: function (e) {
+            if (!$scope.face.code) {
+          // 必须输入验证码
+              e.preventDefault()
+            } else {
+              return $scope.face.code
+            }
+          }
+        }]
+    })
+
+    myPopup.then(function (code) {
+      // console.log(code)
+      if (code != null) {
+        services.PDConfirmation({
+          // token: Storage.get('TOKEN')
+          diagId: diagId,
+          code: code
+        }).then(function (data) {
+          // console.log(data)
+          $ionicLoading.show({
+            template: '核销成功',
+            duration: 1000
+          })
+          load()
+        }, function (err) {
+          // console.log(err)
+          if (err.data == 'Wrong Code') {
+            $ionicLoading.show({
+              template: '验证码错误，核销失败',
+              duration: 1000
+            })
+          }
+        })
+      }
+    })
+  }
+}])
+
+// 未咨询报表推送列表-zy
+.controller('nocounselCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  var load = function () {
+    Message.getMessages({
+      type: 14 // 14是为及时咨询报告消息
+    }).then(function (data) {
+      $scope.noCounsels = data.results
+    }, function (err) {
+      console.log(err)
+    })
+  }
+
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  // 查看详情
+  $scope.getDetail = function (noCounsel) {
+    Storage.set('noCounselurl', noCounsel.url)
+    Storage.set('noCounselMes', noCounsel.messageId)
+    $state.go('tab.nocodetail')
+  }
+}])
+
+// 未咨询报表推送详情-zy
+.controller('nocodetailCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', '$http', function ($scope, $state, $interval, $rootScope, Storage, Message, $http) {
+  var noCounselurl = Storage.get('noCounselurl')
+  // console.log(noCounselurl)
+  Message.editStatus({
+    type: 14, // 14是为及时咨询报告消息
+    messageId: Storage.get('noCounselMes'),
+    readOrNot: 1
+  }).then(function (data) {
+    console.log(data)
+  }, function (err) {
+    console.log(err)
+  })
+
+  $http({
+    method: 'GET',
+    url: noCounselurl
+  }).success(function (data) {
+    // console.log(data)
+    $scope.details = data.results
+  })
 }])
