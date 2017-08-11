@@ -1,7 +1,7 @@
 angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 登录-zy,zxf
-.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
+.controller('SignInCtrl', ['$ionicLoading', 'User', 'User2', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, User2, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
   $scope.barwidth = 'width:0%'
   $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
@@ -11,7 +11,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   if (Storage.get('doctorunionid') != undefined && Storage.get('bindingsucc') == 'yes') {
-    User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
+    User2.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
       if (data.results.mesg == 'login success!') {
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
@@ -39,7 +39,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
      * @param    username(账号：现为手机号):string; password: string; role: string
      * @return   data.results.mesg(反馈登录状态信息)
      */
-    User.logIn({username: Storage.get('USERNAME'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
+    User2.logIn({username: Storage.get('USERNAME'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
       if (data.results.mesg == 'login success!') {
         $ionicHistory.clearCache()
         $ionicHistory.clearHistory()
@@ -81,7 +81,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       if (!phoneReg.test(logOn.username)) {
         $scope.logStatus = '手机号验证失败！'
       } else {
-        var logPromise = User.logIn({username: logOn.username, password: logOn.password, role: 'doctor'})
+        var logPromise = User2.logIn({username: logOn.username, password: logOn.password, role: 'doctor'})
         /**
          * [输入账号密码写定角色登录]
          * @Author   ZY
@@ -246,7 +246,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 // 用户已经存在id 说明公众号注册过
           if (ret.results == 0 && ret.roles.indexOf('doctor') != -1) { // 直接登录
             ionicLoadingshow()
-            User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+            User2.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
                     // alert(JSON.stringify(data));
               if (data.results.mesg == 'login success!') {
                 Storage.set('isSignIn', 'Yes')
@@ -920,9 +920,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 上传资质证书-zxf
-.controller('uploadcertificateCtrl', ['$interval', 'CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function ($interval, CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams, socket, mySocket) {
+.controller('uploadcertificateCtrl', ['$interval', 'CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', 'User2', '$http', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function ($interval, CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, User2, $http, Camera, $ionicModal, $stateParams, socket, mySocket) {
   $scope.doctor = {}
-  User.logIn({username: Storage.get('phoneNumber'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
+  User2.logIn({username: Storage.get('phoneNumber'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
     console.log(data)
     if (data.results.mesg == 'login success!') {
       $scope.doctor.userId = data.results.userId
@@ -2979,7 +2979,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       return
     }
     // 执行密码修改
-    User.logIn({username: Storage.get('USERNAME'), password: oldPW, role: 'doctor'}).then(function (succ) {
+    User2.logIn({username: Storage.get('USERNAME'), password: oldPW, role: 'doctor'}).then(function (succ) {
       // console.log(Storage.get('USERNAME'))
       if (succ.results.mesg == 'login success!') {
         User.changePassword({phoneNo: Storage.get('USERNAME'), password: newPW}).then(function (succ) {
@@ -4214,4 +4214,53 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // console.log(data)
     $scope.details = data.results
   })
+}])
+
+// 群发消息-zy
+.controller('GroupMessageCtrl', ['$scope', '$state', '$interval', '$rootScope', '$ionicHistory', 'Storage', 'MassCommunication', 'Doctor', 'CONFIG', function ($scope, $state, $interval, $rootScope, $ionicHistory, Storage, MassCommunication, Doctor, CONFIG) {
+  $scope.Goback = function () {
+    $ionicHistory.goBack()
+  }
+  // 获取医生的信息
+  var thisDoctor = ''
+  var photoUrl = ''
+  var doctorInfo = function () {
+    Doctor.getDoctorInfo({userId: Storage.get('UID')}).then(function (response) {
+      thisDoctor = response.results
+      photoUrl = response.results.photoUrl
+      console.log(thisDoctor)
+      console.log(photoUrl)
+    }, function (err) {
+      console.log(err)
+    })
+  }
+  var MsgJson = ''
+  $scope.sendMassMsg = function () {
+    var msgText = document.getElementById('123').value
+    var msgGroupChi = document.getElementById('MyPatient').value
+    var msgGroup = ''
+    if (msgGroupChi == '我的主管患者') {
+      msgGroup = 'INCHARGE'
+    } else if (msgGroupChi == '我的全部患者') {
+      msgGroup = 'ALL'
+    } else {
+      msgGroup = 'FOLLOW'
+    }
+
+    MsgJson = {
+      'token': Storage.get('TOKEN'),
+      'target': msgGroup,
+      'content': msgText
+    }
+    console.log(MsgJson)
+
+    var MassToPatient = function (msg) {
+      MassCommunication.massToPatient(msg).then(function (data) {
+        console.log(data)
+      }, function (err) {
+        console.error(err)
+      })
+    }
+    MassToPatient(MsgJson)
+  }
 }])
