@@ -1,6 +1,6 @@
 angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
-.controller('ReportCtrl', ['$scope', '$state', 'getPatientData', function($scope, $state, getPatientData){
+.controller('ReportCtrl', ['$scope', '$state', 'getPatientData','$ionicLoading', function($scope, $state, getPatientData, $ionicLoading){
   patientId = "U201705110001"
   $scope.writeReport = true
   $scope.type = "week"
@@ -43,7 +43,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.writeReport = true
     document.getElementById($scope.type).style.backgroundColor = "#FFFFFF"
     document.getElementById($scope.type).style.color = "#000000"
-    $scope.type = "year";   $scope.typeC = '年'
+    $scope.type = "year";   $scope.typeC = '年度'
     document.getElementById($scope.type).style.backgroundColor = "#6ac4f8"
     document.getElementById($scope.type).style.color = "#FFFFFF"
     healthyCurve()
@@ -64,7 +64,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
   var healthyCurve = function(){
     var date = new Date()
-    var date = "2017-05-27T00:00:00.000Z"
+    var date = "2017-07-27T00:00:00.000Z"
+    $scope.outOfTime = false
 
     //体温
     getPatientData.ReportData({time: date, type: "Measure", patientId: patientId, code: "Temperature", showType: $scope.type, modify: $scope.modify}).then(
@@ -74,7 +75,12 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.Temp = data.results.item
+        $scope.Temp.flag = data.results.flag.flagT
         if(vitalsign.results.item.data1.length==0){
             $scope.Temp.hasdata = false
             var chart = new Highcharts.Chart('container1', {
@@ -94,6 +100,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
             ChartData = vitalsign.results.item.data1
             ChartTimeTemp = vitalsign.results.item.recordTime
             $scope.Temp.hasdata = true
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.Temp.report = "本"+$scope.typeC+"中有发热，是x月"
+            else
+                $scope.Temp.report = vitalsign.results.item.doctorComment
             for(i=0; i<ChartTimeTemp.length; i++){
                 ChartTime[i]=ChartTimeTemp[i].substring(0,10)
             }
@@ -172,9 +182,24 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.Weight = data.results.item
-        $scope.Weight.Low = $scope.Weight.recommendValue1
-        $scope.Weight.High = $scope.Weight.recommendValue2
+        $scope.Weight.flag = data.results.flag.flagWeight
+        
+        
+        if (data.results.item.recommendValue11==undefined){
+            // $scope.Weight.hasAdvice = false
+            $scope.Weight.Low = $scope.Weight.recommendValue1
+            $scope.Weight.High = $scope.Weight.recommendValue2
+        }
+        else {
+            // $scope.Weight.hasAdvice = true
+            $scope.Weight.Low = $scope.Weight.recommendValue11
+            $scope.Weight.High = $scope.Weight.recommendValue12
+        }
         if(vitalsign.results.item.data1.length==0){
             $scope.Weight.hasdata = false
             var chart = new Highcharts.Chart('container2', {
@@ -193,6 +218,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         } else{
             ChartData = vitalsign.results.item.data1
             ChartTimeTemp = vitalsign.results.item.recordTime
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.Weight.report = "本"+$scope.typeC+"中体重控制最佳为x月，最差为x月；记录最完整为为x月，最差为x月"
+            else
+                $scope.Weight.report = vitalsign.results.item.doctorComment
             $scope.Weight.hasdata = true
             for(i=0; i<ChartTimeTemp.length; i++){
                 ChartTime[i]=ChartTimeTemp[i].substring(0,10)
@@ -274,11 +303,27 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.BP = data.results.item
-        $scope.BP.BPH1 = $scope.BP.recommendValue1
-        $scope.BP.BPH2 = $scope.BP.recommendValue2
-        $scope.BP.BPL1 = $scope.BP.recommendValue3
-        $scope.BP.BPL2 = $scope.BP.recommendValue4
+        $scope.BP.flag = data.results.flag.flagBP
+        
+        if (data.results.item.recommendValue11==undefined){
+            // $scope.BP.hasAdvice = false
+            $scope.BP.BPH1 = $scope.BP.recommendValue1
+            $scope.BP.BPH2 = $scope.BP.recommendValue2
+            $scope.BP.BPL1 = $scope.BP.recommendValue3
+            $scope.BP.BPL2 = $scope.BP.recommendValue4
+        }
+        else {
+            // $scope.BP.hasAdvice = true
+            $scope.BP.BPH1 = $scope.BP.recommendValue11
+            $scope.BP.BPH2 = $scope.BP.recommendValue12
+            $scope.BP.BPL1 = $scope.BP.recommendValue13
+            $scope.BP.BPL2 = $scope.BP.recommendValue14
+        }
         if(vitalsign.results.item.recordTime.length==0){
             $scope.BP.hasdata = false
             var chart = new Highcharts.Chart('container3', {
@@ -298,6 +343,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
             ChartData1 = vitalsign.results.item.data1
             ChartData2 = vitalsign.results.item.data2
             ChartTimeTemp = vitalsign.results.item.recordTime
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.BP.report = "本"+$scope.typeC+"中血压控制最佳为x月，最差为x月；记录最完整为为x月，最差为x月"
+            else
+                $scope.BP.report = vitalsign.results.item.doctorComment
             $scope.BP.hasdata = true
             for(i=0; i<ChartTimeTemp.length; i++){
                ChartTime[i]=ChartTimeTemp[i].substring(0,10)
@@ -379,7 +428,12 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.Vol = data.results.item
+        $scope.Vol.flag = data.results.flag.flagVol
         if(vitalsign.results.item.recordTime.length==0){
             $scope.Vol.hasdata = false
             var chart = new Highcharts.Chart('container4', {
@@ -398,6 +452,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }else{
             ChartData = vitalsign.results.item.data1
             ChartTimeTemp = vitalsign.results.item.recordTime
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.Vol.report = ""
+            else
+                $scope.Vol.report = vitalsign.results.item.doctorComment
             $scope.Vol.hasdata = true
             for(i=0; i<ChartTimeTemp.length; i++){
                ChartTime[i]=ChartTimeTemp[i].substring(0,10)
@@ -477,9 +535,22 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.HR = data.results.item
-        $scope.HR.HRL = $scope.HR.recommendValue1
-        $scope.HR.HRH = $scope.HR.recommendValue2
+        $scope.HR.flag = data.results.flag.flagHR
+        if (data.results.item.recommendValue11==undefined){
+            // $scope.HR.hasAdvice = false
+            $scope.HR.HRL = $scope.HR.recommendValue1
+            $scope.HR.HRH = $scope.HR.recommendValue2
+        }
+        else {
+            // $scope.HR.hasAdvice = true
+            $scope.HR.HRL = $scope.HR.recommendValue11
+            $scope.HR.HRH = $scope.HR.recommendValue12
+        }
         if(vitalsign.results.item.recordTime.length==0){
             $scope.HR.hasdata = false
             var chart = new Highcharts.Chart('container5', {
@@ -498,6 +569,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }else{
             ChartData = vitalsign.results.item.data1
             ChartTimeTemp = vitalsign.results.item.recordTime
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.HR.report = ""
+            else
+                $scope.HR.report = vitalsign.results.item.doctorComment
             $scope.HR.hasdata = true
             for(i=0; i<ChartTimeTemp.length; i++){
                ChartTime[i]=ChartTimeTemp[i].substring(0,10)
@@ -577,9 +652,24 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime = new Array()
         var ChartTimeTemp = new Array()
         vitalsign = data
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
         $scope.PD = data.results.item
-        $scope.PD.PDL = $scope.PD.recommendValue1
-        $scope.PD.PDH = $scope.PD.recommendValue2
+        $scope.PD.flag = data.results.flag.flagPD
+        // $scope.PD.PDL = $scope.PD.recommendValue1
+        // $scope.PD.PDH = $scope.PD.recommendValue2
+        if (data.results.item.recommendValue11==undefined){
+            // $scope.PD.hasAdvice = false
+            $scope.PD.PDL = $scope.PD.recommendValue1
+            $scope.PD.PDH = $scope.PD.recommendValue2
+        }
+        else {
+            // $scope.PD.hasAdvice = true
+            $scope.PD.PDL = $scope.PD.recommendValue11
+            $scope.PD.PDH = $scope.PD.recommendValue12
+        }
         if(vitalsign.results.item.recordTime.length==0){
             $scope.PD.hasdata = false
             var chart = new Highcharts.Chart('container6', {
@@ -599,6 +689,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
             ChartData1 = vitalsign.results.item.data1
             ChartData2 = vitalsign.results.item.data2
             ChartTimeTemp = vitalsign.results.item.recordTime
+            if(vitalsign.results.item.doctorComment==undefined)
+                $scope.PD.report = "本"+$scope.typeC+"腹透状况良好／x月出现透析不充分／腹膜炎"
+            else
+                $scope.PD.report = vitalsign.results.item.doctorComment
             $scope.PD.hasdata = true
             for(i=0; i<ChartTimeTemp.length; i++){
                ChartTime[i]=ChartTimeTemp[i].substring(0,10)
@@ -688,8 +782,32 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         var ChartTime5 = new Array()
 
         vitalsign = data
-        $scope.LT = data.results.item
-        if $scope.LT.labTestArray
+        console.log(data)
+        if (data.results == "不存在该段时间的报告!"){
+            $scope.outOfTime = true
+            return
+        }
+        if(($scope.type=='season'||$scope.type=='year')&&($scope.modify)){
+            $scope.LT = ""
+            if (!data.results.lab.SCr=="")
+                $scope.LT += data.results.lab.SCr.min+data.results.lab.SCr.max
+            if (!data.results.lab.SCr=="")
+                $scope.LT += data.results.lab.GFR.min+data.results.lab.GFR.max
+            if (!data.results.lab.SCr=="")
+                $scope.LT += data.results.lab.PRO.min+data.results.lab.PRO.max
+            if (!data.results.lab.SCr=="")
+                $scope.LT += data.results.lab.ALB.min+data.results.lab.ALB.max
+            if (!data.results.lab.SCr=="")
+                $scope.LT += data.results.lab.HB.min+data.results.lab.HB.max
+        }
+        if(vitalsign.results.item.doctorReport==undefined){
+            if($scope.type=='week'||$scope.type=='month')
+                $scope.LTreport = ""
+            else
+                $scope.LTreport = "建议增加检测xx，x月发生肌酐升高／贫血／肾病复发"
+        }
+        else
+            $scope.LTreport = vitalsign.results.item.doctorReport
         if(vitalsign.results.item.recordTime.length==0){
             var chart = new Highcharts.Chart('container7', {
                 credits:{enabled:false},
@@ -1107,7 +1225,13 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     getPatientData.ReportData({time:date, type: "Measure", patientId: patientId, code: "DoctorReport", showType: $scope.type, modify: $scope.modify}).then(
         function(data){
             console.log(data.results)
-
+            if(data.results.doctorReport==undefined){
+                if($scope.type=='week'||$scope.type=='month')
+                    $scope.DoctorReport = ""
+                else
+                    $scope.DoctorReport = "定时记录生命体征及用药情况。下次门诊就诊时间建议为****-**-**"
+            }else
+                $scope.DoctorReport = data.results.doctorReport
         },function(err){
     })
    }
@@ -1121,19 +1245,38 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   // }
   $scope.saveReport = function(){
     $scope.writeReport = true
-    console.log($scope.WeightLow)
-    data = [
-        {itemType: "Weight", recommendValue11: $scope.Weight.Low, recommendValue12: $scope.Weight.High},
-        {itemType: "BloodPressure", recommendValue11: $scope.BP.BPH1, recommendValue12: $scope.BP.BPH2, recommendValue13: $scope.BP.BPL1, recommendValue14: $scope.BP.BPL2},
-        {itemType: "HeartRate", recommendValue11: $scope.HR.HRL, recommendValue12: $scope.HR.HRH},
-        {itemType: "PeritonealDialysis", recommendValue11: $scope.PD.PDL, recommendValue12: $scope.PD.PDH},
-        {itemType: "DoctorReport", doctorReport: document.getElementById("doctorReport").value}
-    ]
-    console.log(data)           
-    getPatientData.SaveReport({patientId: patientId, time: $scope.Temp.time, type: $scope.type, data: data}).then(
+    if ($scope.type=='week'||$scope.type=='month')
+        data = [
+            {itemType: "Weight", recommendValue11: $scope.Weight.Low, recommendValue12: $scope.Weight.High},
+            {itemType: "BloodPressure", recommendValue11: $scope.BP.BPH1, recommendValue12: $scope.BP.BPH2, recommendValue13: $scope.BP.BPL1, recommendValue14: $scope.BP.BPL2},
+            {itemType: "HeartRate", recommendValue11: $scope.HR.HRL, recommendValue12: $scope.HR.HRH},
+            {itemType: "PeritonealDialysis", recommendValue11: $scope.PD.PDL, recommendValue12: $scope.PD.PDH},
+            {itemType: "DoctorReport", doctorReport: document.getElementById("doctorReport").value},
+            {itemType: "LabTest", doctorReport: document.getElementById("labTestReport").value},
+        ]
+    else
+        data = [
+            {itemType: "Weight", recommendValue11: $scope.Weight.Low, recommendValue12: $scope.Weight.High, doctorComment:document.getElementById("WeightReport").value},
+            {itemType: "BloodPressure", recommendValue11: $scope.BP.BPH1, recommendValue12: $scope.BP.BPH2, recommendValue13: $scope.BP.BPL1, recommendValue14: $scope.BP.BPL2, doctorComment:document.getElementById("BPReport").value},
+            {itemType: "HeartRate", recommendValue11: $scope.HR.HRL, recommendValue12: $scope.HR.HRH, doctorComment:document.getElementById("HRReport").value},
+            {itemType: "PeritonealDialysis", recommendValue11: $scope.PD.PDL, recommendValue12: $scope.PD.PDH, doctorComment:document.getElementById("PDReport").value},
+            {itemType: "DoctorReport", doctorReport: document.getElementById("doctorReport").value},
+            {itemType: "LabTest", doctorReport: document.getElementById("labTestReport").value},
+            {itemType: "Temperature", recommendValue11:37.3, doctorComment:document.getElementById("TempReport").value},
+            {itemType: "Vol", recommendValue11:500, doctorComment:document.getElementById("VolReport").value}
+        ]
+    console.log(data)  
+    if(data[5].doctorReport==''||data[4].doctorReport==''){
+        $ionicLoading.show({
+            template: '请把报告填写完整再提交',
+            duration: 1000,
+            hideOnStateChange: true
+        })}
+    else
+        getPatientData.SaveReport({patientId: patientId, time: $scope.Temp.time, type: $scope.type, data: data}).then(
         function(data){},
         function(err){})
-    // $scope.MeasureData = "MeasureData"
+     $scope.MeasureData = "MeasureData"
   }
 
   $scope.Goback = function(){
