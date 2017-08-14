@@ -543,7 +543,16 @@ angular.module('kidney', [
         }
       }
     })
-
+   .state('tab.GroupMessage', {
+        // cache: false,
+     url: '/GroupMessage',
+     views: {
+       'tab-patient': {
+         controller: 'GroupMessageCtrl',
+         templateUrl: 'partials/patient/GroupMessage.html'
+       }
+     }
+   })
     // views-tab-groups
     .state('tab.new-group', {
       url: '/newgroup',
