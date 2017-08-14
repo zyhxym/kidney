@@ -340,23 +340,23 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   var abort = $q.defer()
 
   var Dict = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'dict'}, {
-      getDiseaseType: {method: 'GET', params: {route: 'typeTWO'}, timeout: 100000},
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'dict'}, {
+      getDiseaseType: {method: 'GET', params: {route: 'typeTwo'}, timeout: 100000},
       getDistrict: {method: 'GET', params: {route: 'district'}, timeout: 100000},
       getHospital: {method: 'GET', params: {route: 'hospital'}, timeout: 100000},
-      getHeathLabelInfo: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000},
-      typeOne: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000}
+      getHeathLabelInfo: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000}
+      // typeOne: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000}
     })
   }
 
   var Task1 = function () {
-    return $resource(CONFIG.baseUrl + ':path', {path: 'tasks'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path', {path: 'tasks'}, {
       getTask: {method: 'GET', params: {}, timeout: 100000}
     })
   }
 
   var Task2 = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'tasks'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'tasks'}, {
       changeTaskstatus: {method: 'post', params: {route: 'status'}, timeout: 100000},
       changeTasktime: {method: 'post', params: {route: 'time'}, timeout: 100000},
       insertTask: {method: 'POST', params: {route: 'taskModel'}, timeout: 100000},
@@ -365,15 +365,15 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
-  var Compliance = function () {
-    return $resource(CONFIG.baseUrl + ':path', {path: 'compliance'}, {
-      postcompliance: {method: 'POST', params: {}, timeout: 100000},
-      getcompliance: {method: 'GET', params: {}, timeout: 100000}
-    })
-  }
+  // var Compliance = function () {
+  //   return $resource(CONFIG.baseTwoUrl + ':path', {path: 'compliance'}, {
+  //     postcompliance: {method: 'POST', params: {route: 'compliances'}, timeout: 100000},
+  //     getcompliance: {method: 'GET', params: {route: 'compliance'}, timeout: 100000}
+  //   })
+  // }
 
   var Counsel = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'counsel'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'counsel'}, {
       getCounsels: {method: 'GET', params: {route: 'counsels'}, timeout: 100000},
       questionaire: {method: 'POST', params: {route: 'questionaire'}, timeout: 100000},
       changeCounselStatus: {method: 'POST', params: {route: 'changeCounselStatus'}, timeout: 100000},
@@ -383,7 +383,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Patient = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'patient'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'patient'}, {
       // getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       getMyDoctors: {method: 'GET', params: {route: 'myDoctors'}, timeout: 10000},
       getDoctorLists: {method: 'GET', params: {route: 'doctors'}, timeout: 10000},
@@ -395,7 +395,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Doctor = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'doctor'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
       postDocBasic: {method: 'POST', params: {route: 'detail'}, timeout: 100000},
       // getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
       getDoctorInfo: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
@@ -417,7 +417,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var User = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'user'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'alluser'}, {
       register: {method: 'POST', params: {route: 'register', phoneNo: '@phoneNo', password: '@password', role: '@role'}, timeout: 100000},
       changePassword: {method: 'POST', params: {route: 'reset', phoneNo: '@phoneNo', password: '@password'}, timeout: 100000},
       // logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000},
@@ -438,7 +438,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
   var Health = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'healthInfo'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'healthInfo'}, {
       createHealth: {method: 'POST', params: {route: 'healthInfo', userId: '@userId', type: '@type', time: '@time', url: '@url', label: '@label', description: '@description', comments: '@comments'}, timeout: 100000},
       modifyHealth: {method: 'POST', params: {route: 'healthDetail', userId: '@userId', type: '@type', time: '@time', url: '@url', label: '@label', description: '@description', comments: '@comments', insertTime: '@insertTime'}, timeout: 100000},
       getHealthDetail: {method: 'GET', params: {route: 'healthDetail', userId: '@userId', insertTime: '@insertTime'}, timeout: 100000},
@@ -449,19 +449,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Comment = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'comment'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'comment'}, {
       getComments: {method: 'GET', params: {route: 'getComments'}, timeout: 100000}
     })
   }
 
   var VitalSign = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'vitalSign'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'vitalSign'}, {
       getVitalSigns: {method: 'GET', params: {route: 'vitalSigns'}, timeout: 100000}
     })
   }
 
   var Account = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'account'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'account'}, {
       getAccountInfo: {method: 'GET', params: {route: 'getAccountInfo'}, timeout: 100000},
       modifyCounts: {method: 'POST', params: {route: 'counts'}, timeout: 100000},
       getCounts: {method: 'GET', params: {route: 'counts'}, timeout: 100000}
@@ -477,7 +477,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Communication = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'communication'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'communication'}, {
       conclusion: {method: 'POST', params: {route: 'conclusion'}, timeout: 100000},
       getCommunication: {method: 'GET', params: {route: 'communication'}, timeout: 100000},
       getCounselReport: {method: 'GET', params: {route: 'counselReport'}, timeout: 100000},
@@ -499,7 +499,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Insurance = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'insurance'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'insurance'}, {
       getInsMsg: {method: 'GET', params: {route: 'message'}, timeout: 100000},
       updateInsuranceMsg: {method: 'POST', params: {route: 'message'}, timeout: 100000}
     })
@@ -526,7 +526,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Mywechat = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'wechat'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'wechat'}, {
       messageTemplate: {method: 'POST', params: {route: 'messageTemplate'}, timeout: 100000},
       gettokenbycode: {method: 'GET', params: {route: 'gettokenbycode'}, timeout: 100000},
       getUserInfo: {method: 'GET', params: {route: 'getUserInfo'}, timeout: 100000},
@@ -535,13 +535,13 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 
   var Advice = function () {
-    return $resource(CONFIG.baseUrl + ':path/:route', {path: 'advice'}, {
-      postAdvice: {method: 'POST', params: {route: 'postAdvice'}, timeout: 100000}
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'advice'}, {
+      postAdvice: {method: 'POST', params: {route: 'advice'}, timeout: 100000}
     })
   }
 
   var version = function () {
-    return $resource(CONFIG.baseUrl + ':path', {path: 'version'}, {
+    return $resource(CONFIG.baseTwoUrl + ':path', {path: 'version'}, {
       getVersion: {method: 'GET', params: {}, timeout: 100000}
     })
   }
@@ -577,9 +577,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
-
-  var getPatientData = function(){
-    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'report'},{
+  var getPatientData = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'report'}, {
       ReportData: {method: 'GET', params: {route: 'vitalSigns'}, timeout: 10000},
       SaveReport: {method: 'POST', params: {route: 'report'}, timeout: 10000}
     })
@@ -598,7 +597,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Dict = Dict()
       serve.Task1 = Task1()
       serve.Task2 = Task2()
-      serve.Compliance = Compliance()
+      // serve.Compliance = Compliance()
       serve.Counsel = Counsel()
       serve.Patient = Patient()
       serve.Doctor = Doctor()
@@ -628,7 +627,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Dict = Dict()
   serve.Task1 = Task1()
   serve.Task2 = Task2()
-  serve.Compliance = Compliance()
+  // serve.Compliance = Compliance()
   serve.Counsel = Counsel()
   serve.Patient = Patient()
   serve.Doctor = Doctor()
@@ -724,18 +723,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     // params->{
     //    category:'MessageType'
     // }
-  self.typeOne = function (params) {
-    var deferred = $q.defer()
-    Data.Dict.typeOne(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.typeOne = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Dict.typeOne(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
   return self
 }])
 
@@ -841,46 +840,46 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   return self
 }])
 
-.factory('Compliance', ['$q', 'Data', function ($q, Data) {
-  var self = this
-    // params->{
-            // "userId": "U201704050002",
-            // "type": "Measure",
-            // "code": "Weight",
-            // "date": "2017-12-13",
-            // "status": 0,
-            // "description": ""
-           // }
-  self.postcompliance = function (params) {
-    var deferred = $q.defer()
-    Data.Compliance.postcompliance(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
-    // params->{
-            //  userId:'U201704050002',//date为空时获取指定用户的全部任务执行记录，date不为空时获取指定用户某一天的任务执行记录
-            //  date:'2017-12-13'
-           // }
-  self.getcompliance = function (params) {
-    var deferred = $q.defer()
-    Data.Compliance.getcompliance(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
-  return self
-}])
+// .factory('Compliance', ['$q', 'Data', function ($q, Data) {
+//   var self = this
+//     // params->{
+//             // "userId": "U201704050002",
+//             // "type": "Measure",
+//             // "code": "Weight",
+//             // "date": "2017-12-13",
+//             // "status": 0,
+//             // "description": ""
+//            // }
+//   self.postcompliance = function (params) {
+//     var deferred = $q.defer()
+//     Data.Compliance.postcompliance(
+//             params,
+//             function (data, headers) {
+//               deferred.resolve(data)
+//             },
+//             function (err) {
+//               deferred.reject(err)
+//             })
+//     return deferred.promise
+//   }
+//     // params->{
+//             //  userId:'U201704050002',//date为空时获取指定用户的全部任务执行记录，date不为空时获取指定用户某一天的任务执行记录
+//             //  date:'2017-12-13'
+//            // }
+//   self.getcompliance = function (params) {
+//     var deferred = $q.defer()
+//     Data.Compliance.getcompliance(
+//             params,
+//             function (data, headers) {
+//               deferred.resolve(data)
+//             },
+//             function (err) {
+//               deferred.reject(err)
+//             })
+//     return deferred.promise
+//   }
+//   return self
+// }])
 
 .factory('MassCommunication', ['$q', 'Data', 'Storage', function ($q, Data, Storage) {
   var self = this
@@ -2806,4 +2805,3 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
   return self
 }])
-
