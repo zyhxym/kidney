@@ -27,7 +27,9 @@
   color: white;
   text-align: center;
 }
-
+.ion-ios-arrow-left {
+  color: white !important;
+}
 .icon-wujiaoxing1 {
   color: #ff850c;
   font-size: 20px;
