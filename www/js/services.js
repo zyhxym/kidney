@@ -577,6 +577,14 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     })
   }
 
+
+  var getPatientData = function(){
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'report'},{
+      ReportData: {method: 'GET', params: {route: 'vitalSigns'}, timeout: 10000},
+      SaveReport: {method: 'POST', params: {route: 'report'}, timeout: 10000}
+    })
+  }
+
   var Patient2 = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'patient'}, {
       getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000}
@@ -613,6 +621,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.labtestImport = labtestImport()
       serve.services = services()
       serve.Doctor2 = Doctor2()
+      serve.getPatientData = getPatientData()
       serve.Patient2 = Patient2()
     }, 0, 1)
   }
@@ -642,6 +651,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.labtestImport = labtestImport()
   serve.services = services()
   serve.Doctor2 = Doctor2()
+  serve.getPatientData = getPatientData()
   serve.Patient2 = Patient2()
   return serve
 }])
@@ -2752,6 +2762,34 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   return self
 }])
 
+.factory('getPatientData', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.ReportData = function (params) {
+    var deferred = $q.defer()
+    Data.getPatientData.ReportData(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  self.SaveReport = function (params) {
+    var deferred = $q.defer()
+    Data.getPatientData.SaveReport(
+      params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  return self
+}])
 .factory('Patient2', ['$q', 'Data', function ($q, Data) {
   var self = this
   self.getPatientDetail = function (params) {
@@ -2768,3 +2806,4 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
   return self
 }])
+
