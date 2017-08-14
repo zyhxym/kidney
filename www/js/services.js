@@ -420,7 +420,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return $resource(CONFIG.baseUrl + ':path/:route', {path: 'user'}, {
       register: {method: 'POST', params: {route: 'register', phoneNo: '@phoneNo', password: '@password', role: '@role'}, timeout: 100000},
       changePassword: {method: 'POST', params: {route: 'reset', phoneNo: '@phoneNo', password: '@password'}, timeout: 100000},
-      logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000},
+      // logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000},
       logOut: {method: 'POST', params: {route: 'logout', userId: '@userId'}, timeout: 100000},
       getUserId: {method: 'GET', params: {route: 'userID', username: '@username'}, timeout: 100000},
       sendSMS: {method: 'POST', params: {route: 'sms', mobile: '@mobile', smsType: '@smsType'}, timeout: 100000}, // 第一次验证码发送成功返回结果为”User doesn't exist“，如果再次发送才返回”验证码成功发送“
@@ -432,7 +432,11 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       One: {method: 'GET', params: {route: 'one'}, timeout: 10000}
     })
   }
-
+  var User2 = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'alluser'}, {
+      logIn: {method: 'POST', params: {route: 'login'}, timeout: 100000}
+    })
+  }
   var Health = function () {
     return $resource(CONFIG.baseUrl + ':path/:route', {path: 'healthInfo'}, {
       createHealth: {method: 'POST', params: {route: 'healthInfo', userId: '@userId', type: '@type', time: '@time', url: '@url', label: '@label', description: '@description', comments: '@comments'}, timeout: 100000},
@@ -485,6 +489,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       updateLastTalkTime: {method: 'POST', params: {route: 'updateLastTalkTime'}, timeout: 100000},
       getConsultation: {method: 'GET', params: {route: 'consultation'}, timeout: 100000},
       postCommunication: {method: 'POST', params: {route: 'communication'}, timeout: 100000}
+    })
+  }
+
+  var MassCommunication = function () {
+    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'communication'}, {
+      massToPatient: {method: 'POST', params: {route: 'massToPatient'}, timeout: 100000}
     })
   }
 
@@ -590,7 +600,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Account = Account()
       serve.Message = Message()
       serve.Communication = Communication()
+      serve.MassCommunication = MassCommunication()
       serve.User = User()
+      serve.User2 = User2()
       serve.Mywechat = Mywechat()
       serve.Insurance = Insurance()
       serve.New = New()
@@ -617,7 +629,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Account = Account()
   serve.Message = Message()
   serve.Communication = Communication()
+  serve.MassCommunication = MassCommunication()
   serve.User = User()
+  serve.User2 = User2()
   serve.Mywechat = Mywechat()
   serve.Insurance = Insurance()
   serve.New = New()
@@ -857,6 +871,23 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
   return self
 }])
+
+.factory('MassCommunication', ['$q', 'Data', 'Storage', function ($q, Data, Storage) {
+  var self = this
+  self.massToPatient = function (params) {
+    var deferred = $q.defer()
+    Data.MassCommunication.massToPatient(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+  return self
+} ])
 
 .factory('Communication', ['$q', 'Data', 'Storage', function ($q, Data, Storage) {
   var self = this
@@ -1234,6 +1265,23 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return deferred.promise
   }
 
+  return self
+}])
+
+.factory('User2', ['$q', 'Data', function ($q, Data) {
+  var self = this
+  self.logIn = function (params) {
+    var deferred = $q.defer()
+    Data.User2.logIn(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
   return self
 }])
 

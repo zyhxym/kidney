@@ -378,8 +378,20 @@ display: inline-block;
 }
 /**/
 
-
-
+/*发送消息按钮*/
+button.messageBtn{
+  width:95%;
+  border-color: #ddd;
+  color: #84C1FF;
+  height: 35px;
+  font-size:14px;
+  margin: 5px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: transparent;
+  border-width: thin;
+  border-style: solid;
+}
 
 /*未读消息小红点*/
 
