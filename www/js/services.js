@@ -375,8 +375,8 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   var Counsel = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'counsel'}, {
       getCounsels: {method: 'GET', params: {route: 'counsels'}, timeout: 100000},
-      questionaire: {method: 'POST', params: {route: 'questionaire'}, timeout: 100000},
-      changeCounselStatus: {method: 'POST', params: {route: 'changeCounselStatus'}, timeout: 100000},
+      // questionaire: {method: 'POST', params: {route: 'questionaire'}, timeout: 100000},
+      // changeCounselStatus: {method: 'POST', params: {route: 'changeCounselStatus'}, timeout: 100000},
       getStatus: {method: 'GET', params: {route: 'status'}, timeout: 100000},
       changeStatus: {method: 'POST', params: {route: 'status'}, timeout: 100000}
     })
@@ -385,7 +385,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   var Patient = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'patient'}, {
       // getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
-      getMyDoctors: {method: 'GET', params: {route: 'myDoctors'}, timeout: 10000},
+      // getMyDoctors: {method: 'GET', params: {route: 'myDoctors'}, timeout: 10000},
       getDoctorLists: {method: 'GET', params: {route: 'doctors'}, timeout: 10000},
       getCounselRecords: {method: 'GET', params: {route: 'counselRecords'}, timeout: 10000},
       insertDiagnosis: {method: 'POST', params: {route: 'diagnosis'}, timeout: 10000},
@@ -450,7 +450,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var Comment = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'comment'}, {
-      getComments: {method: 'GET', params: {route: 'getComments'}, timeout: 100000}
+      // getComments: {method: 'GET', params: {route: 'getComments'}, timeout: 100000}
     })
   }
 
@@ -462,7 +462,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var Account = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'account'}, {
-      getAccountInfo: {method: 'GET', params: {route: 'getAccountInfo'}, timeout: 100000},
+      getAccountInfo: {method: 'GET', params: {route: 'accountInfo'}, timeout: 100000},
       modifyCounts: {method: 'POST', params: {route: 'counts'}, timeout: 100000},
       getCounts: {method: 'GET', params: {route: 'counts'}, timeout: 100000}
     })
@@ -1519,18 +1519,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 .factory('Comment', ['$q', 'Data', function ($q, Data) {
   var self = this
     // params->0:{userId:'doc01'}
-  self.getComments = function (params) {
-    var deferred = $q.defer()
-    Data.Comment.getComments(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.getComments = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Comment.getComments(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
   return self
 }])
 
@@ -1551,18 +1551,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   // }
 
     // params->0:{userId:'p01'}
-  self.getMyDoctors = function (params) {
-    var deferred = $q.defer()
-    Data.Patient.getMyDoctors(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.getMyDoctors = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Patient.getMyDoctors(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
 
     // params->0:{workUnit:'浙江省人民医院'}
     //        1:{workUnit:'浙江省人民医院',name:'医生01'}
@@ -1968,18 +1968,18 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     //              symptomPhotoUrl:'http://photo/symptom1',
     //              help:'帮助'
     //          }
-  self.questionaire = function (params) {
-    var deferred = $q.defer()
-    Data.Counsel.questionaire(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  // self.questionaire = function (params) {
+  //   var deferred = $q.defer()
+  //   Data.Counsel.questionaire(
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
   self.getStatus = function (params) {
     var deferred = $q.defer()
     Data.Counsel.getStatus(
@@ -1992,20 +1992,20 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
-  self.changeCounselStatus = function (params) {
-    var deferred = $q.defer()
+  // self.changeCounselStatus = function (params) {
+  //   var deferred = $q.defer()
 
-    Data.Counsel.changeCounselStatus(
+  //   Data.Counsel.changeCounselStatus(
 
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
+  //           params,
+  //           function (data, headers) {
+  //             deferred.resolve(data)
+  //           },
+  //           function (err) {
+  //             deferred.reject(err)
+  //           })
+  //   return deferred.promise
+  // }
   self.changeStatus = function (params) {
     var deferred = $q.defer()
     Data.Counsel.changeStatus(

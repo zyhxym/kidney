@@ -326,7 +326,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       //console.log($stateParams.PatinetId)
       console.log(Storage.get("getpatientId"))
       var load =  function(){
-          VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'血压'}).then(
+          VitalSign.getVitalSigns({patientId:Storage.get("getpatientId"),type:'血压'}).then(
           function(Data){
             $scope.ChartDatas=[];
             $scope.ChartData1=[];
@@ -470,7 +470,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           });
 
 
-          VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体温'}).then(
+          VitalSign.getVitalSigns({patientId:Storage.get("getpatientId"),type:'体温'}).then(
           function(Data){
             $scope.ChartData3=[];
             //console.log(Data.results.length)
@@ -590,7 +590,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
-          VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'体重'}).then(
+          VitalSign.getVitalSigns({patientId:Storage.get("getpatientId"),type:'体重'}).then(
           function(Data){
             $scope.ChartData4=[];
             //console.log(Data.results.length)
@@ -707,7 +707,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
-          VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'尿量'}).then(
+          VitalSign.getVitalSigns({patientId:Storage.get("getpatientId"),type:'尿量'}).then(
           function(Data){
             $scope.ChartData5=[];
             //console.log(Data.results.length)
@@ -824,7 +824,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
           }, function(e) {  
           });
-          VitalSign.getVitalSigns({userId:Storage.get("getpatientId"),type:'心率'}).then(
+          VitalSign.getVitalSigns({patientId:Storage.get("getpatientId"),type:'心率'}).then(
           function(Data){
             $scope.ChartData6=[];
             //console.log(Data.results.length)
@@ -977,33 +977,33 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       // token:Storage.get("TOKEN"),
       sort:'time' //根据时间降序排序
       }).then(function(Data){
-        console.log(Data)
+        //console.log(Data)
             $scope.ChartDatas=[];
             $scope.ChartData1=[];
             $scope.ChartData2=[]; 
             $scope.ChartData3=[];
             $scope.ChartData4=[];         
-            console.log(Data.results.length)
+            //console.log(Data.results.length)
             for(var i=0;i<Data.results.length;i++){
                   if(Data.results[i].type=="SCr"||Data.results[i].type=="GFR"||Data.results[i].type=="df"||Data.results[i].type=="PRO"){
                     $scope.ChartDatas.push([new Date(new Date(Data.results[i].time)),Data.results[i].type,Data.results[i].value])
-                    console.log($scope.ChartDatas)
+                    //console.log($scope.ChartDatas)
                   }
                   if(Data.results[i].type=="SCr"){
                     $scope.ChartData1.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])                   
-                    console.log($scope.ChartData1)
+                    //console.log($scope.ChartData1)
                   }
                   if(Data.results[i].type=="GFR"){
                     $scope.ChartData2.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
-                    console.log($scope.ChartData2)
+                    //console.log($scope.ChartData2)
                   }
                   if(Data.results[i].type=="ALB"){
                     $scope.ChartData3.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
-                    console.log($scope.ChartData3)
+                    //console.log($scope.ChartData3)
                   }
                   if(Data.results[i].type=="PRO"){
                     $scope.ChartData4.push([new Date(new Date(Data.results[i].time)),Data.results[i].value])
-                    console.log($scope.ChartData4)
+                    //console.log($scope.ChartData4)
                   }
             }
             var option1 = {
@@ -1063,7 +1063,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                         readOnly: true,
                         optionToContent: function(opt) {
                           var axisData = $scope.ChartDatas;
-                          console.log(axisData)
+                          // console.log(axisData)
                           var series = opt.series;
                           var table = '<table style="width:100%;text-align:center"><tbody><tr>'
                                        + '<td>时间</td>'
@@ -1080,7 +1080,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
                             td2=(axisData[i][2]==undefined?"空":axisData[i][2])
                             // td3=(axisData[i][3]==undefined?"空":axisData[i][3])
                             // td4=(axisData[i][4]==undefined?"空":axisData[i][4])
-                            console.log(td1)
+                            // console.log(td1)
                             table += '<tr>'
                                      + '<td>' + (new Date(axisData[i][0]).getMonth()+1)+'-'+new Date(axisData[i][0]).getDate() + '</td>' //axisData[i].getFullYear()+'-'+(axisData[i].getMonth()+1)+'-'+axisData[i].getDate()+' '+axisData[i].getHours()+':'+axisData[i].getMinutes();
                                      + '<td>' + td1 + '</td>'
@@ -1669,7 +1669,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           // 新增健康信息
           Health.createHealth({userId:patientId,type:$scope.health.label.code,time:$scope.health.date,url:$scope.health.imgurl,label:$scope.health.label.name,description:$scope.health.text,comments:""}).then(function(data){
             console.log(data.results);
-            console.log(data.results.insertTime);
+            //console.log(data.results.insertTime);
             $scope.canEdit= false;
             var healthinfoToconsult=[]
             //从咨询过来的需要返回对应的健康信息
