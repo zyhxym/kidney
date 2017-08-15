@@ -1179,7 +1179,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           $scope.counselstatus = '0'
           $scope.pushMsg(msgJson)
         })
-    Counsel.changeCounselStatus({counselId: $state.params.counselId, status: 0})
+    // Counsel.changeCounselStatus({counselId: $state.params.counselId, status: 0})
   }
   /**
    * 结束咨询按钮
