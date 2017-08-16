@@ -454,10 +454,10 @@ angular.module('kidney', [
     // views-tab-patient
 
     // 患者详情页面
-    .state('tab.Report',{
+    .state('tab.Report', {
       url: '/Report',
       views: {
-        'tab-patient':{
+        'tab-patient': {
           controller: 'ReportCtrl',
           templateUrl: 'partials/patient/Report.html'
         }
@@ -979,7 +979,7 @@ angular.module('kidney', [
                  * @return   {[object]}  data.results  [新的token信息]
                  */
           return $http({
-            url: CONFIG.baseUrl + 'token/refresh?refresh_token=' + refreshToken,
+            url: CONFIG.baseTwoUrl + 'token/refresh?refresh_token=' + refreshToken,
                     // This makes it so that this request doesn't send the JWT
             skipAuthorization: true,
             method: 'GET',
