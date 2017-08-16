@@ -378,7 +378,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       }).then(function (succ) {
         console.log(succ)
         if ($stateParams.last == 'wechatsignin') {
-          if (succ.mesg == "User doesn't Exist!") {
+          if (succ.mesg == "Alluser doesn't Exist!") {
             /**
              * [发送验证码]
              * @Author   ZY
@@ -424,7 +424,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             })
           }
         } else if (validMode == 0) {
-          if (succ.mesg == "User doesn't Exist!") {
+          if (succ.mesg == "Alluser doesn't Exist!") {
             User.sendSMS({
               mobile: Verify.Phone,
               smsType: 2
@@ -461,7 +461,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               })
             }
           }
-        } else if (validMode == 1 && succ.mesg == "User doesn't Exist!") {
+        } else if (validMode == 1 && succ.mesg == "Alluser doesn't Exist!") {
           $scope.logStatus = '您还没有注册呢！'
         } else {
           User.sendSMS({

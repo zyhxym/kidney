@@ -41,7 +41,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 .constant('CONFIG', {
   baseUrl: 'http://121.43.107.106:4060/api/v1/',
-  baseTwoUrl: 'http://121.43.107.106:4060/api/v2/',
+  baseTwoUrl: 'http://106.15.185.172:4060/api/v2/',
   mediaUrl: 'http://121.43.107.106:8054/',
   socketServer: 'ws://121.43.107.106:4060/',
   imgThumbUrl: 'http://121.43.107.106:8054/uploads/photos/resize',
