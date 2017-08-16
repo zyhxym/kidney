@@ -575,7 +575,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {bool}   animate 是否要动画
    * @param    {number}   delay   延时
-   * @return   {null}           
+   * @return   {null}
    */
   function toBottom (animate, delay) {
     if (!delay) delay = 100
@@ -704,7 +704,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    event
    * @param    {object}   data     消息体
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('im:getMsg', function (event, data) {
     console.log(arguments)
@@ -741,7 +741,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    event
    * @param    {object}   data     消息体
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('im:messageRes', function (event, data) {
     console.log(arguments)
@@ -789,7 +789,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @param    {string}   type   咨询/问诊
    * @param    {string}   status 是否进行中
    * @param    {number}   cnt    剩余次数
-   * @return   {null}          
+   * @return   {null}
    */
   function sendCnNotice (type, status, cnt) {
     var len = $scope.msgs.length
@@ -996,7 +996,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['voice',msg.content]
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('voice', function (event, args) {
     console.log(args)
@@ -1015,7 +1015,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['holdmsg',msg.createTimeInMillis,$event]
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('holdmsg', function (event, args) {
     event.stopPropagation()
@@ -1029,7 +1029,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['viewcard',msg,$event]
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('viewcard', function (event, args) {
     event.stopPropagation()
@@ -1072,7 +1072,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   event    事件
    * @param    {array}    args     ['profile',msg]
-   * @return   {null}            
+   * @return   {null}
    */
   $scope.$on('profile', function (event, args) {
     event.stopPropagation()
@@ -1106,7 +1106,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             info: '咨询已结束',
             docId: thisDoctor.userId,
             counseltype: 1,
-            counselId:$scope.params.counselId
+            counselId: $scope.params.counselId
           }
           if (type == 2 || type == 3) {
             endlMsg.info = '问诊已结束'
@@ -1166,7 +1166,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    * @param    {object}   msg 消息体
    * @param    {number}   pos msg在msgs中的下标
-   * @return   {null}       
+   * @return   {null}
    */
   $scope.updateMsg = function (msg, pos) {
     console.info('updateMsg')
@@ -1226,7 +1226,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {object}   msg 消息
-   * @return   {null}       
+   * @return   {null}
    */
   function insertMsg (msg) {
     var pos = arrTool.indexOf($scope.msgs, 'createTimeInMillis', msg.createTimeInMillis)
@@ -1337,7 +1337,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}   [description]
    */
   $scope.submitMsg = function () {
-    if ($scope.params.newsType == '11'){
+    if ($scope.params.newsType == '11') {
       var targetRole = 'patient'
       var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=' + targetRole + '_' + $scope.params.newsType + '_' + $state.params.type + '_' + $scope.params.UID + '_' + $state.params.counselId + '&#wechat_redirect'
 
@@ -1503,7 +1503,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $state.go('tab.group-qrcode', { team: $scope.team })
   }
   /**
-   * state.go团队踢人 
+   * state.go团队踢人
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}   [description]
@@ -2250,7 +2250,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   zyh
  * @DateTime 2017-07-05
  */
-.controller('GroupConclusionCtrl', ['$state', '$scope', '$ionicModal', '$ionicScrollDelegate', 'Communication', '$ionicLoading', 'CONFIG', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel','Mywechat', function ($state, $scope, $ionicModal, $ionicScrollDelegate, Communication, $ionicLoading, CONFIG, Storage, Account, socket, mySocket, Counsel,Mywechat) {
+.controller('GroupConclusionCtrl', ['$state', '$scope', '$ionicModal', '$ionicScrollDelegate', 'Communication', '$ionicLoading', 'CONFIG', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', function ($state, $scope, $ionicModal, $ionicScrollDelegate, Communication, $ionicLoading, CONFIG, Storage, Account, socket, mySocket, Counsel, Mywechat) {
   $scope.input = {
     text: ''
   }
@@ -2307,45 +2307,44 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
                         }
                       }
-                      var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' +res.results.counselId+ '&#wechat_redirect'
+                      var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' + res.results.counselId + '&#wechat_redirect'
                       var template = {
-                          'userId': PID, // 患者的UID
-                          'role': 'patient',
-                          'postdata': {
-                            'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
-                            'url': actionUrl,
-                            'data': {
-                              'first': {
-                                'value': '您的' + (res.results.type == 1 ? '咨询' : '问诊') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
-                                'color': '#173177'
-                              },
-                              'keyword1': {
-                                'value': res.results.help, // 咨询的问题
-                                'color': '#173177'
-                              },
-                              'keyword2': {
-                                'value': $scope.input.text, // 医生的回复
-                                'color': '#173177'
-                              },
-                              'keyword3': {
-                                'value': res.results.doctorId.name, // 回复医生的姓名
-                                'color': '#173177'
-                              },
-                              'remark': {
-                                'value': '感谢您的使用！',
-                                'color': '#173177'
-                              }
+                        'userId': PID, // 患者的UID
+                        'role': 'patient',
+                        'postdata': {
+                          'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
+                          'url': actionUrl,
+                          'data': {
+                            'first': {
+                              'value': '您的' + (res.results.type == 1 ? '咨询' : '问诊') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                              'color': '#173177'
+                            },
+                            'keyword1': {
+                              'value': res.results.help, // 咨询的问题
+                              'color': '#173177'
+                            },
+                            'keyword2': {
+                              'value': $scope.input.text, // 医生的回复
+                              'color': '#173177'
+                            },
+                            'keyword3': {
+                              'value': res.results.doctorId.name, // 回复医生的姓名
+                              'color': '#173177'
+                            },
+                            'remark': {
+                              'value': '感谢您的使用！',
+                              'color': '#173177'
                             }
                           }
                         }
-                        Mywechat.messageTemplate(template)
+                      }
+                      Mywechat.messageTemplate(template)
                       if (res.results.type != '1') {
                             // 暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
                             // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
                             // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
                         socket.emit('message', { msg: msgJson, to: PID, role: 'doctor'})
                             // resetUserAsAppUser();
-
                         $ionicLoading.show({ template: '回复成功'})
                         setTimeout(function () {
                           $ionicLoading.hide()
