@@ -1914,13 +1914,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   getPChatDetail = function(Pchat) {
     var patientId = Pchat.sendBy;
     Counsel.getStatus({doctorId:Storage.get('UID'),patientId:patientId}).then(function(data){
-      Storage.set('consultId',data.result.consultId)
-      if(data.result.status==1){
-          $state.go("tab.detail",{chatId:patientId,type:1,consultId:Storage.get('consultId')});
-      }
-      else if(data.result.status==0){
-          $state.go("tab.detail",{chatId:patientId,type:0,consultId:Storage.get('consultId')});
-      }
+      $state.go('tab.detail', {chatId: patientId, type: data.result.status, counselId: data.result.counselId})
     })
   }
 
@@ -1937,7 +1931,6 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     var groupId = msg.targetID
     if(teamId == groupId) return $state.go("tab.group-chat",{type:0,teamId:teamId,groupId:groupId});
     Communication.getConsultation({consultationId:msg.targetID}).then(function(data){
-      Storage.set('consultId',data.result.consultId)
       if(data.result.status==1){
           $state.go("tab.group-chat",{type:1,teamId:teamId,groupId:groupId});
       }
