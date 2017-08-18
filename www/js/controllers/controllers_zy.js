@@ -2310,9 +2310,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   Doctor.getDoctorInfo({
     userId: Storage.get('UID')
   }).then(function (data) {
-    console.log(data)
+    // console.log(data)
     $scope.doctor = data.results
-    if (angular.isDefined($scope.doctor.TDCticket) != true) {
+    // if (angular.isDefined($scope.doctor.docTDCticket) != true) {
+    if ($scope.doctor.docTDCticket == null) {
       var params = {
         // 'role': 'doctor',
         // 'userId': Storage.get('UID'),
@@ -2326,12 +2327,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }
       }
       Mywechat.createTDCticket(params).then(function (data) {
-        $scope.doctor.TDCticket = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + data.results.TDCticket
+        $scope.ticket = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + data.results.TDCticket
       }, function (err) {
         console.log(err)
       })
     } else {
-      $scope.doctor.TDCticket = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + $scope.doctor.TDCticket
+      $scope.ticket = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + $scope.doctor.docTDCticket
     }
   }, function (err) {
     console.log(err)
