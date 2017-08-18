@@ -109,7 +109,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $ionicHistory.clearHistory()
             Storage.set('USERNAME', $scope.logOn.username)
             Storage.set('TOKEN', data.results.token)
-            // console.log('TOKEN', data.results.token)// token作用目前还不明确
+            // console.log(Storage.get('TOKEN'))
             Storage.set('isSignIn', true)
             Storage.set('UID', data.results.userId)
             /**
@@ -2156,8 +2156,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @param    userId: string
    * @return   data.results(医生详细信息)
    */
+  // console.log(Storage.get('TOKEN'))
   Doctor.getDoctorInfo({
-    userId: Storage.get('UID')
+    // userId: Storage.get('UID')
   }).then(function (data) {
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
@@ -2313,8 +2314,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.doctor = data.results
     if (angular.isDefined($scope.doctor.TDCticket) != true) {
       var params = {
-        'role': 'patient',
-        'userId': Storage.get('UID'),
+        // 'role': 'doctor',
+        // 'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
           'action_info': {
@@ -2680,6 +2681,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }).then(function (data) {
       // console.log(data)
       $scope.doctor = data.results
+      // console.log($scope.doctor)
     }, function (err) {
       console.log(err)
     })
@@ -2707,8 +2709,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       // }
     }, function (err) {
       console.log(err)
-    }
-        )
+    })
 
     // 获取用户的支付宝账号
     Doctor.getAliPayAccount({
