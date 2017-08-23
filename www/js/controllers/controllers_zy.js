@@ -2118,6 +2118,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         sendBy: Storage.get('UID'),
         userId: Storage.get('getpatientId'),
         type: 5,
+        userRole: 'patient',
         readOrNot: '0',
         description: '医生给您发送了一条保险消息',
         messageId: Storage.get('MessId')
@@ -2131,7 +2132,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  $scope.goPatientReport = function(){
+  $scope.goPatientReport = function () {
     $state.go('tab.Report')
   }
 
