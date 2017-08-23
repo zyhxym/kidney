@@ -2131,6 +2131,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
+  $scope.goPatientReport = function(){
+    $state.go('tab.Report')
+  }
+
   $scope.goToDiagnose = function () {
     $state.go('tab.DoctorDiagnose')
   }
