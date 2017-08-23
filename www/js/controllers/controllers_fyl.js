@@ -1,7 +1,7 @@
 angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
-.controller('ReportCtrl', ['$scope', '$state', 'getPatientData','$ionicLoading', function($scope, $state, getPatientData, $ionicLoading){
-  patientId = "U201705110001"
+.controller('ReportCtrl', ['Storage', '$scope', '$state', 'getPatientData','$ionicLoading', function(Storage, $scope, $state, getPatientData, $ionicLoading){
+  patientId = Storage.get('getpatientId')
   $scope.writeReport = true
   $scope.type = "week"
   $scope.typeC = '周'
@@ -64,7 +64,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
   var healthyCurve = function(){
     var date = new Date()
-    var date = "2017-07-27T00:00:00.000Z"
+    // var date = "2017-07-27T00:00:00.000Z"
     $scope.outOfTime = false
 
     //体温
