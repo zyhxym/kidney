@@ -2320,7 +2320,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // if (angular.isDefined($scope.doctor.docTDCticket) != true) {
     if ($scope.doctor.docTDCticket == null) {
       var params = {
-        // 'role': 'doctor',
+        'role': 'patient',
         // 'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
