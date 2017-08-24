@@ -16,6 +16,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
         Storage.set('bindingsucc', 'yes')
+        Storage.set('TOKEN', data.results.token)
+        Storage.set('refreshToken', data.results.refreshToken)
         Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
           thisDoctor = response.results
           mySocket.newUser(response.results.userId)
@@ -46,6 +48,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
         // Storage.set('bindingsucc','yes')
+        Storage.set('TOKEN', data.results.token)
+        Storage.set('refreshToken', data.results.refreshToken)
         Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
           thisDoctor = response.results
           mySocket.newUser(response.results.userId)
@@ -109,7 +113,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $ionicHistory.clearHistory()
             Storage.set('USERNAME', $scope.logOn.username)
             Storage.set('TOKEN', data.results.token)
-            // console.log(Storage.get('TOKEN'))
+            Storage.set('refreshToken', data.results.refreshToken)
             Storage.set('isSignIn', true)
             Storage.set('UID', data.results.userId)
             /**
@@ -251,7 +255,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               if (data.results.mesg == 'login success!') {
                 Storage.set('isSignIn', 'Yes')
                 Storage.set('UID', ret.UserId)// 后续页面必要uid
-                      // alert(Storage.get('UID'))
+                Storage.set('TOKEN', data.results.token)
+                Storage.set('refreshToken', data.results.refreshToken)
                 Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
                 Storage.set('bindingsucc', 'yes')
                 Storage.set('USERNAME', ret.phoneNo)
@@ -926,6 +931,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     console.log(data)
     if (data.results.mesg == 'login success!') {
       $scope.doctor.userId = data.results.userId
+      Storage.set('TOKEN', data.results.token)
+      Storage.set('refreshToken', data.results.refreshToken)
     }
   }, function (err) {
     console.log(err)
@@ -2149,8 +2156,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 // "我”页-zy,mzb,zxf
 .controller('meCtrl', ['CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', function (CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http) {
   $scope.barwidth = 'width:0%'
-
-    // $scope.userid=Storage.get('userid');
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
     // });
@@ -2163,7 +2168,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    */
   // console.log(Storage.get('TOKEN'))
   Doctor.getDoctorInfo({
-    // userId: Storage.get('UID')
+    // token: Storage.get('TOKEN')
   }).then(function (data) {
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
@@ -2373,7 +2378,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @return   data.results(医生详细信息)
    */
   Doctor.getDoctorInfo({
-    userId: Storage.get('UID')
+    // token: Storage.get('TOKEN')
   }).then(function (data) {
     // console.log(data)
     $scope.doctor = data.results
