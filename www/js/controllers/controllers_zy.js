@@ -3937,6 +3937,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       patientId: Storage.get('getpatientId')
     }).then(function (data) {
       console.log(data)
+      load()
     }, function (err) {
       console.log(err)
     })
@@ -3960,7 +3961,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       type: 7,
       readOrNot: '0',
       description: '医生通过了您的申请！',
-      messageId: Storage.get('MessId')
+      messageId: Storage.get('MessId'),
+      userRole:'patient'
     }).then(function (data) {
       console.log(data)
     }, function (err) {
@@ -3988,6 +3990,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             if (!$scope.data.reason) {
           // 必须输入拒绝理由
               e.preventDefault()
+              $ionicLoading.show({
+          template: '请输入拒绝理由',
+          duration: 1000
+        })
             } else {
               return $scope.data.reason
               $state.go('tab.review')
@@ -4006,6 +4012,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           patientId: Storage.get('getpatientId')
         }).then(function (data) {
           console.log(data)
+          load()
         })
 
         Message.insertMessages({
@@ -4027,7 +4034,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           type: 7,
           readOrNot: '0',
           description: '医生拒绝了您的申请，理由是：' + reason,
-          messageId: Storage.get('MessId')
+          messageId: Storage.get('MessId'),
+          userRole:'patient'
         }).then(function (data) {
           console.log(data)
         }, function (err) {
