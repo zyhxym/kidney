@@ -95,9 +95,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
          */
         logPromise.then(function (data) {
           if (data.results == 1) {
-            if (data.mesg == "User doesn't Exist!") {
+            if (data.mesg == "Alluser doesn't Exist!") {
               $scope.logStatus = '账号不存在！'
-            } else if (data.mesg == "User password isn't correct!") {
+            } else if (data.mesg == "Alluser password isn't correct!") {
               $scope.logStatus = '账号或密码错误！'
             }
           } else if (data.results.mesg == 'login success!') {
@@ -236,23 +236,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     Wechat.auth(wxscope, wxstate, function (response) {
       // you may use response.code to get the access token.
       // alert(JSON.stringify(response));
-      // alert(response.code)
+      alert(response.code)
 
-      Mywechat.getUserInfo({role: 'appDoctor', code: response.code}).then(function (persondata) {
-        // alert(JSON.stringify(persondata))
+      Mywechat.getUserInfo({role: 'appDoctor', code: response.code, state: ''}).then(function (persondata) {
+        alert(JSON.stringify(persondata))
         // alert(persondata.headimgurl)
         Storage.set('wechatheadimgurl', persondata.results.headimgurl)
 
         $scope.unionid = persondata.results.unionid
+        alert($scope.unionid)
 
         User.getUserId({username: $scope.unionid}).then(function (ret) {
-                // alert(JSON.stringify(ret))
+          alert(JSON.stringify(ret))
                 // 用户已经存在id 说明公众号注册过
           if (ret.results == 0 && ret.roles.indexOf('doctor') != -1) { // 直接登录
             ionicLoadingshow()
+            alert(1)
             User2.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
-                    // alert(JSON.stringify(data));
+              alert(JSON.stringify(data))
               if (data.results.mesg == 'login success!') {
+                alert(2)
                 Storage.set('isSignIn', 'Yes')
                 Storage.set('UID', ret.UserId)// 后续页面必要uid
                 Storage.set('TOKEN', data.results.token)
@@ -273,6 +276,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               }
             })
           } else {
+            alert(3)
             Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
             $state.go('phonevalid', {last: 'wechatsignin'})
           }
@@ -3962,7 +3966,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       readOrNot: '0',
       description: '医生通过了您的申请！',
       messageId: Storage.get('MessId'),
-      userRole:'patient'
+      userRole: 'patient'
     }).then(function (data) {
       console.log(data)
     }, function (err) {
@@ -3991,9 +3995,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           // 必须输入拒绝理由
               e.preventDefault()
               $ionicLoading.show({
-          template: '请输入拒绝理由',
-          duration: 1000
-        })
+                template: '请输入拒绝理由',
+                duration: 1000
+              })
             } else {
               return $scope.data.reason
               $state.go('tab.review')
@@ -4035,7 +4039,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           readOrNot: '0',
           description: '医生拒绝了您的申请，理由是：' + reason,
           messageId: Storage.get('MessId'),
-          userRole:'patient'
+          userRole: 'patient'
         }).then(function (data) {
           console.log(data)
         }, function (err) {
