@@ -33,13 +33,13 @@
           {{showDateTitle(Diagnose.diagname)}}:{{Diagnose.diagoperationTime|dateFormat:"YYYY-MM-DD"}}
         </ion-item>
         <ion-item ng-if="Diagnose.diagname == 2||Diagnose.diagname == 3">
-          疾病进程:{{Diagnose.diagprogress}}
+          疾病进程:{{Diagnose.diagProgress}}
         </ion-item>
         <ion-item>
           是否高血压:{{Diagnose.diaghypertension|hypertension}}
         </ion-item>
         <ion-item>
-          诊断:{{Diagnose.diagcontent}}
+          诊断:{{Diagnose.diagContent}}
         </ion-item>
     </div>
     <div  class="list" ng-show="edit">
@@ -66,7 +66,7 @@
           <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
           疾病进程
         </div>
-        <select ng-model="Diagnose.diagprogress">
+        <select ng-model="Diagnose.diagProgress">
           <option ng-repeat="x in progressSelect[0]" value="{{x}}">{{x}}</option>
         </select>
       </label>
@@ -76,7 +76,7 @@
           <i class="icon ion-asterisk" style="color:red;font-size:6px"></i>
           疾病进程
         </div>
-        <select ng-model="Diagnose.diagprogress">
+        <select ng-model="Diagnose.diagProgress">
           <option ng-repeat="x in progressSelect[1]" value="{{x}}">{{x}}</option>
         </select>
       </label>
@@ -91,7 +91,7 @@
 
       <label class="item item-input">
         <span class="input-label" style="margin-left:8px ">诊断</span>
-        <input  ng-model="Diagnose.diagcontent"  type="text">
+        <input  ng-model="Diagnose.diagContent"  type="text">
       </label>
 
       <button style="margin:0 auto;width: 80%" class="button button-block button-balanced bg-63 mt-40" ng-click ="saveDiagnose()">
