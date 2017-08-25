@@ -156,8 +156,8 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     "diagtime": (new Date()).toDateString(),
     "diagoperationTime": latestDiagnose.operationTime==undefined?(new Date()).toDateString():latestDiagnose.operationTime,
     "diaghypertension": ""+latestDiagnose.hypertension,
-    "diagprogress": encodeprogress(latestDiagnose.progress),
-    "diagcontent":latestDiagnose.content
+    "diagProgress": encodeprogress(latestDiagnose.progress),
+    "diagContent":latestDiagnose.content
   }
   //console.log($scope.Diagnose)
   var datepickerD = {
@@ -266,14 +266,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $scope.Diagnose.patientId=Storage.get('getpatientId');
     $scope.Diagnose.doctorId=Storage.get('UID');
     $scope.Diagnose.diagname=decodeDiseases($scope.Diagnose.diagname);
-    $scope.Diagnose.diagprogress=decodeprogress($scope.Diagnose.diagprogress);
+    $scope.Diagnose.diagProgress=decodeprogress($scope.Diagnose.diagProgress);
     //console.log($scope.Diagnose)
     var D = angular.copy($scope.Diagnose)
     //console.log(D)
 
     Patient.insertDiagnosis($scope.Diagnose)
     .then(function(data){
-        var task = distinctTask(D.diagname,D.diagoperationTime,D.diagprogress);
+        var task = distinctTask(D.diagname,D.diagoperationTime,D.diagProgress);
         var patientId = Storage.get('getpatientId')
         //console.log(task)
         Task.insertTask({userId:patientId,sortNo:task}).then(
@@ -285,17 +285,17 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         //console.log($scope.Diagnose)
 
       var lD={
-          content:$scope.Diagnose.diagcontent,
+          content:$scope.Diagnose.diagContent,
           hypertension:$scope.Diagnose.diaghypertension,
           name:$scope.Diagnose.diagname,
           operationTime:$scope.Diagnose.diagoperationTime,
-          progress:$scope.Diagnose.diagprogress,
+          progress:$scope.Diagnose.diagProgress,
           time:$scope.Diagnose.diagtime
       }
       Storage.set("latestDiagnose",angular.toJson(lD));
       
       $scope.Diagnose.diagname=encodeDiseases($scope.Diagnose.diagname);
-      $scope.Diagnose.diagprogress=encodeprogress($scope.Diagnose.diagprogress);
+      $scope.Diagnose.diagProgress=encodeprogress($scope.Diagnose.diagProgress);
 
       tmpDiagnose=angular.copy($scope.Diagnose);
       $scope.canEdit();
