@@ -131,7 +131,7 @@
                     <div style="">
                         <span>{{ti.patientId.name}}</span>
                         <span>{{ti.patientId.gender | filterGender}}</span>
-                        <span ng-if = "(ti.patientId.birthday)">{{t.patientId.birthday | filterAge}}岁</span>
+                        <span ng-if = "(ti.patientId.birthday)">{{ti.patientId.birthday | filterAge}}岁</span>
                         <span ng-if = "!(ti.patientId.birthday)">年龄未知</span>
                         <span style="float: right">{{ti.dpRelationTime |dateFormat:"YYYY-MM-DD"}}</span>
                         <p>
