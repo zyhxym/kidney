@@ -40,12 +40,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 }])
 .constant('CONFIG', {
-  baseUrl: 'http://121.43.107.106:4060/api/v1/',
-  baseTwoUrl: 'http://106.15.185.172:4060/api/v2/',
-  mediaUrl: 'http://106.15.185.172/uploads/',
-  socketServer: 'ws://121.43.107.106:4060/',
-  imgThumbUrl: 'http://106.15.185.172/uploads/photos/resize',
-  imgLargeUrl: 'http://106.15.185.172/uploads/photos/',
+  // baseUrl: 'http://121.43.107.106:4060/api/v1/',
+  baseTwoUrl: 'http://docker2.haihonghospitalmanagement.com/api/v2/',
+  mediaUrl: 'http://df2.haihonghospitalmanagement.com/',
+  socketServer: 'http://docker2.haihonghospitalmanagement.com/chat',
+  imgThumbUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/resize',
+  imgLargeUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/',
   cameraOptions: {
     cam: {
       quality: 70,
@@ -216,7 +216,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 
 // 获取图片，拍照or相册，见CONFIG.cameraOptions。return promise。xjz
-.factory('Camera', ['$q', '$cordovaCamera', '$cordovaFileTransfer', 'CONFIG', 'fs', 'Storage',function ($q, $cordovaCamera, $cordovaFileTransfer, CONFIG, fs，Storage,) {
+.factory('Camera', ['$q', '$cordovaCamera', '$cordovaFileTransfer', 'CONFIG', 'fs', 'Storage', function ($q, $cordovaCamera, $cordovaFileTransfer, CONFIG, fs, Storage) {
   return {
     getPicture: function (type, noCrop) {
       console.log(type)
@@ -274,7 +274,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     },
     uploadPicture: function (imgURI, temp_photoaddress) {
       return $q(function (resolve, reject) {
-        var uri = encodeURI(CONFIG.baseUrl + 'upload?token=' + Storage.get('TOKEN'))
+        var uri = encodeURI(CONFIG.baseTwoUrl + 'upload?token=' + Storage.get('TOKEN'))
             // var photoname = Storage.get("UID"); // 取出病人的UID作为照片的名字
         var options = {
           fileKey: 'file',
@@ -305,7 +305,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
     uploadVoice: function (voiURI, temp_voiceaddress) {
       return $q(function (resolve, reject) {
-        var uri = encodeURI(CONFIG.baseUrl + 'upload')
+        var uri = encodeURI(CONFIG.baseTwoUrl + 'upload')
         var options = {
           fileKey: 'file',
           fileName: temp_voiceaddress,
