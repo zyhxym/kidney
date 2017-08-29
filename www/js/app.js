@@ -317,6 +317,13 @@ angular.module('kidney', [
       templateUrl: 'partials/others/nocomess.html',
       controller: 'nocomessCtrl'
     })
+    // 未修改治疗方案列表
+    .state('changeTasks', {
+      // cache: false,
+      url: '/changeTasks',
+      templateUrl: 'partials/others/changeTasks.html',
+      controller: 'changeTasksCtrl'
+    })
 
     // 选项卡
     .state('tab', {

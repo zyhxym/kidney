@@ -30,6 +30,13 @@
         <i class="icon ion-ios-arrow-right mine-msg-right" style="top:24px"></i>
       </ion-item>
 
+       <!-- 未及时修改患者治疗方案的提醒 -->
+      <ion-item class="item item-avatar card" ng-if="(!changingTasks.length==0)" style="padding-top:25px; padding-bottom:25px;" ng-repeat="changingTask in changingTasks" ng-click="getChatDetail(changingTask)">
+        <img ng-src="img/xx.png" image-red-point="true">
+        <h2>修改治疗方案的提醒</h2>
+        <i class="icon ion-ios-arrow-right mine-msg-right" style="top:24px"></i>
+      </ion-item>
+
       <!-- 支付消息 -->
 <!--       <ion-item class="item message-item item-avatar right message-new" ng-click="getMessageDetail('ZF')">
         <img   src="/img/icon_paymessage.png">
