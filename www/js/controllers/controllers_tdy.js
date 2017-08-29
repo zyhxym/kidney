@@ -1938,7 +1938,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 //消息中心--ZY
 .controller('messageCtrl', ['$ionicPopup','$q','$scope','$state','$ionicHistory','New','Storage','Doctor','Patient2','Communication','Counsel',function($ionicPopup,$q,$scope, $state,$ionicHistory,New,Storage,Doctor,Patient2,Communication,Counsel) {
   $scope.barwidth="width:0%";
-
+  
   /**
    * [获取患者姓名头像]
    * @Author   ZY
@@ -2061,7 +2061,15 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       //console.log($scope.noCounsels[0].readOrNot)
     },function(err){
       console.log(err);
-    });           
+    });   
+
+     // 获取未及时修改患者方案的提醒列表，测试中！！！！
+    New.getNewsByReadOrNot({type:'9',readOrNot:0}).then(function(data){
+      $scope.changingTasks=data.results;
+      console.log($scope.changingTasks)
+    },function(err){
+      console.log(err);
+    });            
   }
            
   $scope.$on('$ionicView.enter', function() {
@@ -2121,7 +2129,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     } 
     else if(mes.type==14){
         $state.go('nocomess')
-    }        
+    }
+     else if(mes.type==9){
+        $state.go('changeTasks')
+    }            
   }
 }])
 
@@ -2160,5 +2171,36 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     Storage.set('noCounselurl', noCounsel.url)
     Storage.set('noCounselMes', noCounsel.messageId)
     $state.go('tab.nocodetail')
+  }
+}])
+
+// 未及时更新患者治疗方案
+.controller('changeTasksCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  $scope.changingTasks = []
+  var load = function () {
+    Message.getMessages({
+      type: 9
+    }).then(function (data) {
+      console.log(data)
+     $scope.changingTasks=data.results  
+    }, function (err) {
+      console.log(err)
+    })
+  }
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+ $scope.getPatientDetail = function (id) {
+    console.log(id)
+    Storage.set('getpatientId', id)
+    $state.go('tab.patientDetail')
   }
 }])
