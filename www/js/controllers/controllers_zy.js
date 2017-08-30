@@ -254,7 +254,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               if (data.results.mesg == 'login success!') {
                 // alert(2)
                 Storage.set('isSignIn', 'Yes')
-                Storage.set('UID', ret.UserId)// 后续页面必要uid
+                Storage.set('UID', data.results.UserId)// 后续页面必要uid
                 Storage.set('TOKEN', data.results.token)
                 Storage.set('refreshToken', data.results.refreshToken)
                 Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
