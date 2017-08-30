@@ -3481,10 +3481,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.charge1Save = function () {
-    var chargeReg = /^\d+$/
+    var chargeReg = /^\d+(\.\d+)?$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge1)) {
-      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负数字！', duration: 1000 })
     } else if ($scope.doctorinfo.status2 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
       $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
     } else if ($scope.doctorinfo.status3 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
@@ -3505,10 +3505,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.charge2Save = function () {
-    var chargeReg = /^\d+$/
+    var chargeReg = /^\d+(\.\d+)?$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge2)) {
-      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负数字！', duration: 1000 })
     } else if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
       $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
     } else {
@@ -3527,10 +3527,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.charge3Save = function () {
-    var chargeReg = /^\d+$/
+    var chargeReg = /^\d+(\.\d+)?$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge3)) {
-      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负数字！', duration: 1000 })
     } else if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
       $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
     } else {
@@ -3549,10 +3549,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.charge4Save = function () {
-    var chargeReg = /^\d+$/
+    var chargeReg = /^\d+(\.\d+)?$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge4)) {
-      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负数字！', duration: 1000 })
     } else {
       var param = {
                     // userId: Storage.get('UID'),
@@ -3863,10 +3863,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.charge5Save = function () {
-    var chargeReg = /^\d+$/
+    var chargeReg = /^\d+(\.\d+)?$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge5)) {
-      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负数字！', duration: 1000 })
     } else {
       var param = {
                     // userId: Storage.get('UID'),
