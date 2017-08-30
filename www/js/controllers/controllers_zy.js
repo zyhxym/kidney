@@ -64,7 +64,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
          * @DateTime 2017-07-04
          * @return   跳转到首页
          */
-        $timeout(function () { $state.go('tab.home') }, 500)
+        $timeout(function () { $state.go('tab.workplace') }, 500)
       }
     })
   }
@@ -1326,6 +1326,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 .controller('consultCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'QRScan', 'Counsel', function ($scope, $state, $interval, $rootScope, Storage, QRScan, Counsel) {
   $scope.barwidth = 'width:0%'
   // 变量a 等待患者数量 变量b 已完成咨询患者数量
+  $scope.GoBack = function () {
+    $state.go('tab.workplace')
+  }
   $scope.doctor = {a: 0, b: 0}
   var now = new Date()
   var year = now.getYear()
@@ -1603,32 +1606,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 我的预约 页面
-.controller('myreserveCtrl', ['$scope','Doctor2','services', function($scope, Doctor2, services){
+.controller('myreserveCtrl', ['$scope', 'Doctor2', 'services', function ($scope, Doctor2, services) {
     // 获取该医生所有待审核患者列表
-    Doctor2.getReviewList({
+  Doctor2.getReviewList({
       // token: Storage.get('TOKEN')
       // userId: Storage.get('UID')
-    }).then(function (data) {
+  }).then(function (data) {
         // console.log(data)
-      $scope.reviewNum = data.numberToReview
-    }, function (err) {
-      console.log(err)
-    })
+    $scope.reviewNum = data.numberToReview
+  }, function (err) {
+    console.log(err)
+  })
 
   // 获取未核销面诊患者 0未核销 1已核销
-    services.myPDpatients({
+  services.myPDpatients({
       // token: Storage.get('TOKEN')
-      status: 0
-    }).then(function (data) {
+    status: 0
+  }).then(function (data) {
         // console.log(data)
-      $scope.PDNum = data.results.length
-    }, function (err) {
-      console.log(err)
-    })
+    $scope.PDNum = data.results.length
+  }, function (err) {
+    console.log(err)
+  })
 }])
 // "患者”页-zy
 .controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor2', 'services', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor2, services) {
   $scope.barwidth = 'width:0%'
+  $scope.GoBack = function () {
+    $state.go('tab.workplace')
+  }
   var patients = []
   $scope.params = {
     isPatients: true,
@@ -3352,35 +3358,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }, function (err) {
           console.log(err)
         })
-        if ($scope.doctorinfo.status2&&parseFloat($scope.doctorinfo.charge2)<=parseFloat($scope.doctorinfo.charge1)) {
-            $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
+      if ($scope.doctorinfo.status2 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
+        $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
             // $scope.doctorinfo.charge1 = 0
-            var param = {
+        var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-                serviceType: 'service1',
-                charge: 1
-            }
-            services.setCharge(param).then(function (data) {
-            }, function (err) {
-                console.log(err)
-            })
-            getStatus()
-        } else if ($scope.doctorinfo.status3&&parseFloat($scope.doctorinfo.charge3)<=parseFloat($scope.doctorinfo.charge1)) {
-            $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
-            // $scope.doctorinfo.charge1 = 0 
-            var param = {
-                    // userId: Storage.get('UID'),
-                    // token: Storage.get('TOKEN'),
-                serviceType: 'service1',
-                charge: 1
-            }
-            services.setCharge(param).then(function (data) {
-            }, function (err) {
-                console.log(err)
-            })
-            getStatus()
+          serviceType: 'service1',
+          charge: 1
         }
+        services.setCharge(param).then(function (data) {
+        }, function (err) {
+          console.log(err)
+        })
+        getStatus()
+      } else if ($scope.doctorinfo.status3 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
+        $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
+            // $scope.doctorinfo.charge1 = 0
+        var param = {
+                    // userId: Storage.get('UID'),
+                    // token: Storage.get('TOKEN'),
+          serviceType: 'service1',
+          charge: 1
+        }
+        services.setCharge(param).then(function (data) {
+        }, function (err) {
+          console.log(err)
+        })
+        getStatus()
+      }
     }
   }
 
@@ -3401,21 +3407,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }, function (err) {
           console.log(err)
         })
-        if ($scope.doctorinfo.status1&&parseFloat($scope.doctorinfo.charge2)<=parseFloat($scope.doctorinfo.charge1)) {
-            $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
+      if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
+        $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
             // $scope.doctorinfo.charge1 = 0
-            var param = {
+        var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-                serviceType: 'service1',
-                charge: 1
-            }
-            services.setCharge(param).then(function (data) {
-            }, function (err) {
-                console.log(err)
-            })
-            getStatus()
+          serviceType: 'service1',
+          charge: 1
         }
+        services.setCharge(param).then(function (data) {
+        }, function (err) {
+          console.log(err)
+        })
+        getStatus()
+      }
     }
   }
 
@@ -3436,21 +3442,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }, function (err) {
           console.log(err)
         })
-        if ($scope.doctorinfo.status1&&parseFloat($scope.doctorinfo.charge3)<=parseFloat($scope.doctorinfo.charge1)) {
-            $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
+      if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
+        $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
             // $scope.doctorinfo.charge1 = 0
-            var param = {
+        var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-                serviceType: 'service1',
-                charge: 1
-            }
-            services.setCharge(param).then(function (data) {
-            }, function (err) {
-                console.log(err)
-            })
-            getStatus()
+          serviceType: 'service1',
+          charge: 1
         }
+        services.setCharge(param).then(function (data) {
+        }, function (err) {
+          console.log(err)
+        })
+        getStatus()
+      }
     }
   }
 
@@ -3478,46 +3484,45 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     var chargeReg = /^\d+$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge1)) {
-        $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-    } else if ($scope.doctorinfo.status2&&parseFloat($scope.doctorinfo.charge2)<=parseFloat($scope.doctorinfo.charge1)) {
-        $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
-    } else if ($scope.doctorinfo.status3&&parseFloat($scope.doctorinfo.charge3)<=parseFloat($scope.doctorinfo.charge1)) {
-        $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })  
-    } else{
-        var param = {
+      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+    } else if ($scope.doctorinfo.status2 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
+      $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
+    } else if ($scope.doctorinfo.status3 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
+      $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
+    } else {
+      var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-            serviceType: 'service1',
-            charge: $scope.doctorinfo.charge1
-        }
-        services.setCharge(param).then(function (data) {
-        }, function (err) {
-            console.log(err)
-        })
-        $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+        serviceType: 'service1',
+        charge: $scope.doctorinfo.charge1
+      }
+      services.setCharge(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+      $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
-    
   }
 
   $scope.charge2Save = function () {
     var chargeReg = /^\d+$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge2)) {
-        $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-    } else if ($scope.doctorinfo.status1&&parseFloat($scope.doctorinfo.charge2)<=parseFloat($scope.doctorinfo.charge1)) {
-        $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+    } else if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge2) <= parseFloat($scope.doctorinfo.charge1)) {
+      $ionicLoading.show({ template: '问诊收费应高于咨询收费，请重新设置！', duration: 1000 })
     } else {
-        var param = {
+      var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-            serviceType: 'service2',
-            charge: $scope.doctorinfo.charge2
-        }
-        services.setCharge(param).then(function (data) {
-        }, function (err) {
-            console.log(err)
-        })
-        $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+        serviceType: 'service2',
+        charge: $scope.doctorinfo.charge2
+      }
+      services.setCharge(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+      $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
 
@@ -3525,21 +3530,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     var chargeReg = /^\d+$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge3)) {
-        $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-    } else if ($scope.doctorinfo.status1&&parseFloat($scope.doctorinfo.charge3)<=parseFloat($scope.doctorinfo.charge1)) {
-        $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+    } else if ($scope.doctorinfo.status1 && parseFloat($scope.doctorinfo.charge3) <= parseFloat($scope.doctorinfo.charge1)) {
+      $ionicLoading.show({ template: '加急咨询收费应高于咨询收费，请重新设置！', duration: 1000 })
     } else {
-        var param = {
+      var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-            serviceType: 'service3',
-            charge: $scope.doctorinfo.charge3
-        }
-        services.setCharge(param).then(function (data) {
-        }, function (err) {
-            console.log(err)
-        })
-        $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+        serviceType: 'service3',
+        charge: $scope.doctorinfo.charge3
+      }
+      services.setCharge(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+      $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
 
@@ -3547,21 +3552,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     var chargeReg = /^\d+$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge4)) {
-        $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
     } else {
-        var param = {
+      var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-            serviceType: 'service4',
-            charge: $scope.doctorinfo.charge4
-        }
-        services.setCharge(param).then(function (data) {
-        }, function (err) {
-            console.log(err)
-        })
-        $ionicLoading.show({ template: '保存成功！', duration: 1000 })
-    } 
-   }   
+        serviceType: 'service4',
+        charge: $scope.doctorinfo.charge4
+      }
+      services.setCharge(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+      $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+    }
+  }
 }])
 
 // 是否转发页面
@@ -3861,19 +3866,19 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     var chargeReg = /^\d+$/
       // 收费正则表达式验证
     if (!chargeReg.test($scope.doctorinfo.charge5)) {
-        $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+      $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
     } else {
-        var param = {
+      var param = {
                     // userId: Storage.get('UID'),
                     // token: Storage.get('TOKEN'),
-            serviceType: 'service5',
-            charge: $scope.doctorinfo.charge5
-        }
-        services.setCharge(param).then(function (data) {
-        }, function (err) {
-            console.log(err)
-        })
-        $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+        serviceType: 'service5',
+        charge: $scope.doctorinfo.charge5
+      }
+      services.setCharge(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+      $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
 

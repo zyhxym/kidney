@@ -346,16 +346,16 @@ angular.module('kidney', [
     })
 
     // 主页面
-    .state('tab.home', {
-      cache: false,
-      url: '/home',
-      views: {
-        'tab-home': {
-          controller: 'homeCtrl',
-          templateUrl: 'partials/home/homepage.html'
-        }
-      }
-    })
+    // .state('tab.home', {
+    //   cache: false,
+    //   url: '/home',
+    //   views: {
+    //     'tab-home': {
+    //       controller: 'homeCtrl',
+    //       templateUrl: 'partials/home/homepage.html'
+    //     }
+    //   }
+    // })
 
     // 咨询
     .state('tab.consult', {
@@ -409,9 +409,9 @@ angular.module('kidney', [
     // views-tab-home
 
     // views-tab-workplace
-    
+
     // 我的二维码
-    .state('tab.QRcode', { 
+    .state('tab.QRcode', {
         // cache: false,
       url: '/qrcode',
       views: {
@@ -420,7 +420,7 @@ angular.module('kidney', [
           templateUrl: 'partials/workplace/qrcode.html'
         }
       }
-    }) 
+    })
     // 服务管理
     .state('tab.myservice', {
         // cache: false,
@@ -527,7 +527,6 @@ angular.module('kidney', [
       }
     })
 
-
     // 患者详情页面
     .state('tab.Report', {
       url: '/Report',
@@ -558,18 +557,18 @@ angular.module('kidney', [
         }
       }
     })
-    .state('tab.TestRecord', {
-        // cache: false,
-      url: '/TestRecord',
-      params: {PatinetId: null},
-      views: {
-        'tab-workplace': {
-          cache: true,
-          controller: 'TestRecordCtrl',
-          templateUrl: 'partials/patient/testrecord.html'
-        }
-      }
-    })
+    // .state('tab.TestRecord', {
+    //     // cache: false,
+    //   url: '/TestRecord',
+    //   params: {PatinetId: null},
+    //   views: {
+    //     'tab-workplace': {
+    //       cache: true,
+    //       controller: 'TestRecordCtrl',
+    //       templateUrl: 'partials/patient/testrecord.html'
+    //     }
+    //   }
+    // })
 
     .state('tab.TaskSet', {
         // cache: false,
