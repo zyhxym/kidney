@@ -7,7 +7,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       $scope.barStyle={'margin-top':'60px'}
   }
   $scope.BacktoPD = function(){
-    $state.go('tab.patientDetail');
+    $state.go('tab.patient');
   }
   var decodeDiseases=function(type)
   {
@@ -320,7 +320,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       $scope.barStyle={'margin-top':'60px'}
   }
   $scope.BacktoPD = function(){
-    $state.go('tab.patientDetail');
+    $state.go('tab.patient');
   }  
 
       //console.log($stateParams.PatinetId)
@@ -1149,7 +1149,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       $scope.barStyle={'margin-top':'60px'}
   }
   $scope.BacktoPD = function(){
-    $state.go('tab.patientDetail');
+    $state.go('tab.patient');
   }
   //初始化
    var UserId = Storage.get('getpatientId'); 
@@ -1402,7 +1402,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.barwidth="width:0%";
   // 返回健康详情
   $scope.BacktoPD = function(){
-    $state.go('tab.patientDetail');
+    $state.go('tab.patient');
   }
   var patientId = Storage.get('getpatientId')
   //console.log(Storage.get('getpatientId'))
@@ -2082,7 +2082,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   }
 
   $scope.Goback = function(){
-    $state.go('tab.home')
+    $state.go('tab.workplace')
   }
 
   //患者-医生  获取咨询状态 [status]：1进行中；0已完成  进入聊天：[type]:1=进行中;0=已结束;
