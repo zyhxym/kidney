@@ -1,4 +1,4 @@
-<ion-view view-title="我" show-tabs>
+<ion-view view-title="" show-tabs>
 <!-- <ion-nav-bar class="bar-positive nav-title-slide-ios7">
           <ion-nav-back-button class="button-clear">
             <i class="ion-chevron-left"></i>
@@ -6,7 +6,7 @@
 </ion-nav-bar> -->
     <ion-content overflow-scroll="false" class="has-tabs bg-f5">
     <div class="me-top-box">
-        <!-- <a href="#/tab/qrcode"><i class="me-code iconfont icon-erweima"></i>
+       <!--  <a href="#/tab/qrcode"><i class="me-code iconfont icon-erweima"></i>
         <qrcode  version=3 error-correction-level="M" size="50" data="{{params.userId}}" style="width:30px;height:30px;position: absolute;right: 30px;top:10px;"></qrcode>
         </a> -->
         <div class="me-top-bg"></div>
@@ -16,7 +16,7 @@
                     <img ng-src="{{doctor.photoUrl}}" name="Photo" ng-click="onClickCamera($event)">
                 </div>
 
-                <div class="me-edit-btn">更换头像</div>
+                <!-- <div class="me-edit-btn">更换头像</div> -->
             </div>
             <div class="me-massage">
                 <p class="f16 m-b5 fc-2b">{{doctor.name}}</p>
@@ -27,19 +27,25 @@
     </div>
     <div class="me-mun bg-wite mt-10">
         <div class="row ">
-            <a class="col col-50 text-center br-e9" href="#/tab/schedual"><i class="iconfont icon-paibanguanli"></i><span style="margin-left: -8px;">排班</span><em class="me-dic iconfont  icon-dian"></em></a>
-            <a class="col col-50 text-center" href="#/tab/myinfo"><i class="iconfont icon-jibenziliao"></i><span style="margin-left: -8px;">我的资料</span></a>
-        </div>
-        <div class="row">
-            <a class="col col-50 text-center br-e9" href="#/tab/myfee"><i class="iconfont icon-wodezhanghu"></i><span style="margin-left: -8px;">我的账户</span><em class="me-dic iconfont  icon-dian"></em></a>
-            <a class="col col-50 text-center" href="#/tab/feedback"><i class="iconfont icon-wujiaoxing"></i><span style="margin-left: -8px;">我的评价</span></a>
+            <a class="col col-50 text-center br-e9" href="#/tab/qrcode"><!-- <i class="me-code iconfont icon-erweima"></i> --><span style="margin-left: -8px;">我的二维码</span><!-- <em class="me-dic iconfont  icon-dian"></em> --></a>
+            <a class="col col-50 text-center" href="#/tab/myinfo"><i class="iconfont icon-jibenziliao"></i><span style="margin-left: -8px;">消息提醒</span></a>
         </div>
     </div>
-    <div class="me-list list mt-15">
-        <!-- <a class="item item-icon-left" href="#/tab/myservice">
+    <div class="me-mun bg-wite mt-10">
+        <div class="row ">
+            <a class="col col-50 text-center br-e9" href="#/tab/consult"><i class="iconfont icon-paibanguanli"></i><span style="margin-left: -8px;">咨询问诊</span><!-- <em class="me-dic iconfont  icon-dian"></em> --></a>
+            <a class="col col-50 text-center" href="#/tab/myreserve"><i class="iconfont icon-jibenziliao"></i><span style="margin-left: -8px;">我的预约</span></a>
+        </div>
+        <div class="row">
+            <a class="col col-50 text-center br-e9" href="#/tab/patient"><i class="iconfont icon-wodezhanghu"></i><span style="margin-left: -8px;">我的患者</span><!-- <em class="me-dic iconfont  icon-dian"></em> --></a>
+            <a class="col col-50 text-center" href="#/tab/myservice"><i class="iconfont icon-wujiaoxing"></i><span style="margin-left: -8px;">服务管理</span></a>
+        </div>
+    </div>
+    <!-- <div class="me-list list mt-15">
+        <a class="item item-icon-left" href="#/tab/myservice">
             <i class="iconfont ion-plane"></i>
         我的服务
-        </a> -->
+        </a>
         <a class="item item-icon-left" href="#/tab/set">
             <i class="iconfont icon-shezhi"></i>
         设置
@@ -56,7 +62,7 @@
             <i class="iconfont ion-social-skype"></i>
         科室管理
         </a>
-    </div>
+    </div> -->
 
 
 <!--         <ion-list>

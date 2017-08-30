@@ -5,14 +5,17 @@
       </ion-nav-buttons>
     </ion-nav-bar>
     <div class="button-bar bar-positive" ng-style="barStyle">
+    	<a class="button" href="#/tab/patientDetail">
+			<span class="br-e9" style="vertical-align: sub">患者详情</span>
+		</a>
 		<a class="button" href="#/tab/DoctorDiagnose">
 			<span class="br-e9" style="vertical-align: sub">医生诊断</span>
 		</a>
 		<a class="button" href="#/tab/TaskSet">
 			<span class="br-e9" style="vertical-align: sub">治疗方案</span>
 		</a>
-		<a class="button" ng-click="gototestrecord()" >
-			<span class="br-e9" style="vertical-align: sub">健康曲线</span>
+		<a class="button" href="#/tab/Report">
+			<span class="br-e9" style="vertical-align: sub">测量记录</span>
 		</a>
 		<a class="button" href="#/tab/HealthInfo">
 		    <span class="br-e9" style="vertical-align: sub">健康信息</span>
@@ -27,7 +30,7 @@
 			  </div>
 			</div>
 				<button class="button button-small button-positive pat-ts bg-f7" ng-click="SendInsMsg()">推送保险</button>
-				<button class="button button-small button-positive pat-ts2 bg-f7" ng-click="goPatientReport()">病情报告</button>
+				<!-- <button class="button button-small button-positive pat-ts2 bg-f7" ng-click="goPatientReport()">病情报告</button> -->
 	        <div class="row pd-0">
 	          <div class="col pd-0">				
 				<p class="m-b10 ">

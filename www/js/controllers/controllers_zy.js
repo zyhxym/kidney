@@ -30,7 +30,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         })
         $ionicHistory.clearCache()
         $ionicHistory.clearHistory()
-        $state.go('tab.home')
+        $state.go('tab.workplace')
       }
     })
   } else if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined && Storage.get('password') != null && Storage.get('password') != undefined) {
@@ -125,7 +125,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
              */
             User.getAgree({userId: data.results.userId}).then(function (res) {
               if (res.results.agreement == '0') {
-                $timeout(function () { $state.go('tab.home') }, 500)
+                $timeout(function () { $state.go('tab.workplace') }, 500)
               } else {
                 $timeout(function () { $state.go('agreement', {last: 'signin'}) }, 500)
               }
@@ -262,7 +262,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 Storage.set('USERNAME', ret.phoneNo)
                 $timeout(function () {
                   ionicLoadinghide()
-                  $state.go('tab.home')
+                  $state.go('tab.workplace')
                 }, 500)
                 Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
                   thisDoctor = response.results
@@ -615,7 +615,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 text: '確定',
                 type: 'button-positive',
                 onTap: function (e) {
-                  $state.go('tab.home')
+                  $state.go('tab.workplace')
                 }
               }
             ]
@@ -632,7 +632,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       // 由登录时跳转到签署协议，针对老注册用户，同意协议后跳转到首页
       User.updateAgree({userId: Storage.get('UID'), agreement: '0'}).then(function (data) {
         if (data.results != null) {
-          $timeout(function () { $state.go('tab.home') }, 500)
+          $timeout(function () { $state.go('tab.workplace') }, 500)
         } else {
           console.log('用户不存在!')
         }
@@ -1602,6 +1602,30 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // $scope.isChecked1=true;
 }])
 
+// 我的预约 页面
+.controller('myreserveCtrl', ['$scope','Doctor2','services', function($scope, Doctor2, services){
+    // 获取该医生所有待审核患者列表
+    Doctor2.getReviewList({
+      // token: Storage.get('TOKEN')
+      // userId: Storage.get('UID')
+    }).then(function (data) {
+        // console.log(data)
+      $scope.reviewNum = data.numberToReview
+    }, function (err) {
+      console.log(err)
+    })
+
+  // 获取未核销面诊患者 0未核销 1已核销
+    services.myPDpatients({
+      // token: Storage.get('TOKEN')
+      status: 0
+    }).then(function (data) {
+        // console.log(data)
+      $scope.PDNum = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
+}])
 // "患者”页-zy
 .controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor2', 'services', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor2, services) {
   $scope.barwidth = 'width:0%'
@@ -1630,27 +1654,27 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       console.log(err)
     })
 
-  // 获取该医生所有待审核患者列表
-    Doctor2.getReviewList({
-      // token: Storage.get('TOKEN')
-      // userId: Storage.get('UID')
-    }).then(function (data) {
-        // console.log(data)
-      $scope.reviewNum = data.numberToReview
-    }, function (err) {
-      console.log(err)
-    })
+  // // 获取该医生所有待审核患者列表
+  //   Doctor2.getReviewList({
+  //     // token: Storage.get('TOKEN')
+  //     // userId: Storage.get('UID')
+  //   }).then(function (data) {
+  //       // console.log(data)
+  //     $scope.reviewNum = data.numberToReview
+  //   }, function (err) {
+  //     console.log(err)
+  //   })
 
-  // 获取未核销面诊患者 0未核销 1已核销
-    services.myPDpatients({
-      // token: Storage.get('TOKEN')
-      status: 0
-    }).then(function (data) {
-        // console.log(data)
-      $scope.PDNum = data.results.length
-    }, function (err) {
-      console.log(err)
-    })
+  // // 获取未核销面诊患者 0未核销 1已核销
+  //   services.myPDpatients({
+  //     // token: Storage.get('TOKEN')
+  //     status: 0
+  //   }).then(function (data) {
+  //       // console.log(data)
+  //     $scope.PDNum = data.results.length
+  //   }, function (err) {
+  //     console.log(err)
+  //   })
   /**
    * [获取该医生所有患者列表]
    * @Author   ZY

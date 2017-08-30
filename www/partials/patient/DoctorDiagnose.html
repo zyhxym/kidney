@@ -10,15 +10,18 @@
 
 
 <!--   <div  style="position: absolute;top: 43px;z-index:100;display: block;height: 2.5px;background-color: #33cd5f;{{barwidth}}" ></div> -->
-    <div class="button-bar bar-positive" ng-style="barStyle">
+  <div class="button-bar bar-positive" ng-style="barStyle">
+      <a class="button" href="#/tab/patientDetail">
+      <span class="br-e9" style="vertical-align: sub">患者详情</span>
+    </a>
     <a class="button" href="#/tab/DoctorDiagnose">
       <span class="br-e9" style="vertical-align: sub">医生诊断</span>
     </a>
     <a class="button" href="#/tab/TaskSet">
       <span class="br-e9" style="vertical-align: sub">治疗方案</span>
     </a>
-    <a class="button" ng-click="gototestrecord()" >
-      <span class="br-e9" style="vertical-align: sub">健康曲线</span>
+    <a class="button" href="#/tab/Report">
+      <span class="br-e9" style="vertical-align: sub">测量记录</span>
     </a>
     <a class="button" href="#/tab/HealthInfo">
         <span class="br-e9" style="vertical-align: sub">健康信息</span>
