@@ -16,6 +16,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
         Storage.set('bindingsucc', 'yes')
+        Storage.set('TOKEN', data.results.token)
+        Storage.set('refreshToken', data.results.refreshToken)
         Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
           thisDoctor = response.results
           mySocket.newUser(response.results.userId)
@@ -46,6 +48,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
         // Storage.set('bindingsucc','yes')
+        Storage.set('TOKEN', data.results.token)
+        Storage.set('refreshToken', data.results.refreshToken)
         Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
           thisDoctor = response.results
           mySocket.newUser(response.results.userId)
@@ -91,9 +95,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
          */
         logPromise.then(function (data) {
           if (data.results == 1) {
-            if (data.mesg == "User doesn't Exist!") {
+            if (data.mesg == "Alluser doesn't Exist!") {
               $scope.logStatus = '账号不存在！'
-            } else if (data.mesg == "User password isn't correct!") {
+            } else if (data.mesg == "Alluser password isn't correct!") {
               $scope.logStatus = '账号或密码错误！'
             }
           } else if (data.results.mesg == 'login success!') {
@@ -109,7 +113,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $ionicHistory.clearHistory()
             Storage.set('USERNAME', $scope.logOn.username)
             Storage.set('TOKEN', data.results.token)
-            // console.log(Storage.get('TOKEN'))
+            Storage.set('refreshToken', data.results.refreshToken)
             Storage.set('isSignIn', true)
             Storage.set('UID', data.results.userId)
             /**
@@ -233,25 +237,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       // you may use response.code to get the access token.
       // alert(JSON.stringify(response));
       // alert(response.code)
-
-      Mywechat.getUserInfo({role: 'appDoctor', code: response.code}).then(function (persondata) {
+      Mywechat.getUserInfo({role: 'appDoctor', code: response.code, state: ''}).then(function (persondata) {
         // alert(JSON.stringify(persondata))
         // alert(persondata.headimgurl)
         Storage.set('wechatheadimgurl', persondata.results.headimgurl)
-
         $scope.unionid = persondata.results.unionid
-
+        // alert($scope.unionid)
         User.getUserId({username: $scope.unionid}).then(function (ret) {
-                // alert(JSON.stringify(ret))
-                // 用户已经存在id 说明公众号注册过
+          // alert(JSON.stringify(ret))
+          // 用户已经存在id 说明公众号注册过
           if (ret.results == 0 && ret.roles.indexOf('doctor') != -1) { // 直接登录
             ionicLoadingshow()
+            // alert(1)
             User2.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
-                    // alert(JSON.stringify(data));
+              alert(JSON.stringify(data))
               if (data.results.mesg == 'login success!') {
+                // alert(2)
                 Storage.set('isSignIn', 'Yes')
                 Storage.set('UID', ret.UserId)// 后续页面必要uid
-                      // alert(Storage.get('UID'))
+                Storage.set('TOKEN', data.results.token)
+                Storage.set('refreshToken', data.results.refreshToken)
                 Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
                 Storage.set('bindingsucc', 'yes')
                 Storage.set('USERNAME', ret.phoneNo)
@@ -268,6 +273,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               }
             })
           } else {
+            // alert(3)
             Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
             $state.go('phonevalid', {last: 'wechatsignin'})
           }
@@ -308,8 +314,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }, function (reason) {
       alert('Failed: ' + reason)
     })
-
-        // }
   }
 }])
 
@@ -926,6 +930,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     console.log(data)
     if (data.results.mesg == 'login success!') {
       $scope.doctor.userId = data.results.userId
+      Storage.set('TOKEN', data.results.token)
+      Storage.set('refreshToken', data.results.refreshToken)
     }
   }, function (err) {
     console.log(err)
@@ -2142,6 +2148,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         sendBy: Storage.get('UID'),
         userId: Storage.get('getpatientId'),
         type: 5,
+        userRole: 'patient',
         readOrNot: '0',
         description: '医生给您发送了一条保险消息',
         messageId: Storage.get('MessId')
@@ -2155,7 +2162,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  $scope.goPatientReport = function(){
+  $scope.goPatientReport = function () {
     $state.go('tab.Report')
   }
 
@@ -2172,8 +2179,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 // "我”页-zy,mzb,zxf
 .controller('meCtrl', ['CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', function (CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http) {
   $scope.barwidth = 'width:0%'
-
-    // $scope.userid=Storage.get('userid');
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
     // });
@@ -2186,7 +2191,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    */
   // console.log(Storage.get('TOKEN'))
   Doctor.getDoctorInfo({
-    // userId: Storage.get('UID')
+    // token: Storage.get('TOKEN')
   }).then(function (data) {
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
@@ -2343,7 +2348,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // if (angular.isDefined($scope.doctor.docTDCticket) != true) {
     if ($scope.doctor.docTDCticket == null) {
       var params = {
-        // 'role': 'doctor',
+        'role': 'patient',
         // 'userId': Storage.get('UID'),
         'postdata': {
           'action_name': 'QR_LIMIT_STR_SCENE',
@@ -2396,7 +2401,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @return   data.results(医生详细信息)
    */
   Doctor.getDoctorInfo({
-    userId: Storage.get('UID')
+    // token: Storage.get('TOKEN')
   }).then(function (data) {
     // console.log(data)
     $scope.doctor = data.results
@@ -2783,6 +2788,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.savefee = function () {
     if ($scope.doctor.charge2 <= $scope.doctor.charge1) {
       $scope.SaveStatus = '问诊收费应高于咨询收费，请重新设置'
+      return
+    }
+    if ($scope.doctor.charge2 == 0 || $scope.doctor.charge1 == 0) {
+      $scope.SaveStatus = '收费不能设为0，请重新设置'
       return
     }
     Doctor.editDoctorDetail($scope.doctor).then(function (data) {
@@ -3951,6 +3960,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       patientId: Storage.get('getpatientId')
     }).then(function (data) {
       console.log(data)
+      load()
     }, function (err) {
       console.log(err)
     })
@@ -3974,7 +3984,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       type: 7,
       readOrNot: '0',
       description: '医生通过了您的申请！',
-      messageId: Storage.get('MessId')
+      messageId: Storage.get('MessId'),
+      userRole: 'patient'
     }).then(function (data) {
       console.log(data)
     }, function (err) {
@@ -4002,6 +4013,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             if (!$scope.data.reason) {
           // 必须输入拒绝理由
               e.preventDefault()
+              $ionicLoading.show({
+                template: '请输入拒绝理由',
+                duration: 1000
+              })
             } else {
               return $scope.data.reason
               $state.go('tab.review')
@@ -4020,6 +4035,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           patientId: Storage.get('getpatientId')
         }).then(function (data) {
           console.log(data)
+          load()
         })
 
         Message.insertMessages({
@@ -4041,7 +4057,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           type: 7,
           readOrNot: '0',
           description: '医生拒绝了您的申请，理由是：' + reason,
-          messageId: Storage.get('MessId')
+          messageId: Storage.get('MessId'),
+          userRole: 'patient'
         }).then(function (data) {
           console.log(data)
         }, function (err) {
