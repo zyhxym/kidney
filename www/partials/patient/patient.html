@@ -1,4 +1,9 @@
 <ion-view show-tabs view-title="患者列表">
+<ion-nav-bar class="bar-positive " align-title="center">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+    </ion-nav-buttons>
+ </ion-nav-bar>
     <ion-nav-bar class="bar-positive" align-title="center">
 
      <ion-nav-buttons class="bar-dark nav-title-slide-ios7" side="right" >
@@ -9,7 +14,7 @@
     <ion-content>
       <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
 
-        <div class="list task-list">
+        <!-- <div class="list task-list">
           <div class="item item-divider bg-f0">
             <p style="color: #6ac4f8;font-size: 18px;text-align: center;">我的事项</p>
           </div>        
@@ -36,7 +41,7 @@
             <i class="icon ion-ios-arrow-right mine-msg-right"></i>
           </a>
 
-        </div>
+        </div> -->
 
         <div class="item item-divider bg-f0">
           <p style="color: #6ac4f8;font-size: 18px;text-align: center;">我的患者({{patients.length + patientsInCharge.length}})</p>
