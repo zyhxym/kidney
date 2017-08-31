@@ -84,7 +84,15 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     New.getNewsByReadOrNot({userId: Storage.get('UID'), readOrNot: 0, userRole: 'doctor'}).then(function (data) {
       // console.log(data);
       if (data.results.length) {
-        $scope.hasUnreadMessages = true
+        for (i = 0; i < data.results.length; i++) {
+          if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 'chat') {
+            $scope.hasUnreadMessages = true
+            break
+          }
+        }
+        if (i == data.results.length) {
+          $scope.hasUnreadMessages = false
+        }
         // console.log($scope.HasUnreadMessages);
       } else {
         $scope.hasUnreadMessages = false
