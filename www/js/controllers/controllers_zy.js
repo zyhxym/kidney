@@ -4468,7 +4468,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 群发消息-zy
-.controller('GroupMessageCtrl', ['$scope', '$state', '$interval', '$rootScope', '$ionicHistory', 'Storage', 'MassCommunication', 'Doctor', 'CONFIG', function ($scope, $state, $interval, $rootScope, $ionicHistory, Storage, MassCommunication, Doctor, CONFIG) {
+.controller('GroupMessageCtrl', ['$scope', '$state', '$interval', '$rootScope', '$ionicHistory', '$ionicLoading', 'Storage', 'MassCommunication', 'Doctor', 'CONFIG', function ($scope, $state, $interval, $rootScope, $ionicHistory, $ionicLoading, Storage, MassCommunication, Doctor, CONFIG) {
   $scope.Goback = function () {
     $ionicHistory.goBack()
   }
@@ -4508,8 +4508,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     var MassToPatient = function (msg) {
       MassCommunication.massToPatient(msg).then(function (data) {
         console.log(data)
+        $ionicLoading.show({ template: '发送成功！', duration: 1000 })
       }, function (err) {
         console.error(err)
+        $ionicLoading.show({ template: '发送失败！', duration: 1000 })
       })
     }
     MassToPatient(MsgJson)
