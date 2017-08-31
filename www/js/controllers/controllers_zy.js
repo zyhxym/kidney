@@ -3372,21 +3372,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       // token: Storage.get('TOKEN'),
       userId: Storage.get('UID')}).then(function (data) {
         console.log(data)
+        $scope.doctorinfo.charge1 = parseFloat(data.results.charge1)
+        $scope.doctorinfo.charge2 = parseFloat(data.results.charge2)
+        $scope.doctorinfo.charge3 = parseFloat(data.results.charge3)
+        $scope.doctorinfo.charge4 = parseFloat(data.results.charge4)
         if (data.results.counselStatus1) {
-          $scope.doctorinfo.status1 = true
-          $scope.doctorinfo.charge1 = parseFloat(data.results.charge1)
+          $scope.doctorinfo.status1 = true 
         }
         if (data.results.counselStatus2) {
-          $scope.doctorinfo.status2 = true
-          $scope.doctorinfo.charge2 = parseFloat(data.results.charge2)
+          $scope.doctorinfo.status2 = true    
         }
         if (data.results.counselStatus3) {
-          $scope.doctorinfo.status3 = true
-          $scope.doctorinfo.charge3 = parseFloat(data.results.charge3)
+          $scope.doctorinfo.status3 = true    
         }
         if (data.results.counselStatus4) {
-          $scope.doctorinfo.status4 = true
-          $scope.doctorinfo.charge4 = parseFloat(data.results.charge4)
+          $scope.doctorinfo.status4 = true 
         }
       // $scope.doctorinfo.status5 = data.results.counselStatus5;
       // $scope.doctorinfo.charge5 = data.results.charge5
@@ -3688,16 +3688,16 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 面诊服务页面
-.controller('faceconsultCtrl', ['$scope', 'ionicDatePicker', '$ionicPopup', 'Doctor', 'services', 'Storage', '$interval', function ($scope, ionicDatePicker, $ionicPopup, Doctor, services, Storage, $interval) {
+.controller('faceconsultCtrl', ['$scope', 'ionicDatePicker', '$ionicPopup', '$ionicLoading', 'Doctor', 'services', 'Storage', '$interval', function ($scope, ionicDatePicker, $ionicPopup, $ionicLoading, Doctor, services, Storage, $interval) {
   $scope.dateC = new Date()
   var getStatus = function () {
     services.getStatus({
       // token: Storage.get('TOKEN'),
       userId: Storage.get('UID')}).then(function (data) {
         console.log(data)
+        $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
         if (data.results.counselStatus5) {
           $scope.doctorinfo.status5 = true
-          $scope.doctorinfo.charge5 = data.results.charge5
         }
       // $scope.doctorinfo.status5 = data.results.counselStatus5;
       // $scope.doctorinfo.charge5 = data.results.charge5
@@ -3717,15 +3717,29 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // console.log('data',data)
       angular.forEach(data.results.serviceSchedules, function (value, key) {
         console.log('value', value)
-        var index = value.day - '0'
-        if (value.time == 1) { index += 7 }
+        var index 
+        if (value.day == 'Mon') {
+          index = 0
+        } else if (value.day == 'Tue') {
+          index = 1
+        } else if (value.day == 'Wed') {
+          index = 2
+        } else if (value.day == 'Thu') {
+          index = 3
+        } else if (value.day == 'Fri') {
+          index = 4
+        } else if (value.day == 'Sat') {
+          index = 5
+        } else if (value.day == 'Sun') {
+          index = 6
+        }
+        if (value.time == 'Afternoon') { index += 7 }
         $scope.workStatus[index].status = 1
         $scope.workStatus[index].style = {'background-color': 'red'}
         $scope.workStatus[index].number = value.total
         // $scope.workStatus[index].day = value.day.toString()
         // $scope.workStatus[index].time = value.time.toString()
-
-        $scope.workStatus[index].place = ''
+        $scope.workStatus[index].place = value.place
       })
     }, function (err) {
       console.log(err)
@@ -3769,20 +3783,20 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       })
   }
   $scope.workStatus = [
-    {status: 0, number: 0, day: '0', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '1', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '2', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '3', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '4', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '5', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '6', time: '0', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '0', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '1', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '2', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '3', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '4', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '5', time: '1', place: '', style: {'background-color': 'white'}},
-    {status: 0, number: 0, day: '6', time: '1', place: '', style: {'background-color': 'white'}}
+    {status: 0, number: 0, day: 'Mon', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Tue', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Wed', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Thu', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Fri', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Sat', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Sun', time: 'Morning', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Mon', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Tue', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Wed', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Thu', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Fri', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Sat', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+    {status: 0, number: 0, day: 'Sun', time: 'Afternoon', place: '', style: {'background-color': 'white'}}
   ]
   $scope.stausButtontText = '停诊'
   $scope.stausText = '接诊中...'
@@ -3890,7 +3904,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     if (!$scope.doctorinfo.status5) {
       angular.forEach($scope.workStatus, function (value, key) {
         console.log('value', value)
-        if (!value.number == 0) {
+        // if (!value.number == 0) {
           var para = {
                     // userId: Storage.get('UID'),
             // token: Storage.get('TOKEN'),
@@ -3898,23 +3912,39 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             time: value.time
           }
           services.deleteSchedules(para).then(function (data) {
-            var index = value.day - '0'
-            if (value.time == 1) { index += 7 }
-            console.log('index', index)
+            var index 
+          if (value.day == 'Mon') {
+            index = 0
+          } else if (value.day == 'Tue') {
+            index = 1
+          } else if (value.day == 'Wed') {
+            index = 2
+          } else if (value.day == 'Thu') {
+            index = 3
+          } else if (value.day == 'Fri') {
+            index = 4
+          } else if (value.day == 'Sat') {
+            index = 5
+          } else if (value.day == 'Sun') {
+            index = 6
+          }
+            if (value.time == 'Afternoon') { index += 7 }
+            //console.log('index', index)
             $scope.workStatus[index].number = 0
             $scope.workStatus[index].style = {'background-color': 'white'}
             $scope.workStatus[index].status = 0
+            $scope.workStatus[index].place = ''
           }, function (err) {
             console.log(err)
           })
-        }
+        // }
       })
     } else {
       services.getStatus({
         // token: Storage.get('TOKEN'),
         userId: Storage.get('UID')}).then(function (data) {
       // console.log(data);
-          $scope.doctorinfo.charge5 = data.results.charge5
+          $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
         }, function (err) {
           console.log(err)
         })
@@ -3967,15 +3997,46 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             var param = {
                     // userId: Storage.get('UID'),
               // token: Storage.get('TOKEN'),
-              day: index.toString(),
-              time: '0',
-              total: $scope.inp.num
+              day: '',
+              time: 'Morning',
+              total: $scope.inp.num,
+              place: $scope.inp.pla
+            }
+            if (index == 0) {
+              param.day = 'Mon'
+            } else if (index == 1) {
+              param.day = 'Tue'
+            } else if (index == 2) {
+              param.day = 'Wed'
+            } else if (index == 3) {
+              param.day = 'Thu'
+            } else if (index == 4) {
+              param.day = 'Fri'
+            } else if (index == 5) {
+              param.day = 'Sat'
+            } else if (index == 6) {
+              param.day = 'Sun'
             }
             if (index > 6) {
-              param.time = '1'
-              param.day = (index - 7).toString()
+              param.time = 'Afternoon'
+              var index2 = index - 7
+              if (index2 == 0) {
+                param.day = 'Mon'
+              } else if (index2 == 1) {
+                param.day = 'Tue'
+              } else if (index2 == 2) {
+                param.day = 'Wed'
+              } else if (index2 == 3) {
+                param.day = 'Thu'
+              } else if (index2 == 4) {
+                param.day = 'Fri'
+              } else if (index2 == 5) {
+                param.day = 'Sat'
+              } else if (index2 == 6) {
+                param.day = 'Sun'
+              }
             }
-                  // console.log(param)
+                   console.log(param)
             if ($scope.workStatus[index].status == 0) {
               services.setSchedules(param).then(function (data) {
                       // console.log(data)
@@ -3983,7 +4044,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 $scope.workStatus[index].style = {'background-color': 'red'}
                 $scope.workStatus[index].place = $scope.inp.pla
                 if ($scope.doctorinfo.status5) {
-                  $scope.workStatus[index].number = $scope.inp.num
+                   $scope.workStatus[index].number = $scope.inp.num
                 }
               }, function (err) {
                 console.log(err)
@@ -3994,6 +4055,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 $scope.workStatus[index].status = 0
                 $scope.workStatus[index].style = {'background-color': 'white'}
                 $scope.workStatus[index].number = 0
+                $scope.workStatus[index].place = ''
               }, function (err) {
                 console.log(err)
               })
