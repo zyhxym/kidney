@@ -3,7 +3,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 // 登录-zy,zxf
 .controller('SignInCtrl', ['$ionicLoading', 'User', 'User2', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, User2, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
   $scope.barwidth = 'width:0%'
-  $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
+  // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
     $scope.logOn = {username: Storage.get('USERNAME'), password: ''}
   } else {
@@ -1192,7 +1192,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }).then(function (data) {
     console.log(data)
     if (data.hasOwnProperty('results') && data.results.hasOwnProperty('name') && data.results.name != '') { $scope.forumPermission = true }
-    $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username=' + data.results.name + Storage.get('USERNAME').slice(7) + '&password=' + data.results.name + Storage.get('USERNAME').slice(7))
+    // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=login&loginsubmit=yes&loginhash=$loginhash&mobile=2&username=' + data.results.name + Storage.get('USERNAME').slice(7) + '&password=' + data.results.name + Storage.get('USERNAME').slice(7))
     $scope.navigation = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/')
   }, function (err) {
     console.log(err)
@@ -3045,7 +3045,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     mySocket.cancelAll()
     socket.emit('disconnect')
     socket.disconnect()
-    $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
+    // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
     $timeout(function () { $state.go('signin') }, 500)
   }
 }])

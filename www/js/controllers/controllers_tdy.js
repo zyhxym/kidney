@@ -2056,7 +2056,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     });  
 
     // 获取未及时回复咨询推送
-    New.getNewsByReadOrNot({type:'14',readOrNot:1}).then(function(data){
+    New.getNewsByReadOrNot({type:'14',readOrNot:0}).then(function(data){
       $scope.noCounsels=data.results;
       //console.log($scope.noCounsels[0].readOrNot)
     },function(err){
