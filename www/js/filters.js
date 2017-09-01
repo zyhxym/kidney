@@ -182,14 +182,36 @@ angular.module('kidney.filters', [])
   }
 }])
 .filter('chargeType', [function () {
-  return function (num) {
-    var n = new Number(num)
-    var ret = num
-    switch (n) {
-      case 0:ret = '咨询'; break
-      case 1:ret = '问诊'; break
-      case 2:ret = '升级'; break
+  return function (type) {
+    var g = '未知'
+    if (type == 1) { g = '咨询' }
+    if (type == 2) { g = '问诊' }
+    if (type == 3) { g = '咨询升级问诊' }
+    if (type == 2) { g = '主管医生' }
+    if (type == 2) { g = '面诊' }
+    if (type == 2) { g = '加急咨询' }
+    return g
+  }
+}])
+.filter('filterDayPeriod', [function () {
+  return function (type) {
+    var name
+    switch (type) {
+      case 'Afternoon':
+        name = '下午'
+        break
+      case 'Morning':
+        name = '上午'
+        break
     }
-    return ret
+    return name
+  }
+}])
+.filter('timeType', [function () {
+  return function (type) {
+    var g = '未知'
+    if (type == 1) { g = '超过24h未回复' }
+    if (type == 2) { g = '超过18h未回复' }
+    return g
   }
 }])

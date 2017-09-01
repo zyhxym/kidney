@@ -628,7 +628,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                   console.log(data)
                   $scope.params.counsel = data.result
                   $scope.params.counselId = data.result.counselId
-                  $scope.counseltype = data.result.type == '3' ? '2' : data.result.type
+                  $scope.params.counseltype = data.result.type == '3' ? '2' : (data.result.type == '7' ? '6' : data.result.type)
                   $scope.params.type = data.result.status
                   $scope.counselstatus = data.result.status
                   $scope.params.realCounselType = data.result.type
@@ -656,7 +656,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, readOrNot: 1 })
+        return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, userRole: $scope.params.type == '2' ? 'doctor' : 'patient', readOrNot: 1 })
       }
     })
   })
@@ -721,20 +721,25 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     .then(function (data) {
                       console.log(data)
                       $scope.params.counsel = data.results
-                      $scope.counseltype = data.results.type == '3' ? '2' : data.results.type
+                      $scope.params.counseltype = data.result.type == '3' ? '2' : (data.result.type == '7' ? '6' : data.result.type)
                       $scope.counselstatus = data.results.status
                       $scope.params.realCounselType = data.results.type
                     }, function (err) {
                       console.log(err)
                     })
       }
-      if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade') {
+      if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'urgent') {
+        $scope.$apply(function () {
+          $scope.counseltype = '6'
+        })
+        $scope.counselstatus = 1
+      } else if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'consult') {
         $scope.$apply(function () {
           $scope.counseltype = '2'
         })
         $scope.counselstatus = 1
       }
-      New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, readOrNot: 1 })
+      New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, userRole: $scope.params.type == '2' ? 'doctor' : 'patient', readOrNot: 1 })
     }
   })
   /**
@@ -753,7 +758,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      if ($scope.counselstatus == 1 && $scope.counseltype == 1 && !(data.msg.contentType == 'custom' && data.msg.content.type == 'count-notice')) {
+      if ($scope.counselstatus == 1 && ($scope.counseltype == 1 || $scope.counseltype == 6 || $scope.counseltype == 7) && !(data.msg.contentType == 'custom' && data.msg.content.type == 'count-notice')) {
         Account.modifyCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId, modify: '-1' })
                     .then(function () {
                       Account.getCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
@@ -761,7 +766,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                               if (data.result.count <= 0) {
                                 $scope.counselstatus = 0
                                 $scope.params.title = '咨询'
-                                endCounsel(1)
+                                endCounsel($scope.counseltype)
                               }
                             })
                     })
@@ -797,13 +802,25 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     var len = $scope.msgs.length
     if (len == 0 || !($scope.msgs[len - 1].content.type == 'count-notice' && $scope.msgs[len - 1].content.count == cnt)) {
       var bodyDoc = ''
-      if (type != '1') {
+      if (type == '2') {
         if (status == '0') {
           bodyDoc = '您仍可以向患者追加回答，该消息不计费'
           bodyPat = '您没有提问次数了。如需提问，请新建咨询或问诊'
         } else {
           bodyDoc = '患者对您进行问诊，询问次数不限，如您认为回答结束，请点击右上角结束。请在24小时内回复患者。'
           bodyPat = '您询问该医生的次数不限，最后由医生结束此次问诊，请尽量详细描述病情和需求。医生会在24小时内回答，如超过24小时医生未作答，本次咨询关闭，且不收取费用。'
+        }
+      } else if (type == '6') { // 加急咨询
+        if (cnt <= 0 || status == '0') {
+          bodyDoc = '您仍可以向患者追加回答，该消息不计费'
+          bodyPat = '您没有提问次数了。如需提问，请新建咨询或问诊'
+        } else {
+          bodyDoc = '您还需要回答' + cnt + '个问题'
+          bodyPat = '您还有' + cnt + '次提问机会'
+          if (cnt == 3) {
+            bodyDoc = '患者对您进行加急咨询，请在2小时内回复患者，您最多需做三次回答，答满三次后，本次咨询结束；如不满三个问题，2小时后本次咨询关闭。您还需要回答' + cnt + '个问题。'
+            bodyPat = '根据您提供的问题及描述，医生最多做三次回答，答满三次后，本次咨询结束，请尽量详细描述病情和需求；如不满三个问题，2小时后本次咨询关闭。医生会在2小时内回答，如超过2小时医生未作答，本次咨询关闭，且不收取费用。您还有' + cnt + '次提问机会。'
+          }
         }
       } else {
         if (cnt <= 0 || status == '0') {
@@ -1138,7 +1155,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   })
   /**
-   * 结束咨询问诊
+   * 结束消息
    * @Author   xjz
    * @DateTime 2017-07-05
    * @param    {num}     type  咨询还是问诊
@@ -1157,6 +1174,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           if (type == 2 || type == 3) {
             endlMsg.info = '问诊已结束'
             endlMsg.counseltype = 2
+          } else if (type == 6 || type == 7) {
+            endlMsg.info = '加急咨询已结束'
+            endlMsg.counseltype = 6
           }
           var msgJson = {
             clientType: 'doctor',
@@ -1179,7 +1199,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           $scope.counselstatus = '0'
           $scope.pushMsg(msgJson)
         })
-    Counsel.changeCounselStatus({counselId: $state.params.counselId, status: 0})
+    // Counsel.changeCounselStatus({counselId: $state.params.counselId, status: 0})
   }
   /**
    * 结束咨询按钮
@@ -1395,7 +1415,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           'url': actionUrl,
           'data': {
             'first': {
-              'value': '您的' + ($scope.counseltype == 1 ? '咨询' : '问诊') + $scope.params.counsel.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+              'value': '您的' + ($scope.params.counseltype == 1 ? '咨询' : ($scope.params.counseltype == 6 ? '加急咨询' : '问诊')) + $scope.params.counsel.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
               'color': '#173177'
             },
             'keyword1': {
@@ -2396,7 +2416,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
                         }
                       }
-                      if (res.results.type != '1') {
+                      if (res.results.type == 2 || res.results.type == 3) {
                             // 暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
                             // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
                             // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
@@ -2409,7 +2429,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             'url': actionUrl,
                             'data': {
                               'first': {
-                                'value': '您的' + (res.results.type == 1 ? '咨询' : '问诊') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                                'value': '您的问诊' + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
                                 'color': '#173177'
                               },
                               'keyword1': {
@@ -2440,7 +2460,40 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                           $ionicLoading.hide()
                           $state.go('tab.groups', { type: '0' })
                         }, 1000)
-                      } else {
+                      } else if (res.results.type == 6 || res.results.type == 7 || res.results.type == 1) {
+                        var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' + res.results.counselId + '&#wechat_redirect'
+                        var template = {
+                          'userId': PID, // 患者的UID
+                          'role': 'patient',
+                          'postdata': {
+                            'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
+                            'url': actionUrl,
+                            'data': {
+                              'first': {
+                                'value': '您的' + (res.results.type == 1 ? '咨询' : '加急咨询') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                                'color': '#173177'
+                              },
+                              'keyword1': {
+                                'value': res.results.help, // 咨询的问题
+                                'color': '#173177'
+                              },
+                              'keyword2': {
+                                'value': $scope.input.text, // 医生的回复
+                                'color': '#173177'
+                              },
+                              'keyword3': {
+                                'value': res.results.doctorId.name, // 回复医生的姓名
+                                'color': '#173177'
+                              },
+                              'remark': {
+                                'value': '感谢您的使用！',
+                                'color': '#173177'
+                              }
+                            }
+                          }
+                        }
+                        Mywechat.messageTemplate(template)
+
                         Account.modifyCounts({doctorId: DID, patientId: PID, modify: '-1'})
                             .then(function () {
                               Account.getCounts({doctorId: DID, patientId: PID})
@@ -2457,6 +2510,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                       counseltype: 1,
                                       counselId: $scope.patient.diseaseInfo.counselId
 
+                                    }
+                                    if (res.results.type == 6 || res.results.type == 7) {
+                                      endlMsg.info = '加急咨询已结束'
+                                      endlMsg.counseltype = 6
                                     }
                                     var endJson = {
                                       clientType: 'doctor',

@@ -139,7 +139,7 @@
   color: #fff;
 }
 .bar-positive .button span{
-  padding: 0 12px;
+  /*padding: 0 12px;*/
   font-size: 14px;
 }
 .bar-positive .button:last-child span{

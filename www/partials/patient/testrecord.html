@@ -8,15 +8,18 @@
     <ion-nav-back-button class="button-icon ion-arrow-left-c">
     </ion-nav-back-button>
   </ion-nav-bar>  -->
-    <div class="button-bar bar-positive" ng-style="barStyle">
+  <div class="button-bar bar-positive" ng-style="barStyle">
+      <a class="button" href="#/tab/patientDetail">
+      <span class="br-e9" style="vertical-align: sub">患者详情</span>
+    </a>
     <a class="button" href="#/tab/DoctorDiagnose">
       <span class="br-e9" style="vertical-align: sub">医生诊断</span>
     </a>
     <a class="button" href="#/tab/TaskSet">
       <span class="br-e9" style="vertical-align: sub">治疗方案</span>
     </a>
-    <a class="button" href="#/tab/TestRecord">
-      <span class="br-e9" style="vertical-align: sub">健康曲线</span>
+    <a class="button" href="#/tab/Report">
+      <span class="br-e9" style="vertical-align: sub">测量记录</span>
     </a>
     <a class="button" href="#/tab/HealthInfo">
         <span class="br-e9" style="vertical-align: sub">健康信息</span>
@@ -28,7 +31,7 @@
   <div class="bar bar-subheader item-input-inset text-center" style="padding:0;position: 0px;top:0px;">
       <div class="row">
           <div class="col">
-              <a ng-class="{'high-light':params.isTests}" class="consult-tab" style="" ng-click="showTests()">测量记录</a>
+              <a ng-class="{'high-light':params.isTests}" class="consult-tab" style="" ng-click="showTests()">测量记录（待转移）</a>
           </div>
           <div class="col">
               <a ng-class="{'high-light':!params.isTests}" class="consult-tab" style="" ng-click="showAssays()">化验信息</a>
