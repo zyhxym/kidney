@@ -573,6 +573,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       getReviewList: {method: 'GET', params: {route: 'myPatientsToReview'}, timeout: 100000},
       saveReviewInfo: {method: 'POST', params: {route: 'PatientInCharge'}, timeout: 100000},
       getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
+      sendgroupPatient: {method: 'POST', params: {route: 'groupPatient'}, timeout: 100000},
       getPatientByDate: {method: 'GET', params: {route: 'myPatientsByDate'}, timeout: 10000}
     })
   }
@@ -2742,6 +2743,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.getPatientList = function (params) {
     var deferred = $q.defer()
     Data.Doctor2.getPatientList(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.sendgroupPatient = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor2.sendgroupPatient(
             params,
             function (data, headers) {
               deferred.resolve(data)
