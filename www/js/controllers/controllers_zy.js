@@ -2048,6 +2048,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
   }
 
+  $scope.charge = false
+  $scope.follow = false
+
   $scope.gototestrecord = function () {
     console.log(Storage.get('getpatientId'))
     $state.go('tab.TestRecord', {PatinetId: Storage.get('getpatientId')})
@@ -2068,7 +2071,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // console.log(data)
     Storage.set('latestDiagnose', '')
     console.log(data.results.diagnosisInfo)
-    console.log(data.results.diagnosisInfo.length)
+    // console.log(data.results.diagnosisInfo.length)
     if (data.results.diagnosisInfo.length > 0) {
       Storage.set('latestDiagnose', angular.toJson(data.results.diagnosisInfo[data.results.diagnosisInfo.length - 1]))
                 // console.log(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1])
@@ -2084,6 +2087,15 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Storage.set('latestDiagnose', angular.toJson(lD))
     }
     $scope.patient = data.results
+    Storage.set('dprelation', data.dprelation)
+    if (Storage.get('dprelation') == 'charge') {
+      $scope.charge = true
+    }
+    if (Storage.get('dprelation') == 'follow') {
+      $scope.follow = true
+    }
+    console.log(Storage.get('dprelation'))
+    // $scope.charge = data.dprelation == 'charge' ? 'true' : 'false'
     // console.log(data.recentDiagnosis)
     // 显示最新的一条诊断信息
     if (data.recentDiagnosis != null) {

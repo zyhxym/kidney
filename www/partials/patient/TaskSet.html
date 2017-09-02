@@ -34,7 +34,7 @@
                 <select class="br-e9" ng-model="item.times" ng-options="item1 for item1 in Times" ng-change = "ChangeFreq(item)"></select>
                 <i class="br-e9">次</i>
               </i>
-              <i class="icon ion-edit" style="font-size:20px;margin-left: 10px" ng-click="showPopup(item)"></i>
+              <i ng-if ="(charge)" class="icon ion-edit" style="font-size:20px;margin-left: 10px" ng-click="showPopup(item)"></i>
             </section>
             <p>{{item.content}}</p>
           </a>
@@ -48,14 +48,14 @@
                 <select class="br-e9" ng-model="item.times" ng-options="item1 for item1 in Times" ng-change = "ChangeFreq(item)"></select>
                 <i class="br-e9">次</i>
               </i>
-              <i ng-if ="item.flag" class="icon ion-edit" style="font-size:20px;margin-left: 10px" ng-click="showPopup(item)"></i>
-              <i ng-if ="!item.flag" class="icon ion-edit" style="font-size:20px;margin-left: 10px" ></i>
+              <i ng-if ="(item.flag&&charge)" class="icon ion-edit" style="font-size:20px;margin-left: 10px" ng-click="showPopup(item)"></i>
+              <i ng-if ="!item.flag&&charge" class="icon ion-edit" style="font-size:20px;margin-left: 10px" ></i>
 
             </section>
             <p>{{item.content}}</p>
           </a>
         </div>
-        <button style="margin:0 auto;width: 80%" class="button button-block button-balanced bg-6a" class="button button-clear" ng-click="OkClick()">确定
+        <button style="margin:0 auto;width: 80%" class="button button-block button-balanced bg-6a" class="button button-clear" ng-click="OkClick()" ng-if = "(charge)">确定
         </button>
     </ion-content>
 </ion-view>
