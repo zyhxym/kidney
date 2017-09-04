@@ -9,6 +9,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.BacktoPD = function(){
     $state.go('tab.patient');
   }
+
+  $scope.charge = false
+  $scope.follow = false
+  if (Storage.get('dprelation') == 'charge') {
+    $scope.charge = true
+  }
+  if (Storage.get('dprelation') == 'follow') {
+    $scope.follow = true
+  }
+      
   var decodeDiseases=function(type)
   {
     var dict;
@@ -276,12 +286,14 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         var task = distinctTask(D.diagname,D.diagoperationTime,D.diagProgress);
         var patientId = Storage.get('getpatientId')
         //console.log(task)
-        Task.insertTask({userId:patientId,sortNo:task}).then(
-            function(data){
-                //console.log(data)
-            },function(err){
-                //console.log("err" + err);
-            });
+        if(Storage.get('dprelation') == 'charge'){
+          Task.insertTask({userId:patientId,sortNo:task}).then(
+              function(data){
+                  //console.log(data)
+              },function(err){
+                  //console.log("err" + err);
+              });          
+        }
         //console.log($scope.Diagnose)
 
       var lD={
@@ -1152,14 +1164,24 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     $state.go('tab.patient');
   }
   //初始化
-   var UserId = Storage.get('getpatientId'); 
-   //UserId = "Test12";
-   $scope.Tasks = [];
-   $scope.EditTasks = []; //修改任务
-   $scope.$on('$ionicView.enter', function() {
-        GetTasks();
-   }); 
-   var index = 0;//方法调用计数
+  var UserId = Storage.get('getpatientId'); 
+  //UserId = "Test12";
+  $scope.Tasks = [];
+  $scope.EditTasks = []; //修改任务
+  $scope.$on('$ionicView.enter', function() {
+      GetTasks();
+  }); 
+  var index = 0;//方法调用计数
+
+  $scope.charge = false
+  $scope.follow = false
+  if (Storage.get('dprelation') == 'charge') {
+    $scope.charge = true
+  }
+  if (Storage.get('dprelation') == 'follow') {
+    $scope.follow = true
+  }
+  // console.log($scope.charge)
 
   //获取对应任务模板
     function GetTasks(TaskCode)
@@ -1362,6 +1384,20 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //修改任务执行频率
     $scope.ChangeFreq = function (item)
     {
+      if($scope.charge == false){
+        $ionicPopup.show({
+          title: '抱歉！您不是该患者的主管医生，没有权限修改健康方案！',
+          buttons: [
+            {
+              text: '確定',
+              type: 'button-positive',
+              onTap: function (e) {
+                // $state.go('signin')
+              }
+            }
+          ]
+        })        
+      }
       var newTask = JSON.parse(JSON.stringify(item));
       var flag = false;
       /*if((newTask.type == "ReturnVisit") && (newTask.code == "stage_9"))//血透

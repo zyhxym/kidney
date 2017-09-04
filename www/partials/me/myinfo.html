@@ -51,6 +51,10 @@
 		            <span class="msg">科室</span>
 					<p class="myinfo-msg-right top16 right15">{{doctor.department}}</p>
 		        </ion-item>
+				<ion-item>
+		            <span class="msg">身份证号</span>
+					<p class="myinfo-msg-right top16 right15">{{doctor.IDNo}}</p>
+		        </ion-item>
 				<ion-item class="item-text-wrap">
 		            <span class="msg" style="position: absolute;">擅长</span>
 					<p class="myinfo-msg-right top16 right15" style="position: absolute;">
@@ -147,6 +151,10 @@
 				<span class="input-label">科室</span>
 				<input type=text ng-model="doctor.department" style="width:100%;text-align: right;">
 			</ion-item>
+			<ion-item class="item item-input">
+				<span class="input-label">身份证号</span>
+				<input type=text ng-model="doctor.IDNo" style="width:100%;text-align: right;">
+			</ion-item>	
 <!-- 			<ion-item class="item item-input">
 				<span style="position: absolute;top:15px;">擅长</span>
 				<div contenteditable="true" ng-model="doctor.major" style="font-size: 15px;position: relative;left:55px;padding: 9px;width:80%; max-height:120px;overflow-y:auto;overflow-x:hidden;">

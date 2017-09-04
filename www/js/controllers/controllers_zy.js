@@ -2003,7 +2003,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "患者”详情子页-zy
-.controller('patientDetailCtrl', ['New', 'Insurance', 'Storage', 'Doctor', '$scope', '$ionicPopup', '$ionicLoading', '$ionicHistory', '$state', 'Patient2', function (New, Insurance, Storage, Doctor, $scope, $ionicPopup, $ionicLoading, $ionicHistory, $state, Patient2) {
+.controller('patientDetailCtrl', ['New', 'Insurance', 'Storage', 'Doctor', '$scope', '$ionicPopup', '$ionicLoading', '$ionicHistory', '$state', 'Patient2', 'Doctor2', function (New, Insurance, Storage, Doctor, $scope, $ionicPopup, $ionicLoading, $ionicHistory, $state, Patient2, Doctor2) {
   $scope.hideTabs = true
   // var patient = DoctorsInfo.searchdoc($stateParams.doctorId);
   // $scope.doctor = doc;
@@ -2048,6 +2048,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
   }
 
+  $scope.charge = false
+  $scope.follow = false
+
   $scope.gototestrecord = function () {
     console.log(Storage.get('getpatientId'))
     $state.go('tab.TestRecord', {PatinetId: Storage.get('getpatientId')})
@@ -2068,7 +2071,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // console.log(data)
     Storage.set('latestDiagnose', '')
     console.log(data.results.diagnosisInfo)
-    console.log(data.results.diagnosisInfo.length)
+    // console.log(data.results.diagnosisInfo.length)
     if (data.results.diagnosisInfo.length > 0) {
       Storage.set('latestDiagnose', angular.toJson(data.results.diagnosisInfo[data.results.diagnosisInfo.length - 1]))
                 // console.log(data.results.diagnosisInfo[data.results.diagnosisInfo.length-1])
@@ -2084,6 +2087,15 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Storage.set('latestDiagnose', angular.toJson(lD))
     }
     $scope.patient = data.results
+    Storage.set('dprelation', data.dprelation)
+    if (Storage.get('dprelation') == 'charge') {
+      $scope.charge = true
+    }
+    if (Storage.get('dprelation') == 'follow') {
+      $scope.follow = true
+    }
+    console.log(Storage.get('dprelation'))
+    // $scope.charge = data.dprelation == 'charge' ? 'true' : 'false'
     // console.log(data.recentDiagnosis)
     // 显示最新的一条诊断信息
     if (data.recentDiagnosis != null) {
@@ -2170,6 +2182,34 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       })
     }, function (err) {
       console.log(err)
+    })
+  }
+
+  // 推荐入组
+  $scope.sendtoGroup = function () {
+    var cm = $ionicPopup.show({
+      title: '确定推荐入组？',
+      cssClass: 'popupWithKeyboard',
+      buttons: [
+        {
+          text: '確定',
+          type: 'button-positive',
+          onTap: function (event) {
+            Doctor2.sendgroupPatient({patientId: Storage.get('getpatientId')}).then(function (succ) {
+              // console.log(succ)
+            }, function (err) {
+              console.log(err)
+            })
+          }
+        },
+        {
+          text: '取消',
+          type: 'button-assert',
+          onTap: function () {
+            // console.log("cancle")
+          }
+        }
+      ]
     })
   }
 
@@ -3377,16 +3417,16 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         $scope.doctorinfo.charge3 = parseFloat(data.results.charge3)
         $scope.doctorinfo.charge4 = parseFloat(data.results.charge4)
         if (data.results.counselStatus1) {
-          $scope.doctorinfo.status1 = true 
+          $scope.doctorinfo.status1 = true
         }
         if (data.results.counselStatus2) {
-          $scope.doctorinfo.status2 = true    
+          $scope.doctorinfo.status2 = true
         }
         if (data.results.counselStatus3) {
-          $scope.doctorinfo.status3 = true    
+          $scope.doctorinfo.status3 = true
         }
         if (data.results.counselStatus4) {
-          $scope.doctorinfo.status4 = true 
+          $scope.doctorinfo.status4 = true
         }
       // $scope.doctorinfo.status5 = data.results.counselStatus5;
       // $scope.doctorinfo.charge5 = data.results.charge5
@@ -3717,7 +3757,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // console.log('data',data)
       angular.forEach(data.results.serviceSchedules, function (value, key) {
         console.log('value', value)
-        var index 
+        var index
         if (value.day == 'Mon') {
           index = 0
         } else if (value.day == 'Tue') {
@@ -3905,14 +3945,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       angular.forEach($scope.workStatus, function (value, key) {
         console.log('value', value)
         // if (!value.number == 0) {
-          var para = {
+        var para = {
                     // userId: Storage.get('UID'),
             // token: Storage.get('TOKEN'),
-            day: value.day,
-            time: value.time
-          }
-          services.deleteSchedules(para).then(function (data) {
-            var index 
+          day: value.day,
+          time: value.time
+        }
+        services.deleteSchedules(para).then(function (data) {
+          var index
           if (value.day == 'Mon') {
             index = 0
           } else if (value.day == 'Tue') {
@@ -3928,15 +3968,15 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           } else if (value.day == 'Sun') {
             index = 6
           }
-            if (value.time == 'Afternoon') { index += 7 }
-            //console.log('index', index)
-            $scope.workStatus[index].number = 0
-            $scope.workStatus[index].style = {'background-color': 'white'}
-            $scope.workStatus[index].status = 0
-            $scope.workStatus[index].place = ''
-          }, function (err) {
-            console.log(err)
-          })
+          if (value.time == 'Afternoon') { index += 7 }
+            // console.log('index', index)
+          $scope.workStatus[index].number = 0
+          $scope.workStatus[index].style = {'background-color': 'white'}
+          $scope.workStatus[index].status = 0
+          $scope.workStatus[index].place = ''
+        }, function (err) {
+          console.log(err)
+        })
         // }
       })
     } else {
@@ -4036,7 +4076,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 param.day = 'Sun'
               }
             }
-                   console.log(param)
+            console.log(param)
             if ($scope.workStatus[index].status == 0) {
               services.setSchedules(param).then(function (data) {
                       // console.log(data)
@@ -4044,7 +4084,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 $scope.workStatus[index].style = {'background-color': 'red'}
                 $scope.workStatus[index].place = $scope.inp.pla
                 if ($scope.doctorinfo.status5) {
-                   $scope.workStatus[index].number = $scope.inp.num
+                  $scope.workStatus[index].number = $scope.inp.num
                 }
               }, function (err) {
                 console.log(err)

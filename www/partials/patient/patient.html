@@ -76,6 +76,8 @@
                         <span style="float: right">{{pi.dpRelationTime |dateFormat:"YYYY-MM-DD"}}</span>
                         <p>
                         <i class="y-message bg-6a">主管</i>
+                        <img ng-src="img/vip.png" style="width: 20px;height: 20px;position: relative;top: 5px" ng-if="pi.patientId.VIP==1" alt="">
+                        <img ng-src="img/adr.png" style='width: 20px;height: 20px;position: relative;top: 5px' ng-if="pi.patientId.group==1" alt="">            
                         <i class="y-message bg-12" ng-if="pi.patientId.class=='class_2'">CKD1-2期</i>
                         <i class="y-message bg-12" ng-if="pi.patientId.class=='class_3'">CKD3-4期</i>
                         <i class="y-message bg-12" ng-if="pi.patientId.class=='class_4'">CDK5期</i>
@@ -101,6 +103,8 @@
                             <i style="" class="iconfont icon-vip f-24" ng-if="p.patientId.VIP==1"></i>
                         </div> -->
                         <p>
+                        <img ng-src="img/vip.png" style="width: 20px;height: 20px;position: relative;top: 5px" ng-if="p.patientId.VIP==1" alt="">
+                        <img ng-src="img/adr.png" style='width: 20px;height: 20px;position: relative;top: 5px' ng-if="p.patientId.group==1" alt="">
                         <i class="y-message bg-12" ng-if="p.patientId.class=='class_2'">CKD1-2期</i>
                         <i class="y-message bg-12" ng-if="p.patientId.class=='class_3'">CKD3-4期</i>
                         <i class="y-message bg-12" ng-if="p.patientId.class=='class_4'">CDK5期</i>
@@ -108,7 +112,7 @@
                         <i class="y-message bg-12" ng-if="p.patientId.class=='class_5'">血透</i>
                         <i class="y-message bg-12" ng-if="p.patientId.class=='class_1'">肾移植</i>
                         <i class="y-message bg-f7" ng-if="p.patientId.hypertension==1">高血压</i>
-                        <i class="y-message bg-a2" ng-if="p.patientId.VIP==1">保险</i>                        
+                        <!-- <i class="y-message bg-a2" ng-if="p.patientId.VIP==1">保险</i>                         -->
                         </p>
                         <!-- <i class="y-message bg-a2">过敏史</i> -->
                         <!-- <i class="y-message bg-f7">警报</i> -->
@@ -138,6 +142,8 @@
                         <span style="float: right">{{ti.dpRelationTime |dateFormat:"YYYY-MM-DD"}}</span>
                         <p>
                         <i class="y-message bg-6a">主管</i>
+                        <img ng-src="img/vip.png" style="width: 20px;height: 20px;position: relative;top: 5px" ng-if="ti.patientId.VIP==1" alt="">
+                        <img ng-src="img/adr.png" style='width: 20px;height: 20px;position: relative;top: 5px' ng-if="ti.patientId.group==1" alt="">
                         <i class="y-message bg-12" ng-if="ti.patientId.class=='class_2'">CKD1-2期</i>
                         <i class="y-message bg-12" ng-if="ti.patientId.class=='class_3'">CKD3-4期</i>
                         <i class="y-message bg-12" ng-if="ti.patientId.class=='class_4'">CDK5期</i>
@@ -159,6 +165,8 @@
                         <span ng-if = "!(t.patientId.birthday)">年龄未知</span>
                         <span style="float: right">{{t.dpRelationTime |dateFormat:"YYYY-MM-DD"}}</span>
                         <p>
+                        <img ng-src="img/vip.png" style="width: 20px;height: 20px;position: relative;top: 5px" ng-if="t.patientId.VIP==1" alt="">
+                        <img ng-src="img/adr.png" style='width: 20px;height: 20px;position: relative;top: 5px' ng-if="t.patientId.group==1" alt="">
                         <i class="y-message bg-12" ng-if="t.patientId.class=='class_2'">CKD1-2期</i>
                         <i class="y-message bg-12" ng-if="t.patientId.class=='class_3'">CKD3-4期</i>
                         <i class="y-message bg-12" ng-if="t.patientId.class=='class_4'">CDK5期</i>

@@ -4,7 +4,7 @@
     <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="BacktoPD()"></button>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <button class="button button-clear icon ion-compose" ng-click="canEdit()"></button>
+    <button class="button button-clear icon ion-compose" ng-click="canEdit()" ng-if = "(charge||follow)"></button>
   </ion-nav-buttons>
 </ion-nav-bar>
 
@@ -97,7 +97,7 @@
         <input  ng-model="Diagnose.diagContent"  type="text">
       </label>
 
-      <button style="margin:0 auto;width: 80%" class="button button-block button-balanced bg-63 mt-40" ng-click ="saveDiagnose()">
+      <button style="margin:0 auto;width: 80%" class="button button-block button-balanced bg-63 mt-40" ng-click ="saveDiagnose()" ng-if = "(charge||follow)">
             提交
       </button>
     </div>
