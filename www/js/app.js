@@ -607,7 +607,7 @@ angular.module('kidney', [
     // })
 
     .state('tab.TaskSet', {
-        // cache: false,
+      cache: false,
       url: '/TaskSet',
       views: {
         'tab-workplace': {
