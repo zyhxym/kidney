@@ -9,6 +9,21 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('reviewStatus') == 1) {
     $scope.review = true
   }
+// 获取最新的消息
+  var GetLatest = function () {
+    New.getNews({userId: Storage.get('UID'), token: Storage.get('TOKEN'), userRole: 'doctor'}).then(//
+            function (data) {
+              console.log(data)
+              if (data.results[0] == undefined) {
+                document.getElementById('newMes').innerText = '最新消息：无'
+              } else {
+                document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+              }
+            }, function (err) {
+      console.log(err)
+    })
+  }
+  GetLatest()
 
   var myPopup = function () {
     $ionicPopup.show({

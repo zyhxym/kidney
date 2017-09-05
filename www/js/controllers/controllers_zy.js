@@ -2299,6 +2299,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
     $scope.doctor = data.results
+    console.log($scope.doctor)
     if ($scope.doctor.photoUrl == '' || $scope.doctor.photoUrl == null || $scope.doctor.photoUrl == undefined) {
       $scope.doctor.photoUrl = 'img/doctor.png'
       // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
