@@ -406,6 +406,42 @@ angular.module('kidney', [
       }
     })
 
+    // "论坛"页面
+    .state('tab.forum', {
+      url: '/forum',
+      cache: false,
+      views: {
+        'tab-forum': {
+          controller: 'forumCtrl',
+          templateUrl: 'partials/forum/forum.html'
+        }
+      }
+    })
+    .state('post', {
+      url: '/post',
+      cache: false,
+      templateUrl: 'partials/forum/post.html',
+      controller: 'postCtrl'
+    })
+    .state('comment', {
+      url: '/comment',
+      cache: false,
+      templateUrl: 'partials/forum/comment.html',
+      controller: 'commentCtrl'
+    })
+    .state('postsdetail', {
+      url: '/postsdetail',
+      cache: false,
+      templateUrl: 'partials/forum/postsdetail.html',
+      controller: 'postsdetailCtrl'
+    })
+    .state('reply', {
+      url: '/reply',
+      cache: false,
+      templateUrl: 'partials/forum/reply.html',
+      controller: 'replyCtrl'
+    })
+
     // views-tab-home
 
     // views-tab-workplace
@@ -986,15 +1022,9 @@ angular.module('kidney', [
   }
   $scope.goForum = function () {
     if (Storage.get('reviewStatus') == 1) {
-      $ionicPopup.show({
-        title: '论坛还没做好呀！',
-        buttons: [
-          {
-            text: '確定',
-            type: 'button-positive'
-          }
-        ]
-      })
+      setTimeout(function () {
+        $state.go('tab.forum', {type: '0'})
+      }, 20)
     } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
       $ionicPopup.show({
         title: '您暂未通过审核，您可前往“我的资料”修改个人信息，其他操作没有权限，请耐心等待！',

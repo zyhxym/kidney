@@ -79,7 +79,7 @@ display: inline-block;
 }
 
 /*搜索*/
-.item-input-inset {
+/*.item-input-inset {
   background: #fafafa;
 
 }
@@ -88,7 +88,7 @@ display: inline-block;
   background: #FFFFFF;
   border-radius: 5px;
   margin-top: 10px;
-}
+}*/
 /*筛选*/
 .checkbox input, .checkbox-icon{
   width: 18px;
