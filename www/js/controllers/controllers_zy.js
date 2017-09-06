@@ -2299,6 +2299,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
     $scope.doctor = data.results
+    // console.log($scope.doctor)
     if ($scope.doctor.photoUrl == '' || $scope.doctor.photoUrl == null || $scope.doctor.photoUrl == undefined) {
       $scope.doctor.photoUrl = 'img/doctor.png'
       // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
@@ -3754,10 +3755,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     services.getSchedules({
       // token: Storage.get('TOKEN')
     }).then(function (data) {
-            console.log('data',data)
+      console.log('data', data)
       angular.forEach(data.results.schedules, function (value, key) {
         // console.log('value', value)
-        var index 
+        var index
         if (value.day == 'Mon') {
           index = 0
         } else if (value.day == 'Tue') {
@@ -3782,8 +3783,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         $scope.workStatus[index].place = value.place
       })
       angular.forEach(data.results.serviceSchedules, function (value, key) {
-        if (! value.total == 0) {
-          var index2 
+        if (!value.total == 0) {
+          var index2
           if (value.day == 'Mon') {
             index2 = 0
           } else if (value.day == 'Tue') {
@@ -3957,9 +3958,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   $scope.fsdiagnoseChange = function () {
     services.setStatus({serviceType: 'service5'}).then(function (data) {
-      }, function (err) {
-        console.log(err)
-      })
+    }, function (err) {
+      console.log(err)
+    })
     console.log('status5', $scope.doctorinfo.status5)
     if (!$scope.doctorinfo.status5) {
       angular.forEach($scope.workStatus, function (value, key) {
@@ -3988,12 +3989,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           } else if (value.day == 'Sun') {
             index = 6
           }
-            if (value.time == 'Afternoon') { index += 7 }
-            //console.log('index', index)
-            $scope.workStatus[index].number = 0
-          }, function (err) {
-            console.log(err)
-          })
+          if (value.time == 'Afternoon') { index += 7 }
+            // console.log('index', index)
+          $scope.workStatus[index].number = 0
+        }, function (err) {
+          console.log(err)
+        })
         // }
       })
     } else {
@@ -4010,37 +4011,36 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       services.getSchedules({
       // token: Storage.get('TOKEN')
       }).then(function (data) {
-      angular.forEach(data.results.schedules, function (value, key) {
-        console.log('value', value)
-        var index 
-        if (value.day == 'Mon') {
-          index = 0
-        } else if (value.day == 'Tue') {
-          index = 1
-        } else if (value.day == 'Wed') {
-          index = 2
-        } else if (value.day == 'Thu') {
-          index = 3
-        } else if (value.day == 'Fri') {
-          index = 4
-        } else if (value.day == 'Sat') {
-          index = 5
-        } else if (value.day == 'Sun') {
-          index = 6
-        }
-        if (value.time == 'Afternoon') { index += 7 }
-        Doctor.deleteSchedule({day:value.day, time:value.time}).then(function (data) {
-          $scope.workStatus[index].status = 0
-          $scope.workStatus[index].style = {'background-color': 'white'}
-          $scope.workStatus[index].place = ''
-          
-        }, function (err) {
-          console.log(err)
+        angular.forEach(data.results.schedules, function (value, key) {
+          console.log('value', value)
+          var index
+          if (value.day == 'Mon') {
+            index = 0
+          } else if (value.day == 'Tue') {
+            index = 1
+          } else if (value.day == 'Wed') {
+            index = 2
+          } else if (value.day == 'Thu') {
+            index = 3
+          } else if (value.day == 'Fri') {
+            index = 4
+          } else if (value.day == 'Sat') {
+            index = 5
+          } else if (value.day == 'Sun') {
+            index = 6
+          }
+          if (value.time == 'Afternoon') { index += 7 }
+          Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
+            $scope.workStatus[index].status = 0
+            $scope.workStatus[index].style = {'background-color': 'white'}
+            $scope.workStatus[index].place = ''
+          }, function (err) {
+            console.log(err)
+          })
         })
       })
-    })   
+    }
   }
-}
 
   $scope.charge5Save = function () {
     var chargeReg = /^\d+(\.\d+)?$/
@@ -4064,7 +4064,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   $scope.changeWorkStatus = function (index) {
     // console.log("changeWorkStatus"+index)
-    
+
     var text = ''
     var param = {
               // userId: Storage.get('UID'),
@@ -4110,113 +4110,112 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     if ($scope.workStatus[index].status == 0 && $scope.doctorinfo.status5) {
       text = '请输入加号人数<input type="text" ng-model="inp.num">出诊医院<input type="text" ng-model="inp.pla">'
-      
-      $ionicPopup.show({
-      template: text,
-      title: '修改工作状态',
-      scope: $scope,
-      buttons: [
 
-        {
-          text: '<b>确定</b>',
-          type: 'button-positive',
-          onTap: function (e) {
-            var numReg = /^\d+$/
+      $ionicPopup.show({
+        template: text,
+        title: '修改工作状态',
+        scope: $scope,
+        buttons: [
+
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              var numReg = /^\d+$/
             // 收费正则表达式验证
-            if (!numReg.test($scope.inp.num)) {
-              $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-            } else {
-              param.total = parseInt($scope.inp.num)
+              if (!numReg.test($scope.inp.num)) {
+                $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+              } else {
+                param.total = parseInt($scope.inp.num)
+                param.place = $scope.inp.pla
+                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  $scope.workStatus[index].status = 1
+                  $scope.workStatus[index].style = {'background-color': 'red'}
+                  $scope.workStatus[index].place = $scope.inp.pla
+                }, function (err) {
+                  console.log(err)
+                })
+                if (!param.total == 0) {
+                // console.log('param',param)
+                  services.setSchedules(param).then(function (data) {
+                      // console.log(data)
+                    $scope.workStatus[index].number = $scope.inp.num
+                  }, function (err) {
+                    console.log(err)
+                  })
+                } else {
+                  services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                      // console.log(data)
+                    console.log('param', param)
+                    $scope.workStatus[index].number = 0
+                  }, function (err) {
+                    console.log(err)
+                  })
+                }
+              }
+            }
+          },
+          { text: '取消' }
+        ]
+      })
+    } else if ($scope.workStatus[index].status == 0) {
+      text = '出诊医院<input type="text" ng-model="inp.pla">'
+
+      $ionicPopup.show({
+        template: text,
+        title: '修改工作状态',
+        scope: $scope,
+        buttons: [
+
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
               param.place = $scope.inp.pla
-              Doctor.insertSchedule({day:param.day, time:param.time, place: param.place}).then(function (data) {
+              Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
                 $scope.workStatus[index].status = 1
                 $scope.workStatus[index].style = {'background-color': 'red'}
                 $scope.workStatus[index].place = $scope.inp.pla
               }, function (err) {
                 console.log(err)
               })
-              if (!param.total == 0) {
-                // console.log('param',param)
-                services.setSchedules(param).then(function (data) {
-                      // console.log(data)  
-                  $scope.workStatus[index].number = $scope.inp.num
-                }, function (err) {
-                  console.log(err)
-                })  
-              } else { 
-                services.deleteSchedules({day:param.day, time:param.time}).then(function (data) {
-                      // console.log(data)
-                       console.log('param',param) 
-                  $scope.workStatus[index].number = 0
-                }, function (err) {
-                  console.log(err)
-                })
-              }
             }
-          }
-        },
+          },
           { text: '取消' }
-      ]
-      })        
-    } else if ($scope.workStatus[index].status == 0) {
-      text = '出诊医院<input type="text" ng-model="inp.pla">'
-     
-      $ionicPopup.show({
-      template: text,
-      title: '修改工作状态',
-      scope: $scope,
-      buttons: [
-
-        {
-          text: '<b>确定</b>',
-          type: 'button-positive',
-          onTap: function (e) {
-            param.place = $scope.inp.pla
-            Doctor.insertSchedule({day:param.day, time:param.time, place:param.place}).then(function (data) {
-              $scope.workStatus[index].status = 1
-              $scope.workStatus[index].style = {'background-color': 'red'}
-              $scope.workStatus[index].place = $scope.inp.pla
-            }, function (err) {
-              console.log(err)
-            })
-          }
-        },
-          { text: '取消' }
-      ]
+        ]
       })
     } else {
       text = '此时间段将更改为空闲状态！'
-      
-      $ionicPopup.show({
-      template: text,
-      title: '修改工作状态',
-      scope: $scope,
-      buttons: [
 
-        {
-          text: '<b>确定</b>',
-          type: 'button-positive',
-          onTap: function (e) {
-            Doctor.deleteSchedule({day:param.day, time:param.time}).then(function (data) {
-              $scope.workStatus[index].status = 0
-              $scope.workStatus[index].style = {'background-color': 'white'}
-              $scope.workStatus[index].place = ''
-            }, function (err) {
-              console.log(err)
-            })
-            
-            services.deleteSchedules({day:param.day, time:param.time}).then(function (data) {
-              $scope.workStatus[index].number = 0
-            }, function (err) {
-              console.log(err)
-            })
-          }
-        },
+      $ionicPopup.show({
+        template: text,
+        title: '修改工作状态',
+        scope: $scope,
+        buttons: [
+
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                $scope.workStatus[index].status = 0
+                $scope.workStatus[index].style = {'background-color': 'white'}
+                $scope.workStatus[index].place = ''
+              }, function (err) {
+                console.log(err)
+              })
+
+              services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                $scope.workStatus[index].number = 0
+              }, function (err) {
+                console.log(err)
+              })
+            }
+          },
           { text: '取消' }
-      ]
+        ]
       })
     }
- 
   }
 }])
 
@@ -4632,7 +4631,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 论坛
-.controller('forumCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate',function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+.controller('forumCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
   $scope.params = {
     allposts: true,
     myposts: false,
@@ -4655,9 +4654,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.moredata2 = true
   var pagecontrol2 = {skip: 0, limit: 10}
 
-$scope.initial={
-    item:""
- }
+  $scope.initial = {
+    item: ''
+  }
 
 // 点亮全部帖子标签 显示全部帖子
   $scope.Showallposts = function () {
@@ -4691,42 +4690,42 @@ $scope.initial={
    * @Author   WZX
    * @DateTime 2017-08-03
    */
-   $scope.loadMore = function () {
+  $scope.loadMore = function () {
     Forum.allposts({token: Storage.get('TOKEN'), skip: pagecontrol.skip, limit: pagecontrol.limit}).then(function (data) {
       console.log(data)
-     $scope.$broadcast('scroll.infiniteScrollComplete')
-     allposts = allposts.concat(data.data.results)
-     $scope.posts = allposts
-     if (allposts.length == 0) {
+      $scope.$broadcast('scroll.infiniteScrollComplete')
+      allposts = allposts.concat(data.data.results)
+      $scope.posts = allposts
+      if (allposts.length == 0) {
         console.log('aaa')
         $ionicLoading.show({
           template: '没有帖子', duration: 1000
         })
       }
-     var skiploc = data.data.nexturl.indexOf('skip')
+      var skiploc = data.data.nexturl.indexOf('skip')
       pagecontrol.skip = data.data.nexturl.substring(skiploc + 5)
       if (data.data.results.length < pagecontrol.limit) { $scope.moredata = false } else { $scope.moredata = true };
-    }, function (err) { 
+    }, function (err) {
       console.log(err)
     })
   }
 
-   $scope.loadMore1 = function () {
+  $scope.loadMore1 = function () {
     Forum.myposts({token: Storage.get('TOKEN'), skip: pagecontrol1.skip, limit: pagecontrol1.limit}).then(function (data) {
       console.log(data)
-     $scope.$broadcast('scroll.infiniteScrollComplete')
-     myposts = myposts.concat(data.data.results)
-     $scope.posts1 = myposts
-     if (myposts.length == 0) {
+      $scope.$broadcast('scroll.infiniteScrollComplete')
+      myposts = myposts.concat(data.data.results)
+      $scope.posts1 = myposts
+      if (myposts.length == 0) {
         console.log('aaa')
         $ionicLoading.show({
           template: '没有帖子', duration: 1000
         })
       }
-     var skiploc = data.data.nexturl.indexOf('skip')
+      var skiploc = data.data.nexturl.indexOf('skip')
       pagecontrol1.skip = data.data.nexturl.substring(skiploc + 5)
       if (data.data.results.length < pagecontrol1.limit) { $scope.moredata1 = false } else { $scope.moredata1 = true };
-    }, function (err) { 
+    }, function (err) {
       console.log(err)
     })
   }
@@ -4734,62 +4733,62 @@ $scope.initial={
   $scope.loadMore2 = function () {
     Forum.mycollection({token: Storage.get('TOKEN'), skip: pagecontrol2.skip, limit: pagecontrol2.limit}).then(function (data) {
       console.log(data)
-     $scope.$broadcast('scroll.infiniteScrollComplete')
-     mycollection = mycollection.concat(data.data.results)
-     $scope.posts2 = mycollection
-     if (mycollection.length == 0) {
+      $scope.$broadcast('scroll.infiniteScrollComplete')
+      mycollection = mycollection.concat(data.data.results)
+      $scope.posts2 = mycollection
+      if (mycollection.length == 0) {
         console.log('aaa')
         $ionicLoading.show({
           template: '没有帖子', duration: 1000
         })
       }
-     var skiploc = data.data.nexturl.indexOf('skip')
+      var skiploc = data.data.nexturl.indexOf('skip')
       pagecontrol2.skip = data.data.nexturl.substring(skiploc + 5)
       if (data.data.results.length < pagecontrol2.limit) { $scope.moredata2 = false } else { $scope.moredata2 = true };
-    }, function (err) { 
+    }, function (err) {
       console.log(err)
     })
   }
-   
-  $scope.myStyle=[
-    {'color':'gray'},
-    {'color':'DodgerBlue'}
+
+  $scope.myStyle = [
+    {'color': 'gray'},
+    {'color': 'DodgerBlue'}
   ]
-  
+
   $scope.changefavoritestatus = function (tip) {
     console.log(tip)
     var param = {
-          token: Storage.get('TOKEN'),
-          postId: tip.postId
-        }
+      token: Storage.get('TOKEN'),
+      postId: tip.postId
+    }
 
     if (tip.favoritesstatus == 0) {
-          Forum.favorite(param).then(function (data) {
+      Forum.favorite(param).then(function (data) {
             // console.log(data)
         tip.favoritesstatus = 1
-          }, function (err) {
-            console.log(err)
-          })
-        } else {
-          Forum.deletefavorite(param).then(function (data) {
+      }, function (err) {
+        console.log(err)
+      })
+    } else {
+      Forum.deletefavorite(param).then(function (data) {
                         // console.log(data)
-          tip.favoritesstatus = 0
-          }, function (err) {
-            console.log(err)
-          })
-        }
+        tip.favoritesstatus = 0
+      }, function (err) {
+        console.log(err)
+      })
+    }
   }
 
   $scope.deletemyposts = function (tip) {
-     var confirmPopup = $ionicPopup.confirm({
-        title: '删除提示',
-        template: '帖子删除后将无法恢复，确认删除？',
-        cancelText: '取消',
-        okText: '删除'
-      })
-      confirmPopup.then(function (res) {
-        if (res) {
-          Forum.deletepost({token: Storage.get('TOKEN'),postId: tip}).then(function (data) {
+    var confirmPopup = $ionicPopup.confirm({
+      title: '删除提示',
+      template: '帖子删除后将无法恢复，确认删除？',
+      cancelText: '取消',
+      okText: '删除'
+    })
+    confirmPopup.then(function (res) {
+      if (res) {
+        Forum.deletepost({token: Storage.get('TOKEN'), postId: tip}).then(function (data) {
           console.log(data)
           pagecontrol1 = {skip: 0, limit: 10},
           myposts = []
@@ -4798,13 +4797,13 @@ $scope.initial={
           allposts = []
           console.log(allposts)
           $scope.loadMore()
-          }, function (err) {
+        }, function (err) {
           console.log(err)
-          })   
-        }
-      })
+        })
+      }
+    })
   }
-//----------------页面跳转------------------
+// ----------------页面跳转------------------
   $scope.GoToPost = function () {
     $state.go('post')
   }
@@ -4839,7 +4838,6 @@ $scope.initial={
     }).then(function (data) {
        console.log(data.data)
       $scope.posts = data.data.results
-
       if (data.data.results.length == 0) {
         console.log('aaa')
         $ionicLoading.show({ template: '查无此帖', duration: 1000 })
@@ -4858,24 +4856,23 @@ $scope.initial={
     $scope.posts = $scope.loadMore()
   }
     // ----------------结束搜索患者------------------
-
 }])
 
-.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG' , '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout) {
+.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG', '$ionicLoading', '$timeout', function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout) {
   $scope.GoBack = function () {
     $state.go('tab.forum')
   }
   $scope.hasDeliver = true
-  $scope.postphoto = '';
+  $scope.postphoto = ''
   $scope.post = {
-    title:'',
-    content:[{
-                text: ''
-            },
-            {
-                image:''
-            }],
-    anonymous:''
+    title: '',
+    content: [{
+      text: ''
+    },
+    {
+      image: ''
+    }],
+    anonymous: ''
   }
 
   $scope.Post = function () {
@@ -4886,18 +4883,18 @@ $scope.initial={
       time: new Date(),
       anonymous: $scope.post.anonymous
     }
-    console.log('param',param)
+    console.log('param', param)
     Forum.newpost(param).then(function (data) {
-        console.log(data)
+      console.log(data)
       if (data.msg == 'success') {
-                $ionicLoading.show({
-                  template: '提交成功',
-                  noBackdrop: false,
-                  duration: 1000,
-                  hideOnStateChange: true
-                })
-                $timeout(function () { $state.go('tab.forum') }, 900)
-              }
+        $ionicLoading.show({
+          template: '提交成功',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        $timeout(function () { $state.go('tab.forum') }, 900)
+      }
     }, function (err) {
       $scope.hasDeliver = false
       $ionicLoading.show({
@@ -4907,12 +4904,12 @@ $scope.initial={
         hideOnStateChange: true
       })
       console.log(err)
-    }) 
+    })
   }
 
-   $scope.onClickCamera = function ($event) {
-    var ImagePath = window.prompt('图片URL:', '');
-    $scope.post.content[1].image += ImagePath;
+  $scope.onClickCamera = function ($event) {
+    var ImagePath = window.prompt('图片URL:', '')
+    $scope.post.content[1].image += ImagePath
     // $scope.openPopover($event)
   }
   // $scope.reload = function () {
@@ -4942,8 +4939,6 @@ $scope.initial={
       // var obj = document.getElementById("posttext");
       // obj.focus();
       // document.execCommand('InsertImage', false, ImagePath)
-      
-    
     })
   }
   // -----------------------上传头像---------------------
@@ -4978,7 +4973,7 @@ $scope.initial={
 // 相册键的点击事件---------------------------------
   $scope.onClickCameraPhotos = function () {
    // console.log("选个照片");
-    
+
     $scope.choosePhotos()
     $scope.closePopover()
   }
@@ -5013,16 +5008,15 @@ $scope.initial={
 }])
 
 .controller('postsdetailCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', function ($scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover) {
-
-//----------------页面跳转------------------
+// ----------------页面跳转------------------
   $scope.GoBack = function () {
-    $state.go('tab.forum');
+    $state.go('tab.forum')
   }
   $scope.GoToCommentf = function (tip) {
     $state.go('comment')
     Storage.set('POSTID', tip)
   }
-  $scope.GoToReplyf = function (rep,tib) {
+  $scope.GoToReplyf = function (rep, tib) {
     $state.go('reply')
     Storage.set('POSTID', $scope.postId)
     Storage.set('COMMENTID', tib.commentId)
@@ -5035,22 +5029,22 @@ $scope.initial={
     Storage.set('AT', tip.userId)
   }
 
-  $scope.replies=[]
-  var PostContent = function () { 
-    Forum.postcontent({token: Storage.get('TOKEN'),postId: Storage.get('POSTID')}).then(function (data) {
+  $scope.replies = []
+  var PostContent = function () {
+    Forum.postcontent({token: Storage.get('TOKEN'), postId: Storage.get('POSTID')}).then(function (data) {
             // console.log(data)
-     $scope.name = data.data.sponsorName
-     $scope.sponsorId = data.data.sponsorId
-     $scope.postId = data.data.postId
-     $scope.time = data.data.time
-     $scope.avatar = data.data.avatar
-     $scope.title = data.data.title
-     $scope.text = data.data.content[0].text
-     $scope.image = data.data.content[1].image
-     $scope.replyCount = data.data.replyCount
-     $scope.favoritesNum = data.data.favoritesNum
-     $scope.anonymous = data.data.anonymous
-     $scope.comments = data.data.replies
+      $scope.name = data.data.sponsorName
+      $scope.sponsorId = data.data.sponsorId
+      $scope.postId = data.data.postId
+      $scope.time = data.data.time
+      $scope.avatar = data.data.avatar
+      $scope.title = data.data.title
+      $scope.text = data.data.content[0].text
+      $scope.image = data.data.content[1].image
+      $scope.replyCount = data.data.replyCount
+      $scope.favoritesNum = data.data.favoritesNum
+      $scope.anonymous = data.data.anonymous
+      $scope.comments = data.data.replies
     }, function (err) {
       console.log(err)
     })
@@ -5059,12 +5053,12 @@ $scope.initial={
     PostContent()
   })
 
-var userId = Storage.get('UID'),
+  var userId = Storage.get('UID'),
     postId = $scope.postId
 
   $scope.ReplyOrDelete1 = function (tip) {
-  if(userId == tip.userId){
-       var confirmPopup = $ionicPopup.confirm({
+    if (userId == tip.userId) {
+      var confirmPopup = $ionicPopup.confirm({
         title: '删除提示',
         template: '评论删除后将无法恢复，确认删除？',
         cancelText: '取消',
@@ -5072,16 +5066,16 @@ var userId = Storage.get('UID'),
       })
       confirmPopup.then(function (res) {
         if (res) {
-          Forum.deletecomment({token: Storage.get('TOKEN'),postId: $scope.postId,commentId: tip.commentId}).then(function (data) {
-          PostContent()
-          console.log(data)
+          Forum.deletecomment({token: Storage.get('TOKEN'), postId: $scope.postId, commentId: tip.commentId}).then(function (data) {
+            PostContent()
+            console.log(data)
           }, function (err) {
-          console.log(err)
-          })   
+            console.log(err)
+          })
         }
       })
-  }else{ 
-       var confirmPopup = $ionicPopup.confirm({
+    } else {
+      var confirmPopup = $ionicPopup.confirm({
         title: '回复提示',
         template: '是否对此评论进行回复，确认回复？',
         cancelText: '取消',
@@ -5091,14 +5085,13 @@ var userId = Storage.get('UID'),
         if (res) {
           $scope.GoToReply(tip)
         }
-      }) 
-       
-       }
-}
+      })
+    }
+  }
 
-$scope.ReplyOrDelete2 = function (rep,tib) {
-  if(userId == rep.userId){
-       var confirmPopup = $ionicPopup.confirm({
+  $scope.ReplyOrDelete2 = function (rep, tib) {
+    if (userId == rep.userId) {
+      var confirmPopup = $ionicPopup.confirm({
         title: '删除提示',
         template: '评论删除后将无法恢复，确认删除？',
         cancelText: '取消',
@@ -5107,15 +5100,15 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
       confirmPopup.then(function (res) {
         if (res) {
           Forum.deletecomment({token: Storage.get('TOKEN'), postId: $scope.postId, commentId: tib.commentId, replyId: rep.replyId}).then(function (data) {
-          PostContent()
-          console.log(data)
+            PostContent()
+            console.log(data)
           }, function (err) {
-          console.log(err)
-          })   
+            console.log(err)
+          })
         }
       })
-  }else{ 
-       var confirmPopup = $ionicPopup.confirm({
+    } else {
+      var confirmPopup = $ionicPopup.confirm({
         title: '回复提示',
         template: '是否对此评论进行回复，确认回复？',
         cancelText: '取消',
@@ -5123,24 +5116,22 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
       })
       confirmPopup.then(function (res) {
         if (res) {
-          $scope.GoToReplyf(rep,tib)
+          $scope.GoToReplyf(rep, tib)
         }
-      }) 
-       
-       }
-}
-
+      })
+    }
+  }
 }])
 
-.controller('commentCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
+.controller('commentCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout', function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
  // debugger
   $scope.GoBack = function () {
-    $ionicHistory.goBack();
+    $ionicHistory.goBack()
   }
-  
+
   $scope.hasDeliver = true
   $scope.post = {
-    content:'',
+    content: ''
   }
 
   $scope.Post = function () {
@@ -5148,20 +5139,20 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
       token: Storage.get('TOKEN'),
       content: $scope.post.content,
       time: new Date(),
-      postId:Storage.get('POSTID')
+      postId: Storage.get('POSTID')
     }
-    console.log('param',param)
+    console.log('param', param)
     Forum.comment(param).then(function (data) {
-        console.log(data)
+      console.log(data)
       if (data.msg == 'success') {
-                $ionicLoading.show({
-                  template: '提交成功',
-                  noBackdrop: false,
-                  duration: 1000,
-                  hideOnStateChange: true
-                })
-                $timeout(function () { $ionicHistory.goBack() }, 900)
-              }
+        $ionicLoading.show({
+          template: '提交成功',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        $timeout(function () { $ionicHistory.goBack() }, 900)
+      }
     }, function (err) {
       $scope.hasDeliver = false
       $ionicLoading.show({
@@ -5171,20 +5162,19 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
         hideOnStateChange: true
       })
       console.log(err)
-    }) 
+    })
   }
-
 }])
 
-.controller('replyCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
+.controller('replyCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout', function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
  // debugger
   $scope.GoBack = function () {
-    $ionicHistory.goBack();
+    $ionicHistory.goBack()
   }
-  
+
   $scope.hasDeliver = true
   $scope.reply = {
-    content:'',
+    content: ''
   }
 
   $scope.Reply = function () {
@@ -5192,22 +5182,22 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
       token: Storage.get('TOKEN'),
       content: $scope.reply.content,
       time: new Date(),
-      postId:Storage.get('POSTID'),
-      commentId:Storage.get('COMMENTID'),
-      at:Storage.get('AT'),
+      postId: Storage.get('POSTID'),
+      commentId: Storage.get('COMMENTID'),
+      at: Storage.get('AT')
     }
-    console.log('param',param)
+    console.log('param', param)
     Forum.reply(param).then(function (data) {
-        console.log(data)
+      console.log(data)
       if (data.msg == 'success') {
-                $ionicLoading.show({
-                  template: '提交成功',
-                  noBackdrop: false,
-                  duration: 1000,
-                  hideOnStateChange: true
-                })
-                $timeout(function () { $ionicHistory.goBack() }, 900)
-              }
+        $ionicLoading.show({
+          template: '提交成功',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        $timeout(function () { $ionicHistory.goBack() }, 900)
+      }
     }, function (err) {
       $scope.hasDeliver = false
       $ionicLoading.show({
@@ -5217,7 +5207,6 @@ $scope.ReplyOrDelete2 = function (rep,tib) {
         hideOnStateChange: true
       })
       console.log(err)
-    }) 
+    })
   }
-
 }])
