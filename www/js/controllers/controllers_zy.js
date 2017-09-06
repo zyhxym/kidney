@@ -2299,6 +2299,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // alert(Storage.get('UID')+JSON.stringify(data))
     // console.log(data)
     $scope.doctor = data.results
+    console.log($scope.doctor)
     if ($scope.doctor.photoUrl == '' || $scope.doctor.photoUrl == null || $scope.doctor.photoUrl == undefined) {
       $scope.doctor.photoUrl = 'img/doctor.png'
       // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
@@ -3754,10 +3755,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     services.getSchedules({
       // token: Storage.get('TOKEN')
     }).then(function (data) {
-            // console.log('data',data)
-      angular.forEach(data.results.serviceSchedules, function (value, key) {
-        console.log('value', value)
-        var index
+            console.log('data',data)
+      angular.forEach(data.results.schedules, function (value, key) {
+        // console.log('value', value)
+        var index 
         if (value.day == 'Mon') {
           index = 0
         } else if (value.day == 'Tue') {
@@ -3776,10 +3777,32 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         if (value.time == 'Afternoon') { index += 7 }
         $scope.workStatus[index].status = 1
         $scope.workStatus[index].style = {'background-color': 'red'}
-        $scope.workStatus[index].number = value.total
+        // $scope.workStatus[index].number = value.total
         // $scope.workStatus[index].day = value.day.toString()
         // $scope.workStatus[index].time = value.time.toString()
         $scope.workStatus[index].place = value.place
+      })
+      angular.forEach(data.results.serviceSchedules, function (value, key) {
+        if (! value.total == 0) {
+          var index2 
+          if (value.day == 'Mon') {
+            index2 = 0
+          } else if (value.day == 'Tue') {
+            index2 = 1
+          } else if (value.day == 'Wed') {
+            index2 = 2
+          } else if (value.day == 'Thu') {
+            index2 = 3
+          } else if (value.day == 'Fri') {
+            index2 = 4
+          } else if (value.day == 'Sat') {
+            index2 = 5
+          } else if (value.day == 'Sun') {
+            index2 = 6
+          }
+          if (value.time == 'Afternoon') { index2 += 7 }
+          $scope.workStatus[index2].number = value.total
+        }
       })
     }, function (err) {
       console.log(err)
@@ -3934,9 +3957,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.fsdiagnoseChange = function () {
-    services.setStatus({
-      // token: Storage.get('TOKEN'),
-      serviceType: 'service5'}).then(function (data) {
+    services.setStatus({serviceType: 'service5'}).then(function (data) {
       }, function (err) {
         console.log(err)
       })
@@ -3968,28 +3989,59 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           } else if (value.day == 'Sun') {
             index = 6
           }
-          if (value.time == 'Afternoon') { index += 7 }
-            // console.log('index', index)
-          $scope.workStatus[index].number = 0
-          $scope.workStatus[index].style = {'background-color': 'white'}
-          $scope.workStatus[index].status = 0
-          $scope.workStatus[index].place = ''
-        }, function (err) {
-          console.log(err)
-        })
+            if (value.time == 'Afternoon') { index += 7 }
+            //console.log('index', index)
+            $scope.workStatus[index].number = 0
+          }, function (err) {
+            console.log(err)
+          })
         // }
       })
     } else {
-      services.getStatus({
-        // token: Storage.get('TOKEN'),
-        userId: Storage.get('UID')}).then(function (data) {
+      $ionicLoading.show({
+        template: '请重新设置排班并填写加号',
+        duration: 1000
+      })
+      services.getStatus({userId: Storage.get('UID')}).then(function (data) {
       // console.log(data);
-          $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
+        $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
+      }, function (err) {
+        console.log(err)
+      })
+      services.getSchedules({
+      // token: Storage.get('TOKEN')
+      }).then(function (data) {
+      angular.forEach(data.results.schedules, function (value, key) {
+        console.log('value', value)
+        var index 
+        if (value.day == 'Mon') {
+          index = 0
+        } else if (value.day == 'Tue') {
+          index = 1
+        } else if (value.day == 'Wed') {
+          index = 2
+        } else if (value.day == 'Thu') {
+          index = 3
+        } else if (value.day == 'Fri') {
+          index = 4
+        } else if (value.day == 'Sat') {
+          index = 5
+        } else if (value.day == 'Sun') {
+          index = 6
+        }
+        if (value.time == 'Afternoon') { index += 7 }
+        Doctor.deleteSchedule({day:value.day, time:value.time}).then(function (data) {
+          $scope.workStatus[index].status = 0
+          $scope.workStatus[index].style = {'background-color': 'white'}
+          $scope.workStatus[index].place = ''
+          
         }, function (err) {
           console.log(err)
         })
-    }
+      })
+    })   
   }
+}
 
   $scope.charge5Save = function () {
     var chargeReg = /^\d+(\.\d+)?$/
@@ -4013,17 +4065,54 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   $scope.changeWorkStatus = function (index) {
     // console.log("changeWorkStatus"+index)
+    
     var text = ''
-    // $scope.dat = {t:"123"}
+    var param = {
+              // userId: Storage.get('UID'),
+              // token: Storage.get('TOKEN'),
+      day: '',
+      time: 'Morning',
+      total: 0,
+      place: ''
+    }
+    if (index == 0) {
+      param.day = 'Mon'
+    } else if (index == 1) {
+      param.day = 'Tue'
+    } else if (index == 2) {
+      param.day = 'Wed'
+    } else if (index == 3) {
+      param.day = 'Thu'
+    } else if (index == 4) {
+      param.day = 'Fri'
+    } else if (index == 5) {
+      param.day = 'Sat'
+    } else if (index == 6) {
+      param.day = 'Sun'
+    }
+    if (index > 6) {
+      param.time = 'Afternoon'
+      var index2 = index - 7
+      if (index2 == 0) {
+        param.day = 'Mon'
+      } else if (index2 == 1) {
+        param.day = 'Tue'
+      } else if (index2 == 2) {
+        param.day = 'Wed'
+      } else if (index2 == 3) {
+        param.day = 'Thu'
+      } else if (index2 == 4) {
+        param.day = 'Fri'
+      } else if (index2 == 5) {
+        param.day = 'Sat'
+      } else if (index2 == 6) {
+        param.day = 'Sun'
+      }
+    }
     if ($scope.workStatus[index].status == 0 && $scope.doctorinfo.status5) {
       text = '请输入加号人数<input type="text" ng-model="inp.num">出诊医院<input type="text" ng-model="inp.pla">'
-    } else if ($scope.workStatus[index].status == 0) {
-      text = '出诊医院<input type="text" ng-model="inp.pla">'
-    } else {
-      text = '此时间段将更改为空闲状态！'
-    }
-    // var myPopup = "";
-    $ionicPopup.show({
+      
+      $ionicPopup.show({
       template: text,
       title: '修改工作状态',
       scope: $scope,
@@ -4033,117 +4122,102 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            console.log($scope.inp)
-            var param = {
-                    // userId: Storage.get('UID'),
-              // token: Storage.get('TOKEN'),
-              day: '',
-              time: 'Morning',
-              total: $scope.inp.num,
-              place: $scope.inp.pla
-            }
-            if (index == 0) {
-              param.day = 'Mon'
-            } else if (index == 1) {
-              param.day = 'Tue'
-            } else if (index == 2) {
-              param.day = 'Wed'
-            } else if (index == 3) {
-              param.day = 'Thu'
-            } else if (index == 4) {
-              param.day = 'Fri'
-            } else if (index == 5) {
-              param.day = 'Sat'
-            } else if (index == 6) {
-              param.day = 'Sun'
-            }
-            if (index > 6) {
-              param.time = 'Afternoon'
-              var index2 = index - 7
-              if (index2 == 0) {
-                param.day = 'Mon'
-              } else if (index2 == 1) {
-                param.day = 'Tue'
-              } else if (index2 == 2) {
-                param.day = 'Wed'
-              } else if (index2 == 3) {
-                param.day = 'Thu'
-              } else if (index2 == 4) {
-                param.day = 'Fri'
-              } else if (index2 == 5) {
-                param.day = 'Sat'
-              } else if (index2 == 6) {
-                param.day = 'Sun'
-              }
-            }
-            console.log(param)
-            if ($scope.workStatus[index].status == 0) {
-              services.setSchedules(param).then(function (data) {
-                      // console.log(data)
+            var numReg = /^\d+$/
+            // 收费正则表达式验证
+            if (!numReg.test($scope.inp.num)) {
+              $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+            } else {
+              param.total = parseInt($scope.inp.num)
+              param.place = $scope.inp.pla
+              Doctor.insertSchedule({day:param.day, time:param.time, place: param.place}).then(function (data) {
                 $scope.workStatus[index].status = 1
                 $scope.workStatus[index].style = {'background-color': 'red'}
                 $scope.workStatus[index].place = $scope.inp.pla
-                if ($scope.doctorinfo.status5) {
+              }, function (err) {
+                console.log(err)
+              })
+              if (!param.total == 0) {
+                // console.log('param',param)
+                services.setSchedules(param).then(function (data) {
+                      // console.log(data)  
                   $scope.workStatus[index].number = $scope.inp.num
-                }
-              }, function (err) {
-                console.log(err)
-              })
-            } else {
-              services.deleteSchedules(param).then(function (data) {
-                                  // console.log(data)
-                $scope.workStatus[index].status = 0
-                $scope.workStatus[index].style = {'background-color': 'white'}
-                $scope.workStatus[index].number = 0
-                $scope.workStatus[index].place = ''
-              }, function (err) {
-                console.log(err)
-              })
+                }, function (err) {
+                  console.log(err)
+                })  
+              } else { 
+                services.deleteSchedules({day:param.day, time:param.time}).then(function (data) {
+                      // console.log(data)
+                       console.log('param',param) 
+                  $scope.workStatus[index].number = 0
+                }, function (err) {
+                  console.log(err)
+                })
+              }
             }
           }
         },
           { text: '取消' }
       ]
-    })
+      })        
+    } else if ($scope.workStatus[index].status == 0) {
+      text = '出诊医院<input type="text" ng-model="inp.pla">'
+     
+      $ionicPopup.show({
+      template: text,
+      title: '修改工作状态',
+      scope: $scope,
+      buttons: [
 
-    // confirmPopup.then(function (res) {
-    //   if (res) {
-    //     // console.log('You are sure');
-    //     var param = {
-    //       userId: Storage.get('UID'),
-    //       day: index.toString(),
-    //       time: '0'
-    //     }
-    //     if (index > 6) {
-    //       param.time = '1'
-    //       param.day = (index - 7).toString()
-    //     }
-    //     // console.log(param)
-    //     if ($scope.workStatus[index].status == 0) {
-    //       Doctor.insertSchedule(param).then(function (data) {
-    //         // console.log(data)
-    //         $scope.workStatus[index].status = 1
-    //         $scope.workStatus[index].style = {'background-color': 'red'}
-    //         $scope.workStatus[index].number = $scope.num
-    //       }, function (err) {
-    //         console.log(err)
-    //       })
-    //     } else {
-    //       Doctor.deleteSchedule(param).then(function (data) {
-    //                     // console.log(data)
-    //         $scope.workStatus[index].status = 0
-    //         $scope.workStatus[index].style = {'background-color': 'white'}
-    //         $scope.workStatus[index].number = 0
-    //       }, function (err) {
-    //         console.log(err)
-    //       })
-    //     }
-    //   } else {
-    //   // console.log('You are not sure');
-    //   }
-    //   console.log($scope.num)
-    //   console.log("changeWorkStatus", $scope.workStatus, "num", $scope.num)
-    // })
+        {
+          text: '<b>确定</b>',
+          type: 'button-positive',
+          onTap: function (e) {
+            param.place = $scope.inp.pla
+            Doctor.insertSchedule({day:param.day, time:param.time, place:param.place}).then(function (data) {
+              $scope.workStatus[index].status = 1
+              $scope.workStatus[index].style = {'background-color': 'red'}
+              $scope.workStatus[index].place = $scope.inp.pla
+            }, function (err) {
+              console.log(err)
+            })
+          }
+        },
+          { text: '取消' }
+      ]
+      })
+    } else {
+      text = '此时间段将更改为空闲状态！'
+      
+      $ionicPopup.show({
+      template: text,
+      title: '修改工作状态',
+      scope: $scope,
+      buttons: [
+
+        {
+          text: '<b>确定</b>',
+          type: 'button-positive',
+          onTap: function (e) {
+            Doctor.deleteSchedule({day:param.day, time:param.time}).then(function (data) {
+              $scope.workStatus[index].status = 0
+              $scope.workStatus[index].style = {'background-color': 'white'}
+              $scope.workStatus[index].place = ''
+            }, function (err) {
+              console.log(err)
+            })
+            
+            services.deleteSchedules({day:param.day, time:param.time}).then(function (data) {
+              $scope.workStatus[index].number = 0
+            }, function (err) {
+              console.log(err)
+            })
+          }
+        },
+          { text: '取消' }
+      ]
+      })
+    }
+ 
   }
 }])
 
@@ -4556,4 +4630,586 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     MassToPatient(MsgJson)
   }
+}])
+
+// 论坛
+.controller('forumCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate',function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+  $scope.params = {
+    allposts: true,
+    myposts: false,
+    mycollection: false,
+    updateTime: 0
+  }
+
+  var allposts = []
+  $scope.posts = []
+  $scope.moredata = true
+  var pagecontrol = {skip: 0, limit: 4}
+
+  var myposts = []
+  $scope.posts1 = []
+  $scope.moredata1 = true
+  var pagecontrol1 = {skip: 0, limit: 4}
+
+  var mycollection = []
+  $scope.posts2 = []
+  $scope.moredata2 = true
+  var pagecontrol2 = {skip: 0, limit: 4}
+
+$scope.initial={
+    item:""
+ }
+
+// 点亮全部帖子标签 显示全部帖子
+  $scope.Showallposts = function () {
+    $scope.params.allposts = true
+    $scope.params.myposts = false
+    $scope.params.mycollection = false
+    pagecontrol = {skip: 0, limit: 4},
+    allposts = []
+    $scope.loadMore()
+  }
+  // 点亮我的帖子标签 显示我的帖子
+  $scope.Showmyposts = function () {
+    $scope.params.allposts = false
+    $scope.params.myposts = true
+    $scope.params.mycollection = false
+    pagecontrol1 = {skip: 0, limit: 4},
+    myposts = []
+    $scope.loadMore1()
+  }
+  // 点亮我的收藏标签 显示我的收藏
+  $scope.Showmycollection = function () {
+    $scope.params.allposts = false
+    $scope.params.myposts = false
+    $scope.params.mycollection = true
+    pagecontrol2 = {skip: 0, limit: 4},
+    mycollection = []
+    $scope.loadMore2()
+  }
+/**
+   * [获取该患者三种帖子列表]
+   * @Author   WZX
+   * @DateTime 2017-08-03
+   */
+   $scope.loadMore = function () {
+    Forum.allposts({token: Storage.get('TOKEN'), skip: pagecontrol.skip, limit: pagecontrol.limit}).then(function (data) {
+      console.log(data)
+     $scope.$broadcast('scroll.infiniteScrollComplete')
+     allposts = allposts.concat(data.data.results)
+     $scope.posts = allposts
+     if (allposts.length == 0) {
+        console.log('aaa')
+        $ionicLoading.show({
+          template: '没有帖子', duration: 1000
+        })
+      }
+     var skiploc = data.data.nexturl.indexOf('skip')
+      pagecontrol.skip = data.data.nexturl.substring(skiploc + 5)
+      if (data.data.results.length < pagecontrol.limit) { $scope.moredata = false } else { $scope.moredata = true };
+    }, function (err) { 
+      console.log(err)
+    })
+  }
+
+   $scope.loadMore1 = function () {
+    Forum.myposts({token: Storage.get('TOKEN'), skip: pagecontrol1.skip, limit: pagecontrol1.limit}).then(function (data) {
+      console.log(data)
+     $scope.$broadcast('scroll.infiniteScrollComplete')
+     myposts = myposts.concat(data.data.results)
+     $scope.posts1 = myposts
+     if (myposts.length == 0) {
+        console.log('aaa')
+        $ionicLoading.show({
+          template: '没有帖子', duration: 1000
+        })
+      }
+     var skiploc = data.data.nexturl.indexOf('skip')
+      pagecontrol1.skip = data.data.nexturl.substring(skiploc + 5)
+      if (data.data.results.length < pagecontrol1.limit) { $scope.moredata1 = false } else { $scope.moredata1 = true };
+    }, function (err) { 
+      console.log(err)
+    })
+  }
+
+  $scope.loadMore2 = function () {
+    Forum.mycollection({token: Storage.get('TOKEN'), skip: pagecontrol2.skip, limit: pagecontrol2.limit}).then(function (data) {
+      console.log(data)
+     $scope.$broadcast('scroll.infiniteScrollComplete')
+     mycollection = mycollection.concat(data.data.results)
+     $scope.posts2 = mycollection
+     if (mycollection.length == 0) {
+        console.log('aaa')
+        $ionicLoading.show({
+          template: '没有帖子', duration: 1000
+        })
+      }
+     var skiploc = data.data.nexturl.indexOf('skip')
+      pagecontrol2.skip = data.data.nexturl.substring(skiploc + 5)
+      if (data.data.results.length < pagecontrol2.limit) { $scope.moredata2 = false } else { $scope.moredata2 = true };
+    }, function (err) { 
+      console.log(err)
+    })
+  }
+   
+  $scope.myStyle=[
+    {'color':'gray'},
+    {'color':'DodgerBlue'}
+  ]
+  
+  $scope.changefavoritestatus = function (tip) {
+    console.log(tip)
+    var param = {
+          token: Storage.get('TOKEN'),
+          postId: tip.postId
+        }
+
+    if (tip.favoritesstatus == 0) {
+          Forum.favorite(param).then(function (data) {
+            // console.log(data)
+        tip.favoritesstatus = 1
+          }, function (err) {
+            console.log(err)
+          })
+        } else {
+          Forum.deletefavorite(param).then(function (data) {
+                        // console.log(data)
+          tip.favoritesstatus = 0
+          }, function (err) {
+            console.log(err)
+          })
+        }
+  }
+
+  $scope.deletemyposts = function (tip) {
+     var confirmPopup = $ionicPopup.confirm({
+        title: '删除提示',
+        template: '帖子删除后将无法恢复，确认删除？',
+        cancelText: '取消',
+        okText: '删除'
+      })
+      confirmPopup.then(function (res) {
+        if (res) {
+          Forum.deletepost({token: Storage.get('TOKEN'),postId: tip}).then(function (data) {
+          console.log(data)
+          pagecontrol1 = {skip: 0, limit: 4},
+          myposts = []
+          $scope.loadMore1()
+          pagecontrol = {skip: 0, limit: 4},
+          allposts = []
+          console.log(allposts)
+          $scope.loadMore()
+          }, function (err) {
+          console.log(err)
+          })   
+        }
+      })
+  }
+//----------------页面跳转------------------
+  $scope.GoToPost = function () {
+    $state.go('post')
+  }
+  $scope.GoToComment = function (rep) {
+    $state.go('comment')
+    Storage.set('POSTID', rep)
+  }
+  $scope.gotopostsdetail = function (tip) {
+    $state.go('postsdetail')
+    Storage.set('POSTID', tip)
+  }
+// ----------------开始搜索患者------------------
+  $scope.search = {
+    title: ''
+  }
+
+  // 根据帖子主题在列表中搜索
+  $scope.goSearch = function () {
+    console.log(123)
+    Forum.allposts({
+      token: Storage.get('TOKEN'),
+      title: $scope.search.title,
+      limit:15,
+      skip:0
+    }).then(function (data) {
+      // $scope.params.isPatients=true;
+       console.log(data.data)
+      // debugger
+      $scope.posts = data.data.results
+
+      if (data.data.results.length == 0) {
+        console.log('aaa')
+        $ionicLoading.show({ template: '查无此帖', duration: 1000 })
+      }
+    }, function (err) {
+      console.log(err)
+    })
+  }
+
+  $scope.clearSearch = function () {
+    $scope.search.title = ''
+    $scope.posts = $scope.allposts
+  }
+    // ----------------结束搜索患者------------------
+
+}])
+
+.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG' , '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout) {
+  $scope.GoBack = function () {
+    $state.go('tab.forum')
+  }
+  $scope.hasDeliver = true
+  $scope.postphoto = '';
+  $scope.post = {
+    title:'',
+    content:[{
+                text: ''
+            },
+            {
+                image:''
+            }],
+    anonymous:''
+  }
+
+  $scope.Post = function () {
+    var param = {
+      token: Storage.get('TOKEN'),
+      title: $scope.post.title,
+      content: $scope.post.content,
+      time: new Date(),
+      anonymous: $scope.post.anonymous
+    }
+    console.log('param',param)
+    Forum.newpost(param).then(function (data) {
+        console.log(data)
+      if (data.msg == 'success') {
+                $ionicLoading.show({
+                  template: '提交成功',
+                  noBackdrop: false,
+                  duration: 1000,
+                  hideOnStateChange: true
+                })
+                $timeout(function () { $state.go('tab.forum') }, 900)
+              }
+    }, function (err) {
+      $scope.hasDeliver = false
+      $ionicLoading.show({
+        template: '提交失败',
+        noBackdrop: false,
+        duration: 1000,
+        hideOnStateChange: true
+      })
+      console.log(err)
+    }) 
+  }
+
+   $scope.onClickCamera = function ($event) {
+    var ImagePath = window.prompt('图片URL:', '');
+    $scope.post.content[1].image += ImagePath;
+    // $scope.openPopover($event)
+  }
+  // $scope.reload = function () {
+  //   var t = $scope.myAvatar
+  //   $scope.myAvatar = ''
+
+  //   $scope.$apply(function () {
+  //     $scope.myAvatar = t
+  //   })
+  // }
+
+ // 上传照片并将照片读入页面-------------------------
+  var photo_upload_display = function (imgURI) {
+   // 给照片的名字加上时间戳
+    var temp_photoaddress = Storage.get('UID') + '_' + 'post.jpg'
+    console.log(temp_photoaddress)
+    Camera.uploadPicture(imgURI, temp_photoaddress)
+    .then(function (res) {
+      var data = angular.fromJson(res)
+      // res.path_resized
+      // 图片路径
+      $scope.post.content[1].image = CONFIG.mediaUrl + String(data.path_resized) + '?' + new Date().getTime()
+      console.log($scope.postphoto)
+      // $state.reload("tab.mine")
+      // Storage.set('myAvatarpath',$scope.myAvatar);
+      // ImagePath = $scope.postphoto;
+      // var obj = document.getElementById("posttext");
+      // obj.focus();
+      // document.execCommand('InsertImage', false, ImagePath)
+      
+    
+    })
+  }
+  // -----------------------上传头像---------------------
+      // ionicPopover functions 弹出框的预定义
+        // --------------------------------------------
+        // .fromTemplateUrl() method
+  $ionicPopover.fromTemplateUrl('partials/pop/cameraPopover.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function (popover) {
+    $scope.popover = popover
+  })
+  $scope.openPopover = function ($event) {
+    $scope.popover.show($event)
+  }
+  $scope.closePopover = function () {
+    $scope.popover.hide()
+  }
+  // Cleanup the popover when we're done with it!
+  $scope.$on('$destroy', function () {
+    $scope.popover.remove()
+  })
+  // Execute action on hide popover
+  $scope.$on('popover.hidden', function () {
+    // Execute action
+  })
+  // Execute action on remove popover
+  $scope.$on('popover.removed', function () {
+    // Execute action
+  })
+
+// 相册键的点击事件---------------------------------
+  $scope.onClickCameraPhotos = function () {
+   // console.log("选个照片");
+    
+    $scope.choosePhotos()
+    $scope.closePopover()
+  }
+  $scope.choosePhotos = function () {
+    Camera.getPictureFromPhotos('gallery').then(function (data) {
+        // data里存的是图像的地址
+        // console.log(data);
+      var imgURI = data
+      photo_upload_display(imgURI)
+    }, function (err) {
+        // console.err(err);
+      var imgURI
+    })// 从相册获取照片结束
+  } // function结束
+
+    // 照相机的点击事件----------------------------------
+  $scope.getPhoto = function () {
+      // console.log("要拍照了！");
+    $scope.takePicture()
+    $scope.closePopover()
+  }
+  $scope.isShow = true
+  $scope.takePicture = function () {
+    Camera.getPicture('cam').then(function (data) {
+      console.log(data)
+      photo_upload_display(data)
+    }, function (err) {
+          // console.err(err);
+      var imgURI
+    })// 照相结束
+  } // function结束
+}])
+
+.controller('postsdetailCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', function ($scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover) {
+
+//----------------页面跳转------------------
+  $scope.GoBack = function () {
+    $state.go('tab.forum');
+  }
+  $scope.GoToCommentf = function (tip) {
+    $state.go('comment')
+    Storage.set('POSTID', tip)
+  }
+  $scope.GoToReplyf = function (rep,tib) {
+    $state.go('reply')
+    Storage.set('POSTID', $scope.postId)
+    Storage.set('COMMENTID', tib.commentId)
+    Storage.set('AT', rep.userId)
+  }
+  $scope.GoToReply = function (tip) {
+    $state.go('reply')
+    Storage.set('POSTID', $scope.postId)
+    Storage.set('COMMENTID', tip.commentId)
+    Storage.set('AT', tip.userId)
+  }
+
+  $scope.replies=[]
+  var PostContent = function () { 
+    Forum.postcontent({token: Storage.get('TOKEN'),postId: Storage.get('POSTID')}).then(function (data) {
+            // console.log(data)
+     $scope.name = data.data.sponsorName
+     $scope.sponsorId = data.data.sponsorId
+     $scope.postId = data.data.postId
+     $scope.time = data.data.time
+     $scope.avatar = data.data.avatar
+     $scope.title = data.data.title
+     $scope.text = data.data.content[0].text
+     $scope.image = data.data.content[1].image
+     $scope.replyCount = data.data.replyCount
+     $scope.favoritesNum = data.data.favoritesNum
+     $scope.anonymous = data.data.anonymous
+     $scope.comments = data.data.replies
+    }, function (err) {
+      console.log(err)
+    })
+  }
+  $scope.$on('$ionicView.enter', function () {
+    PostContent()
+  })
+
+var userId = Storage.get('UID'),
+    postId = $scope.postId
+
+  $scope.ReplyOrDelete1 = function (tip) {
+  if(userId == tip.userId){
+       var confirmPopup = $ionicPopup.confirm({
+        title: '删除提示',
+        template: '评论删除后将无法恢复，确认删除？',
+        cancelText: '取消',
+        okText: '删除'
+      })
+      confirmPopup.then(function (res) {
+        if (res) {
+          Forum.deletecomment({token: Storage.get('TOKEN'),postId: $scope.postId,commentId: tip.commentId}).then(function (data) {
+          PostContent()
+          console.log(data)
+          }, function (err) {
+          console.log(err)
+          })   
+        }
+      })
+  }else{ 
+       var confirmPopup = $ionicPopup.confirm({
+        title: '回复提示',
+        template: '是否对此评论进行回复，确认回复？',
+        cancelText: '取消',
+        okText: '确认'
+      })
+      confirmPopup.then(function (res) {
+        if (res) {
+          $scope.GoToReply(tip)
+        }
+      }) 
+       
+       }
+}
+
+$scope.ReplyOrDelete2 = function (rep,tib) {
+  if(userId == rep.userId){
+       var confirmPopup = $ionicPopup.confirm({
+        title: '删除提示',
+        template: '评论删除后将无法恢复，确认删除？',
+        cancelText: '取消',
+        okText: '确认'
+      })
+      confirmPopup.then(function (res) {
+        if (res) {
+          Forum.deletecomment({token: Storage.get('TOKEN'), postId: $scope.postId, commentId: tib.commentId, replyId: rep.replyId}).then(function (data) {
+          PostContent()
+          console.log(data)
+          }, function (err) {
+          console.log(err)
+          })   
+        }
+      })
+  }else{ 
+       var confirmPopup = $ionicPopup.confirm({
+        title: '回复提示',
+        template: '是否对此评论进行回复，确认回复？',
+        cancelText: '取消',
+        okText: '确认'
+      })
+      confirmPopup.then(function (res) {
+        if (res) {
+          $scope.GoToReplyf(rep,tib)
+        }
+      }) 
+       
+       }
+}
+
+}])
+
+.controller('commentCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
+ // debugger
+  $scope.GoBack = function () {
+    $ionicHistory.goBack();
+  }
+  
+  $scope.hasDeliver = true
+  $scope.post = {
+    content:'',
+  }
+
+  $scope.Post = function () {
+    var param = {
+      token: Storage.get('TOKEN'),
+      content: $scope.post.content,
+      time: new Date(),
+      postId:Storage.get('POSTID')
+    }
+    console.log('param',param)
+    Forum.comment(param).then(function (data) {
+        console.log(data)
+      if (data.msg == 'success') {
+                $ionicLoading.show({
+                  template: '提交成功',
+                  noBackdrop: false,
+                  duration: 1000,
+                  hideOnStateChange: true
+                })
+                $timeout(function () { $ionicHistory.goBack() }, 900)
+              }
+    }, function (err) {
+      $scope.hasDeliver = false
+      $ionicLoading.show({
+        template: '提交失败',
+        noBackdrop: false,
+        duration: 1000,
+        hideOnStateChange: true
+      })
+      console.log(err)
+    }) 
+  }
+
+}])
+
+.controller('replyCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout',function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
+ // debugger
+  $scope.GoBack = function () {
+    $ionicHistory.goBack();
+  }
+  
+  $scope.hasDeliver = true
+  $scope.reply = {
+    content:'',
+  }
+
+  $scope.Reply = function () {
+    var param = {
+      token: Storage.get('TOKEN'),
+      content: $scope.reply.content,
+      time: new Date(),
+      postId:Storage.get('POSTID'),
+      commentId:Storage.get('COMMENTID'),
+      at:Storage.get('AT'),
+    }
+    console.log('param',param)
+    Forum.reply(param).then(function (data) {
+        console.log(data)
+      if (data.msg == 'success') {
+                $ionicLoading.show({
+                  template: '提交成功',
+                  noBackdrop: false,
+                  duration: 1000,
+                  hideOnStateChange: true
+                })
+                $timeout(function () { $ionicHistory.goBack() }, 900)
+              }
+    }, function (err) {
+      $scope.hasDeliver = false
+      $ionicLoading.show({
+        template: '提交失败',
+        noBackdrop: false,
+        duration: 1000,
+        hideOnStateChange: true
+      })
+      console.log(err)
+    }) 
+  }
+
 }])
