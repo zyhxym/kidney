@@ -859,6 +859,18 @@ angular.module('kidney', [
       }
     })
 
+    //我的账户管理
+    .state('tab.accountManage', {
+        // cache: false,
+      url: '/myfee/accountManage',
+      views: {
+        'tab-me': {
+          controller: 'accountManageCtrl',
+          templateUrl: 'partials/me/accountManage.html'
+        }
+      }
+    })
+
     // 我的评价
     .state('tab.feedback', {
         // cache: false,
