@@ -3667,6 +3667,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
+
+  $scope.illustration1 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '咨询',
+     template: '咨询'
+   });
+  }
+
+  $scope.illustration2 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '问诊',
+     template: '问诊'
+   });
+  }
+
+  $scope.illustration3 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '加急咨询',
+     template: '加急咨询'
+   });
+  }
+
+  $scope.illustration4 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '主管医生',
+     template: '主管医生'
+   });
+  }
+  
 }])
 
 // 是否转发页面
