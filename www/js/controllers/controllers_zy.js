@@ -4665,6 +4665,8 @@ $scope.initial={
     $scope.params.allposts = true
     $scope.params.myposts = false
     $scope.params.mycollection = false
+    pagecontrol = {skip: 0, limit: 4},
+    allposts = []
     $scope.loadMore()
   }
   // 点亮我的帖子标签 显示我的帖子
@@ -4672,6 +4674,8 @@ $scope.initial={
     $scope.params.allposts = false
     $scope.params.myposts = true
     $scope.params.mycollection = false
+    pagecontrol1 = {skip: 0, limit: 4},
+    myposts = []
     $scope.loadMore1()
   }
   // 点亮我的收藏标签 显示我的收藏
@@ -4679,6 +4683,8 @@ $scope.initial={
     $scope.params.allposts = false
     $scope.params.myposts = false
     $scope.params.mycollection = true
+    pagecontrol2 = {skip: 0, limit: 4},
+    mycollection = []
     $scope.loadMore2()
   }
 /**
