@@ -2913,7 +2913,86 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // console.log("bill");
     $state.go('tab.bill')
   }
+    $scope.goAccountManage = function(){
+    $state.go('tab.accountManage')
+  }
 
+  $scope.bindAliPay = function () {
+    // console.log("bind alipay");
+    $scope.ap = {a: $scope.alipay}
+    var cm = $ionicPopup.show({
+      title: '修改支付宝账号',
+      cssClass: 'popupWithKeyboard',
+      template: '<input type=text ng-model="ap.a">',
+      scope: $scope,
+      buttons: [
+        {
+          text: '確定',
+          type: 'button-positive',
+          onTap: function (event) {
+            var phoneReg = /^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+            var emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+                        // 手机正则表达式验证
+            if (!phoneReg.test($scope.ap.a) && !emailReg.test($scope.ap.a)) {
+              $ionicPopup.alert({
+                cssClass: 'popupWithKeyboard',
+                title: '支付宝账号为邮箱或者手机号',
+                okText: '确定'
+              })
+              return
+            }
+            $scope.alipay = $scope.ap.a
+            Doctor.editAliPayAccount({userId: Storage.get('UID'), aliPayAccount: $scope.ap.a}).then(function (succ) {
+                            // console.log(succ)
+              $scope.alipay = $scope.ap.a
+              $scope.alipayIcon = 'img/alipay_2.jpg'
+            }, function (err) {
+              console.log(err)
+            })
+                        // console.log($scope.alipay);
+          }
+        },
+        {
+          text: '取消',
+          type: 'button-assert',
+          onTap: function () {
+                        // console.log("cancle")
+          }
+        }
+      ]
+    })
+  }
+}])
+
+// 我的账户管理
+.controller('accountManageCtrl',['Doctor','Storage','User','$scope','$state', function(Doctor, Storage, User, $scope, $state){
+  $scope.alipay = ''
+  $scope.alipayIcon = 'img/alipay.png'
+  $scope.wechat = ''
+  $scope.wechatIcon = 'img/wechat.png'
+      // 获取用户的支付宝账号
+    Doctor.getAliPayAccount({
+      userId: Storage.get('UID')
+    }).then(function (data) {
+      // console.log(data)
+      if (data.hasOwnProperty('results') && data.results != '') {
+        $scope.alipay = data.results
+        $scope.alipayIcon = 'img/alipay_2.jpg'
+      }
+    }, function (err) {
+      console.log(err)
+    })
+    // 获取用户的微信unionId
+    User.getUserId({username: Storage.get('UID')}).then(function (data) {
+      // console.log(data);
+      // console.log(Storage.get('UID'))
+      if (data.hasOwnProperty('openId')) {
+        $scope.wechat = 'ok'
+        $scope.wechatIcon = 'img/wechat_2.png'
+      }
+    }, function (err) {
+      console.log(err)
+    })
   $scope.bindAliPay = function () {
     // console.log("bind alipay");
     $scope.ap = {a: $scope.alipay}
@@ -3667,6 +3746,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
+
+  $scope.illustration1 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '咨询',
+     template: '咨询'
+   });
+  }
+
+  $scope.illustration2 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '问诊',
+     template: '问诊'
+   });
+  }
+
+  $scope.illustration3 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '加急咨询',
+     template: '加急咨询'
+   });
+  }
+
+  $scope.illustration4 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '主管医生',
+     template: '主管医生'
+   });
+  }
+  
 }])
 
 // 是否转发页面
@@ -4642,17 +4750,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   var allposts = []
   $scope.posts = []
   $scope.moredata = true
-  var pagecontrol = {skip: 0, limit: 4}
+  var pagecontrol = {skip: 0, limit: 10}
 
   var myposts = []
   $scope.posts1 = []
   $scope.moredata1 = true
-  var pagecontrol1 = {skip: 0, limit: 4}
+  var pagecontrol1 = {skip: 0, limit: 10}
 
   var mycollection = []
   $scope.posts2 = []
   $scope.moredata2 = true
-  var pagecontrol2 = {skip: 0, limit: 4}
+  var pagecontrol2 = {skip: 0, limit: 10}
 
   $scope.initial = {
     item: ''
@@ -4663,7 +4771,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = true
     $scope.params.myposts = false
     $scope.params.mycollection = false
-    pagecontrol = {skip: 0, limit: 4},
+    pagecontrol = {skip: 0, limit: 10},
     allposts = []
     $scope.loadMore()
   }
@@ -4672,7 +4780,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = false
     $scope.params.myposts = true
     $scope.params.mycollection = false
-    pagecontrol1 = {skip: 0, limit: 4},
+    pagecontrol1 = {skip: 0, limit: 10},
     myposts = []
     $scope.loadMore1()
   }
@@ -4681,7 +4789,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = false
     $scope.params.myposts = false
     $scope.params.mycollection = true
-    pagecontrol2 = {skip: 0, limit: 4},
+    pagecontrol2 = {skip: 0, limit: 10},
     mycollection = []
     $scope.loadMore2()
   }
@@ -4790,10 +4898,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       if (res) {
         Forum.deletepost({token: Storage.get('TOKEN'), postId: tip}).then(function (data) {
           console.log(data)
-          pagecontrol1 = {skip: 0, limit: 4},
+          pagecontrol1 = {skip: 0, limit: 10},
           myposts = []
           $scope.loadMore1()
-          pagecontrol = {skip: 0, limit: 4},
+          pagecontrol = {skip: 0, limit: 10},
           allposts = []
           console.log(allposts)
           $scope.loadMore()
@@ -4822,18 +4930,22 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 根据帖子主题在列表中搜索
   $scope.goSearch = function () {
+    
+    if($scope.search.title == ''){
+      pagecontrol = {skip: 0, limit: 10},
+      allposts = []
+      $scope.loadMore()
+    } else {
+      $scope.moredata = false
     console.log(123)
     Forum.allposts({
       token: Storage.get('TOKEN'),
       title: $scope.search.title,
-      limit: 15,
-      skip: 0
+      limit:1000,
+      skip:0
     }).then(function (data) {
-      // $scope.params.isPatients=true;
-      console.log(data.data)
-      // debugger
+       console.log(data.data)
       $scope.posts = data.data.results
-
       if (data.data.results.length == 0) {
         console.log('aaa')
         $ionicLoading.show({ template: '查无此帖', duration: 1000 })
@@ -4842,10 +4954,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       console.log(err)
     })
   }
+  }
 
   $scope.clearSearch = function () {
     $scope.search.title = ''
-    $scope.posts = $scope.allposts
+    // $scope.posts = $scope.allposts
+    pagecontrol = {skip: 0, limit: 10},
+    allposts = []
+    $scope.posts = $scope.loadMore()
   }
     // ----------------结束搜索患者------------------
 }])
