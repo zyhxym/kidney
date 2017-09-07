@@ -411,8 +411,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             })
           } else {
             if (succ.roles.indexOf('doctor') != -1) {
-              // $scope.logStatus="您已经注册过了";
-              Storage.set('UID', succ.UserId)// 导入的用户 只要绑定下手机号码就行了
+              $scope.logStatus = '您已经注册，请输入正确的验证码完成绑定'
+              Storage.set('UID', succ.AlluserId)// 导入的用户 只要绑定下手机号码就行了
               $scope.hasimport = true
             }
             User.sendSMS({
