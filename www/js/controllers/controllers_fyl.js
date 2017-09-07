@@ -9,7 +9,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('reviewStatus') == 1) {
     $scope.review = true
   }
-// 获取最新的消息
+  // 获取最新的消息
   var GetLatest = function () {
     New.getNews({userId: Storage.get('UID'), token: Storage.get('TOKEN'), userRole: 'doctor'}).then(//
             function (data) {
@@ -23,7 +23,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       console.log(err)
     })
   }
-  GetLatest()
+  // GetLatest()
 
   var myPopup = function () {
     $ionicPopup.show({
@@ -113,6 +113,9 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         $scope.hasUnreadMessages = false
       }
     }, function (err) {
+      if (err.status === 401 && angular.isDefined(RefreshUnread)) {
+        $interval.cancel(RefreshUnread)
+      }
       console.log(err)
     })
   }
@@ -121,6 +124,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('reviewStatus') == 1) {
     $scope.$on('$ionicView.enter', function () {
       console.log('enter')
+      GetLatest()
       RefreshUnread = $interval(GetUnread, 2000)
     })
   }
