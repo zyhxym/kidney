@@ -1954,7 +1954,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    */
   function viewChatFn (DID, PID) {
     return function () {
-      $state.go('tab.view-chat', {doctorId: DID, patientId: PID})
+      $state.go('tab.view-chat', {doctorId: DID, patientId: PID, groupId: $scope.params.groupId, teamId: $scope.params.teamId})
     }
   }
   function getSponsor (id) {
@@ -2374,7 +2374,6 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
   $scope.$on('$ionicView.beforeEnter', function () {
     $scope.input.text = ''
-    $scope.params.type = $state.params.type
     $scope.params.groupId = $state.params.groupId
     $scope.params.teamId = $state.params.teamId
     Communication.getConsultation({ consultationId: $state.params.groupId })
@@ -2800,10 +2799,18 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * 转发前的聊天记录页面，从病例讨论过来的，参见detailCtrl
  * @Author   xjz
  * @DateTime 2017-07-05
+ * 20170904 与回复界面合并 zyh
  */
-.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient', '$q', 'Storage', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, voice, CONFIG, Communication, Doctor, Patient, $q, Storage) {
+.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicLoading', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient', '$q', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicLoading, voice, CONFIG, Communication, Doctor, Patient, $q, Storage, Account, socket, mySocket, Counsel, Mywechat) {
   $scope.photoUrls = {}
+  $scope.input = {
+    text: ''
+  }
+  $scope.patient = {}
   $scope.params = {
+    type: '',
+    groupId: '',
+    teamId: '',
     msgCount: 0,
     moreMsgs: true,
     chatId: '',
@@ -2821,6 +2828,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   }
     // render msgs
   $scope.$on('$ionicView.beforeEnter', function () {
+    $scope.input.text = ''
+    $scope.params.groupId = $state.params.groupId
+    $scope.params.teamId = $state.params.teamId
+    Communication.getConsultation({ consultationId: $state.params.groupId })
+            .then(function (data) {
+              $scope.patient = data.result
+            })
     $scope.photoUrls = {}
     $scope.msgs = []
     $scope.imgIndex = 0  // 当前显示的图片在消息队列中的位置
@@ -2830,7 +2844,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     Storage.set('chatSender', $scope.params.doctorId)
     $scope.params.msgCount = 0
     console.log($scope.params)
-        // 获取counsel信息
+        // 获取头像
     Patient.getPatientDetail({ userId: $scope.params.chatId })
             .then(function (data) {
               if (data.results.name) $scope.params.patientName = '-' + data.results.name
@@ -2839,9 +2853,21 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     Doctor.getDoctorInfo({ userId: $scope.params.doctorId })
             .then(function (response) {
               $scope.photoUrls[response.results.userId] = response.results.photoUrl
-            }, function (err) {
-              console.log(err)
             })
+    Doctor.getDoctorInfo({ userId: Storage.get('UID') })
+            .then(function (response) {
+              $scope.myname = response.results.name
+            })
+    Communication.getTeam({ teamId: $scope.params.teamId })
+                .then(function (data) {
+                  Doctor.getDoctorInfo({userId: id})
+            .then(function (sponsor) {
+              $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
+            })
+                  for (i = 0; i < data.results.members.length; i++) {
+                    $scope.photoUrls[data.results.members[i].userId] = data.results.members[i].photoUrl
+                  }
+                })
         // 获取counsel信息
         // Counsel.getStatus({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
         //     .then(function (data) {
@@ -2914,6 +2940,199 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               resolve($scope.msgs)
             })
     })
+  }
+
+  $scope.pushMsg = function (msg) {
+    console.info('pushMsg')
+    var len = $scope.msgs.length
+    if (msg.hasOwnProperty('time')) {
+      if (len == 0) {
+        msg.diff = true
+      } else {
+        var m = $scope.msgs[len - 1]
+        if (m.hasOwnProperty('time')) {
+          msg.diff = (msg.time - m.time) > 300000
+        }
+      }
+    }
+    $scope.params.msgCount++
+    $scope.msgs.push(msg)
+    toBottom(true, 200)
+    toBottom(true, 600)
+    setTimeout(function () {
+      var pos = arrTool.indexOf($scope.msgs, 'createTimeInMillis', msg.createTimeInMillis)
+      if (pos != -1 && $scope.msgs[pos].status == 'send_going') $scope.msgs[pos].status = 'send_fail'
+    }, 10000)
+  }
+
+/**
+   * 保存结论
+   * @Author   xjz
+   * @DateTime 2017-07-05
+   * @return   {[type]}
+   */
+  $scope.save = function () {
+    Communication.conclusion({ consultationId: $state.params.groupId, conclusion: $scope.input.text})
+            .then(function (data) {
+              console.log(data)
+              Communication.getCounselReport({ counselId: $scope.patient.diseaseInfo.counselId })
+                    .then(function (res) {
+                      var DID = res.results.doctorId.userId,
+                        PID = res.results.patientId.userId
+                      var msgJson = {
+                        clientType: 'doctor',
+                        contentType: 'text',
+                        concluderID: Storage.get('UID'),
+                        concluderName: $scope.myname,
+                        fromID: DID,
+                        fromName: res.results.doctorId.name,
+                        fromUser: {
+                          avatarPath: CONFIG.mediaUrl + 'uploads/photos/resized' + DID + '_myAvatar.jpg'
+                        },
+                        targetID: PID,
+                        targetName: res.results.patientId.name,
+                        targetType: 'single',
+                        status: 'send_going',
+                        newsType: '11',
+                        createTimeInMillis: Date.now(),
+                        targetRole: 'patient',
+                        content: {
+                          text: $scope.input.text
+
+                        }
+                      }
+                      if (res.results.type == 2 || res.results.type == 3) {
+                            // 暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
+                            // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
+                            // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
+                        var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' + res.results.counselId + '&#wechat_redirect'
+                        var template = {
+                          'userId': PID, // 患者的UID
+                          'role': 'patient',
+                          'postdata': {
+                            'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
+                            'url': actionUrl,
+                            'data': {
+                              'first': {
+                                'value': '您的问诊' + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                                'color': '#173177'
+                              },
+                              'keyword1': {
+                                'value': res.results.help, // 咨询的问题
+                                'color': '#173177'
+                              },
+                              'keyword2': {
+                                'value': $scope.input.text, // 医生的回复
+                                'color': '#173177'
+                              },
+                              'keyword3': {
+                                'value': res.results.doctorId.name, // 回复医生的姓名
+                                'color': '#173177'
+                              },
+                              'remark': {
+                                'value': '感谢您的使用！',
+                                'color': '#173177'
+                              }
+                            }
+                          }
+                        }
+                        Mywechat.messageTemplate(template)
+                        socket.emit('message', { msg: msgJson, to: PID, role: 'doctor'})
+                            // resetUserAsAppUser();
+
+                        $ionicLoading.show({ template: '回复成功'})
+                        $scope.pushMsg(msgJson)
+                        setTimeout(function () {
+                          $ionicLoading.hide()
+                        }, 1000)
+                      } else if (res.results.type == 6 || res.results.type == 7 || res.results.type == 1) {
+                        var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=patient_11_1_' + DID + '_' + res.results.counselId + '&#wechat_redirect'
+                        var template = {
+                          'userId': PID, // 患者的UID
+                          'role': 'patient',
+                          'postdata': {
+                            'template_id': 'N_0kYsmxrQq-tfJhGUo746G8Uem6uHZgK138HIBKI2I',
+                            'url': actionUrl,
+                            'data': {
+                              'first': {
+                                'value': '您的' + (res.results.type == 1 ? '咨询' : '加急咨询') + res.results.symptom + '已被回复！', // XXX取那个咨询或问诊的标题
+                                'color': '#173177'
+                              },
+                              'keyword1': {
+                                'value': res.results.help, // 咨询的问题
+                                'color': '#173177'
+                              },
+                              'keyword2': {
+                                'value': $scope.input.text, // 医生的回复
+                                'color': '#173177'
+                              },
+                              'keyword3': {
+                                'value': res.results.doctorId.name, // 回复医生的姓名
+                                'color': '#173177'
+                              },
+                              'remark': {
+                                'value': '感谢您的使用！',
+                                'color': '#173177'
+                              }
+                            }
+                          }
+                        }
+                        Mywechat.messageTemplate(template)
+
+                        Account.modifyCounts({doctorId: DID, patientId: PID, modify: '-1'})
+                            .then(function () {
+                              Account.getCounts({doctorId: DID, patientId: PID})
+                                .then(function (response) {
+                                    // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
+                                    // socket.emit('newUser', { user_name: res.results.doctorId.name, user_id: DID });
+                                  socket.emit('message', { msg: msgJson, to: PID, role: 'doctor'})
+
+                                  if (response.result.count <= 0) {
+                                    var endlMsg = {
+                                      type: 'endl',
+                                      info: '咨询已结束',
+                                      docId: DID,
+                                      counseltype: 1,
+                                      counselId: $scope.patient.diseaseInfo.counselId
+
+                                    }
+                                    if (res.results.type == 6 || res.results.type == 7) {
+                                      endlMsg.info = '加急咨询已结束'
+                                      endlMsg.counseltype = 6
+                                    }
+                                    var endJson = {
+                                      clientType: 'doctor',
+                                      contentType: 'custom',
+                                      fromID: DID,
+                                      fromName: res.results.doctorId.name,
+                                      fromUser: {
+                                        avatarPath: CONFIG.mediaUrl + 'uploads/photos/resized' + DID + '_myAvatar.jpg'
+                                      },
+                                      targetID: PID,
+                                      targetName: res.results.patientId.name,
+                                      targetType: 'single',
+                                      status: 'send_going',
+                                      createTimeInMillis: Date.now(),
+                                      newsType: '11',
+                                      targetRole: 'patient',
+                                      content: endlMsg
+                                    }
+                                    socket.emit('message', { msg: endJson, to: PID, role: 'doctor'})
+                                    Counsel.changeStatus({doctorId: DID, patientId: PID, type: res.results.type, status: 0})
+                                  }
+                                    // resetUserAsAppUser();
+                                  $ionicLoading.show({ template: '回复成功'})
+                                  $scope.pushMsg(msgJson)
+                                  setTimeout(function () {
+                                    $ionicLoading.hide()
+                                  }, 1000)
+                                })
+                            })
+                      }
+                    })
+            }, function (err) {
+              console.log(err)
+            })
   }
 
   function noMore () {

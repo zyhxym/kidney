@@ -2229,7 +2229,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "我”页-zy,mzb,zxf
-.controller('meCtrl', ['CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', '$ionicPopup', function (CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, $ionicPopup) {
+.controller('meCtrl', ['$ionicActionSheet', 'CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', '$ionicPopup', function ($ionicActionSheet, CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, $ionicPopup) {
   $scope.barwidth = 'width:0%'
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
@@ -2319,7 +2319,23 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 上传头像的点击事件----------------------------
   $scope.onClickCamera = function ($event) {
-    $scope.openPopover($event)
+    $ionicActionSheet.show({
+      buttons: [
+       { text: '拍照' },
+       { text: '从相册选择' }
+      ],
+      cancelOnStateChange: true,
+     // titleText: '上传头像',
+      buttonClicked: function (index) {
+        if (index === 0) {
+          $scope.onClickCameraPhotos()
+        } else {
+          $scope.choosePhotos()
+        }
+       // return true;
+      }
+    })
+    // $scope.openPopover($event)
   }
   $scope.reload = function () {
     var t = $scope.doctor.photoUrl
@@ -4881,6 +4897,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Forum.deletefavorite(param).then(function (data) {
                         // console.log(data)
         tip.favoritesstatus = 0
+        pagecontrol2 = {skip: 0, limit: 10},
+        mycollection = []
+        $scope.loadMore2()
       }, function (err) {
         console.log(err)
       })
@@ -4977,7 +4996,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       text: ''
     },
     {
-      image: ''
+      image: []
     }],
     anonymous: ''
   }
@@ -5015,9 +5034,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.onClickCamera = function ($event) {
-    var ImagePath = window.prompt('图片URL:', '')
-    $scope.post.content[1].image += ImagePath
-    // $scope.openPopover($event)
+    $scope.openPopover($event)
   }
   // $scope.reload = function () {
   //   var t = $scope.myAvatar
@@ -5031,21 +5048,27 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
  // 上传照片并将照片读入页面-------------------------
   var photo_upload_display = function (imgURI) {
    // 给照片的名字加上时间戳
-    var temp_photoaddress = Storage.get('UID') + '_' + 'post.jpg'
+    var temp_photoaddress = Storage.get('UID') + '_' + new Date().getTime() + 'post.jpg'
     console.log(temp_photoaddress)
     Camera.uploadPicture(imgURI, temp_photoaddress)
     .then(function (res) {
       var data = angular.fromJson(res)
       // res.path_resized
       // 图片路径
-      $scope.post.content[1].image = CONFIG.mediaUrl + String(data.path_resized) + '?' + new Date().getTime()
-      console.log($scope.postphoto)
+      // $scope.post.imgurl.push(CONFIG.mediaUrl + String(data.path_resized) + '?' + new Date().getTime())
+      $scope.post.content[1].image.push(CONFIG.mediaUrl + String(data.path_resized))
+      // console.log($scope.postphoto)
       // $state.reload("tab.mine")
       // Storage.set('myAvatarpath',$scope.myAvatar);
       // ImagePath = $scope.postphoto;
       // var obj = document.getElementById("posttext");
       // obj.focus();
       // document.execCommand('InsertImage', false, ImagePath)
+      // console.log($scope.post.content[1].image)
+      // $scope.showflag=true;
+    }, function (err) {
+      console.log(err)
+      reject(err)
     })
   }
   // -----------------------上传头像---------------------
@@ -5085,7 +5108,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.closePopover()
   }
   $scope.choosePhotos = function () {
-    Camera.getPictureFromPhotos('gallery').then(function (data) {
+    Camera.getPictureFromPhotos('gallery', true).then(function (data) {
         // data里存的是图像的地址
         // console.log(data);
       var imgURI = data
@@ -5104,7 +5127,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
   $scope.isShow = true
   $scope.takePicture = function () {
-    Camera.getPicture('cam').then(function (data) {
+    Camera.getPicture('cam', true).then(function (data) {
       console.log(data)
       photo_upload_display(data)
     }, function (err) {
@@ -5112,9 +5135,29 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       var imgURI
     })// 照相结束
   } // function结束
+
+  // $scope.showoriginal = function (resizedpath) {
+  //   // $scope.openModal();
+  //   // console.log(resizedpath)
+  //   var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+  //   // console.log(originalfilepath)
+  //   // $scope.doctorimgurl=originalfilepath;
+
+  //   $scope.imageHandle.zoomTo(1, true)
+  //   $scope.imageUrl = originalfilepath
+  //   $scope.modal.show()
+  // }
+
+  $scope.deleteimg = function (index) {
+    // somearray.removeByValue("tue");
+    // console.log($scope.post.imgurl)
+    // $scope.post.imgurl.splice(index, 1)
+    $scope.post.content[1].image.splice(index, 1)
+    // Storage.set('tempimgrul',angular.toJson($scope.images));
+  }
 }])
 
-.controller('postsdetailCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', function ($scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover) {
+.controller('postsdetailCtrl', ['CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', function (CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover) {
 // ----------------页面跳转------------------
   $scope.GoBack = function () {
     $state.go('tab.forum')
@@ -5137,6 +5180,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.replies = []
+  $scope.Images = []
   var PostContent = function () {
     Forum.postcontent({token: Storage.get('TOKEN'), postId: Storage.get('POSTID')}).then(function (data) {
             // console.log(data)
@@ -5152,12 +5196,18 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $scope.favoritesNum = data.data.favoritesNum
       $scope.anonymous = data.data.anonymous
       $scope.comments = data.data.replies
+      for (i = 0; i < data.data.content[1].image.length; i++) {
+        $scope.Images[i] = CONFIG.imgLargeUrl + data.data.content[1].image[i].slice(data.data.content[1].image[i].lastIndexOf('/') + 1).substr(7)
+              // console.log('Images',$scope.Images)
+              // console.log('images',$scope.image)
+      }
     }, function (err) {
       console.log(err)
     })
   }
   $scope.$on('$ionicView.enter', function () {
     PostContent()
+    imgModalInit()
   })
 
   var userId = Storage.get('UID'),
@@ -5227,6 +5277,62 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }
       })
     }
+  }
+
+  function imgModalInit () {
+    $scope.zoomMin = 1
+    $scope.imageUrl = ''
+    $scope.imageIndex = -1// 当前展示的图片
+    $ionicModal.fromTemplateUrl('partials/tabs/consult/msg/imageViewer.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modal = modal
+        // $scope.modal.show();
+      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle')
+    })
+  }
+
+  $scope.showoriginal = function (resizedpath) {
+        // $scope.openModal();
+    console.log(resizedpath)
+    $scope.imageIndex = 0
+        // console.log($scope.imageIndex)
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+        // console.log(originalfilepath)
+        // $scope.doctorimgurl=originalfilepath;
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.imageUrl = originalfilepath
+    $scope.modal.show()
+  }
+  // 关掉图片
+  $scope.closeModal = function () {
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.modal.hide()
+      // $scope.modal.remove()
+  }
+  // 双击调整缩放
+  $scope.switchZoomLevel = function () {
+    if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin) { $scope.imageHandle.zoomTo(1, true) } else {
+      $scope.imageHandle.zoomTo(5, true)
+    }
+  }
+  // 右划图片
+  $scope.onSwipeRight = function () {
+    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0) { $scope.imageIndex = $scope.imageIndex - 1 } else {
+      // 如果图片已经是第一张图片了，则取index = Images.length-1
+      $scope.imageIndex = $scope.Images.length - 1
+    }
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
+  }
+
+  // 左划图片
+  $scope.onSwipeLeft = function () {
+    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0) { $scope.imageIndex = $scope.imageIndex + 1 } else {
+      // 如果图片已经是最后一张图片了，则取index = 0
+      $scope.imageIndex = 0
+    }
+    // 替换url，展示图片
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
   }
 }])
 

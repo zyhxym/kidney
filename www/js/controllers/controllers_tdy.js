@@ -2099,13 +2099,22 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       console.log(err);
     });   
 
-     // 获取未及时修改患者方案的提醒列表，测试中！！！！
+     // 获取未及时修改患者方案的提醒列表
     New.getNewsByReadOrNot({type:'9',readOrNot:0}).then(function(data){
       $scope.changingTasks=data.results;
       console.log($scope.changingTasks)
     },function(err){
       console.log(err);
     });            
+
+     // 获取警报消息
+    New.getNewsByReadOrNot({type:'2',readOrNot:0}).then(function(data){
+      $scope.patientAlerts=data.results;
+      console.log($scope.patientAlerts)
+    },function(err){
+      console.log(err);
+    });        
+
   }
            
   $scope.$on('$ionicView.enter', function() {
@@ -2168,6 +2177,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }
      else if(mes.type==9){
         $state.go('changeTasks')
+    }    
+    else if(mes.type==2){
+        $state.go('patientAlerts')
     }            
   }
 }])
@@ -2219,6 +2231,37 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     }).then(function (data) {
       console.log(data)
      $scope.changingTasks=data.results  
+    }, function (err) {
+      console.log(err)
+    })
+  }
+  // 进入加载
+  $scope.$on('$ionicView.beforeEnter', function () {
+    load()
+  })
+  // 下拉刷新
+  $scope.doRefresh = function () {
+    load()
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+ $scope.getPatientDetail = function (id) {
+    console.log(id)
+    Storage.set('getpatientId', id)
+    $state.go('tab.patientDetail')
+  }
+}])
+
+// 患者超标警戒提醒
+.controller('patientAlertsCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+  $scope.patientAlerts = []
+  var load = function () {
+    Message.getMessages({
+      type: 2
+    }).then(function (data) {
+     $scope.patientAlerts=data.results 
+     console.log($scope.patientAlerts) 
     }, function (err) {
       console.log(err)
     })
