@@ -43,7 +43,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   // baseUrl: 'http://121.43.107.106:4060/api/v1/',
   baseTwoUrl: 'http://docker2.haihonghospitalmanagement.com/api/v2/',
   mediaUrl: 'http://df2.haihonghospitalmanagement.com/',
-  socketServer: 'http://docker2.haihonghospitalmanagement.com/chat',
+  socketServer: 'http://docker2.haihonghospitalmanagement.com/',
   imgThumbUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/resize',
   imgLargeUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/',
   cameraOptions: {

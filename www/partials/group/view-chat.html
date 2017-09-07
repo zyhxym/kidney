@@ -9,5 +9,8 @@
         <div class="text-center padding hide-animate ng-hide" ng-hide="params.moreMsgs">没有更多消息了</div>
         <group-message ng-repeat="msg in msgs track by $index" msg="msg" photourls='photoUrls' msgindex='{{$index}}'></group-message>
         <div style="float:left;width:100%;padding-top:44px"></div>
+        <div class="item">
+                <textarea rows="6" style="width:100%" autofocus ng-model="input.text" placeholder="总结"></textarea>
+            </div>
     </ion-content>
 </ion-view>
