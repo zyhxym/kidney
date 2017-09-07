@@ -1193,6 +1193,18 @@ angular.module('kidney', [
                     text: '確定',
                     type: 'button-positive',
                     onTap: function (e) {
+                      socket.emit('disconnect')
+                      // 清除登陆信息
+                      Storage.rm('password')
+                      // Storage.rm('UID');
+                      Storage.rm('doctorunionid')
+                      Storage.rm('IsSignIn')
+                      // Storage.rm('USERNAME');
+                      Storage.rm('PASSWORD')
+                      Storage.rm('userid')
+                      mySocket.cancelAll()
+                      socket.emit('disconnect')
+                      socket.disconnect()
                       $state.go('signin')
                     }
                   }

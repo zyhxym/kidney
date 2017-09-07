@@ -411,8 +411,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             })
           } else {
             if (succ.roles.indexOf('doctor') != -1) {
-              // $scope.logStatus="您已经注册过了";
-              Storage.set('UID', succ.UserId)// 导入的用户 只要绑定下手机号码就行了
+              $scope.logStatus = '您已经注册，请输入正确的验证码完成绑定'
+              Storage.set('UID', succ.AlluserId)// 导入的用户 只要绑定下手机号码就行了
               $scope.hasimport = true
             }
             User.sendSMS({
@@ -541,8 +541,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
               if ($scope.hasimport) { // 导入的用户绑定手机号就行了
-                                // User.setOpenId({phoneNo:Verify.Phone,openId:Storage.get('doctorunionid')}).then(function(response){
-                                  // Storage.set('bindingsucc','yes')
+                User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
+                  Storage.set('bindingsucc', 'yes')
+                })
                 $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
                                 // })
               } else {
@@ -2981,7 +2982,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 我的账户管理
-.controller('accountManageCtrl', ['Doctor', 'Storage', 'User', '$scope', '$state', function (Doctor, Storage, User, $scope, $state) {
+.controller('accountManageCtrl', ['Doctor', 'Storage', 'User', '$scope', '$state', '$ionicPopup', function (Doctor, Storage, User, $scope, $state, $ionicPopup) {
   $scope.alipay = ''
   $scope.alipayIcon = 'img/alipay.png'
   $scope.wechat = ''
@@ -4988,14 +4989,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $state.go('tab.forum')
   }
   $scope.hasDeliver = true
-  $scope.postphoto = '';
+  $scope.postphoto = ''
   $scope.post = {
     title: '',
     content: [{
       text: ''
     },
     {
-      image:[]
+      image: []
     }],
     anonymous: ''
   }
@@ -5033,7 +5034,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.onClickCamera = function ($event) {
-     $scope.openPopover($event)
+    $scope.openPopover($event)
   }
   // $scope.reload = function () {
   //   var t = $scope.myAvatar
@@ -5102,12 +5103,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 // 相册键的点击事件---------------------------------
   $scope.onClickCameraPhotos = function () {
    // console.log("选个照片");
-    
+
     $scope.choosePhotos()
     $scope.closePopover()
   }
   $scope.choosePhotos = function () {
-    Camera.getPictureFromPhotos('gallery',true).then(function (data) {
+    Camera.getPictureFromPhotos('gallery', true).then(function (data) {
         // data里存的是图像的地址
         // console.log(data);
       var imgURI = data
@@ -5147,7 +5148,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   //   $scope.modal.show()
   // }
 
-
   $scope.deleteimg = function (index) {
     // somearray.removeByValue("tue");
     // console.log($scope.post.imgurl)
@@ -5166,7 +5166,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $state.go('comment')
     Storage.set('POSTID', tip)
   }
-  $scope.GoToReplyf = function (rep,tib) {
+  $scope.GoToReplyf = function (rep, tib) {
     $state.go('reply')
     Storage.set('POSTID', $scope.postId)
     Storage.set('COMMENTID', tib.commentId)
@@ -5180,7 +5180,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.replies = []
-  $scope.Images=[]
+  $scope.Images = []
   var PostContent = function () {
     Forum.postcontent({token: Storage.get('TOKEN'), postId: Storage.get('POSTID')}).then(function (data) {
             // console.log(data)
@@ -5197,17 +5197,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $scope.anonymous = data.data.anonymous
       $scope.comments = data.data.replies
       for (i = 0; i < data.data.content[1].image.length; i++) {
-              $scope.Images[i] = CONFIG.imgLargeUrl+data.data.content[1].image[i].slice(data.data.content[1].image[i].lastIndexOf('/')+1).substr(7)
+        $scope.Images[i] = CONFIG.imgLargeUrl + data.data.content[1].image[i].slice(data.data.content[1].image[i].lastIndexOf('/') + 1).substr(7)
               // console.log('Images',$scope.Images)
               // console.log('images',$scope.image)
-              }
+      }
     }, function (err) {
       console.log(err)
     })
   }
   $scope.$on('$ionicView.enter', function () {
     PostContent()
-    imgModalInit();
+    imgModalInit()
   })
 
   var userId = Storage.get('UID'),
@@ -5280,67 +5280,60 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   function imgModalInit () {
-    $scope.zoomMin = 1;
-    $scope.imageUrl = '';
-    $scope.imageIndex = -1;//当前展示的图片
+    $scope.zoomMin = 1
+    $scope.imageUrl = ''
+    $scope.imageIndex = -1// 当前展示的图片
     $ionicModal.fromTemplateUrl('partials/tabs/consult/msg/imageViewer.html', {
-        scope: $scope
-    }).then(function(modal) {
-        $scope.modal = modal;
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modal = modal
         // $scope.modal.show();
-        $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
-    }); 
+      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle')
+    })
   }
 
-  $scope.showoriginal=function(resizedpath){
+  $scope.showoriginal = function (resizedpath) {
         // $scope.openModal();
-        console.log(resizedpath)
-        $scope.imageIndex = 0;
-        //console.log($scope.imageIndex)
-        var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
-        //console.log(originalfilepath)
+    console.log(resizedpath)
+    $scope.imageIndex = 0
+        // console.log($scope.imageIndex)
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+        // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
-        $scope.imageHandle.zoomTo(1, true);
-        $scope.imageUrl = originalfilepath;
-        $scope.modal.show();
-    }
-  //关掉图片
-  $scope.closeModal = function() {
-      $scope.imageHandle.zoomTo(1, true);
-      $scope.modal.hide();
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.imageUrl = originalfilepath
+    $scope.modal.show()
+  }
+  // 关掉图片
+  $scope.closeModal = function () {
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.modal.hide()
       // $scope.modal.remove()
-  };
-  //双击调整缩放
-  $scope.switchZoomLevel = function() {
-      if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin)
-          $scope.imageHandle.zoomTo(1, true);
-      else {
-          $scope.imageHandle.zoomTo(5, true);
-      }
   }
-  //右划图片
+  // 双击调整缩放
+  $scope.switchZoomLevel = function () {
+    if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin) { $scope.imageHandle.zoomTo(1, true) } else {
+      $scope.imageHandle.zoomTo(5, true)
+    }
+  }
+  // 右划图片
   $scope.onSwipeRight = function () {
-    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0)
-      $scope.imageIndex = $scope.imageIndex - 1;
-    else {
-      //如果图片已经是第一张图片了，则取index = Images.length-1
-      $scope.imageIndex = $scope.Images.length - 1;
+    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0) { $scope.imageIndex = $scope.imageIndex - 1 } else {
+      // 如果图片已经是第一张图片了，则取index = Images.length-1
+      $scope.imageIndex = $scope.Images.length - 1
     }
-    $scope.imageUrl = $scope.Images[$scope.imageIndex];
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
   }
 
-  //左划图片
+  // 左划图片
   $scope.onSwipeLeft = function () {
-    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0)
-      $scope.imageIndex = $scope.imageIndex + 1;
-    else {
-      //如果图片已经是最后一张图片了，则取index = 0
-      $scope.imageIndex = 0;
+    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0) { $scope.imageIndex = $scope.imageIndex + 1 } else {
+      // 如果图片已经是最后一张图片了，则取index = 0
+      $scope.imageIndex = 0
     }
-    //替换url，展示图片
-    $scope.imageUrl = $scope.Images[$scope.imageIndex];
-  }  
-
+    // 替换url，展示图片
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
+  }
 }])
 
 .controller('commentCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$ionicLoading', '$timeout', function ($scope, $state, Storage, $ionicHistory, Forum, $ionicLoading, $timeout) {
