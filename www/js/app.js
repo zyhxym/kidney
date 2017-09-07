@@ -566,6 +566,7 @@ angular.module('kidney', [
     // 患者详情页面
     .state('tab.Report', {
       url: '/Report',
+      cache: false,
       views: {
         'tab-workplace': {
           controller: 'ReportCtrl',

@@ -1465,10 +1465,11 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    * @param    userId(患者id): string
    * @return   data.results(患者健康信息)
    */
-  var load = function(){
-    Health.getAllHealths({patientId:patientId}).then(function(data)
+  var load = function(code){
+    console.log(patientId)
+    Health.getAllHealths({patientId:patientId,type:code}).then(function(data)
       {
-        if (data.results != "" && data.results!= null)
+        if (data.results!= null)
         {
           $scope.items = data.results
           //console.log($scope.items)
@@ -1494,8 +1495,8 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       load();
   })
 
-  $scope.doRefresh = function(){
-      load();
+  $scope.doRefresh = function(code){
+      load(code);
       // Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
   }
