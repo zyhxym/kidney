@@ -5093,7 +5093,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.closePopover()
   }
   $scope.choosePhotos = function () {
-    Camera.getPictureFromPhotos('gallery').then(function (data) {
+    Camera.getPictureFromPhotos('gallery',true).then(function (data) {
         // data里存的是图像的地址
         // console.log(data);
       var imgURI = data
