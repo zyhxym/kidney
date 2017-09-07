@@ -1430,7 +1430,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 
 //健康信息-pxy,zy
-.controller('HealthInfoCtrl', ['$state','$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict',function($state,$scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict) {
+.controller('HealthInfoCtrl', ['$state','$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict','CONFIG','$ionicModal','$ionicScrollDelegate',function($state,$scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict,CONFIG,$ionicModal,$ionicScrollDelegate) {
   $scope.barStyle={'margin-top':'40px'}
   if(ionic.Platform.isIOS()){
     $scope.barStyle={'margin-top':'60px'}
@@ -1465,6 +1465,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    * @param    userId(患者id): string
    * @return   data.results(患者健康信息)
    */
+  var urlArray = new Array()
   var load = function(code){
     console.log(patientId)
     Health.getAllHealths({patientId:patientId,type:code}).then(function(data)
@@ -1477,12 +1478,18 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
           //console.log(testtime)
           for (var i = 0; i < $scope.items.length; i++){
             $scope.items[i].acture = $scope.items[i].insertTime
+              if ($scope.items[i].url != "" && $scope.items[i].url!=null) {
+                urlArray = urlArray.concat($scope.items[i].url)
+            }            
             //$scope.items[i].time = $scope.items[i].time.substr(0,10)
             // if ($scope.items[i].url != ""&&$scope.items[i].url!=null)
             // {
             //   $scope.items[i].url = [$scope.items[i].url]
             // }
           }
+            for (i = 0; i < urlArray.length; i++) {
+              $scope.Images[i] = CONFIG.imgLargeUrl+urlArray[i].slice(urlArray[i].lastIndexOf('/')+1).substr(7)
+            }
         };
       },function(err)
       {
@@ -1493,10 +1500,12 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
   $scope.$on('$ionicView.enter', function() {
       load();
+      imgModalInit ()
   })
 
   $scope.doRefresh = function(code){
       load(code);
+      imgModalInit ()
       // Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
   }
@@ -1578,6 +1587,59 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   //   console.log(editId);
   //   $state.go('tab.myHealthInfoDetail',{id:editId});
   // } 
+  //---------点击显示大图------------
+  //图片模块初始化
+    function imgModalInit () {
+    $scope.zoomMin = 1
+    $scope.imageUrl = ''
+    // $scope.imageIndex = -1 //当前展示的图片
+    $scope.Images = []
+    $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
+        scope: $scope
+    }).then(function(modal) {
+        $scope.modal = modal;
+        // $scope.modal.show();
+        $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle');
+    }); 
+  }
+  $scope.showbigger = function (path) {
+    $scope.imageIndex = urlArray.indexOf(path)
+    var originalfilepath = CONFIG.imgLargeUrl + path.slice(path.lastIndexOf('/') + 1).substr(7)
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.imageUrl = originalfilepath
+    $scope.modal.show()
+  }
+  $scope.closeModal = function () {
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.modal.hide()
+      // $scope.modal.remove()
+  }
+  $scope.switchZoomLevel = function () {
+    if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin) { $scope.imageHandle.zoomTo(1, true) } else {
+      $scope.imageHandle.zoomTo(5, true)
+    }
+  }
+  //右划图片
+  $scope.onSwipeRight = function () {
+    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0)
+      $scope.imageIndex = $scope.imageIndex - 1;
+    else {
+      //如果图片已经是第一张图片了，则取index = Images.length-1
+      $scope.imageIndex = $scope.Images.length - 1;
+    }
+    $scope.imageUrl = $scope.Images[$scope.imageIndex];
+  }
+  //左划图片
+  $scope.onSwipeLeft = function () {
+    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0)
+      $scope.imageIndex = $scope.imageIndex + 1;
+    else {
+      //如果图片已经是最后一张图片了，则取index = 0
+      $scope.imageIndex = 0;
+    }
+    //替换url，展示图片
+    $scope.imageUrl = $scope.Images[$scope.imageIndex];
+  }  
 }])
 
 
@@ -1894,7 +1956,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   function imgModalInit () {
     $scope.zoomMin = 1;
     $scope.imageUrl = '';
-    $scope.imageIndex = -1;//当前展示的图片
+    // $scope.imageIndex = -1;//当前展示的图片
     $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
         scope: $scope
     }).then(function(modal) {
@@ -1907,13 +1969,13 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.showoriginal=function(resizedpath){
         // $scope.openModal();
         //console.log(resizedpath)
-        $scope.imageIndex = 0;
         //console.log($scope.imageIndex)
         var originalfilepath=CONFIG.imgLargeUrl+resizedpath.slice(resizedpath.lastIndexOf('/')+1).substr(7)
         //console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
         $scope.imageHandle.zoomTo(1, true);
         $scope.imageUrl = originalfilepath;
+        $scope.imageIndex = $scope.Images.indexOf($scope.imageUrl)
         $scope.modal.show();
     }
   //关掉图片
