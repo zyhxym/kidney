@@ -123,6 +123,10 @@ display: inline-block;
   height: 150px;
   width: 100%;
 }
+.me-top-box3{
+  height: 175px;
+  width: 100%;
+}
 .me-top-bg{
   height: 100%;
   width: 100%;
@@ -218,6 +222,43 @@ display: inline-block;
   text-align: center;
   height: 44px;
 }*/
+.me-mun3 .row{
+  /*border-bottom: 1px solid #e9e9e9;*/
+  /*height: 70px;*/
+  line-height: 27px;
+  margin-top: 0;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.me-mun3 .row a{
+  color: #6e6e6e;
+  text-decoration: none;
+  font-size: 16px;
+}
+.me-mun3 .row .iconfont{
+  color: #242424;
+  font-size: 32px;
+  margin-right: 15px;
+  vertical-align: middle;
+}
+.me-mun2 .row{
+  /*border-bottom: 1px solid #e9e9e9;*/
+  /*height: 70px;*/
+  line-height: 27px;
+  margin-top: 0;
+  /*padding: 15px;*/
+}
+.me-mun2 .row a{
+  color: #6e6e6e;
+  text-decoration: none;
+  font-size: 16px;
+}
+.me-mun2 .row .iconfont{
+  color: #242424;
+  font-size: 32px;
+  margin-right: 15px;
+  vertical-align: middle;
+}
 .me-mun .row{
   /*border-bottom: 1px solid #e9e9e9;*/
   /*height: 70px;*/
@@ -327,14 +368,14 @@ button.partBtn{
     width: 50%;
     border-color: rgba(221, 221, 221, 0.62);
     color: #444;
-    height: 150px;
+    height: 135px;
     font-size: 16px;
     margin: 8px;
-    border-radius: 5px;
+    border-radius: 15px;
     text-align: center;
     background-color: transparent;
     border-width: thin;
-    border-style: solid;
+    border-style: outset;
 }
 
 .doctorAdvice span{

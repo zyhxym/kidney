@@ -324,6 +324,13 @@ angular.module('kidney', [
       templateUrl: 'partials/others/changeTasks.html',
       controller: 'changeTasksCtrl'
     })
+    // 警报消息
+    .state('patientAlerts', {
+      // cache: false,
+      url: '/patientAlerts',
+      templateUrl: 'partials/others/patientAlerts.html',
+      controller: 'patientAlertsCtrl'
+    })
 
     // 选项卡
     .state('tab', {
@@ -859,7 +866,7 @@ angular.module('kidney', [
       }
     })
 
-    //我的账户管理
+    // 我的账户管理
     .state('tab.accountManage', {
         // cache: false,
       url: '/myfee/accountManage',
