@@ -324,6 +324,13 @@ angular.module('kidney', [
       templateUrl: 'partials/others/changeTasks.html',
       controller: 'changeTasksCtrl'
     })
+    // 警报消息
+    .state('patientAlerts', {
+      // cache: false,
+      url: '/patientAlerts',
+      templateUrl: 'partials/others/patientAlerts.html',
+      controller: 'patientAlertsCtrl'
+    })
 
     // 选项卡
     .state('tab', {
@@ -762,7 +769,7 @@ angular.module('kidney', [
     })
     .state('tab.view-chat', {
         // '0':团队交流  '1': 未结束病历  '2':已结束病历
-      url: '/viewchat/:doctorId/:patientId',
+      url: '/viewchat/:doctorId/:patientId/:groupId/:teamId',
       views: {
         'tab-groups': {
           templateUrl: 'partials/group/view-chat.html',
@@ -860,7 +867,7 @@ angular.module('kidney', [
       }
     })
 
-    //我的账户管理
+    // 我的账户管理
     .state('tab.accountManage', {
         // cache: false,
       url: '/myfee/accountManage',
@@ -1187,6 +1194,18 @@ angular.module('kidney', [
                     text: '確定',
                     type: 'button-positive',
                     onTap: function (e) {
+                      socket.emit('disconnect')
+                      // 清除登陆信息
+                      Storage.rm('password')
+                      // Storage.rm('UID');
+                      Storage.rm('doctorunionid')
+                      Storage.rm('IsSignIn')
+                      // Storage.rm('USERNAME');
+                      Storage.rm('PASSWORD')
+                      Storage.rm('userid')
+                      mySocket.cancelAll()
+                      socket.emit('disconnect')
+                      socket.disconnect()
                       $state.go('signin')
                     }
                   }

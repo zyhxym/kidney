@@ -100,7 +100,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       // console.log(data);
       if (data.results.length) {
         for (i = 0; i < data.results.length; i++) {
-          if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 'chat') {
+          if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 2 || data.results[i].type == 'chat') {
             $scope.hasUnreadMessages = true
             break
           }
