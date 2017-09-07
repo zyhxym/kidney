@@ -26,8 +26,17 @@
         <span class="br-e9" style="vertical-align: sub; text-align:center">健康信息</span>
     </a>
   </div>
-  <ion-content class="has-header"  ng-style="barStyle">
+
+  <ion-content class="has-header"  ng-style="barStyle" style="background-color: #f0f0f0;">
   <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh()"></ion-refresher>
+  <select class="col" style="margin:5px 1%;width: 98%;color:RGBA(102,102,102,0.7);border: aliceblue;" ng-model="type"  ng-change="doRefresh(type)">
+        <option selected value="">类型</option> 
+        <option selected value="Health_001">检查</option> 
+        <option selected value="Health_002">化验</option> 
+        <option selected value="Health_003">用药</option> 
+        <option selected value="Health_004">病历</option> 
+    </select>
+
     <div class="list">
       <div class="item" ng-repeat="item in items " ng-click="gotoHealthDetail($event,item)">
         <div class="clearfix"><span class="f-fl f-w-5">{{item.label}}</span><span class="f-fr f-w-5">{{item.time|dateFormat:"YYYY-MM-DD"}}</span></div>

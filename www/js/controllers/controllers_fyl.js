@@ -173,6 +173,14 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   $scope.writeReport = true
   $scope.type = 'week'
   $scope.typeC = '周'
+  $scope.charge = false
+  $scope.follow = false
+  if (Storage.get('dprelation') == 'charge') {
+    $scope.charge = true
+  }
+  if (Storage.get('dprelation') == 'follow') {
+    $scope.follow = true
+  }
   $scope.toWeekReports = function () {
     $scope.modify = 0
     $scope.writeReport = true
@@ -941,7 +949,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }
         if (vitalsign.results.item.doctorReport == undefined) {
           if ($scope.type == 'week' || $scope.type == 'month') { $scope.LTreport = '' } else { $scope.LTreport = '建议增加检测xx，x月发生肌酐升高／贫血／肾病复发' }
-        } else { $scope.LTreport = vitalsign.results.item.doctorReport }
+        } else { $scope.LTreport = vitalsign.results.doctorReport}
         if (vitalsign.results.item.recordTime.length == 0) {
           var chart = new Highcharts.Chart('container7', {
             credits: {enabled: false},
