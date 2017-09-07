@@ -3746,6 +3746,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $ionicLoading.show({ template: '保存成功！', duration: 1000 })
     }
   }
+
+  $scope.illustration1 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '咨询',
+     template: '咨询'
+   });
+  }
+
+  $scope.illustration2 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '问诊',
+     template: '问诊'
+   });
+  }
+
+  $scope.illustration3 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '加急咨询',
+     template: '加急咨询'
+   });
+  }
+
+  $scope.illustration4 = function () {
+    var alertPopup = $ionicPopup.alert({
+     title: '主管医生',
+     template: '主管医生'
+   });
+  }
+  
 }])
 
 // 是否转发页面
@@ -4721,17 +4750,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   var allposts = []
   $scope.posts = []
   $scope.moredata = true
-  var pagecontrol = {skip: 0, limit: 4}
+  var pagecontrol = {skip: 0, limit: 10}
 
   var myposts = []
   $scope.posts1 = []
   $scope.moredata1 = true
-  var pagecontrol1 = {skip: 0, limit: 4}
+  var pagecontrol1 = {skip: 0, limit: 10}
 
   var mycollection = []
   $scope.posts2 = []
   $scope.moredata2 = true
-  var pagecontrol2 = {skip: 0, limit: 4}
+  var pagecontrol2 = {skip: 0, limit: 10}
 
   $scope.initial = {
     item: ''
@@ -4742,7 +4771,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = true
     $scope.params.myposts = false
     $scope.params.mycollection = false
-    pagecontrol = {skip: 0, limit: 4},
+    pagecontrol = {skip: 0, limit: 10},
     allposts = []
     $scope.loadMore()
   }
@@ -4751,7 +4780,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = false
     $scope.params.myposts = true
     $scope.params.mycollection = false
-    pagecontrol1 = {skip: 0, limit: 4},
+    pagecontrol1 = {skip: 0, limit: 10},
     myposts = []
     $scope.loadMore1()
   }
@@ -4760,7 +4789,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     $scope.params.allposts = false
     $scope.params.myposts = false
     $scope.params.mycollection = true
-    pagecontrol2 = {skip: 0, limit: 4},
+    pagecontrol2 = {skip: 0, limit: 10},
     mycollection = []
     $scope.loadMore2()
   }
@@ -4869,10 +4898,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       if (res) {
         Forum.deletepost({token: Storage.get('TOKEN'), postId: tip}).then(function (data) {
           console.log(data)
-          pagecontrol1 = {skip: 0, limit: 4},
+          pagecontrol1 = {skip: 0, limit: 10},
           myposts = []
           $scope.loadMore1()
-          pagecontrol = {skip: 0, limit: 4},
+          pagecontrol = {skip: 0, limit: 10},
           allposts = []
           console.log(allposts)
           $scope.loadMore()
@@ -4901,18 +4930,22 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 根据帖子主题在列表中搜索
   $scope.goSearch = function () {
+    
+    if($scope.search.title == ''){
+      pagecontrol = {skip: 0, limit: 10},
+      allposts = []
+      $scope.loadMore()
+    } else {
+      $scope.moredata = false
     console.log(123)
     Forum.allposts({
       token: Storage.get('TOKEN'),
       title: $scope.search.title,
-      limit: 15,
-      skip: 0
+      limit:1000,
+      skip:0
     }).then(function (data) {
-      // $scope.params.isPatients=true;
-      console.log(data.data)
-      // debugger
+       console.log(data.data)
       $scope.posts = data.data.results
-
       if (data.data.results.length == 0) {
         console.log('aaa')
         $ionicLoading.show({ template: '查无此帖', duration: 1000 })
@@ -4921,10 +4954,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       console.log(err)
     })
   }
+  }
 
   $scope.clearSearch = function () {
     $scope.search.title = ''
-    $scope.posts = $scope.allposts
+    // $scope.posts = $scope.allposts
+    pagecontrol = {skip: 0, limit: 10},
+    allposts = []
+    $scope.posts = $scope.loadMore()
   }
     // ----------------结束搜索患者------------------
 }])
