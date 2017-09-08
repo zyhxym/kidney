@@ -184,7 +184,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     //     User.logIn({username:Storage.get('doctorunionid'),password:"112233",role:"doctor"}).then(function(data){
     //       if(data.results.mesg=="login success!"){
     //         Storage.set('isSignIn',"Yes");
-    //         Storage.set('UID',data.results.UserId);//后续页面必要uid
+    //         Storage.set('UID',data.results.userId);//后续页面必要uid
     //         Storage.set('bindingsucc','yes')
     //         Doctor.getDoctorInfo({userId:data.results.userId})
     //         .then(function(response){
@@ -257,7 +257,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               if (data.results.mesg == 'login success!') {
                 // alert(2)
                 Storage.set('isSignIn', 'Yes')
-                Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                Storage.set('UID', data.results.userId)// 后续页面必要uid
                 Storage.set('TOKEN', data.results.token)
                 Storage.set('refreshToken', data.results.refreshToken)
                 Storage.set('reviewStatus', data.results.reviewStatus)
@@ -540,7 +540,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.logStatus = '验证成功！'
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
-              alert(JSON.stringify(Storage.get('phoneNumber')) + '已同意 未绑定 ')
+              alert(Storage.get('phoneNumber') + '已同意 未绑定 ')
               if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
                 alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
                 User.getAgree({userId: Storage.get('UID')}).then(function (data) {
@@ -559,13 +559,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                         if (data.results.mesg == 'login success!') {
                           alert(JSON.stringify(data) + '登录去首页')
                           Storage.set('isSignIn', 'Yes')
-                          Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                          Storage.set('UID', data.results.userId)// 后续页面必要uid
                           Storage.set('TOKEN', data.results.token)
                           Storage.set('refreshToken', data.results.refreshToken)
                           Storage.set('reviewStatus', data.results.reviewStatus)
                           Storage.set('doctorunionid', Storage.get('doctorunionid'))// 自动登录使用
                           Storage.set('bindingsucc', 'yes')
-                          Storage.set('USERNAME', ret.phoneNo)
+                          Storage.set('USERNAME', Verify.Phone)
                           $timeout(function () {
                             // $ionicLoading.hide()
                             $state.go('tab.workplace')
@@ -668,7 +668,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                     if (data.results.mesg == 'login success!') {
                       // alert(2)
                       Storage.set('isSignIn', 'Yes')
-                      Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                      Storage.set('UID', data.results.userId)// 后续页面必要uid
                       Storage.set('TOKEN', data.results.token)
                       Storage.set('refreshToken', data.results.refreshToken)
                       Storage.set('reviewStatus', data.results.reviewStatus)
