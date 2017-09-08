@@ -245,7 +245,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         // alert(persondata.headimgurl)
         Storage.set('wechatheadimgurl', persondata.results.headimgurl)
         $scope.unionid = persondata.results.unionid
-        // alert($scope.unionid)
+        alert($scope.unionid)
         User.getUserId({username: $scope.unionid}).then(function (ret) {
           // alert(JSON.stringify(ret))
           // 用户已经存在id 说明公众号注册过
@@ -549,11 +549,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                     User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
                       Storage.set('bindingsucc', 'yes')
                       alert(JSON.stringify(response) + '绑定好')
-                      $ionicLoading.show({
-                        template: '登录中...'
-                      })
-                      alert('unionid' + JSON.stringify($scope.unionid))
-                      User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+                      // $ionicLoading.show({
+                      //   template: '登录中...'
+                      // })
+                      alert('unionid：' + $scope.unionid)
+                      alert(Storage.get('doctorunionid'))
+                      User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
                         alert(JSON.stringify(data))
                         if (data.results.mesg == 'login success!') {
                           alert(JSON.stringify(data) + '登录去首页')
@@ -562,11 +563,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                           Storage.set('TOKEN', data.results.token)
                           Storage.set('refreshToken', data.results.refreshToken)
                           Storage.set('reviewStatus', data.results.reviewStatus)
-                          Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
+                          Storage.set('doctorunionid', Storage.get('doctorunionid'))// 自动登录使用
                           Storage.set('bindingsucc', 'yes')
                           Storage.set('USERNAME', ret.phoneNo)
                           $timeout(function () {
-                            $ionicLoading.hide()
+                            // $ionicLoading.hide()
                             $state.go('tab.workplace')
                           }, 500)
                           Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
@@ -662,7 +663,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 text: '確定',
                 type: 'button-positive',
                 onTap: function (e) {
-                  User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+                  User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
                     alert(JSON.stringify(data) + '直接登录')
                     if (data.results.mesg == 'login success!') {
                       // alert(2)
@@ -671,7 +672,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                       Storage.set('TOKEN', data.results.token)
                       Storage.set('refreshToken', data.results.refreshToken)
                       Storage.set('reviewStatus', data.results.reviewStatus)
-                      Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
+                      Storage.set('doctorunionid', Storage.get('doctorunionid'))// 自动登录使用
                       Storage.set('bindingsucc', 'yes')
                       Storage.set('USERNAME', ret.phoneNo)
                       $timeout(function () { $state.go('tab.workplace') }, 500)
@@ -942,9 +943,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           if ($stateParams.last == 'wechatsignin') {
             User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
               Storage.set('bindingsucc', 'yes')
-              // $timeout(function(){$state.go('tab.home');},500);
+              $state.go('uploadcertificate', {last: 'wechatsignin'})
             })
-            $state.go('uploadcertificate', {last: 'wechatsignin'})
           } else {
             $state.go('uploadcertificate')
           }
@@ -1021,8 +1021,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                   // console.log(data)
       }, function (err) {
         console.log(err)
-      }
-            )
+      })
     } else {
       $ionicLoading.show({
         template: '信息填写不完整,请完善必填信息(红色*)',
@@ -4475,21 +4474,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       type: '7',
       description: '医生通过了您的申请,成为您的主管医生！'
     }).then(function (data) {
-          console.log(data)
-          MessId = data.newResults.message.messageId
-          New.insertNews({
-              sendBy: Storage.get('UID'),
-              userId: Storage.get('getpatientId'),
-              type: 7,
-              readOrNot: '0',
-              description: '医生通过了您的申请！',
-              messageId: MessId,
-              userRole: 'patient'
-                }).then(function (data) {
-                  console.log(data)
-                }, function (err) {
-                  console.log(err)
-          })
+      console.log(data)
+      MessId = data.newResults.message.messageId
+      New.insertNews({
+        sendBy: Storage.get('UID'),
+        userId: Storage.get('getpatientId'),
+        type: 7,
+        readOrNot: '0',
+        description: '医生通过了您的申请！',
+        messageId: MessId,
+        userRole: 'patient'
+      }).then(function (data) {
+        console.log(data)
+      }, function (err) {
+        console.log(err)
+      })
     }), function (err) {
       console.log(err)
     }
@@ -4547,21 +4546,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           type: '7',
           description: '医生拒绝了您的申请，理由是：' + reason
         }).then(function (data) {
-              console.log(data.result)
-              MessId = data.newResults.message.messageId
-              New.insertNews({
-                  sendBy: Storage.get('UID'),
-                  userId: Storage.get('getpatientId'),
-                  type: 7,
-                  readOrNot: '0',
-                  description: '医生拒绝了您的申请，理由是：' + reason,
-                  messageId: MessId,
-                  userRole: 'patient'
-                  }).then(function (data) {
-                     console.log(data)
-                      }, function (err) {
-                         console.log(err)
-                      })
+          console.log(data.result)
+          MessId = data.newResults.message.messageId
+          New.insertNews({
+            sendBy: Storage.get('UID'),
+            userId: Storage.get('getpatientId'),
+            type: 7,
+            readOrNot: '0',
+            description: '医生拒绝了您的申请，理由是：' + reason,
+            messageId: MessId,
+            userRole: 'patient'
+          }).then(function (data) {
+            console.log(data)
+          }, function (err) {
+            console.log(err)
+          })
         }), function (err) {
           console.log(err)
         }
