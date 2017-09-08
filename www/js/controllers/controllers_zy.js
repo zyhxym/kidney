@@ -412,7 +412,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           } else {
             Storage.set('UID', succ.AlluserId)
             if (succ.roles.indexOf('doctor') != -1) {
-              $scope.logStatus = '您已经注册，请输入正确的验证码完成绑定'
+              // $scope.logStatus = '您已经注册，请输入正确的验证码完成绑定'
               $scope.haveExist = true
             }
             User.sendSMS({
@@ -540,6 +540,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.logStatus = '验证成功！'
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
+              alert(JSON.stringify(Storage.get('phoneNumber')) + '已同意 未绑定 ')
               if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
                 alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
                 User.getAgree({userId: Storage.get('UID')}).then(function (data) {
@@ -548,35 +549,37 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                     User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
                       Storage.set('bindingsucc', 'yes')
                       alert(JSON.stringify(response) + '绑定好')
+                      $ionicLoading.show({
+                        template: '登录中...'
+                      })
+                      alert('unionid' + JSON.stringify($scope.unionid))
+                      User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+                        alert(JSON.stringify(data))
+                        if (data.results.mesg == 'login success!') {
+                          alert(JSON.stringify(data) + '登录去首页')
+                          Storage.set('isSignIn', 'Yes')
+                          Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                          Storage.set('TOKEN', data.results.token)
+                          Storage.set('refreshToken', data.results.refreshToken)
+                          Storage.set('reviewStatus', data.results.reviewStatus)
+                          Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
+                          Storage.set('bindingsucc', 'yes')
+                          Storage.set('USERNAME', ret.phoneNo)
+                          $timeout(function () {
+                            $ionicLoading.hide()
+                            $state.go('tab.workplace')
+                          }, 500)
+                          Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
+                            thisDoctor = response.results
+                            mySocket.newUser(response.results.userId)
+                          }, function (err) {
+                            thisDoctor = null
+                          })
+                        }
+                      })
                     })
-                    $ionicLoading.show({
-                      template: '登录中...'
-                    })
+
                     // alert(1)
-                    User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
-                      alert(JSON.stringify(data))
-                      if (data.results.mesg == 'login success!') {
-                        alert(JSON.stringify(data) + '登录去首页')
-                        Storage.set('isSignIn', 'Yes')
-                        Storage.set('UID', data.results.UserId)// 后续页面必要uid
-                        Storage.set('TOKEN', data.results.token)
-                        Storage.set('refreshToken', data.results.refreshToken)
-                        Storage.set('reviewStatus', data.results.reviewStatus)
-                        Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
-                        Storage.set('bindingsucc', 'yes')
-                        Storage.set('USERNAME', ret.phoneNo)
-                        $timeout(function () {
-                          $ionicLoading.hide()
-                          $state.go('tab.workplace')
-                        }, 500)
-                        Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
-                          thisDoctor = response.results
-                          mySocket.newUser(response.results.userId)
-                        }, function (err) {
-                          thisDoctor = null
-                        })
-                      }
-                    })
                   } else { // 导入用户
                     alert(JSON.stringify(data) + '未同意 导入用户 ')
                     $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
