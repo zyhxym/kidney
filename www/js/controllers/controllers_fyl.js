@@ -1,7 +1,7 @@
 angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
 // "工作台”页-fyl,zy
-.controller('workplaceCtrl', ['CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', 'New', '$ionicPopup', function (CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, New, $ionicPopup) {
+.controller('workplaceCtrl', ['CONFIG', 'Camera', 'Doctor', 'Counsel', 'Doctor2', 'services', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', 'New', '$ionicPopup', function (CONFIG, Camera, Doctor, Counsel, Doctor2, services, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, New, $ionicPopup) {
   $scope.barwidth = 'width:0%'
   $scope.hasUnreadMessages = false
   $scope.review = false
@@ -24,6 +24,41 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     })
   }
   // GetLatest()
+
+  // 获取各项任务数量
+  var GetNum = function () {
+    // 获取进行中咨询数量
+    Counsel.getCounsels({
+      status: 1 // 进行中
+    }).then(function (data) {
+      $scope.consultNum = data.count
+    }, function (err) {
+      console.log(err)
+    })
+    // 获取待审核患者数量
+    Doctor2.getReviewList({
+    }).then(function (data) {
+      // console.log(data)
+      $scope.reviewNum = data.numberToReview
+    }, function (err) {
+      console.log(err)
+    })
+    // 获取未核销面诊患者 0未核销 1已核销
+    services.myPDpatients({
+      status: 0
+    }).then(function (data) {
+      $scope.PDNum = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
+    // 获取患者数量
+    Doctor2.getPatientList({
+    }).then(function (data) {
+      $scope.patNum = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
+  }
 
   var myPopup = function () {
     $ionicPopup.show({
@@ -125,6 +160,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.$on('$ionicView.enter', function () {
       console.log('enter')
       GetLatest()
+      GetNum()
       RefreshUnread = $interval(GetUnread, 2000)
     })
   }
@@ -949,7 +985,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }
         if (vitalsign.results.item.doctorReport == undefined) {
           if ($scope.type == 'week' || $scope.type == 'month') { $scope.LTreport = '' } else { $scope.LTreport = '建议增加检测xx，x月发生肌酐升高／贫血／肾病复发' }
-        } else { $scope.LTreport = vitalsign.results.doctorReport}
+        } else { $scope.LTreport = vitalsign.results.doctorReport }
         if (vitalsign.results.item.recordTime.length == 0) {
           var chart = new Highcharts.Chart('container7', {
             credits: {enabled: false},

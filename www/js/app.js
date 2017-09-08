@@ -1117,7 +1117,7 @@ angular.module('kidney', [
     // 下面的getter可以注入各种服务, service, factory, value, constant, provider等, constant, provider可以直接在.config中注入, 但是前3者不行
   jwtOptionsProvider.config({
     whiteListedDomains: ['docker2.haihonghospitalmanagement.com', '121.196.221.44', '106.15.185.172', 'testpatient.haihonghospitalmanagement.com', 'testdoctor.haihonghospitalmanagement.com', 'patient.haihonghospitalmanagement.com', 'doctor.haihonghospitalmanagement.com', 'localhost'],
-    tokenGetter: ['options', 'jwtHelper', '$http', 'CONFIG', 'Storage', '$state', '$ionicPopup', function (options, jwtHelper, $http, CONFIG, Storage, $state, $ionicPopup) {
+    tokenGetter: ['options', 'jwtHelper', '$http', 'CONFIG', 'Storage', '$state', '$ionicPopup', '$interval', function (options, jwtHelper, $http, CONFIG, Storage, $state, $ionicPopup, $interval) {
          // console.log(config);
         // console.log(CONFIG.baseUrl);
 
@@ -1194,7 +1194,6 @@ angular.module('kidney', [
                     text: '確定',
                     type: 'button-positive',
                     onTap: function (e) {
-                      socket.emit('disconnect')
                       // 清除登陆信息
                       Storage.rm('password')
                       // Storage.rm('UID');
@@ -1203,9 +1202,9 @@ angular.module('kidney', [
                       // Storage.rm('USERNAME');
                       Storage.rm('PASSWORD')
                       Storage.rm('userid')
-                      mySocket.cancelAll()
-                      socket.emit('disconnect')
-                      socket.disconnect()
+                      // mySocket.cancelAll()
+                      // socket.emit('disconnect')
+                      // socket.disconnect()
                       $state.go('signin')
                     }
                   }

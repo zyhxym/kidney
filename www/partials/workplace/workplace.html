@@ -35,12 +35,12 @@
 
      <div class="me-mun3 bg-wite mt-10">
         <div class="row" >
-            <button class="partBtn" ng-click="goConsult()"><img class="icon_mine" ng-src="img/zx.png" style="margin-bottom: 5px"><br>咨询问诊</button>
-            <button class="partBtn" ng-click="goReserve()"><img class="icon_mine" ng-src="img/yy.png" style="margin-bottom: 5px"><br>我的预约</button>
+            <button class="partBtn" ng-click="goConsult()"><img class="icon_mine" ng-src="img/zx.png" style="margin-bottom: 5px"><br>咨询问诊<br><div style="border:1px solid #C0C0C0;border-radius: 10px;width: 70%;margin:0 auto;font-size: 14px"><span style="color: red">{{consultNum}}</span>项任务</div></button>
+            <button class="partBtn" ng-click="goReserve()"><img class="icon_mine" ng-src="img/yy.png" style="margin-bottom: 5px"><br>我的预约<br><div style="border:1px solid #C0C0C0;border-radius: 10px;width: 70%;margin:0 auto;font-size: 14px"><span style="color: red">{{reviewNum + PDNum}}</span>项处理</div></button>
         </div>
         <div class="row" style="margin-top: -10px">
-            <button class="partBtn" ng-click="goPatient()"><img class="icon_mine" ng-src="img/hz.png" style="margin-bottom: 5px"><br>我的患者</button>
-            <button class="partBtn" ng-click="goService()"><img class="icon_mine" ng-src="img/fw.png" style="margin-bottom: 5px"><br>服务管理</button>
+            <button class="partBtn" ng-click="goPatient()"><img class="icon_mine" ng-src="img/hz.png" style="margin-bottom: 5px"><br>我的患者<br><div style="border:1px solid #C0C0C0;border-radius: 10px;width: 70%;margin:0 auto;font-size: 14px"><span style="color: red">{{patNum}}</span>位患者</div></button>
+            <button class="partBtn" ng-click="goService()"><img class="icon_mine" ng-src="img/fw.png" style="margin-bottom: 5px"><br>服务管理<br><div style="border:1px solid #C0C0C0;border-radius: 10px;width: 70%;margin:0 auto;font-size: 14px">立即管理</div></button>
         </div>
     </div>
     <!-- <div class="me-list list mt-15">
