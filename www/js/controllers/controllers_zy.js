@@ -1356,34 +1356,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     Counsel.getCounsels({
       userId: Storage.get('UID'),
       status: 0
+    }).then(function (data) {
+      // console.log(data)
+      Storage.set('consulted', angular.toJson(data.results))
+      // console.log(angular.fromJson(Storage.get("consulted",data.results)))
+      $scope.doctor.b = data.results.length
+    }, function (err) {
+      console.log(err)
     })
-        .then(
-            function (data) {
-                // console.log(data)
-              Storage.set('consulted', angular.toJson(data.results))
-                // console.log(angular.fromJson(Storage.get("consulted",data.results)))
-              $scope.doctor.b = data.results.length
-            },
-            function (err) {
-              console.log(err)
-            }
-        )
     // 获取进行中
     Counsel.getCounsels({
       userId: Storage.get('UID'),
       status: 1
-    })
-        .then(
-            function (data) {
+    }).then(function (data) {
                 // console.log(data)
-              Storage.set('consulting', angular.toJson(data.results))
+      Storage.set('consulting', angular.toJson(data.results))
                 // console.log(angular.fromJson(Storage.get("consulting",data.results)))
-              $scope.doctor.a = data.results.length
-            },
-            function (err) {
-              console.log(err)
-            }
-        )
+      $scope.doctor.a = data.results.length
+    }, function (err) {
+      console.log(err)
+    })
   }
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.params.isPatients = '1';
@@ -1613,10 +1605,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 我的预约 页面
 .controller('myreserveCtrl', ['$scope', 'Doctor2', 'services', function ($scope, Doctor2, services) {
-    // 获取该医生所有待审核患者列表
+  // 获取该医生所有待审核患者列表
   Doctor2.getReviewList({
-      // token: Storage.get('TOKEN')
-      // userId: Storage.get('UID')
   }).then(function (data) {
         // console.log(data)
     $scope.reviewNum = data.numberToReview
@@ -1626,7 +1616,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 获取未核销面诊患者 0未核销 1已核销
   services.myPDpatients({
-      // token: Storage.get('TOKEN')
     status: 0
   }).then(function (data) {
         // console.log(data)
@@ -1648,23 +1637,23 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   var load = function () {
-    Counsel.getCounsels({
-      userId: Storage.get('UID'),
-      status: 1
-    }).then(function (data) {
-      $scope.consultNum = data.results.length
-    }, function (err) {
-      console.log(err)
-    })
+    // Counsel.getCounsels({
+    //   userId: Storage.get('UID'),
+    //   status: 1
+    // }).then(function (data) {
+    //   $scope.consultNum = data.results.length
+    // }, function (err) {
+    //   console.log(err)
+    // })
 
-    Counsel.getCounsels({
-      userId: Storage.get('UID'),
-      status: 0
-    }).then(function (data) {
-      $scope.didconsultNum = data.results.length
-    }, function (err) {
-      console.log(err)
-    })
+    // Counsel.getCounsels({
+    //   userId: Storage.get('UID'),
+    //   status: 0
+    // }).then(function (data) {
+    //   $scope.didconsultNum = data.results.length
+    // }, function (err) {
+    //   console.log(err)
+    // })
 
   // // 获取该医生所有待审核患者列表
   //   Doctor2.getReviewList({
@@ -1699,8 +1688,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }).then(function (data) {
       // console.log(data)
       if (data.results != '') {
-           $scope.allpatients = data.results
-           $scope.patients = $scope.allpatients        
+        $scope.allpatients = data.results
+        $scope.patients = $scope.allpatients
         // $scope.allpatientsInCharge = data.results.patientsInCharge
         // $scope.allpatients = data.results.patients
         // $scope.patients = $scope.allpatients
@@ -1744,8 +1733,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       typeR: 'today'
     }).then(function (data) {
       // console.log(data)
-        $scope.allTodays = data.results
-        $scope.Todays = $scope.allTodays
+      $scope.allTodays = data.results
+      $scope.Todays = $scope.allTodays
       // $scope.Todays.push(
       //         {show:true,patientId:{IDNo:"330183199210315001",gender:1,class:"class_1",VIP:0,name:'static_01',birthday:"2017-04-18T00:00:00.000Z"}},
       //         {show:false,patientId:{IDNo:"330183199210315002",gender:0,class:"class_2",VIP:1,name:'static_02',birthday:"2016-04-18T00:00:00.000Z"}},
@@ -1769,63 +1758,64 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
     // ----------------开始搜索患者------------------
-      $scope.search = {
-        name: '',
-        vip: '',
-        gender: '',
-        distype: '',
-        value: '',
-        typeR: ''
-      }
+  $scope.search = {
+    name: '',
+    vip: '',
+    gender: '',
+    distype: '',
+    value: '',
+    typeR: ''
+  }
 
   // 根据姓名在患者列表中搜索
   $scope.goSearch = function () {
-        var searchInfo = {
-          typeVIP: $scope.search.vip,
-          typeG: $scope.search.gender,
-          typeD: $scope.search.distype,
-          typeS: $scope.search.value,
-          name: $scope.search.name,
-          typeR: $scope.search.typeR
-        }
-          Doctor2.getPatientList(searchInfo).then(function(data) {
+    var searchInfo = {
+      typeVIP: $scope.search.vip,
+      typeG: $scope.search.gender,
+      typeD: $scope.search.distype,
+      typeS: $scope.search.value,
+      name: $scope.search.name,
+      typeR: $scope.search.typeR
+    }
+    Doctor2.getPatientList(searchInfo).then(function (data) {
             // $scope.params.isPatients=true;
             // $scope.patientsInCharge = data.results.patientsInCharge
-            console.log(data.results)
-            if ($scope.params.isPatients == true) {
-              $scope.patients = data.results
-              angular.forEach($scope.patients,
-                function(value, key) {
+      console.log(data.results)
+      if ($scope.params.isPatients == true) {
+        $scope.patients = data.results
+        angular.forEach($scope.patients,
+                function (value, key) {
                   $scope.patients[key].show = true
-                  }
-                )}else{
-                $scope.Todays = data.results
-                angular.forEach($scope.Todays,
-                function(value, key) {
-                  $scope.Todays[key].show = true
-                  }
+                }
                 )
-              }
+      } else {
+        $scope.Todays = data.results
+        angular.forEach($scope.Todays,
+                function (value, key) {
+                  $scope.Todays[key].show = true
+                }
+                )
+      }
               // angular.forEach($scope.patientsInCharge,
               //           function (value, key) {
               //             $scope.patientsInCharge[key].show = true
               //           }
               // )
               // console.log($scope.patients[0].patientId.name)
-            if (data.results.length == 0) {
-              console.log('aaa')
-              $ionicLoading.show({
-                template: '查无此人',
-                duration: 1000
-              })
-            }
-          }, function(err) {
-            console.log(err)
-          })
-        }
+      if (data.results.length == 0) {
+        console.log('aaa')
+        $ionicLoading.show({
+          template: '查无此人',
+          duration: 1000
+        })
+      }
+    }, function (err) {
+      console.log(err)
+    })
+  }
 
   $scope.clearSearch = function () {
-    $scope.search.name = ''
+    $scope.search = {}
     $scope.patients = $scope.allpatients
     // $scope.patientsInCharge = $scope.allpatientsInCharge
   }
@@ -1844,27 +1834,27 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 点亮全部患者标签 显示全部患者
   $scope.ShowPatients = function () {
-      $scope.params.isPatients = true
-      $scope.search.typeR = ''
-      $scope.search.name = ''
-      $scope.search.vip = ''
-      $scope.search.distype = ''
-      $scope.search.gender = ''
-      $scope.search.value = ''
-      $scope.patients = $scope.allpatients
-      $scope.Todays = $scope.allTodays
+    $scope.params.isPatients = true
+    $scope.search.typeR = ''
+    $scope.search.name = ''
+    $scope.search.vip = ''
+    $scope.search.distype = ''
+    $scope.search.gender = ''
+    $scope.search.value = ''
+    $scope.patients = $scope.allpatients
+    $scope.Todays = $scope.allTodays
   }
   // 点亮今日新增标签 显示今日新增患者
   $scope.ShowTodays = function () {
-      $scope.params.isPatients = false
-      $scope.search.typeR = 'today'
-      $scope.search.name = ''
-      $scope.search.vip = ''
-      $scope.search.distype = ''
-      $scope.search.gender = ''
-      $scope.search.value = ''
-      $scope.Todays = $scope.allTodays
-      $scope.patients = $scope.allpatients
+    $scope.params.isPatients = false
+    $scope.search.typeR = 'today'
+    $scope.search.name = ''
+    $scope.search.vip = ''
+    $scope.search.distype = ''
+    $scope.search.gender = ''
+    $scope.search.value = ''
+    $scope.Todays = $scope.allTodays
+    $scope.patients = $scope.allpatients
   }
   /**
    * [进入对应患者的患者详情]
@@ -2967,7 +2957,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // console.log("bill");
     $state.go('tab.bill')
   }
-  
+
   $scope.goAccountManage = function () {
     $state.go('tab.accountManage')
   }
