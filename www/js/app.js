@@ -1165,6 +1165,7 @@ angular.module('kidney', [
                  * @param    {[string]}  refreshToken [description]
                  * @return   {[object]}  data.results  [新的token信息]
                  */
+          console.log(options)
           return $http({
             url: CONFIG.baseTwoUrl + 'token/refresh?refresh_token=' + refreshToken,
                     // This makes it so that this request doesn't send the JWT
@@ -1172,16 +1173,21 @@ angular.module('kidney', [
             method: 'GET',
             timeout: 5000
           }).then(function (res) { // $http返回的值不同于$resource, 包含config等对象, 其中数据在res.data中
-                     // console.log(res);
+            console.log(res.status)
+            console.log(res.data)
+            console.log('成功')
                     // sessionStorage.setItem('token', res.data.token);
                     // sessionStorage.setItem('refreshToken', res.data.refreshToken);
             Storage.set('TOKEN', res.data.results.token)
             Storage.set('refreshToken', res.data.results.refreshToken)
             return res.data.results.token
           }, function (err) {
+            console.log('错误')
+            console.log(err.status)
+            console.log(err.data)
             console.log(err)
             if (refreshToken == Storage.get('refreshToken')) {
-                      // console.log("凭证不存在!")
+              // console.log("凭证不存在!")
               console.log(options)
               $ionicPopup.show({
                 title: '您离开太久了，请重新登录',
@@ -1202,6 +1208,7 @@ angular.module('kidney', [
                       // Storage.rm('USERNAME');
                       Storage.rm('PASSWORD')
                       Storage.rm('userid')
+                      $interval.cancel(RefreshUnread)
                       // mySocket.cancelAll()
                       // socket.emit('disconnect')
                       // socket.disconnect()
@@ -1218,6 +1225,7 @@ angular.module('kidney', [
             return null
           })
         } else {
+          console.log('清除refreshtoken')
           Storage.rm('refreshToken')  // 如果是非法refreshToken, 删除之
           return null
         }
