@@ -12,12 +12,11 @@
 
                     <img ng-src="{{doctor.photoUrl}}" name="Photo">
                 </div>
-                <div class="me-edit-btn" ng-if="!review"><a href="#/tab/myinfo">立即认证</a></div>
+                <div class="me-edit-btn" style="text-align: center; position: absolute; margin-left: 5px; margin-top: 65px;" ng-if="!review"><a href="#/tab/myinfo">立即认证</a></div>
           
             <div class="me-massage">
-                <p class="f16 m-b5 fc-2b" style="text-align: center; margin-top: -20px;">{{doctor.name}}</p>
-<!--                 <p class="fc-66">{{doctor.workUnit}}</p>
-                <p class="fc-66">{{doctor.department}}</p> -->
+                <p class="f16 m-b5 fc-2b" style="text-align: center; margin-left: 5px; margin-top: -10px;" ng-if="!review">{{doctor.name}}</p>
+                <p class="f16 m-b5 fc-2b" style="text-align: center; margin-left: 5px; margin-top: -20px;" ng-if="review">{{doctor.name}}</p>
             </div>
         </div>
     </div>
