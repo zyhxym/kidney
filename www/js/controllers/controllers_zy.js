@@ -1,7 +1,7 @@
 angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 登录-zy,zxf
-.controller('SignInCtrl', ['$ionicLoading', 'User', 'User2', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, User2, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
+.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
   $scope.barwidth = 'width:0%'
   // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
@@ -11,7 +11,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   if (Storage.get('doctorunionid') != undefined && Storage.get('bindingsucc') == 'yes') {
-    User2.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
+    User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
       if (data.results.mesg == 'login success!') {
         Storage.set('isSignIn', true)
         Storage.set('UID', data.results.userId)// 后续页面必要uid
@@ -42,7 +42,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
      * @param    username(账号：现为手机号):string; password: string; role: string
      * @return   data.results.mesg(反馈登录状态信息)
      */
-    User2.logIn({username: Storage.get('USERNAME'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
+    User.logIn({username: Storage.get('USERNAME'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
       if (data.results.mesg == 'login success!') {
         $ionicHistory.clearCache()
         $ionicHistory.clearHistory()
@@ -87,7 +87,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       if (!phoneReg.test(logOn.username)) {
         $scope.logStatus = '手机号验证失败！'
       } else {
-        var logPromise = User2.logIn({username: logOn.username, password: logOn.password, role: 'doctor'})
+        var logPromise = User.logIn({username: logOn.username, password: logOn.password, role: 'doctor'})
         /**
          * [输入账号密码写定角色登录]
          * @Author   ZY
@@ -252,7 +252,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           if (ret.results == 0 && ret.roles.indexOf('doctor') != -1) { // 直接登录
             ionicLoadingshow()
             // alert(1)
-            User2.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+            User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
               alert(JSON.stringify(data))
               if (data.results.mesg == 'login success!') {
                 // alert(2)
@@ -410,10 +410,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               $scope.logStatus = '验证码发送失败！'
             })
           } else {
+            Storage.set('UID', succ.AlluserId)
             if (succ.roles.indexOf('doctor') != -1) {
               $scope.logStatus = '您已经注册，请输入正确的验证码完成绑定'
-              Storage.set('UID', succ.AlluserId)// 导入的用户 只要绑定下手机号码就行了
-              $scope.hasimport = true
+              $scope.haveExist = true
             }
             User.sendSMS({
               mobile: Verify.Phone,
@@ -540,13 +540,52 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.logStatus = '验证成功！'
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
-              if ($scope.hasimport) { // 导入的用户绑定手机号就行了
-                User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
-                  Storage.set('bindingsucc', 'yes')
+              if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
+                alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
+                User.getAgree({userId: Storage.get('UID')}).then(function (data) {
+                  if (data.results != null && data.results.agreement == '0') {   // 已通过协议为已注册用户
+                    alert(JSON.stringify(data) + '已同意 未绑定 ')
+                    User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
+                      Storage.set('bindingsucc', 'yes')
+                      alert(JSON.stringify(response) + '绑定好')
+                    })
+                    $ionicLoading.show({
+                      template: '登录中...'
+                    })
+                    // alert(1)
+                    User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+                      alert(JSON.stringify(data))
+                      if (data.results.mesg == 'login success!') {
+                        alert(JSON.stringify(data) + '登录去首页')
+                        Storage.set('isSignIn', 'Yes')
+                        Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                        Storage.set('TOKEN', data.results.token)
+                        Storage.set('refreshToken', data.results.refreshToken)
+                        Storage.set('reviewStatus', data.results.reviewStatus)
+                        Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
+                        Storage.set('bindingsucc', 'yes')
+                        Storage.set('USERNAME', ret.phoneNo)
+                        $timeout(function () {
+                          $ionicLoading.hide()
+                          $state.go('tab.workplace')
+                        }, 500)
+                        Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
+                          thisDoctor = response.results
+                          mySocket.newUser(response.results.userId)
+                        }, function (err) {
+                          thisDoctor = null
+                        })
+                      }
+                    })
+                  } else { // 导入用户
+                    alert(JSON.stringify(data) + '未同意 导入用户 ')
+                    $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
+                  }
+                }, function (err) {
+                  console.log(err)
                 })
-                $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
-                                // })
               } else {
+                alert(JSON.stringify(succ) + '不存在 微信注册')
                 $timeout(function () { $state.go('agreement', {last: 'wechatsignin'}) }, 500)
               }
             } else if (validMode == 0) {
@@ -612,7 +651,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           //         reject(err);
           //     })
           // // };
-
+          alert(JSON.stringify(data) + '导入用户 同意协议')
           $ionicPopup.show({
             title: '微信账号绑定手机账号成功，您的初始密码是123456，您以后也可以用手机号码登录！',
             buttons: [
@@ -620,7 +659,27 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 text: '確定',
                 type: 'button-positive',
                 onTap: function (e) {
-                  $state.go('tab.workplace')
+                  User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+                    alert(JSON.stringify(data) + '直接登录')
+                    if (data.results.mesg == 'login success!') {
+                      // alert(2)
+                      Storage.set('isSignIn', 'Yes')
+                      Storage.set('UID', data.results.UserId)// 后续页面必要uid
+                      Storage.set('TOKEN', data.results.token)
+                      Storage.set('refreshToken', data.results.refreshToken)
+                      Storage.set('reviewStatus', data.results.reviewStatus)
+                      Storage.set('doctorunionid', $scope.unionid)// 自动登录使用
+                      Storage.set('bindingsucc', 'yes')
+                      Storage.set('USERNAME', ret.phoneNo)
+                      $timeout(function () { $state.go('tab.workplace') }, 500)
+                      Doctor.getDoctorInfo({userId: data.results.userId}).then(function (response) {
+                        thisDoctor = response.results
+                        mySocket.newUser(response.results.userId)
+                      }, function (err) {
+                        thisDoctor = null
+                      })
+                    }
+                  })
                 }
               }
             ]
@@ -632,6 +691,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         console.log(err)
       })
     } else if ($stateParams.last == 'wechatsignin') {
+      alert('微信注册 同意协议')
       $timeout(function () { $state.go('userdetail', {last: 'wechatsignin'}) }, 500)
     } else if ($stateParams.last == 'signin') {
       // 由登录时跳转到签署协议，针对老注册用户，同意协议后跳转到首页
@@ -822,44 +882,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
          * @return   成功注册
          */
         User.register({
-          'phoneNo': phoneNumber,
-          'password': password,
-          'role': 'doctor'
+          phoneNo: phoneNumber,
+          password: password,
+          role: 'doctor'
         }).then(function (succ) {
           console.log(phoneNumber)
           console.log(password)
           console.log(succ)
           Storage.set('UID', succ.userNo)
-          // 绑定手机号和unionid
-          if ($stateParams.last == 'wechatsignin') {
-            User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
-              Storage.set('bindingsucc', 'yes')
-              // $timeout(function(){$state.go('tab.home');},500);
-            })
-            // //6-6zxf
-            // var temp_photoaddress = succ.userNo + "_" +  "doctor.photoUrl.jpg";
-            // alert(temp_photoaddress)
-            // alert(Storage.get('wechatheadimgurl'))
-            //     // console.log(temp_photoaddress)
-            // Camera.uploadPicture(Storage.get('wechatheadimgurl'), temp_photoaddress)
-            // .then(function(res){
-            //     var data=angular.fromJson(res)
-            //     alert(JSON.stringify(res));
-            //     //res.path_resized
-            //     //图片路径
-            //     $scope.doctor.photoUrl=CONFIG.mediaUrl+String(data.path_resized)+'?'+new Date().getTime();
-            //     // console.log($scope.doctor.photoUrl)
-            //     // $state.reload("tab.mine")
-            //     // Storage.set('doctor.photoUrlpath',$scope.doctor.photoUrl);
-            //     Doctor.editDoctorDetail({userId:succ.userNo,photoUrl:$scope.doctor.photoUrl}).then(function(r){
-            //         console.log(r);
-            //     })
-            // },function(err){
-            //     console.log(err);
-            //     reject(err);
-            // })
-          }
-
           // 签署协议置位0，同意协议
           User.updateAgree({userId: Storage.get('UID'), agreement: '0'}).then(function (data) {
             console.log(data)
@@ -886,26 +916,31 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           })
 
           // 注册论坛
-          $http({
-            method: 'POST',
-            url: 'http://proxy.haihonghospitalmanagement.com/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
-            params: {
-              'regsubmit': 'yes',
-              'formhash': '',
-              'username': $scope.doctor.name + phoneNumber.slice(7),
-              'password': $scope.doctor.name + phoneNumber.slice(7),
-              'password2': $scope.doctor.name + phoneNumber.slice(7),
-              'email': phoneNumber + '@bme319.com'
-            },  // pass in data as strings
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Accept': 'application/xml, text/xml, */*'
-            }  // set the headers so angular passing info as form data (not request payload)
-          }).success(function (data) {
-            // console.log(data);
-          })
+          // $http({
+          //   method: 'POST',
+          //   url: 'http://proxy.haihonghospitalmanagement.com/member.php?mod=register&mobile=2&handlekey=registerform&inajax=1',
+          //   params: {
+          //     'regsubmit': 'yes',
+          //     'formhash': '',
+          //     'username': $scope.doctor.name + phoneNumber.slice(7),
+          //     'password': $scope.doctor.name + phoneNumber.slice(7),
+          //     'password2': $scope.doctor.name + phoneNumber.slice(7),
+          //     'email': phoneNumber + '@bme319.com'
+          //   },  // pass in data as strings
+          //   headers: {
+          //     'Content-Type': 'application/x-www-form-urlencoded',
+          //     'Accept': 'application/xml, text/xml, */*'
+          //   }  // set the headers so angular passing info as form data (not request payload)
+          // }).success(function (data) {
+          //   // console.log(data);
+          // })
+
           // zxf
           if ($stateParams.last == 'wechatsignin') {
+            User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
+              Storage.set('bindingsucc', 'yes')
+              // $timeout(function(){$state.go('tab.home');},500);
+            })
             $state.go('uploadcertificate', {last: 'wechatsignin'})
           } else {
             $state.go('uploadcertificate')
@@ -929,9 +964,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 上传资质证书-zxf
-.controller('uploadcertificateCtrl', ['$interval', 'CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', 'User2', '$http', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function ($interval, CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, User2, $http, Camera, $ionicModal, $stateParams, socket, mySocket) {
+.controller('uploadcertificateCtrl', ['$interval', 'CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function ($interval, CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams, socket, mySocket) {
   $scope.doctor = {}
-  User2.logIn({username: Storage.get('phoneNumber'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
+  User.logIn({username: Storage.get('phoneNumber'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
     console.log(data)
     if (data.results.mesg == 'login success!') {
       $scope.doctor.userId = data.results.userId
@@ -945,48 +980,45 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   $scope.uploadcetify = function () {
     if ($scope.doctor.userId && $scope.doctor.certificatePhotoUrl && $scope.doctor.practisingPhotoUrl) {
-      Doctor.editDoctorDetail($scope.doctor)
-            .then(
-                function (data) {
-                  if ($stateParams.last == 'wechatsignin') {
-                    $ionicPopup.show({
-                      title: '感谢您注册肾事联盟，您的微信账号绑定手机号申请已经提交，申请通过后您也可以用手机号登录，初始密码是123456，请耐心等待审核结果',
-                      buttons: [
-                        {
-                          text: '確定',
-                          type: 'button-positive',
-                          onTap: function (e) {
+      Doctor.editDoctorDetail($scope.doctor).then(function (data) {
+        if ($stateParams.last == 'wechatsignin') {
+          $ionicPopup.show({
+            title: '感谢您注册肾事联盟，您的微信账号绑定手机号申请已经提交，申请通过后您也可以用手机号登录，初始密码是123456，请耐心等待审核结果',
+            buttons: [
+              {
+                text: '確定',
+                type: 'button-positive',
+                onTap: function (e) {
                             // alert(Storage.get('UID'))
-                            Doctor.getDoctorInfo({userId: $scope.doctor.userId}).then(function (response) {
-                              thisDoctor = response.results
-                              mySocket.newUser(response.results.userId)
-                            }, function (err) {
-                              thisDoctor = null
-                            })
-                            $state.go('signin')
-                          }
-                        }
-                      ]
-                    })
-                  } else {
-                    $ionicPopup.show({
-                      title: '感谢您注册肾事联盟，您的注册申请已经提交，请耐心等待审核结果',
-                      buttons: [
-                        {
-                          text: '確定',
-                          type: 'button-positive',
-                          onTap: function (e) {
-                            $state.go('signin')
-                          }
-                        }
-                      ]
-                    })
-                  }
-                  // console.log(data)
-                },
-                function (err) {
-                  console.log(err)
+                  Doctor.getDoctorInfo({userId: $scope.doctor.userId}).then(function (response) {
+                    thisDoctor = response.results
+                    mySocket.newUser(response.results.userId)
+                  }, function (err) {
+                    thisDoctor = null
+                  })
+                  $state.go('signin')
                 }
+              }
+            ]
+          })
+        } else {
+          $ionicPopup.show({
+            title: '感谢您注册肾事联盟，您的注册申请已经提交，请耐心等待审核结果',
+            buttons: [
+              {
+                text: '確定',
+                type: 'button-positive',
+                onTap: function (e) {
+                  $state.go('signin')
+                }
+              }
+            ]
+          })
+        }
+                  // console.log(data)
+      }, function (err) {
+        console.log(err)
+      }
             )
     } else {
       $ionicLoading.show({
@@ -3216,7 +3248,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "我”设置内容修改密码页-mzb,zy
-.controller('set-contentCtrl', ['$timeout', '$scope', '$ionicPopup', '$state', '$stateParams', 'Storage', 'User', 'User2', function ($timeout, $scope, $ionicPopup, $state, $stateParams, Storage, User, User2) {
+.controller('set-contentCtrl', ['$timeout', '$scope', '$ionicPopup', '$state', '$stateParams', 'Storage', 'User', function ($timeout, $scope, $ionicPopup, $state, $stateParams, Storage, User) {
   $scope.hideTabs = true
   $scope.type = $stateParams.type
   /**
@@ -3248,7 +3280,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       return
     }
     // 执行密码修改
-    User2.logIn({username: Storage.get('USERNAME'), password: oldPW, role: 'doctor'}).then(function (succ) {
+    User.logIn({username: Storage.get('USERNAME'), password: oldPW, role: 'doctor'}).then(function (succ) {
       // console.log(Storage.get('USERNAME'))
       if (succ.results.mesg == 'login success!') {
         User.changePassword({phoneNo: Storage.get('USERNAME'), password: newPW}).then(function (succ) {

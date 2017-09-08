@@ -428,15 +428,12 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       getAgree: {method: 'GET', params: {route: 'agreement', userId: '@userId'}, timeout: 100000},
       updateAgree: {method: 'POST', params: {route: 'agreement'}, timeout: 100000},
       // getUserIDbyOpenId: {method: 'GET', params: {route: 'getUserIDbyOpenId'}, timeout: 100000},
-      setOpenId: {method: 'POST', params: {route: 'unionid'}, timeout: 100000}
+      setOpenId: {method: 'POST', params: {route: 'unionid'}, timeout: 100000},
+      logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000}
       // One: {method: 'GET', params: {route: 'one'}, timeout: 10000}
     })
   }
-  var User2 = function () {
-    return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'alluser'}, {
-      logIn: {method: 'POST', params: {route: 'login'}, timeout: 100000}
-    })
-  }
+
   var Health = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'healthInfo'}, {
       createHealth: {method: 'POST', params: {route: 'healthInfo', userId: '@userId', type: '@type', time: '@time', url: '@url', label: '@label', description: '@description', comments: '@comments'}, timeout: 100000},
@@ -626,7 +623,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       serve.Communication = Communication()
       serve.MassCommunication = MassCommunication()
       serve.User = User()
-      serve.User2 = User2()
       serve.Mywechat = Mywechat()
       serve.Insurance = Insurance()
       serve.New = New()
@@ -657,7 +653,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   serve.Communication = Communication()
   serve.MassCommunication = MassCommunication()
   serve.User = User()
-  serve.User2 = User2()
   serve.Mywechat = Mywechat()
   serve.Insurance = Insurance()
   serve.New = New()
@@ -1278,6 +1273,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return deferred.promise
   }
 
+  self.logIn = function (params) {
+    var deferred = $q.defer()
+    Data.User.logIn(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
     // params-> username:'doc01'
   // self.One = function (params) {
   //   var deferred = $q.defer()
@@ -1293,23 +1301,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   //   return deferred.promise
   // }
 
-  return self
-}])
-
-.factory('User2', ['$q', 'Data', function ($q, Data) {
-  var self = this
-  self.logIn = function (params) {
-    var deferred = $q.defer()
-    Data.User2.logIn(
-            params,
-            function (data, headers) {
-              deferred.resolve(data)
-            },
-            function (err) {
-              deferred.reject(err)
-            })
-    return deferred.promise
-  }
   return self
 }])
 
