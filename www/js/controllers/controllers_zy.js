@@ -4440,25 +4440,24 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       type: '7',
       description: '医生通过了您的申请,成为您的主管医生！'
     }).then(function (data) {
-      console.log(data.result)
-      Storage.set('MessId', data.newResults.messageId)
+          console.log(data)
+          MessId = data.newResults.message.messageId
+          New.insertNews({
+              sendBy: Storage.get('UID'),
+              userId: Storage.get('getpatientId'),
+              type: 7,
+              readOrNot: '0',
+              description: '医生通过了您的申请！',
+              messageId: MessId,
+              userRole: 'patient'
+                }).then(function (data) {
+                  console.log(data)
+                }, function (err) {
+                  console.log(err)
+          })
     }), function (err) {
       console.log(err)
     }
-
-    New.insertNews({
-      sendBy: Storage.get('UID'),
-      userId: Storage.get('getpatientId'),
-      type: 7,
-      readOrNot: '0',
-      description: '医生通过了您的申请！',
-      messageId: Storage.get('MessId'),
-      userRole: 'patient'
-    }).then(function (data) {
-      console.log(data)
-    }, function (err) {
-      console.log(err)
-    })
 
     $ionicLoading.show({
       template: '审核完成',
@@ -4513,25 +4512,24 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           type: '7',
           description: '医生拒绝了您的申请，理由是：' + reason
         }).then(function (data) {
-          console.log(data.result)
-          Storage.set('MessId', data.newResults.messageId)
+              console.log(data.result)
+              MessId = data.newResults.message.messageId
+              New.insertNews({
+                  sendBy: Storage.get('UID'),
+                  userId: Storage.get('getpatientId'),
+                  type: 7,
+                  readOrNot: '0',
+                  description: '医生拒绝了您的申请，理由是：' + reason,
+                  messageId: MessId,
+                  userRole: 'patient'
+                  }).then(function (data) {
+                     console.log(data)
+                      }, function (err) {
+                         console.log(err)
+                      })
         }), function (err) {
           console.log(err)
         }
-
-        New.insertNews({
-          sendBy: Storage.get('UID'),
-          userId: Storage.get('getpatientId'),
-          type: 7,
-          readOrNot: '0',
-          description: '医生拒绝了您的申请，理由是：' + reason,
-          messageId: Storage.get('MessId'),
-          userRole: 'patient'
-        }).then(function (data) {
-          console.log(data)
-        }, function (err) {
-          console.log(err)
-        })
 
         $ionicLoading.show({
           template: '审核完成',
