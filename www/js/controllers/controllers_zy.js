@@ -4874,6 +4874,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Forum.favorite(param).then(function (data) {
             // console.log(data)
         tip.favoritesstatus = 1
+         $ionicLoading.show({
+          template: '收藏成功', duration: 1000
+        })
       }, function (err) {
         console.log(err)
       })
@@ -4884,6 +4887,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         pagecontrol2 = {skip: 0, limit: 10},
         mycollection = []
         $scope.loadMore2()
+         $ionicLoading.show({
+          template: '取消收藏', duration: 1000
+        })
       }, function (err) {
         console.log(err)
       })
@@ -4908,6 +4914,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           allposts = []
           console.log(allposts)
           $scope.loadMore()
+          $ionicLoading.show({
+          template: '删除成功', duration: 1000
+        })
         }, function (err) {
           console.log(err)
         })
@@ -4999,7 +5008,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       console.log(data)
       if (data.msg == 'success') {
         $ionicLoading.show({
-          template: '提交成功',
+          template: '发帖成功',
           noBackdrop: false,
           duration: 1000,
           hideOnStateChange: true
@@ -5009,7 +5018,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }, function (err) {
       $scope.hasDeliver = false
       $ionicLoading.show({
-        template: '提交失败',
+        template: '发帖失败',
         noBackdrop: false,
         duration: 1000,
         hideOnStateChange: true
