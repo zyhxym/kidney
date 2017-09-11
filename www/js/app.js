@@ -324,6 +324,13 @@ angular.module('kidney', [
       templateUrl: 'partials/others/changeTasks.html',
       controller: 'changeTasksCtrl'
     })
+    // 警报消息
+    .state('patientAlerts', {
+      // cache: false,
+      url: '/patientAlerts',
+      templateUrl: 'partials/others/patientAlerts.html',
+      controller: 'patientAlertsCtrl'
+    })
 
     // 选项卡
     .state('tab', {
@@ -566,6 +573,7 @@ angular.module('kidney', [
     // 患者详情页面
     .state('tab.Report', {
       url: '/Report',
+      cache: false,
       views: {
         'tab-workplace': {
           controller: 'ReportCtrl',
@@ -761,7 +769,7 @@ angular.module('kidney', [
     })
     .state('tab.view-chat', {
         // '0':团队交流  '1': 未结束病历  '2':已结束病历
-      url: '/viewchat/:doctorId/:patientId',
+      url: '/viewchat/:doctorId/:patientId/:groupId/:teamId',
       views: {
         'tab-groups': {
           templateUrl: 'partials/group/view-chat.html',
@@ -859,7 +867,7 @@ angular.module('kidney', [
       }
     })
 
-    //我的账户管理
+    // 我的账户管理
     .state('tab.accountManage', {
         // cache: false,
       url: '/myfee/accountManage',
@@ -1109,7 +1117,7 @@ angular.module('kidney', [
     // 下面的getter可以注入各种服务, service, factory, value, constant, provider等, constant, provider可以直接在.config中注入, 但是前3者不行
   jwtOptionsProvider.config({
     whiteListedDomains: ['docker2.haihonghospitalmanagement.com', '121.196.221.44', '106.15.185.172', 'testpatient.haihonghospitalmanagement.com', 'testdoctor.haihonghospitalmanagement.com', 'patient.haihonghospitalmanagement.com', 'doctor.haihonghospitalmanagement.com', 'localhost'],
-    tokenGetter: ['options', 'jwtHelper', '$http', 'CONFIG', 'Storage', '$state', '$ionicPopup', function (options, jwtHelper, $http, CONFIG, Storage, $state, $ionicPopup) {
+    tokenGetter: ['options', 'jwtHelper', '$http', 'CONFIG', 'Storage', '$state', '$ionicPopup', '$interval', function (options, jwtHelper, $http, CONFIG, Storage, $state, $ionicPopup, $interval) {
          // console.log(config);
         // console.log(CONFIG.baseUrl);
 
@@ -1157,6 +1165,7 @@ angular.module('kidney', [
                  * @param    {[string]}  refreshToken [description]
                  * @return   {[object]}  data.results  [新的token信息]
                  */
+          console.log(options)
           return $http({
             url: CONFIG.baseTwoUrl + 'token/refresh?refresh_token=' + refreshToken,
                     // This makes it so that this request doesn't send the JWT
@@ -1164,16 +1173,21 @@ angular.module('kidney', [
             method: 'GET',
             timeout: 5000
           }).then(function (res) { // $http返回的值不同于$resource, 包含config等对象, 其中数据在res.data中
-                     // console.log(res);
+            console.log(res.status)
+            console.log(res.data)
+            console.log('成功')
                     // sessionStorage.setItem('token', res.data.token);
                     // sessionStorage.setItem('refreshToken', res.data.refreshToken);
             Storage.set('TOKEN', res.data.results.token)
             Storage.set('refreshToken', res.data.results.refreshToken)
             return res.data.results.token
           }, function (err) {
+            console.log('错误')
+            console.log(err.status)
+            console.log(err.data)
             console.log(err)
             if (refreshToken == Storage.get('refreshToken')) {
-                      // console.log("凭证不存在!")
+              // console.log("凭证不存在!")
               console.log(options)
               $ionicPopup.show({
                 title: '您离开太久了，请重新登录',
@@ -1186,6 +1200,18 @@ angular.module('kidney', [
                     text: '確定',
                     type: 'button-positive',
                     onTap: function (e) {
+                      // 清除登陆信息
+                      Storage.rm('password')
+                      // Storage.rm('UID');
+                      Storage.rm('doctorunionid')
+                      Storage.rm('IsSignIn')
+                      // Storage.rm('USERNAME');
+                      Storage.rm('PASSWORD')
+                      Storage.rm('userid')
+                      $interval.cancel(RefreshUnread)
+                      // mySocket.cancelAll()
+                      // socket.emit('disconnect')
+                      // socket.disconnect()
                       $state.go('signin')
                     }
                   }
@@ -1199,6 +1225,7 @@ angular.module('kidney', [
             return null
           })
         } else {
+          console.log('清除refreshtoken')
           Storage.rm('refreshToken')  // 如果是非法refreshToken, 删除之
           return null
         }
