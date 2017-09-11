@@ -4185,46 +4185,46 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       })
     } else {
       $ionicLoading.show({
-        template: '请重新设置排班并填写加号',
+        template: '请重新填写加号',
         duration: 1000
       })
-      services.getStatus({userId: Storage.get('UID')}).then(function (data) {
-      // console.log(data);
-        $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
-      }, function (err) {
-        console.log(err)
-      })
-      services.getSchedules({
-      // token: Storage.get('TOKEN')
-      }).then(function (data) {
-        angular.forEach(data.results.schedules, function (value, key) {
-          console.log('value', value)
-          var index
-          if (value.day == 'Mon') {
-            index = 0
-          } else if (value.day == 'Tue') {
-            index = 1
-          } else if (value.day == 'Wed') {
-            index = 2
-          } else if (value.day == 'Thu') {
-            index = 3
-          } else if (value.day == 'Fri') {
-            index = 4
-          } else if (value.day == 'Sat') {
-            index = 5
-          } else if (value.day == 'Sun') {
-            index = 6
-          }
-          if (value.time == 'Afternoon') { index += 7 }
-          Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
-            $scope.workStatus[index].status = 0
-            $scope.workStatus[index].style = {'background-color': 'white'}
-            $scope.workStatus[index].place = ''
-          }, function (err) {
-            console.log(err)
-          })
-        })
-      })
+      // services.getStatus({userId: Storage.get('UID')}).then(function (data) {
+      // // console.log(data);
+      //   $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
+      // }, function (err) {
+      //   console.log(err)
+      // })
+      // services.getSchedules({
+      // // token: Storage.get('TOKEN')
+      // }).then(function (data) {
+      //   angular.forEach(data.results.schedules, function (value, key) {
+      //     console.log('value', value)
+      //     var index
+      //     if (value.day == 'Mon') {
+      //       index = 0
+      //     } else if (value.day == 'Tue') {
+      //       index = 1
+      //     } else if (value.day == 'Wed') {
+      //       index = 2
+      //     } else if (value.day == 'Thu') {
+      //       index = 3
+      //     } else if (value.day == 'Fri') {
+      //       index = 4
+      //     } else if (value.day == 'Sat') {
+      //       index = 5
+      //     } else if (value.day == 'Sun') {
+      //       index = 6
+      //     }
+      //     if (value.time == 'Afternoon') { index += 7 }
+      //     Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
+      //       $scope.workStatus[index].status = 0
+      //       $scope.workStatus[index].style = {'background-color': 'white'}
+      //       $scope.workStatus[index].place = ''
+      //     }, function (err) {
+      //       console.log(err)
+      //     })
+      //   })
+      // })
     }
   }
 
@@ -4311,7 +4311,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+              } else if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                }, function (err) {
+                  console.log(err)
+                })
                 param.total = parseInt($scope.inp.num)
                 param.place = $scope.inp.pla
                 Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
@@ -4357,17 +4363,112 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              param.place = $scope.inp.pla
-              Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
-                $scope.workStatus[index].status = 1
-                $scope.workStatus[index].style = {'background-color': 'red'}
-                $scope.workStatus[index].place = $scope.inp.pla
-              }, function (err) {
-                console.log(err)
-              })
+              if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
+              } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {         
+                }, function (err) {
+                  console.log(err)
+                })
+                param.place = $scope.inp.pla
+                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  $scope.workStatus[index].status = 1
+                  $scope.workStatus[index].style = {'background-color': 'red'}
+                  $scope.workStatus[index].place = $scope.inp.pla
+                }, function (err) {
+                  console.log(err)
+                })
+              }
             }
           },
           { text: '取消' }
+        ]
+      })
+    } else if ($scope.workStatus[index].status == 1 && $scope.doctorinfo.status5) {
+      text = '请输入加号人数<input type="text" ng-model="inp.num">出诊医院<input type="text" ng-model="inp.pla"> 点击取消修改工作状态'
+
+      $ionicPopup.show({
+        template: text,
+        title: '重新设置面诊信息',
+        scope: $scope,
+        buttons: [
+
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              var numReg = /^\d+$/
+            // 收费正则表达式验证
+              if (!numReg.test($scope.inp.num)) {
+                $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+              } else if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
+              } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                }, function (err) {
+                  console.log(err)
+                })
+                param.total = parseInt($scope.inp.num)
+                param.place = $scope.inp.pla
+                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  // $scope.workStatus[index].status = 1
+                  // $scope.workStatus[index].style = {'background-color': 'red'}
+                  $scope.workStatus[index].place = $scope.inp.pla
+                }, function (err) {
+                  console.log(err)
+                })
+                if (!param.total == 0) {
+                // console.log('param',param)
+                  services.setSchedules(param).then(function (data) {
+                      // console.log(data)
+                    $scope.workStatus[index].number = $scope.inp.num
+                  }, function (err) {
+                    console.log(err)
+                  })
+                } else {
+                  services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                      // console.log(data)
+                    console.log('param', param)
+                    $scope.workStatus[index].number = 0
+                  }, function (err) {
+                    console.log(err)
+                  })
+                }
+              }
+            }
+          },
+          { text: '取消' ,
+            type: 'button-default',
+            onTap: function (e) {
+                $ionicPopup.show({
+                  template: '此时间段将更改为空闲状态！',
+                  title: '修改工作状态',
+                  scope: $scope,
+                  buttons: [
+                    {
+                      text: '<b>确定</b>',
+                      type: 'button-positive',
+                      onTap: function (e) {
+                        Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                          $scope.workStatus[index].status = 0
+                          $scope.workStatus[index].style = {'background-color': 'white'}
+                          $scope.workStatus[index].place = ''
+                        }, function (err) {
+                          console.log(err)
+                        })
+
+                        services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                          $scope.workStatus[index].number = 0
+                        }, function (err) {
+                          console.log(err)
+                        })
+                      }
+                    },
+                    { text: '取消' }
+                  ]
+                })
+             }
+          }
         ]
       })
     } else {
