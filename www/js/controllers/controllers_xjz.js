@@ -544,7 +544,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
+.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient2', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient2, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
   if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
 
   $scope.input = {
@@ -617,7 +617,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     } else {
       $scope.params.title = '咨询'
       $scope.params.targetRole = 'patient'
-      Patient.getPatientDetail({ userId: $state.params.chatId })
+      Patient2.getPatientDetail({ userId: $state.params.chatId })
                 .then(function (data) {
                   $scope.params.targetName = data.results.name
                   $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -2790,6 +2790,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   $scope.$on('$ionicView.beforeEnter', function () {
     Doctor.getDoctorInfo({ userId: $state.params.memberId })
             .then(function (data) {
+              console.log(data)
               $scope.doctor = data.results
             })
     $scope.isme = $state.params.memberId == Storage.get('UID')
@@ -2801,7 +2802,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @DateTime 2017-07-05
  * 20170904 与回复界面合并 zyh
  */
-.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicLoading', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient', '$q', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicLoading, voice, CONFIG, Communication, Doctor, Patient, $q, Storage, Account, socket, mySocket, Counsel, Mywechat) {
+.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicLoading', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient2', '$q', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', 'arrTool', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicLoading, voice, CONFIG, Communication, Doctor, Patient2, $q, Storage, Account, socket, mySocket, Counsel, Mywechat, arrTool) {
   $scope.photoUrls = {}
   $scope.input = {
     text: ''
@@ -2845,7 +2846,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.params.msgCount = 0
     console.log($scope.params)
         // 获取头像
-    Patient.getPatientDetail({ userId: $scope.params.chatId })
+    Patient2.getPatientDetail({ userId: $scope.params.chatId })
             .then(function (data) {
               if (data.results.name) $scope.params.patientName = '-' + data.results.name
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -2860,7 +2861,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             })
     Communication.getTeam({ teamId: $scope.params.teamId })
                 .then(function (data) {
-                  Doctor.getDoctorInfo({userId: id})
+                  Doctor.getDoctorInfo({userId: data.sponsorId})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })
