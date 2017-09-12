@@ -1,7 +1,9 @@
 angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 登录-zy,zxf
+
 .controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', 'Patient', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, Patient, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
+
   $scope.barwidth = 'width:0%'
   // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
@@ -245,7 +247,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         // alert(persondata.headimgurl)
         Storage.set('wechatheadimgurl', persondata.results.headimgurl)
         $scope.unionid = persondata.results.unionid
-        // alert($scope.unionid)
+        alert($scope.unionid)
         User.getUserId({username: $scope.unionid}).then(function (ret) {
           // alert(JSON.stringify(ret))
           // 用户已经存在id 说明公众号注册过
@@ -264,7 +266,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             ionicLoadingshow()
             // alert(1)
             User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
+
               // alert(JSON.stringify(data))
+
               if (data.results.mesg == 'login success!') {
                 // alert(2)
                 Storage.set('isSignIn', 'Yes')
@@ -333,7 +337,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 手机号码验证-zy,zxf
+
 .controller('phonevalidCtrl', ['$scope', '$state', '$interval', '$stateParams', 'Storage', 'User', 'Patient', '$timeout', '$ionicLoading', function ($scope, $state, $interval, $stateParams, Storage, User, Patient, $timeout, $ionicLoading) {
+
   $scope.barwidth = 'width:0%'
   $scope.Verify = {Phone: '', Code: ''}
   $scope.veritext = '获取验证码'
@@ -551,6 +557,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.logStatus = '验证成功！'
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
+
               // alert(Storage.get('phoneNumber') + '已同意 未绑定 ')
               if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
                 // alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
@@ -577,6 +584,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                         // alert(JSON.stringify(data))
                         if (data.results.mesg == 'login success!') {
                           // alert(JSON.stringify(data) + '登录去首页')
+
                           Storage.set('isSignIn', 'Yes')
                           Storage.set('UID', data.results.userId)// 后续页面必要uid
                           Storage.set('TOKEN', data.results.token)
@@ -598,16 +606,20 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                         }
                       })
                     })
+
                     // alert(1)
                   } else { // 导入用户
                     // alert(JSON.stringify(data) + '未同意 导入用户 ')
+
                     $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
                   }
                 }, function (err) {
                   console.log(err)
                 })
               } else {
+
                 // alert(JSON.stringify(succ) + '不存在 微信注册')
+
                 $timeout(function () { $state.go('agreement', {last: 'wechatsignin'}) }, 500)
               }
             } else if (validMode == 0) {
@@ -680,7 +692,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           //         reject(err);
           //     })
           // // };
+
           // alert(JSON.stringify(data) + '导入用户 同意协议')
+
           $ionicPopup.show({
             title: '微信账号绑定手机账号成功，您的初始密码是123456，您以后也可以用手机号码登录！',
             buttons: [
@@ -689,7 +703,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 type: 'button-positive',
                 onTap: function (e) {
                   User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
+
                     // alert(JSON.stringify(data) + '直接登录')
+
                     if (data.results.mesg == 'login success!') {
                       // alert(2)
                       Storage.set('isSignIn', 'Yes')
@@ -720,7 +736,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         console.log(err)
       })
     } else if ($stateParams.last == 'wechatsignin') {
+
       // alert('微信注册 同意协议')
+
       $timeout(function () { $state.go('userdetail', {last: 'wechatsignin'}) }, 500)
     } else if ($stateParams.last == 'signin') {
       // 由登录时跳转到签署协议，针对老注册用户，同意协议后跳转到首页
@@ -966,6 +984,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
           // zxf
           if ($stateParams.last == 'wechatsignin') {
+
             // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
             Patient.replacePhoto({'patientId': Storage.get('UID'), 'wechatPhotoUrl': Storage.get('wechatheadimgurl')}).then(function (data) {
               // alert(JSON.stringify(data))
@@ -974,6 +993,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               // alert('imageerror'+JSON.stringify(err))
               console.log(err)
             })
+
             User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
               Storage.set('bindingsucc', 'yes')
               $state.go('uploadcertificate', {last: 'wechatsignin'})
@@ -1025,7 +1045,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 text: '確定',
                 type: 'button-positive',
                 onTap: function (e) {
+
                   // alert(Storage.get('UID'))
+
                   Doctor.getDoctorInfo({userId: $scope.doctor.userId}).then(function (response) {
                     thisDoctor = response.results
                     mySocket.newUser(response.results.userId)
@@ -1033,6 +1055,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                     thisDoctor = null
                   })
                   $state.go('signin')
+
                 }
               }
             ]
@@ -1046,10 +1069,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 type: 'button-positive',
                 onTap: function (e) {
                   $state.go('signin')
+
                 }
               }
             ]
           })
+
         }
                   // console.log(data)
       }, function (err) {
@@ -4976,32 +5001,28 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     item: ''
   }
 
+  $scope.scrollHandle = $ionicScrollDelegate.$getByHandle('myContentScroll')
+
 // 点亮全部帖子标签 显示全部帖子
   $scope.Showallposts = function () {
     $scope.params.allposts = true
     $scope.params.myposts = false
     $scope.params.mycollection = false
-    pagecontrol = {skip: 0, limit: 10},
-    allposts = []
-    $scope.loadMore()
+    $scope.scrollHandle.scrollTop(false)
   }
   // 点亮我的帖子标签 显示我的帖子
   $scope.Showmyposts = function () {
     $scope.params.allposts = false
     $scope.params.myposts = true
     $scope.params.mycollection = false
-    pagecontrol1 = {skip: 0, limit: 10},
-    myposts = []
-    $scope.loadMore1()
+    $scope.scrollHandle.scrollTop(false)
   }
   // 点亮我的收藏标签 显示我的收藏
   $scope.Showmycollection = function () {
     $scope.params.allposts = false
     $scope.params.myposts = false
     $scope.params.mycollection = true
-    pagecontrol2 = {skip: 0, limit: 10},
-    mycollection = []
-    $scope.loadMore2()
+    $scope.scrollHandle.scrollTop(false)
   }
 /**
    * [获取该患者三种帖子列表]
@@ -5049,6 +5070,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 
   $scope.loadMore2 = function () {
+    console.log()
     Forum.mycollection({token: Storage.get('TOKEN'), skip: pagecontrol2.skip, limit: pagecontrol2.limit}).then(function (data) {
       console.log(data)
       $scope.$broadcast('scroll.infiniteScrollComplete')
