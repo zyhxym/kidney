@@ -1,7 +1,7 @@
 angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 登录-zy,zxf
-.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
+.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', 'Patient', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, Patient, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
   $scope.barwidth = 'width:0%'
   // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
@@ -250,6 +250,17 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           // alert(JSON.stringify(ret))
           // 用户已经存在id 说明公众号注册过
           if (ret.results == 0 && ret.roles.indexOf('doctor') != -1) { // 直接登录
+            // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
+            if (Storage.get('wechatheadimgurl')) {
+              // alert("image"+ret.AlluserId+Storage.get('wechatheadimgurl'));
+              Patient.replacePhoto({patientId: ret.AlluserId, wechatPhotoUrl: Storage.get('wechatheadimgurl')}).then(function (data) {
+                // alert(JSON.stringify(data))
+                Storage.rm('wechatheadimgurl')
+              }, function (err) {
+                // alert('imageerror'+JSON.stringify(err))
+                console.log(err)
+              })
+            }
             ionicLoadingshow()
             // alert(1)
             User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
@@ -322,7 +333,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 手机号码验证-zy,zxf
-.controller('phonevalidCtrl', ['$scope', '$state', '$interval', '$stateParams', 'Storage', 'User', '$timeout', '$ionicLoading', function ($scope, $state, $interval, $stateParams, Storage, User, $timeout, $ionicLoading) {
+.controller('phonevalidCtrl', ['$scope', '$state', '$interval', '$stateParams', 'Storage', 'User', 'Patient', '$timeout', '$ionicLoading', function ($scope, $state, $interval, $stateParams, Storage, User, Patient, $timeout, $ionicLoading) {
   $scope.barwidth = 'width:0%'
   $scope.Verify = {Phone: '', Code: ''}
   $scope.veritext = '获取验证码'
@@ -546,6 +557,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 User.getAgree({userId: Storage.get('UID')}).then(function (data) {
                   if (data.results != null && data.results.agreement == '0') {   // 已通过协议为已注册用户
                     // alert(JSON.stringify(data) + '已同意 未绑定 ')
+                    // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
+                    Patient.replacePhoto({'patientId': Storage.get('UID'), 'wechatPhotoUrl': Storage.get('wechatheadimgurl')}).then(function (data) {
+                      // alert(JSON.stringify(data))
+                      Storage.rm('wechatheadimgurl')
+                    }, function (err) {
+                      // alert('imageerror'+JSON.stringify(err))
+                      console.log(err)
+                    })
                     User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
                       Storage.set('bindingsucc', 'yes')
                       // alert(JSON.stringify(response) + '绑定好')
@@ -579,7 +598,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                         }
                       })
                     })
-
                     // alert(1)
                   } else { // 导入用户
                     // alert(JSON.stringify(data) + '未同意 导入用户 ')
@@ -612,7 +630,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 签署协议（0为签署）-zy
-.controller('AgreeCtrl', ['User', '$stateParams', '$scope', '$timeout', '$state', 'Storage', '$ionicHistory', '$http', 'Data', '$ionicPopup', 'Camera', 'CONFIG', function (User, $stateParams, $scope, $timeout, $state, Storage, $ionicHistory, $http, Data, $ionicPopup, Camera, CONFIG) {
+.controller('AgreeCtrl', ['User', 'Patient', '$stateParams', '$scope', '$timeout', '$state', 'Storage', '$ionicHistory', '$http', 'Data', '$ionicPopup', 'Camera', 'CONFIG', function (User, Patient, $stateParams, $scope, $timeout, $state, Storage, $ionicHistory, $http, Data, $ionicPopup, Camera, CONFIG) {
   /**
    * [签署协议]
    * @Author   ZY
@@ -633,7 +651,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
             Storage.set('bindingsucc', 'yes')
           })
-
+          // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
+          Patient.replacePhoto({'patientId': Storage.get('UID'), 'wechatPhotoUrl': Storage.get('wechatheadimgurl')}).then(function (data) {
+            // alert(JSON.stringify(data))
+            Storage.rm('wechatheadimgurl')
+          }, function (err) {
+            // alert('imageerror'+JSON.stringify(err))
+            console.log(err)
+          })
           // // var photo_upload_display = function(imgURI){
           // // 给照片的名字加上时间戳
           //     var temp_photoaddress = Storage.get("UID") + "_" +  "doctor.photoUrl.jpg";
@@ -777,7 +802,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 注册时填写医生个人信息-zy,mzb
-.controller('userdetailCtrl', ['CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', function (CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams) {
+.controller('userdetailCtrl', ['CONFIG', 'Dict', 'Doctor', 'Patient', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', function (CONFIG, Dict, Doctor, Patient, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams) {
   $scope.barwidth = 'width:0%'
   var phoneNumber = Storage.get('RegisterNO')
   var password = Storage.get('password')
@@ -941,6 +966,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
           // zxf
           if ($stateParams.last == 'wechatsignin') {
+            // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
+            Patient.replacePhoto({'patientId': Storage.get('UID'), 'wechatPhotoUrl': Storage.get('wechatheadimgurl')}).then(function (data) {
+              // alert(JSON.stringify(data))
+              Storage.rm('wechatheadimgurl')
+            }, function (err) {
+              // alert('imageerror'+JSON.stringify(err))
+              console.log(err)
+            })
             User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
               Storage.set('bindingsucc', 'yes')
               $state.go('uploadcertificate', {last: 'wechatsignin'})
@@ -4311,10 +4344,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-              } else if ($scope.inp.pla =='') {
+              } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
                 }, function (err) {
                   console.log(err)
                 })
@@ -4363,10 +4396,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              if ($scope.inp.pla =='') {
+              if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {         
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
                 }, function (err) {
                   console.log(err)
                 })
@@ -4401,10 +4434,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
-              } else if ($scope.inp.pla =='') {
+              } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
                 }, function (err) {
                   console.log(err)
                 })
@@ -4437,37 +4470,37 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               }
             }
           },
-          { text: '取消' ,
+          { text: '取消',
             type: 'button-default',
             onTap: function (e) {
-                $ionicPopup.show({
-                  template: '此时间段将更改为空闲状态！',
-                  title: '修改工作状态',
-                  scope: $scope,
-                  buttons: [
-                    {
-                      text: '<b>确定</b>',
-                      type: 'button-positive',
-                      onTap: function (e) {
-                        Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                          $scope.workStatus[index].status = 0
-                          $scope.workStatus[index].style = {'background-color': 'white'}
-                          $scope.workStatus[index].place = ''
-                        }, function (err) {
-                          console.log(err)
-                        })
+              $ionicPopup.show({
+                template: '此时间段将更改为空闲状态！',
+                title: '修改工作状态',
+                scope: $scope,
+                buttons: [
+                  {
+                    text: '<b>确定</b>',
+                    type: 'button-positive',
+                    onTap: function (e) {
+                      Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                        $scope.workStatus[index].status = 0
+                        $scope.workStatus[index].style = {'background-color': 'white'}
+                        $scope.workStatus[index].place = ''
+                      }, function (err) {
+                        console.log(err)
+                      })
 
-                        services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
-                          $scope.workStatus[index].number = 0
-                        }, function (err) {
-                          console.log(err)
-                        })
-                      }
-                    },
+                      services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                        $scope.workStatus[index].number = 0
+                      }, function (err) {
+                        console.log(err)
+                      })
+                    }
+                  },
                     { text: '取消' }
-                  ]
-                })
-             }
+                ]
+              })
+            }
           }
         ]
       })
@@ -5051,7 +5084,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Forum.favorite(param).then(function (data) {
             // console.log(data)
         tip.favoritesstatus = 1
-         $ionicLoading.show({
+        $ionicLoading.show({
           template: '收藏成功', duration: 1000
         })
       }, function (err) {
@@ -5064,7 +5097,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         pagecontrol2 = {skip: 0, limit: 10},
         mycollection = []
         $scope.loadMore2()
-         $ionicLoading.show({
+        $ionicLoading.show({
           template: '取消收藏', duration: 1000
         })
       }, function (err) {
@@ -5092,8 +5125,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           console.log(allposts)
           $scope.loadMore()
           $ionicLoading.show({
-          template: '删除成功', duration: 1000
-        })
+            template: '删除成功', duration: 1000
+          })
         }, function (err) {
           console.log(err)
         })
