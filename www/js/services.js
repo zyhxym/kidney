@@ -343,7 +343,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'dict'}, {
       // getDiseaseType: {method: 'GET', params: {route: 'typeTwo'}, timeout: 100000},
       getDistrict: {method: 'GET', params: {route: 'district'}, timeout: 100000},
-      getHospital: {method: 'GET', params: {route: 'hospital'}, timeout: 100000},
+      getHospital: {method: 'GET', skipAuthorization: true, params: {route: 'hospital'}, timeout: 100000},
       getHeathLabelInfo: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000}
       // typeOne: {method: 'GET', params: {route: 'typeOne'}, timeout: 100000}
     })
@@ -397,7 +397,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var Doctor = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
-      postDocBasic: {method: 'POST', params: {route: 'detail'}, timeout: 100000},
+      postDocBasic: {method: 'POST', skipAuthorization: true, params: {route: 'detail'}, timeout: 100000},
       // getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
       getDoctorInfo: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       getMyGroupList: {method: 'GET', params: {route: 'myTeams'}, timeout: 100000},
@@ -419,7 +419,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var User = function () {
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'alluser'}, {
-      register: {method: 'POST', params: {route: 'register', phoneNo: '@phoneNo', password: '@password', role: '@role'}, timeout: 100000},
+      register: {method: 'POST', skipAuthorization: true, params: {route: 'register', phoneNo: '@phoneNo', password: '@password', role: '@role'}, timeout: 100000},
       changePassword: {method: 'POST', params: {route: 'reset', phoneNo: '@phoneNo', password: '@password'}, timeout: 100000},
       // logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000},
       logOut: {method: 'POST', params: {route: 'logout', userId: '@userId'}, timeout: 100000},
@@ -541,7 +541,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 
   var version = function () {
     return $resource(CONFIG.baseTwoUrl + ':path', {path: 'version'}, {
-      getVersion: {method: 'GET', params: {}, timeout: 100000}
+      getVersion: {method: 'GET', skipAuthorization: true, params: {}, timeout: 100000}
     })
   }
 

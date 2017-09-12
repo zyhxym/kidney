@@ -567,7 +567,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                       console.log(err)
                     })
 
-                    User.setMessageOpenId({type: 1, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1医生，2患者
+                    User.setMessageOpenId({type: 3, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1医生，2患者
                       // console.log(succ)
                     }, function (err) {
                       console.log(err)
@@ -659,7 +659,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
        */
       User.updateAgree({userId: Storage.get('UID'), agreement: '0'}).then(function (data) {
         if (data.results != null) {
-          User.setMessageOpenId({type: 1, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1医生，2患者
+          User.setMessageOpenId({type: 3, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1doctorWechat，2patientWechat，3doctorApp，4patientApp
             // console.log(succ)
           }, function (err) {
             console.log(err)
@@ -994,7 +994,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               // alert('imageerror'+JSON.stringify(err))
               console.log(err)
             })
-            User.setMessageOpenId({type: 1, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1医生，2患者
+            User.setMessageOpenId({type: 3, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) {
               // console.log(succ)
             }, function (err) {
               console.log(err)
