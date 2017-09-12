@@ -387,6 +387,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       // getPatientDetail: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       // getMyDoctors: {method: 'GET', params: {route: 'myDoctors'}, timeout: 10000},
       getDoctorLists: {method: 'GET', params: {route: 'doctors'}, timeout: 10000},
+      replacePhoto: {method: 'POST', params: {route: 'wechatPhotoUrl'}, timeout: 10000},
       // getCounselRecords: {method: 'GET', params: {route: 'counselRecords'}, timeout: 10000},
       insertDiagnosis: {method: 'POST', params: {route: 'diagnosis'}, timeout: 10000}
       // newPatientDetail: {method: 'POST', params: {route: 'detail'}, timeout: 10000},
@@ -1589,6 +1590,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return deferred.promise
   }
 
+  self.replacePhoto = function (params) {
+    var deferred = $q.defer()
+    Data.Patient.replacePhoto(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
     // params->0:{userId:'p01'}
   // self.getCounselRecords = function (params) {
   //   var deferred = $q.defer()
@@ -2527,7 +2541,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
           // alert(JSON.stringify(VersionParams));
 
       getVersion(VersionParams).then(function (data) {
-            // alert(JSON.stringify(data.results));
+         // alert(JSON.stringify(data.results));
         if (angular.isArray(data.results.msg)) {
           json.title = '肾事联盟有更新啦'
           for (x in data.results.msg) {
