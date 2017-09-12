@@ -131,12 +131,13 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
      * @param    userId: string; readOrNot(0为未读): number;  userRole: string
      * @return   data.results.length(有未读消息首页信箱标注小红点)
      */
-    New.getNewsByReadOrNot({userId: Storage.get('UID'), readOrNot: 0, userRole: 'doctor'}).then(function (data) {
-      // console.log(data);
+    New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
+      console.log(data)
       if (data.results.length) {
         for (i = 0; i < data.results.length; i++) {
-          if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 2 || data.results[i].type == 'chat') {
+          if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 2 || data.results[i].type == 11 || data.results[i].type == 12 || data.results[i].type == 13 || data.results[i].type == 15) {
             $scope.hasUnreadMessages = true
+            console.log(data.results)
             break
           }
         }

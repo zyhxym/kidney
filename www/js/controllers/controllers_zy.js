@@ -245,7 +245,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         // alert(persondata.headimgurl)
         Storage.set('wechatheadimgurl', persondata.results.headimgurl)
         $scope.unionid = persondata.results.unionid
-        alert($scope.unionid)
+        // alert($scope.unionid)
         User.getUserId({username: $scope.unionid}).then(function (ret) {
           // alert(JSON.stringify(ret))
           // 用户已经存在id 说明公众号注册过
@@ -253,7 +253,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             ionicLoadingshow()
             // alert(1)
             User.logIn({username: $scope.unionid, password: '112233', role: 'doctor'}).then(function (data) {
-              alert(JSON.stringify(data))
+              // alert(JSON.stringify(data))
               if (data.results.mesg == 'login success!') {
                 // alert(2)
                 Storage.set('isSignIn', 'Yes')
@@ -540,24 +540,24 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.logStatus = '验证成功！'
             Storage.set('phoneNumber', Verify.Phone)
             if ($stateParams.last == 'wechatsignin') {
-              alert(Storage.get('phoneNumber') + '已同意 未绑定 ')
+              // alert(Storage.get('phoneNumber') + '已同意 未绑定 ')
               if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
-                alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
+                // alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
                 User.getAgree({userId: Storage.get('UID')}).then(function (data) {
                   if (data.results != null && data.results.agreement == '0') {   // 已通过协议为已注册用户
-                    alert(JSON.stringify(data) + '已同意 未绑定 ')
+                    // alert(JSON.stringify(data) + '已同意 未绑定 ')
                     User.setOpenId({phoneNo: Storage.get('phoneNumber'), openId: Storage.get('doctorunionid')}).then(function (response) {
                       Storage.set('bindingsucc', 'yes')
-                      alert(JSON.stringify(response) + '绑定好')
+                      // alert(JSON.stringify(response) + '绑定好')
                       // $ionicLoading.show({
                       //   template: '登录中...'
                       // })
-                      alert('unionid：' + $scope.unionid)
-                      alert(Storage.get('doctorunionid'))
+                      // alert('unionid：' + $scope.unionid)
+                      // alert(Storage.get('doctorunionid'))
                       User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
-                        alert(JSON.stringify(data))
+                        // alert(JSON.stringify(data))
                         if (data.results.mesg == 'login success!') {
-                          alert(JSON.stringify(data) + '登录去首页')
+                          // alert(JSON.stringify(data) + '登录去首页')
                           Storage.set('isSignIn', 'Yes')
                           Storage.set('UID', data.results.userId)// 后续页面必要uid
                           Storage.set('TOKEN', data.results.token)
@@ -582,14 +582,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
                     // alert(1)
                   } else { // 导入用户
-                    alert(JSON.stringify(data) + '未同意 导入用户 ')
+                    // alert(JSON.stringify(data) + '未同意 导入用户 ')
                     $timeout(function () { $state.go('agreement', {last: 'wechatimport'}) }, 500)
                   }
                 }, function (err) {
                   console.log(err)
                 })
               } else {
-                alert(JSON.stringify(succ) + '不存在 微信注册')
+                // alert(JSON.stringify(succ) + '不存在 微信注册')
                 $timeout(function () { $state.go('agreement', {last: 'wechatsignin'}) }, 500)
               }
             } else if (validMode == 0) {
@@ -655,7 +655,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           //         reject(err);
           //     })
           // // };
-          alert(JSON.stringify(data) + '导入用户 同意协议')
+          // alert(JSON.stringify(data) + '导入用户 同意协议')
           $ionicPopup.show({
             title: '微信账号绑定手机账号成功，您的初始密码是123456，您以后也可以用手机号码登录！',
             buttons: [
@@ -664,7 +664,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 type: 'button-positive',
                 onTap: function (e) {
                   User.logIn({username: Storage.get('doctorunionid'), password: '112233', role: 'doctor'}).then(function (data) {
-                    alert(JSON.stringify(data) + '直接登录')
+                    // alert(JSON.stringify(data) + '直接登录')
                     if (data.results.mesg == 'login success!') {
                       // alert(2)
                       Storage.set('isSignIn', 'Yes')
@@ -695,7 +695,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         console.log(err)
       })
     } else if ($stateParams.last == 'wechatsignin') {
-      alert('微信注册 同意协议')
+      // alert('微信注册 同意协议')
       $timeout(function () { $state.go('userdetail', {last: 'wechatsignin'}) }, 500)
     } else if ($stateParams.last == 'signin') {
       // 由登录时跳转到签署协议，针对老注册用户，同意协议后跳转到首页
@@ -992,7 +992,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 text: '確定',
                 type: 'button-positive',
                 onTap: function (e) {
-                            // alert(Storage.get('UID'))
+                  // alert(Storage.get('UID'))
                   Doctor.getDoctorInfo({userId: $scope.doctor.userId}).then(function (response) {
                     thisDoctor = response.results
                     mySocket.newUser(response.results.userId)
@@ -4185,46 +4185,46 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       })
     } else {
       $ionicLoading.show({
-        template: '请重新设置排班并填写加号',
+        template: '请重新填写加号',
         duration: 1000
       })
-      services.getStatus({userId: Storage.get('UID')}).then(function (data) {
-      // console.log(data);
-        $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
-      }, function (err) {
-        console.log(err)
-      })
-      services.getSchedules({
-      // token: Storage.get('TOKEN')
-      }).then(function (data) {
-        angular.forEach(data.results.schedules, function (value, key) {
-          console.log('value', value)
-          var index
-          if (value.day == 'Mon') {
-            index = 0
-          } else if (value.day == 'Tue') {
-            index = 1
-          } else if (value.day == 'Wed') {
-            index = 2
-          } else if (value.day == 'Thu') {
-            index = 3
-          } else if (value.day == 'Fri') {
-            index = 4
-          } else if (value.day == 'Sat') {
-            index = 5
-          } else if (value.day == 'Sun') {
-            index = 6
-          }
-          if (value.time == 'Afternoon') { index += 7 }
-          Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
-            $scope.workStatus[index].status = 0
-            $scope.workStatus[index].style = {'background-color': 'white'}
-            $scope.workStatus[index].place = ''
-          }, function (err) {
-            console.log(err)
-          })
-        })
-      })
+      // services.getStatus({userId: Storage.get('UID')}).then(function (data) {
+      // // console.log(data);
+      //   $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
+      // }, function (err) {
+      //   console.log(err)
+      // })
+      // services.getSchedules({
+      // // token: Storage.get('TOKEN')
+      // }).then(function (data) {
+      //   angular.forEach(data.results.schedules, function (value, key) {
+      //     console.log('value', value)
+      //     var index
+      //     if (value.day == 'Mon') {
+      //       index = 0
+      //     } else if (value.day == 'Tue') {
+      //       index = 1
+      //     } else if (value.day == 'Wed') {
+      //       index = 2
+      //     } else if (value.day == 'Thu') {
+      //       index = 3
+      //     } else if (value.day == 'Fri') {
+      //       index = 4
+      //     } else if (value.day == 'Sat') {
+      //       index = 5
+      //     } else if (value.day == 'Sun') {
+      //       index = 6
+      //     }
+      //     if (value.time == 'Afternoon') { index += 7 }
+      //     Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
+      //       $scope.workStatus[index].status = 0
+      //       $scope.workStatus[index].style = {'background-color': 'white'}
+      //       $scope.workStatus[index].place = ''
+      //     }, function (err) {
+      //       console.log(err)
+      //     })
+      //   })
+      // })
     }
   }
 
@@ -4311,7 +4311,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+              } else if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                }, function (err) {
+                  console.log(err)
+                })
                 param.total = parseInt($scope.inp.num)
                 param.place = $scope.inp.pla
                 Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
@@ -4357,17 +4363,112 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              param.place = $scope.inp.pla
-              Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
-                $scope.workStatus[index].status = 1
-                $scope.workStatus[index].style = {'background-color': 'red'}
-                $scope.workStatus[index].place = $scope.inp.pla
-              }, function (err) {
-                console.log(err)
-              })
+              if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
+              } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {         
+                }, function (err) {
+                  console.log(err)
+                })
+                param.place = $scope.inp.pla
+                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  $scope.workStatus[index].status = 1
+                  $scope.workStatus[index].style = {'background-color': 'red'}
+                  $scope.workStatus[index].place = $scope.inp.pla
+                }, function (err) {
+                  console.log(err)
+                })
+              }
             }
           },
           { text: '取消' }
+        ]
+      })
+    } else if ($scope.workStatus[index].status == 1 && $scope.doctorinfo.status5) {
+      text = '请输入加号人数<input type="text" ng-model="inp.num">出诊医院<input type="text" ng-model="inp.pla"> 点击取消修改工作状态'
+
+      $ionicPopup.show({
+        template: text,
+        title: '重新设置面诊信息',
+        scope: $scope,
+        buttons: [
+
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              var numReg = /^\d+$/
+            // 收费正则表达式验证
+              if (!numReg.test($scope.inp.num)) {
+                $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
+              } else if ($scope.inp.pla =='') {
+                $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
+              } else {
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {           
+                }, function (err) {
+                  console.log(err)
+                })
+                param.total = parseInt($scope.inp.num)
+                param.place = $scope.inp.pla
+                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  // $scope.workStatus[index].status = 1
+                  // $scope.workStatus[index].style = {'background-color': 'red'}
+                  $scope.workStatus[index].place = $scope.inp.pla
+                }, function (err) {
+                  console.log(err)
+                })
+                if (!param.total == 0) {
+                // console.log('param',param)
+                  services.setSchedules(param).then(function (data) {
+                      // console.log(data)
+                    $scope.workStatus[index].number = $scope.inp.num
+                  }, function (err) {
+                    console.log(err)
+                  })
+                } else {
+                  services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                      // console.log(data)
+                    console.log('param', param)
+                    $scope.workStatus[index].number = 0
+                  }, function (err) {
+                    console.log(err)
+                  })
+                }
+              }
+            }
+          },
+          { text: '取消' ,
+            type: 'button-default',
+            onTap: function (e) {
+                $ionicPopup.show({
+                  template: '此时间段将更改为空闲状态！',
+                  title: '修改工作状态',
+                  scope: $scope,
+                  buttons: [
+                    {
+                      text: '<b>确定</b>',
+                      type: 'button-positive',
+                      onTap: function (e) {
+                        Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                          $scope.workStatus[index].status = 0
+                          $scope.workStatus[index].style = {'background-color': 'white'}
+                          $scope.workStatus[index].place = ''
+                        }, function (err) {
+                          console.log(err)
+                        })
+
+                        services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                          $scope.workStatus[index].number = 0
+                        }, function (err) {
+                          console.log(err)
+                        })
+                      }
+                    },
+                    { text: '取消' }
+                  ]
+                })
+             }
+          }
         ]
       })
     } else {
