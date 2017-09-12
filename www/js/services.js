@@ -430,6 +430,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
       updateAgree: {method: 'POST', params: {route: 'agreement'}, timeout: 100000},
       // getUserIDbyOpenId: {method: 'GET', params: {route: 'getUserIDbyOpenId'}, timeout: 100000},
       setOpenId: {method: 'POST', params: {route: 'unionid'}, timeout: 100000},
+      setMessageOpenId: {method: 'POST', params: {route: 'openId'}, timeout: 100000},
       logIn: {method: 'POST', skipAuthorization: true, params: {route: 'login'}, timeout: 100000}
       // One: {method: 'GET', params: {route: 'one'}, timeout: 10000}
     })
@@ -1264,6 +1265,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.setOpenId = function (params) {
     var deferred = $q.defer()
     Data.User.setOpenId(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.setMessageOpenId = function (params) {
+    var deferred = $q.defer()
+    Data.User.setMessageOpenId(
             params,
             function (data, headers) {
               deferred.resolve(data)
