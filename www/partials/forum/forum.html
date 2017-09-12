@@ -17,10 +17,10 @@
             </a>
     </div>
 
-  <ion-content> 
+  <ion-content delegate-handle="myContentScroll"> 
 
     <div ng-if="params.allposts" class="list">
-      <div class="bar bar-header item-input-inset" style="height:40px;padding:30;margin-top:39px;">
+      <div class="bar bar-header item-input-inset" style="height:40px;padding:30;margin-top:40px;">
             <div class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon f-24"></i>
                 <input type="search" ng-model="search.title" placeholder="请输入搜索帖子主题" ng-change="goSearch()">
@@ -60,8 +60,7 @@
       </div>  
       <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
     </div>
-      
-
+  
     <div ng-if="params.myposts" class="list" style="margin-top: 38px;">
 
       <div ng-repeat="item in posts1">
@@ -94,6 +93,7 @@
       </div>  
       <ion-infinite-scroll ng-if="moredata1" on-infinite="loadMore1()" distance="1%"></ion-infinite-scroll>
     </div>
+   
     <div ng-if="params.mycollection" class="list" style="margin-top: 38px;">
 
         <div ng-repeat="item in posts2">
@@ -128,7 +128,6 @@
       </div>  
       <ion-infinite-scroll ng-if="moredata2" on-infinite="loadMore2()" distance="1%"></ion-infinite-scroll>
     </div>
-     
   </ion-content>
         
 </ion-view>
