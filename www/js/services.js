@@ -2527,7 +2527,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
           // alert(JSON.stringify(VersionParams));
 
       getVersion(VersionParams).then(function (data) {
-            // alert(JSON.stringify(data.results));
+         // alert(JSON.stringify(data.results));
         if (angular.isArray(data.results.msg)) {
           json.title = '肾事联盟有更新啦'
           for (x in data.results.msg) {

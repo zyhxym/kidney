@@ -1849,14 +1849,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 })
     } else if ($scope.params.type == '1') { // 进行中
       getConsultation()
-      $scope.params.newsType = $scope.params.teamId
+      $scope.params.newsType = '15'
       $scope.params.hidePanel = true
       $scope.params.title = '病历'
       $scope.params.isDiscuss = true
     } else if ($scope.params.type == '2') { // 已处理
       getConsultation()
-
-      $scope.params.newsType = $scope.params.teamId
+      $scope.params.newsType = 15
       $scope.params.hidePanel = false
       $scope.params.title = '病历'
       $scope.params.isDiscuss = true
@@ -1873,7 +1872,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1 })
+        return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1, caseType: $scope.params.teamId})
       }
     })
     imgModalInit()
@@ -1908,7 +1907,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      New.insertNews({userId: $scope.params.UID, sendBy: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1})
+      New.insertNews({userId: $scope.params.UID, sendBy: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, caseType: $scope.params.teamId})
     }
   })
   $scope.$on('im:messageRes', function (event, data) {
