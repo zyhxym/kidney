@@ -544,7 +544,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
+.controller('detailCtrl', ['$ionicPlatform', '$scope', '$state', '$rootScope', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicPopover', '$ionicPopup', 'Camera', 'voice', '$http', 'CONFIG', 'arrTool', 'Communication', 'Counsel', 'Storage', 'Doctor', 'Patient2', '$q', 'New', 'Mywechat', 'Account', 'socket', 'notify', '$timeout', '$ionicLoading', function ($ionicPlatform, $scope, $state, $rootScope, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicPopover, $ionicPopup, Camera, voice, $http, CONFIG, arrTool, Communication, Counsel, Storage, Doctor, Patient2, $q, New, Mywechat, Account, socket, notify, $timeout, $ionicLoading) {
   if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
 
   $scope.input = {
@@ -617,7 +617,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     } else {
       $scope.params.title = '咨询'
       $scope.params.targetRole = 'patient'
-      Patient.getPatientDetail({ userId: $state.params.chatId })
+      Patient2.getPatientDetail({ userId: $state.params.chatId })
                 .then(function (data) {
                   $scope.params.targetName = data.results.name
                   $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -635,12 +635,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                   Account.getCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
                         .then(function (res) {
                           if ($scope.params.loaded) {
-                            return sendNotice($scope.counseltype, $scope.counselstatus, res.result.count)
+                            return sendNotice($scope.params.counseltype, $scope.counselstatus, res.result.count)
                           } else {
                             var connectWatcher = $scope.$watch('params.loaded', function (newv, oldv) {
                               if (newv) {
                                 connectWatcher()
-                                return sendNotice($scope.counseltype, $scope.counselstatus, res.result.count)
+                                return sendNotice($scope.params.counseltype, $scope.counselstatus, res.result.count)
                               }
                             })
                           }
@@ -730,12 +730,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       }
       if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'urgent') {
         $scope.$apply(function () {
-          $scope.counseltype = '6'
+          $scope.params.counseltype = '6'
         })
         $scope.counselstatus = 1
       } else if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'consult') {
         $scope.$apply(function () {
-          $scope.counseltype = '2'
+          $scope.params.counseltype = '2'
         })
         $scope.counselstatus = 1
       }
@@ -758,7 +758,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      if ($scope.counselstatus == 1 && ($scope.counseltype == 1 || $scope.counseltype == 6 || $scope.counseltype == 7) && !(data.msg.contentType == 'custom' && data.msg.content.type == 'count-notice')) {
+      if ($scope.counselstatus == 1 && ($scope.params.counseltype == 1 || $scope.params.counseltype == 6 || $scope.params.counseltype == 7) && !(data.msg.contentType == 'custom' && data.msg.content.type == 'count-notice')) {
         Account.modifyCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId, modify: '-1' })
                     .then(function () {
                       Account.getCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
@@ -766,7 +766,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                               if (data.result.count <= 0) {
                                 $scope.counselstatus = 0
                                 $scope.params.title = '咨询'
-                                endCounsel($scope.counseltype)
+                                endCounsel($scope.params.counseltype)
                               }
                             })
                     })
@@ -779,6 +779,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    */
   function sendNotice (type, status, cnt) {
+    console.log(type, status, cnt)
         // var t = setTimeout(function(){
     return sendCnNotice(type, status, cnt)
         // },500);
@@ -843,7 +844,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         count: cnt,
         bodyDoc: bodyDoc,
         bodyPat: bodyPat,
-        counseltype: $scope.counseltype
+        counseltype: $scope.params.counseltype
       }
       var msgJson = {
         clientType: 'doctor',
@@ -1545,9 +1546,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
                     .then(function (data) {
                       console.log(data)
-                        // $scope.members1=data.results;
                       $scope.members = $scope.members2.concat(data.results)
-                      console.log($scope.members1)
                     })
               if ($scope.team.sponsorId == Storage.get('UID')) $scope.ismyteam = true
               else $scope.ismyteam = false
@@ -1572,6 +1571,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}          [description]
    */
   $scope.viewProfile = function (member) {
+    console.log(member)
     $state.go('tab.group-profile', {memberId: member.userId})
   }
   /**
@@ -1651,7 +1651,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('GroupAddMemberCtrl', ['$scope', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG', function ($scope, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG) {
+.controller('GroupAddMemberCtrl', ['$scope', 'Storage', '$state', '$ionicHistory', 'arrTool', 'Communication', '$ionicLoading', '$rootScope', 'Patient', 'CONFIG', function ($scope, Storage, $state, $ionicHistory, arrTool, Communication, $ionicLoading, $rootScope, Patient, CONFIG) {
   $scope.searchStyle = {'margin-top': '44px'}
   if (ionic.Platform.isIOS()) {
     $scope.searchStyle = {'margin-top': '64px'}
@@ -1670,6 +1670,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   $scope.doctors = []
   $scope.alldoctors = []
   $scope.skipnum = 0
+  $scope.myid = Storage.get('UID')
   /**
    * 刷新
    * @Author   xjz
@@ -2787,8 +2788,10 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $state.go('tab.detail', { type: '2', chatId: $state.params.memberId })
   }
   $scope.$on('$ionicView.beforeEnter', function () {
+    console.log($state.params.memberId)
     Doctor.getDoctorInfo({ userId: $state.params.memberId })
             .then(function (data) {
+              console.log(data)
               $scope.doctor = data.results
             })
     $scope.isme = $state.params.memberId == Storage.get('UID')
@@ -2800,7 +2803,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @DateTime 2017-07-05
  * 20170904 与回复界面合并 zyh
  */
-.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicLoading', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient', '$q', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicLoading, voice, CONFIG, Communication, Doctor, Patient, $q, Storage, Account, socket, mySocket, Counsel, Mywechat) {
+.controller('viewChatCtrl', ['$scope', '$state', '$ionicModal', '$ionicScrollDelegate', '$ionicHistory', '$ionicLoading', 'voice', 'CONFIG', 'Communication', 'Doctor', 'Patient2', '$q', 'Storage', 'Account', 'socket', 'mySocket', 'Counsel', 'Mywechat', 'arrTool', function ($scope, $state, $ionicModal, $ionicScrollDelegate, $ionicHistory, $ionicLoading, voice, CONFIG, Communication, Doctor, Patient2, $q, Storage, Account, socket, mySocket, Counsel, Mywechat, arrTool) {
   $scope.photoUrls = {}
   $scope.input = {
     text: ''
@@ -2844,7 +2847,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $scope.params.msgCount = 0
     console.log($scope.params)
         // 获取头像
-    Patient.getPatientDetail({ userId: $scope.params.chatId })
+    Patient2.getPatientDetail({ userId: $scope.params.chatId })
             .then(function (data) {
               if (data.results.name) $scope.params.patientName = '-' + data.results.name
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -2859,7 +2862,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             })
     Communication.getTeam({ teamId: $scope.params.teamId })
                 .then(function (data) {
-                  Doctor.getDoctorInfo({userId: id})
+                  Doctor.getDoctorInfo({userId: data.sponsorId})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })
@@ -2960,8 +2963,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     toBottom(true, 600)
     setTimeout(function () {
       var pos = arrTool.indexOf($scope.msgs, 'createTimeInMillis', msg.createTimeInMillis)
-      if (pos != -1 && $scope.msgs[pos].status == 'send_going') $scope.msgs[pos].status = 'send_fail'
-    }, 10000)
+      if (pos != -1 && $scope.msgs[pos].status == 'send_going') $scope.msgs[pos].status = 'send_success'
+    }, 1000)
   }
 
 /**
