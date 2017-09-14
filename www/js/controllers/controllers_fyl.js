@@ -11,19 +11,16 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   }
   // 获取最新的消息
   var GetLatest = function () {
-    New.getNews({userId: Storage.get('UID'), token: Storage.get('TOKEN'), userRole: 'doctor'}).then(//
-            function (data) {
-              console.log(data)
-              if (data.results[0] == undefined) {
-                document.getElementById('newMes').innerText = '最新消息：无'
-              } else {
-                document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
-              }
-            }, function (err) {
-      console.log(err)
+    New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
+      console.log(data)
+      if (data.results[0] == undefined) {
+        document.getElementById('newMes').innerText = '最新消息：没有最新消息！'
+      } else {
+        document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+      }
+    }, function (err) {
     })
   }
-  // GetLatest()
 
   // 获取各项任务数量
   var GetNum = function () {
@@ -218,6 +215,90 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('dprelation') == 'follow') {
     $scope.follow = true
   }
+
+  var ShowTime = function(){
+    var date = new Date()
+    var modify = $scope.modify
+    var timeType = $scope.type
+    if(modify==0){
+      if(timeType=="week"){
+        document.getElementById('middle').innerText = "本周"
+      }else if(timeType=="month"){
+        document.getElementById('middle').innerText = "本月"
+      }else if(timeType=="season"){
+        document.getElementById('middle').innerText = "本季"
+      }else if(timeType=="year"){
+        document.getElementById('middle').innerText = "本年"
+      }
+    }else {
+    //周
+    if(timeType=="week"){
+        getPatientData.ReportData({time: date, type: 'Measure', patientId: patientId, code: 'Temperature', showType: $scope.type, modify: $scope.modify}).then(
+          function(data){
+            if(data.results=="不存在该段时间的报告!"){
+              var week1 = data.startTime
+              var week2 = data.endTime
+              week1 = week1.substring(0,10)
+              week2 = week2.substring(0,10)
+              document.getElementById('middle').innerText = week1+" "+week2
+            }else{
+              var week1 = data.results.startTime
+              var week2 = data.results.endTime
+              week1 = week1.substring(0,10)
+              week2 = week2.substring(0,10)
+              document.getElementById('middle').innerText = week1+" "+week2
+            }},function(err){
+          })
+    }
+    //月
+    else if(timeType=="month"){
+        getPatientData.ReportData({time: date, type: 'Measure', patientId: patientId, code: 'Temperature', showType: $scope.type, modify: $scope.modify}).then(
+          function(data){
+            if(data.results=="不存在该段时间的报告!"){
+                var month = data.time
+                   month1 = month.substring(0,4)
+                   month2 = month.substring(4,6)
+                  document.getElementById('middle').innerText = month1+"年"+month2+"月"
+               }else{
+                  var month = data.results.item.time
+                   month1 = month.substring(0,4)
+                   month2 = month.substring(4,6)
+                  document.getElementById('middle').innerText = month1+"年"+month2+"月"
+                  }},function(err){
+          })
+    }
+    //季
+    else if(timeType=="season"){
+        getPatientData.ReportData({time: date, type: 'Measure', patientId: patientId, code: 'Temperature', showType: $scope.type, modify: $scope.modify}).then(
+          function(data){
+           if(data.results=="不存在该段时间的报告!"){
+                  var season = data.time
+                   season1 = season.substring(0,4)
+                   season2 = season.substring(5,6)
+                   document.getElementById('middle').innerText = season1+"年第"+season2+"季"
+               }else{
+                  var season = data.results.item.time
+                   season1 = season.substring(0,4)
+                   season2 = season.substring(5,6)
+                   document.getElementById('middle').innerText = season1+"年第"+season2+"季"
+            }},function(err){
+          })
+    }
+    //年
+    else if(timeType=="year"){
+        getPatientData.ReportData({time: date, type: 'Measure', patientId: patientId, code: 'Temperature', showType: $scope.type, modify: $scope.modify}).then(
+          function(data){
+           if(data.results=="不存在该段时间的报告!"){
+                var year = data.time
+                document.getElementById('middle').innerText = year+"年"
+               }else{
+            var year = data.results.item.time
+            document.getElementById('middle').innerText = year+"年"
+          }},function(err){
+          })
+    }}
+  }
+
   $scope.toWeekReports = function () {
     $scope.modify = 0
     $scope.writeReport = true
@@ -226,6 +307,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.type = 'week'; $scope.typeC = '周'
     document.getElementById($scope.type).style.backgroundColor = '#6ac4f8'
     document.getElementById($scope.type).style.color = '#FFFFFF'
+    ShowTime()
     healthyCurve()
   }
 
@@ -237,6 +319,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.type = 'month'; $scope.typeC = '月'
     document.getElementById($scope.type).style.backgroundColor = '#6ac4f8'
     document.getElementById($scope.type).style.color = '#FFFFFF'
+    ShowTime()
     healthyCurve()
   }
 
@@ -248,6 +331,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.type = 'season'; $scope.typeC = '季度'
     document.getElementById($scope.type).style.backgroundColor = '#6ac4f8'
     document.getElementById($scope.type).style.color = '#FFFFFF'
+    ShowTime()
     healthyCurve()
   }
 
@@ -259,6 +343,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     $scope.type = 'year'; $scope.typeC = '年度'
     document.getElementById($scope.type).style.backgroundColor = '#6ac4f8'
     document.getElementById($scope.type).style.color = '#FFFFFF'
+    ShowTime()
     healthyCurve()
   }
 
@@ -266,12 +351,14 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     console.log($scope.modify)
     $scope.modify -= 1
     $scope.writeReport = true
+    ShowTime()
     healthyCurve()
   }
   $scope.next = function () {
     console.log($scope.modify)
     $scope.modify += 1
     $scope.writeReport = true
+    ShowTime()
     healthyCurve()
   }
 
@@ -1450,7 +1537,13 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       })
     } else {
       getPatientData.SaveReport({patientId: patientId, time: $scope.Temp.time, type: $scope.type, data: data}).then(
-        function (data) {},
+        function (data) {
+          $ionicLoading.show({
+          template: '提交成功',
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        },
         function (err) {})
     }
     $scope.MeasureData = 'MeasureData'
