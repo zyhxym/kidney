@@ -45,7 +45,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     var time = new Date()
     $scope.team.teamId = $filter('date')(time, 'ssmsssH')
     $scope.team.sponsorId = Storage.get('UID')
-    Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
+    Doctor.doctor({ userId: $scope.team.sponsorId })
             .then(function (data) {
               $scope.team.sponsorName = data.results.name
               Communication.newTeam($scope.team)
@@ -100,7 +100,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
               if (data.results == null) {
                 $scope.noteam = 1
-                $ionicLoading.show({ template: '查无此群', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到该群', duration: 1000 })
               } else { $scope.teamresult = data }
             }, function (err) {
               console.log(err)
@@ -184,7 +184,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               console.log(data.results)
               $scope.doctors = data.results
               if (data.results.length == 0) {
-                $ionicLoading.show({ template: '查无此人', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到医生', duration: 1000 })
               }
             }, function (err) {
               console.log(err)
@@ -518,7 +518,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     confirmPopup.then(function (res) {
       if (res) {
-        Doctor.getDoctorInfo({ userId: Storage.get('UID') })
+        Doctor.doctor({ userId: Storage.get('UID') })
                     .then(function (data) {
                       $scope.me[0].userId = data.results.userId
                       $scope.me[0].name = data.results.name
@@ -609,7 +609,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     if ($scope.params.type == '2') {
       $scope.params.title = '医生交流'
       $scope.params.targetRole = 'doctor'
-      Doctor.getDoctorInfo({ userId: $scope.params.chatId })
+      Doctor.doctor({ userId: $scope.params.chatId })
                 .then(function (data) {
                   $scope.params.targetName = data.results.name
                   $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -656,7 +656,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, userRole: $scope.params.type == '2' ? 'doctor' : 'patient', readOrNot: 1 })
+        return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
       }
     })
   })
@@ -666,7 +666,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $rootScope.conversation.type = 'single'
       $rootScope.conversation.id = $state.params.chatId
     }
-    Doctor.getDoctorInfo({ userId: $scope.params.UID })
+    Doctor.doctor({ userId: $scope.params.UID })
             .then(function (response) {
               thisDoctor = response.results
               $scope.photoUrls[response.results.userId] = response.results.photoUrl
@@ -739,7 +739,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         })
         $scope.counselstatus = 1
       }
-      New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, userRole: $scope.params.type == '2' ? 'doctor' : 'patient', readOrNot: 1 })
+      New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
     }
   })
   /**
@@ -1518,7 +1518,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.stopRec()
   }
   /**
-   * 进团队聊天页面
+   * 返回按钮
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}
@@ -1527,9 +1527,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $ionicHistory.nextViewOptions({
       disableBack: true
     })
-    if ($state.params.type == '1') $state.go('tab.doing')
-    else if ($state.params.type == '0') $state.go('tab.did')
-    else $state.go('tab.groups', { type: '1' })
+    if ($ionicHistory.backView().title == '消息中心')$ionicHistory.goBack()
+    else {
+      if ($state.params.type == '1') $state.go('tab.doing')
+      else if ($state.params.type == '0') $state.go('tab.did')
+      else $state.go('tab.groups', { type: '1' })
+    }
   }
 }])
 /**
@@ -1543,7 +1546,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             .then(function (data) {
               $scope.team = data.results
               $scope.members2 = data.results.members
-              Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
+              Doctor.doctor({ userId: $scope.team.sponsorId })
                     .then(function (data) {
                       console.log(data)
                       $scope.members = $scope.members2.concat(data.results)
@@ -1720,7 +1723,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               console.log(data.results)
               $scope.doctors = data.results
               if (data.results.length == 0) {
-                $ionicLoading.show({ template: '查无此人', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到医生', duration: 1000 })
               }
             }, function (err) {
               console.log(err)
@@ -1830,7 +1833,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       notify.remove($scope.params.groupId)
     } catch (e) {}
 
-    Doctor.getDoctorInfo({userId: Storage.get('UID')})
+    Doctor.doctor({userId: Storage.get('UID')})
             .then(function (data) {
               thisDoctor = data.results
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -1873,7 +1876,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1, caseType: $scope.params.teamId})
+        return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
       }
     })
     imgModalInit()
@@ -1908,7 +1911,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      New.insertNews({userId: $scope.params.UID, sendBy: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, caseType: $scope.params.teamId})
+      New.insertNews({userId: $scope.params.UID, sendBy: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
     }
   })
   $scope.$on('im:messageRes', function (event, data) {
@@ -1958,7 +1961,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   }
   function getSponsor (id) {
-    Doctor.getDoctorInfo({userId: id})
+    Doctor.doctor({userId: id})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })
@@ -2335,14 +2338,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}
    */
   $scope.goChats = function () {
-    console.log($ionicHistory)
-    console.log($scope.params)
+    // console.log($ionicHistory)
+    // console.log($scope.params)
 
     $ionicHistory.nextViewOptions({
       disableBack: true
     })
-    if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
-    else $state.go('tab.group-patient', { teamId: $scope.params.teamId })
+    if ($ionicHistory.backView().title == '消息中心')$ionicHistory.goBack()
+    else {
+      if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
+      else $state.go('tab.group-patient', { teamId: $scope.params.teamId })
+    }
   }
   /**
    * 去病历结论页面
@@ -2789,7 +2795,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   }
   $scope.$on('$ionicView.beforeEnter', function () {
     console.log($state.params.memberId)
-    Doctor.getDoctorInfo({ userId: $state.params.memberId })
+    Doctor.doctor({ userId: $state.params.memberId })
             .then(function (data) {
               console.log(data)
               $scope.doctor = data.results
@@ -2852,17 +2858,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               if (data.results.name) $scope.params.patientName = '-' + data.results.name
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
             })
-    Doctor.getDoctorInfo({ userId: $scope.params.doctorId })
+    Doctor.doctor({ userId: $scope.params.doctorId })
             .then(function (response) {
               $scope.photoUrls[response.results.userId] = response.results.photoUrl
             })
-    Doctor.getDoctorInfo({ userId: Storage.get('UID') })
+    Doctor.doctor({ userId: Storage.get('UID') })
             .then(function (response) {
               $scope.myname = response.results.name
             })
     Communication.getTeam({ teamId: $scope.params.teamId })
                 .then(function (data) {
-                  Doctor.getDoctorInfo({userId: data.sponsorId})
+                  Doctor.doctor({userId: data.sponsorId})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })
