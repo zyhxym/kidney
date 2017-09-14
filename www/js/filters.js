@@ -186,10 +186,10 @@ angular.module('kidney.filters', [])
     var g = '未知'
     if (type == 1) { g = '咨询' }
     if (type == 2) { g = '问诊' }
-    if (type == 3) { g = '咨询升级问诊' }
-    if (type == 2) { g = '主管医生' }
-    if (type == 2) { g = '面诊' }
-    if (type == 2) { g = '加急咨询' }
+    if (type == 6) { g = '咨询升级问诊' }
+    if (type == 4) { g = '主管医生' }
+    if (type == 5) { g = '面诊' }
+    if (type == 3) { g = '加急咨询' }
     return g
   }
 }])
