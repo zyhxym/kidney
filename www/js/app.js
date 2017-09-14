@@ -477,7 +477,7 @@ angular.module('kidney', [
     })
     // 我的预约
     .state('tab.myreserve', {
-        // cache: false,
+      cache: false,
       url: '/myreserve',
       views: {
         'tab-workplace': {
