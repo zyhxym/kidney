@@ -4109,6 +4109,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       template: '主管医生'
     })
   }
+
+  $scope.illustration5 = function () {
+    var alertPopup = $ionicPopup.alert({
+      title: '面诊服务',
+      template: '面诊服务'
+    })
+  }
 }])
 
 // 是否转发页面
@@ -5374,6 +5381,30 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }, function (err) {
       console.log(err)
     })
+  }
+
+   $scope.refresher1 = function () {
+    pagecontrol = {skip: 0, limit: 10},
+    allposts = []
+    $scope.loadMore()
+    // RefreshDiagnosisInfo()
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  $scope.refresher2 = function () {
+    pagecontrol1 = {skip: 0, limit: 10},
+    myposts = []
+    $scope.loadMore1()
+    // RefreshDiagnosisInfo()
+    $scope.$broadcast('scroll.refreshComplete')
+  }
+
+  $scope.refresher3 = function () {
+    pagecontrol2 = {skip: 0, limit: 10},
+    mycollection = []
+    $scope.loadMore2()
+    // RefreshDiagnosisInfo()
+    $scope.$broadcast('scroll.refreshComplete')
   }
 
   $scope.myStyle = [
