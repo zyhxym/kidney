@@ -1540,7 +1540,13 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       })
     } else {
       getPatientData.SaveReport({patientId: patientId, time: $scope.Temp.time, type: $scope.type, data: data}).then(
-        function (data) {},
+        function (data) {
+          $ionicLoading.show({
+          template: '提交成功',
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        },
         function (err) {})
     }
     $scope.MeasureData = 'MeasureData'
