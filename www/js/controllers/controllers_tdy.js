@@ -1518,9 +1518,9 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    * @return   查看或删除特定健康信息
    */
   $scope.gotoHealthDetail=function(ele,editId){
-    //console.log(ele)
-    //console.log(editId)
-    //console.log(ele.target)
+    // console.log(ele)
+    // console.log(editId)
+    // console.log(ele.target.nodeName)
     if(ele.target.nodeName=="I"){
       var confirmPopup = $ionicPopup.confirm({
       title: '删除提示',
@@ -2254,15 +2254,15 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     else if(mes.type==14){
         $state.go('nocomess')
     }
-    else if(chat.type==15){
-        getCChatDetail(chat)
-    }     
     else if(mes.type==9){
         $state.go('changeTasks')
     }    
     else if(mes.type==2){
         $state.go('patientAlerts')
-    }            
+    }    
+    else if(mes.type==15){
+        getCChatDetail(chat)
+    }         
   }
 }])
 

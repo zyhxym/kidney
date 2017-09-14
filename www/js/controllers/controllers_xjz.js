@@ -100,7 +100,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
               if (data.results == null) {
                 $scope.noteam = 1
-                $ionicLoading.show({ template: '查无此群', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到该群', duration: 1000 })
               } else { $scope.teamresult = data }
             }, function (err) {
               console.log(err)
@@ -184,7 +184,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               console.log(data.results)
               $scope.doctors = data.results
               if (data.results.length == 0) {
-                $ionicLoading.show({ template: '查无此人', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到医生', duration: 1000 })
               }
             }, function (err) {
               console.log(err)
@@ -1723,7 +1723,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               console.log(data.results)
               $scope.doctors = data.results
               if (data.results.length == 0) {
-                $ionicLoading.show({ template: '查无此人', duration: 1000 })
+                $ionicLoading.show({ template: '没有搜索到医生', duration: 1000 })
               }
             }, function (err) {
               console.log(err)
