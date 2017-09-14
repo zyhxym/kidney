@@ -662,6 +662,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
 
   $scope.$on('$ionicView.enter', function () {
+    // 非ios平台不需要keyboard-attach directive
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     if ($rootScope.conversation) {
       $rootScope.conversation.type = 'single'
       $rootScope.conversation.id = $state.params.chatId
@@ -1782,7 +1784,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @DateTime 2017-07-05
  */
 .controller('GroupChatCtrl', ['$ionicPlatform', '$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication', 'Storage', 'Doctor', '$q', 'CONFIG', 'arrTool', 'New', 'socket', 'notify', '$timeout', function ($ionicPlatform, $scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicLoading, $ionicPopup, Camera, voice, Communication, Storage, Doctor, $q, CONFIG, arrTool, New, socket, notify, $timeout) {
-  if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
+  if ($ionicPlatform.is('ios'))cordova.plugins.Keyboard.disableScroll(true)
+
   $scope.itemStyle = {'position': 'absolute', 'top': '44px', 'width': '100%', 'margin': '0', 'min-height': '35vh', 'max-height': '55vh', 'overflow-y': 'scroll'}
   if (ionic.Platform.isIOS()) {
     $scope.itemStyle = {'position': 'absolute', 'top': '64px', 'width': '100%', 'margin': '0', 'min-height': '35vh', 'max-height': '55vh', 'overflow-y': 'scroll'}
@@ -1867,6 +1870,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   })
   $scope.$on('$ionicView.enter', function () {
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
+    console.log(document.getElementById('inputbar'))
     console.log($scope.photoUrls)
     $rootScope.conversation.type = 'group'
     $rootScope.conversation.id = $scope.params.groupId
@@ -2892,6 +2897,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
 
   $scope.$on('$ionicView.enter', function () {
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     imgModalInit()
   })
 
