@@ -5,7 +5,8 @@
 	<img class="avatar" ng-src="{{photourls[msg.fromID] || 'img/DefaultAvatar.jpg'}}" ng-click="emitEvent('profile',msg)"/>
 	<!-- chat bubble -->
 	<div>
-        <div ng-if="msg.fromID!=me" class="msg-name">{{msg.fromName}}</div>
+        <!-- <div ng-if="msg.fromID!=me" class="msg-name">{{msg.concluderName || msg.fromName}}</div> -->
+        <div class="msg-name">{{msg.concluderName || msg.fromName}}</div>
 		<div class="msg-body" on-hold="emitEvent('holdmsg',msg.createTimeInMillis,$event)">
 			<!-- text content -->
 			<div class="media-contact">
