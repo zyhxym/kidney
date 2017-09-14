@@ -1518,7 +1518,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.stopRec()
   }
   /**
-   * 进团队聊天页面
+   * 返回按钮
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}
@@ -1527,9 +1527,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $ionicHistory.nextViewOptions({
       disableBack: true
     })
-    if ($state.params.type == '1') $state.go('tab.doing')
-    else if ($state.params.type == '0') $state.go('tab.did')
-    else $state.go('tab.groups', { type: '1' })
+    if ($ionicHistory.backView().title == '消息中心')$ionicHistory.goBack()
+    else {
+      if ($state.params.type == '1') $state.go('tab.doing')
+      else if ($state.params.type == '0') $state.go('tab.did')
+      else $state.go('tab.groups', { type: '1' })
+    }
   }
 }])
 /**
@@ -2335,14 +2338,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}
    */
   $scope.goChats = function () {
-    console.log($ionicHistory)
-    console.log($scope.params)
+    // console.log($ionicHistory)
+    // console.log($scope.params)
 
     $ionicHistory.nextViewOptions({
       disableBack: true
     })
-    if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
-    else $state.go('tab.group-patient', { teamId: $scope.params.teamId })
+    if ($ionicHistory.backView().title == '消息中心')$ionicHistory.goBack()
+    else {
+      if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
+      else $state.go('tab.group-patient', { teamId: $scope.params.teamId })
+    }
   }
   /**
    * 去病历结论页面
