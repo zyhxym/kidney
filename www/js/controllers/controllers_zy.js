@@ -2343,7 +2343,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "我”页-zy,mzb,zxf
-.controller('meCtrl', ['$ionicActionSheet', 'CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', '$ionicPopup', function ($ionicActionSheet, CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, $ionicPopup) {
+.controller('meCtrl', ['$ionicActionSheet', 'CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', '$ionicPopup', 'User', function ($ionicActionSheet, CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, $ionicPopup, User) {
   $scope.barwidth = 'width:0%'
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
@@ -2408,6 +2408,19 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
   }
 
+  // 获取用户角色
+  $scope.master = false
+  User.getUserId({
+    username: Storage.get('UID')
+  }).then(function (data) {
+    // console.log(data)
+    if (data.results == 0 && data.roles.indexOf('master') != -1) {
+      $scope.master = true
+    }
+  }, function (err) {
+    console.log(err)
+  })
+  // 获取医生信息
   Doctor.getDoctorInfo({
     // token: Storage.get('TOKEN')
   }).then(function (data) {
