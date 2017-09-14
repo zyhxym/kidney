@@ -2072,7 +2072,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
    * @return   doctor.Name; doctor.Photo
    */
   var getDocNamePhoto = function(sender,doctor){
-    Doctor.getDoctorInfo({userId:sender}).then(function(data){
+    Doctor.doctor({userId:sender}).then(function(data){
       if(data.results){
         //console.log(data.results)
         if(data.results.photoUrl){

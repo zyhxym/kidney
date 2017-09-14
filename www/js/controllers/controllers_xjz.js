@@ -45,7 +45,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     var time = new Date()
     $scope.team.teamId = $filter('date')(time, 'ssmsssH')
     $scope.team.sponsorId = Storage.get('UID')
-    Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
+    Doctor.doctor({ userId: $scope.team.sponsorId })
             .then(function (data) {
               $scope.team.sponsorName = data.results.name
               Communication.newTeam($scope.team)
@@ -518,7 +518,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     confirmPopup.then(function (res) {
       if (res) {
-        Doctor.getDoctorInfo({ userId: Storage.get('UID') })
+        Doctor.doctor({ userId: Storage.get('UID') })
                     .then(function (data) {
                       $scope.me[0].userId = data.results.userId
                       $scope.me[0].name = data.results.name
@@ -609,7 +609,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     if ($scope.params.type == '2') {
       $scope.params.title = '医生交流'
       $scope.params.targetRole = 'doctor'
-      Doctor.getDoctorInfo({ userId: $scope.params.chatId })
+      Doctor.doctor({ userId: $scope.params.chatId })
                 .then(function (data) {
                   $scope.params.targetName = data.results.name
                   $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -666,7 +666,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $rootScope.conversation.type = 'single'
       $rootScope.conversation.id = $state.params.chatId
     }
-    Doctor.getDoctorInfo({ userId: $scope.params.UID })
+    Doctor.doctor({ userId: $scope.params.UID })
             .then(function (response) {
               thisDoctor = response.results
               $scope.photoUrls[response.results.userId] = response.results.photoUrl
@@ -1546,7 +1546,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             .then(function (data) {
               $scope.team = data.results
               $scope.members2 = data.results.members
-              Doctor.getDoctorInfo({ userId: $scope.team.sponsorId })
+              Doctor.doctor({ userId: $scope.team.sponsorId })
                     .then(function (data) {
                       console.log(data)
                       $scope.members = $scope.members2.concat(data.results)
@@ -1833,7 +1833,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       notify.remove($scope.params.groupId)
     } catch (e) {}
 
-    Doctor.getDoctorInfo({userId: Storage.get('UID')})
+    Doctor.doctor({userId: Storage.get('UID')})
             .then(function (data) {
               thisDoctor = data.results
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
@@ -1961,7 +1961,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   }
   function getSponsor (id) {
-    Doctor.getDoctorInfo({userId: id})
+    Doctor.doctor({userId: id})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })
@@ -2795,7 +2795,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   }
   $scope.$on('$ionicView.beforeEnter', function () {
     console.log($state.params.memberId)
-    Doctor.getDoctorInfo({ userId: $state.params.memberId })
+    Doctor.doctor({ userId: $state.params.memberId })
             .then(function (data) {
               console.log(data)
               $scope.doctor = data.results
@@ -2858,17 +2858,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               if (data.results.name) $scope.params.patientName = '-' + data.results.name
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
             })
-    Doctor.getDoctorInfo({ userId: $scope.params.doctorId })
+    Doctor.doctor({ userId: $scope.params.doctorId })
             .then(function (response) {
               $scope.photoUrls[response.results.userId] = response.results.photoUrl
             })
-    Doctor.getDoctorInfo({ userId: Storage.get('UID') })
+    Doctor.doctor({ userId: Storage.get('UID') })
             .then(function (response) {
               $scope.myname = response.results.name
             })
     Communication.getTeam({ teamId: $scope.params.teamId })
                 .then(function (data) {
-                  Doctor.getDoctorInfo({userId: data.sponsorId})
+                  Doctor.doctor({userId: data.sponsorId})
             .then(function (sponsor) {
               $scope.photoUrls[sponsor.results.userId] = sponsor.results.photoUrl
             })

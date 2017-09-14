@@ -399,6 +399,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'doctor'}, {
       postDocBasic: {method: 'POST', skipAuthorization: true, params: {route: 'detail'}, timeout: 100000},
       // getPatientList: {method: 'GET', params: {route: 'myPatients'}, timeout: 100000},
+      doctor: {method: 'GET', params: {route: 'doctor'}, timeout: 100000},
       getDoctorInfo: {method: 'GET', params: {route: 'detail'}, timeout: 100000},
       getMyGroupList: {method: 'GET', params: {route: 'myTeams'}, timeout: 100000},
       getGroupPatientList: {method: 'GET', params: {route: 'teamPatients'}, timeout: 100000},
@@ -1758,6 +1759,20 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     // params->0:{
            //   userId:'doc01'
            // }
+    // 这个可以获取别人的信息
+  self.doctor = function (params) {
+    var deferred = $q.defer()
+    Data.Doctor.doctor(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+    // 只能获取自己的信息
   self.getDoctorInfo = function (params) {
     var deferred = $q.defer()
     Data.Doctor.getDoctorInfo(
