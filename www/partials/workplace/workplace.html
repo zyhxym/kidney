@@ -13,12 +13,13 @@
                 <div class="me-edit-btn" style="text-align: center; position: absolute; margin-left: 5px; margin-top: 65px;" ng-if="!review"><a href="#/tab/myinfo">立即认证</a></div>          
             <div class="me-massage">
                 <p class="f16 m-b5 fc-2b" style="text-align: center; margin-left: 5px; margin-top: -10px;" ng-if="!review">{{doctor.name}}</p>
+                <p class="f16 m-b5 fc-2b" style="text-align: center; margin-left: 5px; margin-top: -25px;" ng-if="review">{{doctor.name}}</p>
             </div>
         </div>
     </div>
 
-    <div class="me-mun bg-wite mt-10">
-           <a class="item col-100 ion-volume-high" id="newMes" style="border-right:0px;" ></a>
+    <div class="me-mun1 bg-wite mt-10 scroll-left" style="height: 40px;">
+           <p class="ion-volume-high" id="newMes" style="border-right:0px;" ></p>
     </div>
 
     <div class="me-mun2 bg-wite mt-10">

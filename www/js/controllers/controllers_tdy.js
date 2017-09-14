@@ -2254,15 +2254,15 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     else if(mes.type==14){
         $state.go('nocomess')
     }
-    else if(chat.type==15){
-        getCChatDetail(chat)
-    }     
     else if(mes.type==9){
         $state.go('changeTasks')
     }    
     else if(mes.type==2){
         $state.go('patientAlerts')
-    }            
+    }    
+    else if(mes.type==15){
+        getCChatDetail(chat)
+    }         
   }
 }])
 
