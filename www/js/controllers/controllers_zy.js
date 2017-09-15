@@ -4589,91 +4589,91 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
   }
 
-  $scope.fsdiagnoseChange = function () {
-    services.setStatus({serviceType: 'service5'}).then(function (data) {
-    }, function (err) {
-      console.log(err)
-    })
-    console.log('status5', $scope.doctorinfo.status5)
-    if (!$scope.doctorinfo.status5) {
-      angular.forEach($scope.workStatus, function (value, key) {
-        console.log('value', value)
-        // if (!value.number == 0) {
-        var para = {
-                    // userId: Storage.get('UID'),
-            // token: Storage.get('TOKEN'),
-          day: value.day,
-          time: value.time
-        }
-        services.deleteSchedules(para).then(function (data) {
-          var index
-          if (value.day == 'Mon') {
-            index = 0
-          } else if (value.day == 'Tue') {
-            index = 1
-          } else if (value.day == 'Wed') {
-            index = 2
-          } else if (value.day == 'Thu') {
-            index = 3
-          } else if (value.day == 'Fri') {
-            index = 4
-          } else if (value.day == 'Sat') {
-            index = 5
-          } else if (value.day == 'Sun') {
-            index = 6
-          }
-          if (value.time == 'Afternoon') { index += 7 }
-            // console.log('index', index)
-          $scope.workStatus[index].number = 0
-        }, function (err) {
-          console.log(err)
-        })
-        // }
-      })
-    } else {
-      $ionicLoading.show({
-        template: '请重新填写加号',
-        duration: 1000
-      })
-      // services.getStatus({userId: Storage.get('UID')}).then(function (data) {
-      // // console.log(data);
-      //   $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
-      // }, function (err) {
-      //   console.log(err)
-      // })
-      // services.getSchedules({
-      // // token: Storage.get('TOKEN')
-      // }).then(function (data) {
-      //   angular.forEach(data.results.schedules, function (value, key) {
-      //     console.log('value', value)
-      //     var index
-      //     if (value.day == 'Mon') {
-      //       index = 0
-      //     } else if (value.day == 'Tue') {
-      //       index = 1
-      //     } else if (value.day == 'Wed') {
-      //       index = 2
-      //     } else if (value.day == 'Thu') {
-      //       index = 3
-      //     } else if (value.day == 'Fri') {
-      //       index = 4
-      //     } else if (value.day == 'Sat') {
-      //       index = 5
-      //     } else if (value.day == 'Sun') {
-      //       index = 6
-      //     }
-      //     if (value.time == 'Afternoon') { index += 7 }
-      //     Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
-      //       $scope.workStatus[index].status = 0
-      //       $scope.workStatus[index].style = {'background-color': 'white'}
-      //       $scope.workStatus[index].place = ''
-      //     }, function (err) {
-      //       console.log(err)
-      //     })
-      //   })
-      // })
-    }
-  }
+  // $scope.fsdiagnoseChange = function () {
+  //   services.setStatus({serviceType: 'service5'}).then(function (data) {
+  //   }, function (err) {
+  //     console.log(err)
+  //   })
+  //   console.log('status5', $scope.doctorinfo.status5)
+  //   if (!$scope.doctorinfo.status5) {
+  //     angular.forEach($scope.workStatus, function (value, key) {
+  //       console.log('value', value)
+  //       // if (!value.number == 0) {
+  //       var para = {
+  //                   // userId: Storage.get('UID'),
+  //           // token: Storage.get('TOKEN'),
+  //         day: value.day,
+  //         time: value.time
+  //       }
+  //       services.deleteSchedules(para).then(function (data) {
+  //         var index
+  //         if (value.day == 'Mon') {
+  //           index = 0
+  //         } else if (value.day == 'Tue') {
+  //           index = 1
+  //         } else if (value.day == 'Wed') {
+  //           index = 2
+  //         } else if (value.day == 'Thu') {
+  //           index = 3
+  //         } else if (value.day == 'Fri') {
+  //           index = 4
+  //         } else if (value.day == 'Sat') {
+  //           index = 5
+  //         } else if (value.day == 'Sun') {
+  //           index = 6
+  //         }
+  //         if (value.time == 'Afternoon') { index += 7 }
+  //           // console.log('index', index)
+  //         $scope.workStatus[index].number = 0
+  //       }, function (err) {
+  //         console.log(err)
+  //       })
+  //       // }
+  //     })
+  //   } else {
+  //     $ionicLoading.show({
+  //       template: '请重新填写加号',
+  //       duration: 1000
+  //     })
+  //     // services.getStatus({userId: Storage.get('UID')}).then(function (data) {
+  //     // // console.log(data);
+  //     //   $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
+  //     // }, function (err) {
+  //     //   console.log(err)
+  //     // })
+  //     // services.getSchedules({
+  //     // // token: Storage.get('TOKEN')
+  //     // }).then(function (data) {
+  //     //   angular.forEach(data.results.schedules, function (value, key) {
+  //     //     console.log('value', value)
+  //     //     var index
+  //     //     if (value.day == 'Mon') {
+  //     //       index = 0
+  //     //     } else if (value.day == 'Tue') {
+  //     //       index = 1
+  //     //     } else if (value.day == 'Wed') {
+  //     //       index = 2
+  //     //     } else if (value.day == 'Thu') {
+  //     //       index = 3
+  //     //     } else if (value.day == 'Fri') {
+  //     //       index = 4
+  //     //     } else if (value.day == 'Sat') {
+  //     //       index = 5
+  //     //     } else if (value.day == 'Sun') {
+  //     //       index = 6
+  //     //     }
+  //     //     if (value.time == 'Afternoon') { index += 7 }
+  //     //     Doctor.deleteSchedule({day: value.day, time: value.time}).then(function (data) {
+  //     //       $scope.workStatus[index].status = 0
+  //     //       $scope.workStatus[index].style = {'background-color': 'white'}
+  //     //       $scope.workStatus[index].place = ''
+  //     //     }, function (err) {
+  //     //       console.log(err)
+  //     //     })
+  //     //   })
+  //     // })
+  //   }
+  // }
 
   $scope.charge5Save = function () {
     var chargeReg = /^\d+(\.\d+)?$/
