@@ -930,7 +930,7 @@ angular.module('kidney', [
 
     // 面诊服务页面
     .state('tab.faceconsult', {
-        // cache: false,
+      cache: false,
       url: '/me/faceconsult',
       views: {
         'tab-me': {

@@ -3632,7 +3632,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     charge3: 0,
     charge4: 0,
     charge5: 0}
-  $scope.inp = {num: [0, 0, 0, 0]}
+  $scope.inp = {num: [0, 0, 0, 0, 0]}
   var getStatus = function () {
     services.getStatus({
       // token: Storage.get('TOKEN'),
@@ -3642,10 +3642,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         $scope.doctorinfo.charge2 = parseFloat(data.results.charge2)
         $scope.doctorinfo.charge3 = parseFloat(data.results.charge3)
         $scope.doctorinfo.charge4 = parseFloat(data.results.charge4)
+        $scope.doctorinfo.charge5 = parseFloat(data.results.charge5)
         $scope.inp.num[0] = parseFloat(data.results.charge1)
         $scope.inp.num[1] = parseFloat(data.results.charge2)
         $scope.inp.num[2] = parseFloat(data.results.charge3)
         $scope.inp.num[3] = parseFloat(data.results.charge4)
+        $scope.inp.num[4] = parseFloat(data.results.charge5)
         if (data.results.counselStatus1) {
           $scope.doctorinfo.status1 = true
         }
@@ -3657,6 +3659,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         }
         if (data.results.counselStatus4) {
           $scope.doctorinfo.status4 = true
+        }
+        if (data.results.counselStatus5) {
+          $scope.doctorinfo.status5 = true
         }
       // $scope.doctorinfo.status5 = data.results.counselStatus5;
       // $scope.doctorinfo.charge5 = data.results.charge5
@@ -3894,6 +3899,76 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
   }
 
+  $scope.fsdiagnoseChange = function () {
+    services.setStatus({serviceType: 'service5'}).then(function (data) {
+    }, function (err) {
+      console.log(err)
+    })
+    console.log('status5', $scope.doctorinfo.status5)
+    if (!$scope.doctorinfo.status5) {
+      services.getStatus({
+      // token: Storage.get('TOKEN'),
+      userId: Storage.get('UID')}).then(function (data) {
+        console.log(data)
+        angular.forEach(data.results.serviceSchedules, function (value, key) {
+          console.log('value', value)
+          if (!value.total == 0) {
+            var para = {
+              // userId: Storage.get('UID'),
+              // token: Storage.get('TOKEN'),
+              day: value.day,
+              time: value.time
+            }
+            services.deleteSchedules(para).then(function (data) {
+            }, function (err) {
+              console.log(err)
+            })
+          }
+        })
+      }, function (err) {
+        console.log(err)
+      })
+    } else {
+      $ionicPopup.show({
+        template: '请输入面诊服务收费<input type="text" ng-model="inp.num[4]">',
+        title: '设置收费',
+        scope: $scope,
+        buttons: [
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function (e) {
+              var chargeReg = /^\d+(\.\d+)?$/
+                // 收费正则表达式验证
+              if (!$scope.doctorinfo.status5) {
+              } else if (!chargeReg.test($scope.inp.num[4])) {
+                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                services.setStatus({serviceType: 'service5'}).then(function (data) {
+                }, function (err) {
+                  console.log(err)
+                })
+                $scope.doctorinfo.status5 = false
+              } else {
+                var param = {
+                    // userId: Storage.get('UID'),
+                    // token: Storage.get('TOKEN'),
+                  serviceType: 'service5',
+                  charge: $scope.inp.num[4]
+                }
+                services.setCharge(param).then(function (data) {
+                  getStatus()
+                }, function (err) {
+                  console.log(err)
+                })
+                $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+              }
+            }
+          }
+        ]
+      })
+    }
+  }
+
   $scope.charge1Save = function () {
     $ionicPopup.show({
       template: '请输入咨询收费<input type="text" ng-model="inp.num[0]">',
@@ -4082,6 +4157,46 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
+  $scope.charge5Save = function () {
+    $ionicPopup.show({
+      template: '请输入面诊服务收费<input type="text" ng-model="inp.num[4]">',
+      title: '设置收费',
+      scope: $scope,
+      buttons: [
+        {
+          text: '<b>确定</b>',
+          type: 'button-positive',
+          onTap: function (e) {
+            var chargeReg = /^\d+(\.\d+)?$/
+                // 收费正则表达式验证
+            if (!$scope.doctorinfo.status5) {
+            } else if (!chargeReg.test($scope.inp.num[4])) {
+              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              services.setStatus({serviceType: 'service5'}).then(function (data) {
+              }, function (err) {
+                console.log(err)
+              })
+              $scope.doctorinfo.status5 = false
+            } else {
+              var param = {
+                    // userId: Storage.get('UID'),
+                    // token: Storage.get('TOKEN'),
+                serviceType: 'service5',
+                charge: $scope.inp.num[4]
+              }
+              services.setCharge(param).then(function (data) {
+                getStatus()
+              }, function (err) {
+                console.log(err)
+              })
+              $ionicLoading.show({ template: '保存成功！', duration: 1000 })
+            }
+          }
+        }
+      ]
+    })
+  }
+
   $scope.illustration1 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '咨询',
@@ -4178,7 +4293,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 面诊服务页面
-.controller('faceconsultCtrl', ['$scope', 'ionicDatePicker', '$ionicPopup', '$ionicLoading', 'Doctor', 'services', 'Storage', '$interval', function ($scope, ionicDatePicker, $ionicPopup, $ionicLoading, Doctor, services, Storage, $interval) {
+.controller('faceconsultCtrl', ['$scope', '$state', 'ionicDatePicker', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'Doctor', 'services', 'Storage', '$interval', function ($scope, $state, ionicDatePicker, $ionicHistory, $ionicPopup, $ionicLoading, Doctor, services, Storage, $interval) {
   $scope.dateC = new Date()
   var getStatus = function () {
     services.getStatus({
@@ -4204,6 +4319,22 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     services.getSchedules({
       // token: Storage.get('TOKEN')
     }).then(function (data) {
+      // $scope.workStatus = [
+      //   {status: 0, number: 0, day: 'Mon', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Tue', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Wed', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Thu', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Fri', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Sat', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Sun', time: 'Morning', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Mon', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Tue', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Wed', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Thu', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Fri', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Sat', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
+      //   {status: 0, number: 0, day: 'Sun', time: 'Afternoon', place: '', style: {'background-color': 'white'}}
+      // ]
       console.log('data', data)
       angular.forEach(data.results.schedules, function (value, key) {
         // console.log('value', value)
