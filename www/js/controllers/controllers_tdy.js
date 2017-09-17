@@ -2261,7 +2261,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
         $state.go('patientAlerts')
     }    
     else if(mes.type==15){
-        getCChatDetail(chat)
+        getCChatDetail(mes)
     }         
   }
 }])

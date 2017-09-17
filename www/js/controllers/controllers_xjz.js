@@ -656,12 +656,14 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: lastMsg.targetID, sendBy: lastMsg.fromID, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+        return New.insertNews({ userId: lastMsg.fromID, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
       }
     })
   })
 
   $scope.$on('$ionicView.enter', function () {
+    // 非ios平台不需要keyboard-attach directive
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     if ($rootScope.conversation) {
       $rootScope.conversation.type = 'single'
       $rootScope.conversation.id = $state.params.chatId
@@ -739,7 +741,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         })
         $scope.counselstatus = 1
       }
-      New.insertNews({ userId: $scope.params.UID, sendBy: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+      New.insertNews({ userId: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
     }
   })
   /**
@@ -1782,7 +1784,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @DateTime 2017-07-05
  */
 .controller('GroupChatCtrl', ['$ionicPlatform', '$scope', '$state', '$ionicHistory', '$http', '$ionicModal', '$ionicScrollDelegate', '$rootScope', '$stateParams', '$ionicPopover', '$ionicLoading', '$ionicPopup', 'Camera', 'voice', 'Communication', 'Storage', 'Doctor', '$q', 'CONFIG', 'arrTool', 'New', 'socket', 'notify', '$timeout', function ($ionicPlatform, $scope, $state, $ionicHistory, $http, $ionicModal, $ionicScrollDelegate, $rootScope, $stateParams, $ionicPopover, $ionicLoading, $ionicPopup, Camera, voice, Communication, Storage, Doctor, $q, CONFIG, arrTool, New, socket, notify, $timeout) {
-  if ($ionicPlatform.is('ios')) cordova.plugins.Keyboard.disableScroll(true)
+  if ($ionicPlatform.is('ios'))cordova.plugins.Keyboard.disableScroll(true)
+
   $scope.itemStyle = {'position': 'absolute', 'top': '44px', 'width': '100%', 'margin': '0', 'min-height': '35vh', 'max-height': '55vh', 'overflow-y': 'scroll'}
   if (ionic.Platform.isIOS()) {
     $scope.itemStyle = {'position': 'absolute', 'top': '64px', 'width': '100%', 'margin': '0', 'min-height': '35vh', 'max-height': '55vh', 'overflow-y': 'scroll'}
@@ -1867,6 +1870,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   })
   $scope.$on('$ionicView.enter', function () {
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
+    console.log(document.getElementById('inputbar'))
     console.log($scope.photoUrls)
     $rootScope.conversation.type = 'group'
     $rootScope.conversation.id = $scope.params.groupId
@@ -1876,7 +1881,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: $scope.params.UID, sendBy: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+        return New.insertNews({ userId: lastMsg.targetID, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
       }
     })
     imgModalInit()
@@ -1911,7 +1916,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      New.insertNews({userId: $scope.params.UID, sendBy: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+      New.insertNews({userId: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
     }
   })
   $scope.$on('im:messageRes', function (event, data) {
@@ -2892,6 +2897,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
 
   $scope.$on('$ionicView.enter', function () {
+    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     imgModalInit()
   })
 
