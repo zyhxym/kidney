@@ -14,13 +14,15 @@
             on-refresh="doRefresh()">
         </ion-refresher>
 
-        <div class="card" ng-repeat="bill in doc.bills track by $index">
-            <div class="item item-text-wrap">
-                <p>交易对象：{{bill.patientName}}</p>
-                <p>服务类型：{{bill.type | chargeType}}</p>
-                <p>实际支付：{{bill.money/100}} 元</p>
-                <p>交易日期：{{bill.paytime | dateFormat:'YYYY-MM-DD h:m'}}</p>
+        <div class="card row" ng-repeat="bill in doc.bills track by $index" style="height: 110px">
+            <div class="col col-75 item item-text-wrap">
+                <p class="left">交易对象：{{bill.patientName}}</p>
+                <p class="left">服务类型：{{bill.type | chargeType}}</p>
+                <p class="left">实际支付：{{bill.money/100}} 元</p>
+                <p class="left">交易日期：{{bill.paytime | dateFormat:'YYYY-MM-DD h:m'}}</p>
             </div>
+            <div class="col col-25">
+            <p style="background-color: #95E1D3;text-align: center;color: #fff;border-radius: 5px;margin-right:15px;">{{bill.paystatus|filterPayStatus}}</p>   
         </div>
 
         <div style="text-align:center;color:gray;">

@@ -216,3 +216,38 @@ angular.module('kidney.filters', [])
     return g
   }
 }])
+.filter('filterPayStatus', [function () {
+  return function (type) {
+    var name = '未定义'
+    switch (type) {
+      case 0: case 1:
+        name = '付款失败'
+        break
+      case 2:
+        name = '支付成功'
+        break
+      case 3:
+        name = '支付失败'
+        break
+      case 4:
+        name = '取消订单'
+        break
+      case 5:
+        name = '订单超时'
+        break
+      case 6:
+        name = '正在退款'
+        break
+      case 7:
+        name = '退款关闭'
+        break
+      case 8:
+        name = '退款异常'
+        break
+      case 9:
+        name = '退款成功'
+        break
+    }
+    return name
+  }
+}])
