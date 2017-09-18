@@ -414,13 +414,33 @@ angular.module('kidney', [
     })
 
     // "论坛"页面
-    .state('tab.forum', {
-      url: '/forum',
+    .state('tab.allposts', {
+      url: '/allposts',
       cache: false,
       views: {
         'tab-forum': {
-          controller: 'forumCtrl',
-          templateUrl: 'partials/forum/forum.html'
+          controller: 'allpostsCtrl',
+          templateUrl: 'partials/forum/allposts.html'
+        }
+      }
+    })
+    .state('tab.myposts', {
+      url: '/myposts',
+      cache: false,
+      views: {
+        'tab-forum': {
+      templateUrl: 'partials/forum/myposts.html',
+      controller: 'mypostsCtrl'
+      }
+     }
+    })
+    .state('tab.mycollection', {
+      url: '/mycollection',
+      cache: false,
+      views: {
+        'tab-forum': {
+          controller: 'mycollectionCtrl',
+          templateUrl: 'partials/forum/mycollection.html'
         }
       }
     })
@@ -1040,10 +1060,10 @@ angular.module('kidney', [
       }
     }
   }
-  $scope.goForum = function () {
+  $scope.goAllposts = function () {
     if (Storage.get('reviewStatus') == 1) {
       setTimeout(function () {
-        $state.go('tab.forum', {type: '0'})
+        $state.go('tab.allposts', {type: '0'})
       }, 20)
     } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
       $ionicPopup.show({
