@@ -16,7 +16,22 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       if (data.results[0] == undefined) {
         document.getElementById('newMes').innerText = '最新消息：没有最新消息！'
       } else {
-        document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+        if (data.results[0].type == 11) {
+          str1 = data.results[0].title.split(',')[1]
+          str2 = str1.split(':')[1]
+          str3 = str2.split('}')[0]
+          document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
+        }
+        if (data.results[0].type == 15) {
+          document.getElementById('newMes').innerText = '最新消息：病历讨论群有新消息“' + data.results[0].description + '”'
+        }
+        if (data.results[0].type == 12) {
+          str1 = data.results[0].url.split('"fromName":')[1]
+          str2 = str1.split(',"fromUser"')[0]
+          document.getElementById('newMes').innerText = '最新消息：医生' + str2 + '给您发来一条消息“' + data.results[0].description + '”'
+        } else {
+          document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+        }
       }
     }, function (err) {
     })
@@ -129,12 +144,12 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
      * @return   data.results.length(有未读消息首页信箱标注小红点)
      */
     New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
-      console.log(data)
+      // console.log(data)
       if (data.results.length) {
         for (i = 0; i < data.results.length; i++) {
           if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 2 || data.results[i].type == 11 || data.results[i].type == 12 || data.results[i].type == 13 || data.results[i].type == 15) {
             $scope.hasUnreadMessages = true
-            console.log(data.results)
+            // console.log(data.results)
             break
           }
         }

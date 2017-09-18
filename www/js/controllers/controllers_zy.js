@@ -5030,10 +5030,16 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 主管医生审核申请---rzx
-.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover) {
+.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover','Doctor', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover,Doctor) {
   $scope.Goback = function () {
     $ionicHistory.goBack()
   }
+  var docname = ''
+  Doctor.getDoctorInfo().then(function(data){
+    docname = data.results.name
+  }, function (err) {
+      console.log(err)
+    })
 
   $scope.passApplication = function (id) {
     console.log(id)
@@ -5055,7 +5061,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       sendBy: Storage.get('UID'),
       title: '审核完成',
       type: '7',
-      description: '医生通过了您的申请,成为您的主管医生！'
+      description: docname+'医生通过了您的申请,成为您的主管医生！'
     }).then(function (data) {
       console.log(data)
       MessId = data.newResults.message.messageId
@@ -5064,7 +5070,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         userId: Storage.get('getpatientId'),
         type: 7,
         readOrNot: '0',
-        description: '医生通过了您的申请！',
+        description: docname+'医生通过了您的申请,成为您的主管医生！',
         messageId: MessId,
         userRole: 'patient'
       }).then(function (data) {
@@ -5127,7 +5133,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           sendBy: Storage.get('UID'),
           title: '审核完成',
           type: '7',
-          description: '医生拒绝了您的申请，理由是：' + reason
+          description: docname+'医生拒绝了您的主管医生服务申请，原因为：' + reason
         }).then(function (data) {
           console.log(data.result)
           MessId = data.newResults.message.messageId
@@ -5136,7 +5142,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             userId: Storage.get('getpatientId'),
             type: 7,
             readOrNot: '0',
-            description: '医生拒绝了您的申请，理由是：' + reason,
+            description: docname+'医生拒绝了您的主管医生服务申请，原因为：' + reason,
             messageId: MessId,
             userRole: 'patient'
           }).then(function (data) {
