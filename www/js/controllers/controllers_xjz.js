@@ -599,7 +599,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
         // 消息字段
     $scope.params.targetRole = ''
-    $scope.params.newsType = $scope.params.type == '2' ? '12' : '11'
+    $scope.params.newsType = $scope.params.type == '2' ? 12 : 11
 
     try {
       notify.remove($scope.params.chatId)
@@ -1410,7 +1410,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}   [description]
    */
   $scope.submitMsg = function () {
-    if ($scope.params.newsType == '11') {
+    if ($scope.params.newsType == 11) {
       var targetRole = 'patient'
       var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb830b12dc0fa74e5&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=' + targetRole + '_' + $scope.params.newsType + '_' + $state.params.type + '_' + $scope.params.UID + '_' + $state.params.counselId + '&#wechat_redirect'
 
@@ -1846,7 +1846,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
               $scope.photoUrls[data.results.userId] = data.results.photoUrl
             })
     if ($scope.params.type == '0') {
-      $scope.params.newsType = '13'
+      $scope.params.newsType = 13
       Communication.getTeam({ teamId: $scope.params.teamId })
                 .then(function (data) {
                   console.log(data)
@@ -1860,7 +1860,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                 })
     } else if ($scope.params.type == '1') { // 进行中
       getConsultation()
-      $scope.params.newsType = '15'
+      $scope.params.newsType = 15
       $scope.params.hidePanel = true
       $scope.params.title = '病历'
       $scope.params.isDiscuss = true
@@ -2422,7 +2422,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         targetName: res.results.patientId.name,
                         targetType: 'single',
                         status: 'send_going',
-                        newsType: '11',
+                        newsType: 11,
                         createTimeInMillis: Date.now(),
                         targetRole: 'patient',
                         content: {
@@ -2542,7 +2542,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                       targetType: 'single',
                                       status: 'send_going',
                                       createTimeInMillis: Date.now(),
-                                      newsType: '11',
+                                      newsType: 11,
                                       targetRole: 'patient',
                                       content: endlMsg
                                     }
@@ -2652,7 +2652,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           targetType: 'single',
           status: 'send_going',
           createTimeInMillis: Date.now(),
-          newsType: '12',
+          newsType: 12,
           targetRole: 'doctor',
           content: msgdata
         }
@@ -2763,7 +2763,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
           targetName: team.name,
           targetType: 'group',
           status: 'send_going',
-          newsType: '13',
+          newsType: 13,
           targetRole: 'doctor',
           createTimeInMillis: Date.now(),
           content: msgdata
@@ -2919,7 +2919,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     return $q(function (resolve, reject) {
       var q = {
         messageType: '1',
-        newsType: '11',
+        newsType: 11,
         id1: $scope.params.doctorId,
         id2: $scope.params.chatId,
         skip: $scope.params.msgCount,
@@ -3011,7 +3011,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         targetName: res.results.patientId.name,
                         targetType: 'single',
                         status: 'send_going',
-                        newsType: '11',
+                        newsType: 11,
                         createTimeInMillis: Date.now(),
                         targetRole: 'patient',
                         content: {
@@ -3132,7 +3132,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                       targetType: 'single',
                                       status: 'send_going',
                                       createTimeInMillis: Date.now(),
-                                      newsType: '11',
+                                      newsType: 11,
                                       targetRole: 'patient',
                                       content: endlMsg
                                     }
