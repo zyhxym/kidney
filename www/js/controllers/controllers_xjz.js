@@ -656,7 +656,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         // var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         // if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+        // return New.insertNews({ userId: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+        return New.changeNewsStatus({ sendBy: $scope.params.chatId, type: $scope.params.newsType })
       }
     })
   })
@@ -741,7 +742,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         })
         $scope.counselstatus = 1
       }
-      New.insertNews({ userId: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+      // New.insertNews({ userId: $scope.params.chatId, type: $scope.params.newsType, userRole: 'doctor', readOrNot: 1 })
+      New.changeNewsStatus({ sendBy: $scope.params.chatId, type: $scope.params.newsType })
     }
   })
   /**
@@ -886,6 +888,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType: $scope.params.newsType,
         id1: Storage.get('UID'),
         id2: $scope.params.chatId,
+        sendByRole: $scope.params.newsType == 11 ? 'patient' : 'doctor',
+        receiverRole: 'doctor',
         skip: $scope.params.msgCount,
         limit: num
       }
