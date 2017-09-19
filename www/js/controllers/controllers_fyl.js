@@ -141,12 +141,12 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
      * @return   data.results.length(有未读消息首页信箱标注小红点)
      */
     New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
-      // console.log(data)
+      console.log(data)
       if (data.results.length) {
         if (data.results[0].type == 11) {
-          str1 = data.results[0].title.split(',')[1]
-          str2 = str1.split(':')[1]
-          str3 = str2.split('}')[0]
+          str1 = data.results[0].title.split(':')[1]
+          // str2 = str1.split(':')[1]
+          str3 = str1.split('}')[0]
           document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
         } else if (data.results[0].type == 15) {
           document.getElementById('newMes').innerText = '最新消息：病历讨论新消息“' + data.results[0].description + '”'
