@@ -2929,6 +2929,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType: 11,
         id1: $scope.params.doctorId,
         id2: $scope.params.chatId,
+        sendByRole: 'patient',
+        receiverRole: 'doctor',
         skip: $scope.params.msgCount,
         limit: num
       }
