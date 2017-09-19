@@ -509,6 +509,7 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
     return $resource(CONFIG.baseTwoUrl + ':path/:route', {path: 'new'}, {
       getNews: {method: 'GET', params: {route: 'news'}, timeout: 100000},
       insertNews: {method: 'POST', params: {route: 'news'}, timeout: 100000},
+      changeNewsStatus: {method: 'POST', params: {route: 'newsStatus'}, timeout: 100000},
       getNewsByReadOrNot: {method: 'GET', params: {route: 'newsByReadOrNot'}, timeout: 100000}
     })
   }
@@ -2147,6 +2148,19 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   self.insertNews = function (params) {
     var deferred = $q.defer()
     Data.New.insertNews(
+            params,
+            function (data, headers) {
+              deferred.resolve(data)
+            },
+            function (err) {
+              deferred.reject(err)
+            })
+    return deferred.promise
+  }
+
+  self.changeNewsStatus = function (params) {
+    var deferred = $q.defer()
+    Data.New.changeNewsStatus(
             params,
             function (data, headers) {
               deferred.resolve(data)
