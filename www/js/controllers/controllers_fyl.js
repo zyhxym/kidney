@@ -9,33 +9,30 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('reviewStatus') == 1) {
     $scope.review = true
   }
-  // 获取最新的消息
-  var GetLatest = function () {
-    New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
-      // console.log(data)
-      if (data.results[0] == undefined) {
-        document.getElementById('newMes').innerText = '最新消息：没有最新消息！'
-      } else {
-        if (data.results[0].type == 11) {
-          str1 = data.results[0].title.split(',')[1]
-          str2 = str1.split(':')[1]
-          str3 = str2.split('}')[0]
-          document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
-        }
-        if (data.results[0].type == 15) {
-          document.getElementById('newMes').innerText = '最新消息：病历讨论群有新消息“' + data.results[0].description + '”'
-        }
-        if (data.results[0].type == 12) {
-          str1 = data.results[0].url.split('"fromName":')[1]
-          str2 = str1.split(',"fromUser"')[0]
-          document.getElementById('newMes').innerText = '最新消息：医生' + str2 + '给您发来一条消息“' + data.results[0].description + '”'
-        } else {
-          document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
-        }
-      }
-    }, function (err) {
-    })
-  }
+  // var GetLatest = function () {
+  //   New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
+  //     // console.log(data)
+  //     if (data.results[0] == undefined) {
+  //       document.getElementById('newMes').innerText = '没有最新消息！'
+  //     } else if (data.results[0].type == 11) {
+  //       str1 = data.results[0].title.split(',')[1]
+  //       str2 = str1.split(':')[1]
+  //       str3 = str2.split('}')[0]
+  //       document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
+  //     } else if (data.results[0].type == 15) {
+  //       document.getElementById('newMes').innerText = '最新消息：病历讨论新消息“' + data.results[0].description + '”'
+  //     } else if (data.results[0].type == 13) {
+  //       document.getElementById('newMes').innerText = '最新消息：团队新消息“' + data.results[0].description + '”'
+  //     } else if (data.results[0].type == 12) {
+  //       str1 = data.results[0].url.split('"fromName":')[1]
+  //       str2 = str1.split(',"fromUser"')[0]
+  //       document.getElementById('newMes').innerText = '最新消息：医生' + str2 + '给您发来一条消息“' + data.results[0].description + '”'
+  //     } else {
+  //       document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+  //     }
+  //   }, function (err) {
+  //   })
+  // }
 
   // 获取各项任务数量
   var GetNum = function () {
@@ -146,6 +143,23 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
       // console.log(data)
       if (data.results.length) {
+        if (data.results[0].type == 11) {
+          str1 = data.results[0].title.split(',')[1]
+          str2 = str1.split(':')[1]
+          str3 = str2.split('}')[0]
+          document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
+        } else if (data.results[0].type == 15) {
+          document.getElementById('newMes').innerText = '最新消息：病历讨论新消息“' + data.results[0].description + '”'
+        } else if (data.results[0].type == 13) {
+          document.getElementById('newMes').innerText = '最新消息：团队新消息“' + data.results[0].description + '”'
+        } else if (data.results[0].type == 12) {
+          str1 = data.results[0].url.split('"fromName":')[1]
+          str2 = str1.split(',"fromUser"')[0]
+          document.getElementById('newMes').innerText = '最新消息：医生' + str2 + '给您发来一条消息“' + data.results[0].description + '”'
+        } else {
+          document.getElementById('newMes').innerText = '最新消息：' + data.results[0].description
+        }
+
         for (i = 0; i < data.results.length; i++) {
           if (data.results[i].type == 9 || data.results[i].type == 14 || data.results[i].type == 2 || data.results[i].type == 11 || data.results[i].type == 12 || data.results[i].type == 13 || data.results[i].type == 15) {
             $scope.hasUnreadMessages = true
@@ -158,6 +172,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }
         // console.log($scope.HasUnreadMessages);
       } else {
+        document.getElementById('newMes').innerText = '没有最新消息！'
         $scope.hasUnreadMessages = false
       }
     }, function (err) {
@@ -172,7 +187,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   if (Storage.get('reviewStatus') == 1) {
     $scope.$on('$ionicView.enter', function () {
       console.log('enter')
-      GetLatest()
+      // GetLatest()
       GetNum()
       RefreshUnread = $interval(GetUnread, 2000)
     })
