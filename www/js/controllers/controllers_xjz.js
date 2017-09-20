@@ -625,6 +625,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
             // 获取counsel信息
       Counsel.getStatus({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
                 .then(function (data) {
+                  console.log('进入页面获取状态 ')
                   console.log(data)
                   $scope.params.counsel = data.result
                   $scope.params.counselId = data.result.counselId
@@ -634,6 +635,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                   $scope.params.realCounselType = data.result.type
                   Account.getCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
                         .then(function (res) {
+                          console.log('进入页面获取次数 ')
+                          console.log(res)
                           if ($scope.params.loaded) {
                             return sendNotice($scope.params.counseltype, $scope.counselstatus, res.result.count)
                           } else {
@@ -734,11 +737,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'urgent') {
         $scope.$apply(function () {
           $scope.params.counseltype = '6'
+          $scope.params.realCounselType = '7'
         })
         $scope.counselstatus = 1
       } else if (data.msg.contentType == 'custom' && data.msg.content.type == 'counsel-upgrade' && msg.content.flag == 'consult') {
         $scope.$apply(function () {
           $scope.params.counseltype = '2'
+          $scope.params.realCounselType = '3'
         })
         $scope.counselstatus = 1
       }
@@ -767,10 +772,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                     .then(function () {
                       Account.getCounts({ doctorId: Storage.get('UID'), patientId: $scope.params.chatId })
                             .then(function (data) {
+                              console.log('发送成功获取次数 ')
+                              console.log(data)
                               if (data.result.count <= 0) {
                                 $scope.counselstatus = 0
                                 $scope.params.title = '咨询'
-                                endCounsel($scope.params.counseltype)
+                                endCounsel($scope.params.realCounselType)
                               }
                             })
                     })
@@ -2922,6 +2929,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType: 11,
         id1: $scope.params.doctorId,
         id2: $scope.params.chatId,
+        sendByRole: 'patient',
+        receiverRole: 'doctor',
         skip: $scope.params.msgCount,
         limit: num
       }
