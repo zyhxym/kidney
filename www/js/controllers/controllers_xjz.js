@@ -895,8 +895,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType: $scope.params.newsType,
         id1: Storage.get('UID'),
         id2: $scope.params.chatId,
-        sendByRole: $scope.params.newsType == 11 ? 'patient' : 'doctor',
-        receiverRole: 'doctor',
+        receiverRole: $scope.params.newsType == 11 ? 'patient' : 'doctor',
+        sendByRole: 'doctor',
         skip: $scope.params.msgCount,
         limit: num
       }
@@ -2929,8 +2929,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         newsType: 11,
         id1: $scope.params.doctorId,
         id2: $scope.params.chatId,
-        sendByRole: 'patient',
-        receiverRole: 'doctor',
+        receiverRole: 'patient',
+        sendByRole: 'doctor',
         skip: $scope.params.msgCount,
         limit: num
       }
