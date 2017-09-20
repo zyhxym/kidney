@@ -5765,10 +5765,13 @@ $scope.$on('$ionicView.enter', function () {
   }
 }])
 
-.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG', '$ionicLoading', '$timeout', function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout) {
+.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG', '$ionicLoading', '$timeout', '$ionicModal', '$ionicScrollDelegate', function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout, $ionicModal, $ionicScrollDelegate) {
   $scope.GoBack = function () {
     $state.go('tab.allposts')
   }
+  $scope.$on('$ionicView.enter', function () {
+    imgModalInit();
+  })
   $scope.hasDeliver = true
   $scope.postphoto = ''
   $scope.post = {
@@ -5781,7 +5784,7 @@ $scope.$on('$ionicView.enter', function () {
     }],
     anonymous: ''
   }
-
+  $scope.Images=[]
   $scope.Post = function () {
     var param = {
       token: Storage.get('TOKEN'),
@@ -5917,17 +5920,65 @@ $scope.$on('$ionicView.enter', function () {
     })// 照相结束
   } // function结束
 
-  // $scope.showoriginal = function (resizedpath) {
-  //   // $scope.openModal();
-  //   // console.log(resizedpath)
-  //   var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
-  //   // console.log(originalfilepath)
-  //   // $scope.doctorimgurl=originalfilepath;
+  function imgModalInit () {
+    $scope.zoomMin = 1
+    $scope.imageUrl = ''
+    $scope.imageIndex = -1// 当前展示的图片
+    $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modal = modal
+        // $scope.modal.show();
+      $scope.imageHandle = $ionicScrollDelegate.$getByHandle('imgScrollHandle')
+    })
+  }
 
-  //   $scope.imageHandle.zoomTo(1, true)
-  //   $scope.imageUrl = originalfilepath
-  //   $scope.modal.show()
-  // }
+  $scope.showoriginal = function (resizedpath) {
+    for (i = 0; i < $scope.post.content[1].image.length; i++) {
+              $scope.Images[i] = CONFIG.imgLargeUrl+$scope.post.content[1].image[i].slice($scope.post.content[1].image[i].lastIndexOf('/')+1).substr(7)
+              // console.log('Images',$scope.Images)
+              // console.log('images',$scope.image)
+    }
+    console.log(resizedpath)
+    $scope.imageIndex = 0
+        // console.log($scope.imageIndex)
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+        // console.log(originalfilepath)
+        // $scope.doctorimgurl=originalfilepath;
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.imageUrl = originalfilepath
+    $scope.modal.show()
+  }
+  // 关掉图片
+  $scope.closeModal = function () {
+    $scope.imageHandle.zoomTo(1, true)
+    $scope.modal.hide()
+      // $scope.modal.remove()
+  }
+  // 双击调整缩放
+  $scope.switchZoomLevel = function () {
+    if ($scope.imageHandle.getScrollPosition().zoom != $scope.zoomMin) { $scope.imageHandle.zoomTo(1, true) } else {
+      $scope.imageHandle.zoomTo(5, true)
+    }
+  }
+  // 右划图片
+  $scope.onSwipeRight = function () {
+    if ($scope.imageIndex <= $scope.Images.length - 1 && $scope.imageIndex > 0) { $scope.imageIndex = $scope.imageIndex - 1 } else {
+      // 如果图片已经是第一张图片了，则取index = Images.length-1
+      $scope.imageIndex = $scope.Images.length - 1
+    }
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
+  }
+
+  // 左划图片
+  $scope.onSwipeLeft = function () {
+    if ($scope.imageIndex < $scope.Images.length - 1 && $scope.imageIndex >= 0) { $scope.imageIndex = $scope.imageIndex + 1 } else {
+      // 如果图片已经是最后一张图片了，则取index = 0
+      $scope.imageIndex = 0
+    }
+    // 替换url，展示图片
+    $scope.imageUrl = $scope.Images[$scope.imageIndex]
+  }
 
   $scope.deleteimg = function (index) {
     // somearray.removeByValue("tue");
@@ -5938,7 +5989,7 @@ $scope.$on('$ionicView.enter', function () {
   }
 }])
 
-.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover','$ionicModal', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal) {
+.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover','$ionicModal', '$ionicScrollDelegate', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal, $ionicScrollDelegate) {
 // ----------------页面跳转------------------
   $scope.GoBack = function () {
     $state.go('tab.allposts')
@@ -6103,7 +6154,7 @@ $scope.$on('$ionicView.enter', function () {
     $scope.zoomMin = 1
     $scope.imageUrl = ''
     $scope.imageIndex = -1// 当前展示的图片
-    $ionicModal.fromTemplateUrl('partials/tabs/consult/msg/imageViewer.html', {
+    $ionicModal.fromTemplateUrl('templates/msg/imageViewer.html', {
       scope: $scope
     }).then(function (modal) {
       $scope.modal = modal
