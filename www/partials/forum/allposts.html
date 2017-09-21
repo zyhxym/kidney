@@ -4,8 +4,9 @@
         <button class="button button-clear" ng-click="GoToPost()"><i class="icon ion-compose"></i></button>
   </ion-nav-buttons>
 
-  <div class="bar bar-header item-input-inset text-center" style="padding:0;position:absolute;top:44px;height:38px;">
-
+  <ion-content delegate-handle="myContentScroll"> 
+    <ion-refresher pulling-text="下拉刷新..." on-refresh="refresher()"></ion-refresher>
+    <div class="bar bar-header item-input-inset text-center" style="padding:0;height:38px;">
             <a class="item col-33" style="padding-top: 2px;padding-bottom: 2px;border-top-width: 0px;border-bottom-width: 0px;color: #6ac4f8;">
                 <span style="font-size: 16px;">全部帖子</span>
             </a>
@@ -16,12 +17,7 @@
                 <span style="font-size: 16px;">我的收藏</span>
             </a>
     </div>
-
-  <ion-content delegate-handle="myContentScroll"> 
-
-     <ion-refresher pulling-text="下拉刷新..." on-refresh="refresher()"></ion-refresher>
-
-     <div class="bar bar-header item-input-inset" style="height:40px;padding:30;margin-top:40px;">
+    <div class="bar bar-header item-input-inset" style="height:40px">
             <div class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon f-24"></i>
                 <input type="search" ng-model="search.title" placeholder="请输入搜索帖子主题" ng-change="goSearch()">
@@ -29,7 +25,6 @@
             </div>
       </div>
     <div class="list">
-
         <div ng-repeat="item in posts">
           <div ng-click="gotopostsdetail(item.postId)">
            <div class="item item-avatar" style="border-bottom: none;padding-top: 12px;padding-bottom: 0px">
