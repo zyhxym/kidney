@@ -124,7 +124,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
              * @param    userId:string
              * @return   res.results.agreement(agreement是0表示已签署跳转到首页;否则是未签署跳转到签署协议页)
              */
-            User.getAgree({userId: data.results.userId, role: doctor}).then(function (res) {
+            User.getAgree({userId: data.results.userId, role: 'doctor'}).then(function (res) {
               if (res.results.agreementDoc == '0') {
                 $timeout(function () { $state.go('tab.workplace') }, 500)
               } else {
@@ -555,7 +555,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               // alert(Storage.get('phoneNumber') + '已同意 未绑定 ')
               if ($scope.haveExist) { // 已经存在该用户，可能是app注册未绑定微信用户或者导入老用户
                 // alert(JSON.stringify(succ) + '验证成功 未绑定或老用户')
-                User.getAgree({userId: Storage.get('UID'), role: doctor}).then(function (data) {
+                User.getAgree({userId: Storage.get('UID'), role: 'doctor'}).then(function (data) {
                   if (data.results != null && data.results.agreementDoc == '0') {   // 已通过协议为已注册用户
                     // alert(JSON.stringify(data) + '已同意 未绑定 ')
                     // 将用户的微信头像存在用户表中，如果用户没有头像存，有则不修改
@@ -653,7 +653,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
        * @param    userId: string; agreement(0为签署): string
        * @return   同意签署协议
        */
-      User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: doctor}).then(function (data) {
+      User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: 'doctor'}).then(function (data) {
         if (data.results != null) {
           User.setMessageOpenId({type: 3, openId: Storage.get('messageOpenId'), userId: Storage.get('UID')}).then(function (succ) { // type1doctorWechat，2patientWechat，3doctorApp，4patientApp
             // console.log(succ)
@@ -739,7 +739,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $timeout(function () { $state.go('userdetail', {last: 'wechatsignin'}) }, 500)
     } else if ($stateParams.last == 'signin') {
       // 由登录时跳转到签署协议，针对老注册用户，同意协议后跳转到首页
-      User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: doctor}).then(function (data) {
+      User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: 'doctor'}).then(function (data) {
         if (data.results != null) {
           $timeout(function () { $state.go('tab.workplace') }, 500)
         } else {
@@ -934,7 +934,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           console.log(succ)
           Storage.set('UID', succ.userNo)
           // 签署协议置位0，同意协议
-          User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: doctor}).then(function (data) {
+          User.updateAgree({userId: Storage.get('UID'), agreement: '0', role: 'doctor'}).then(function (data) {
             console.log(data)
           }, function (err) {
             console.log(err)
@@ -5402,6 +5402,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   if (ionic.Platform.isIOS()) {
     $scope.barStyle = {'margin-top': '60px'}
   }
+  $scope.contentStyle = {'margin-top': '32px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.contentStyle = {'margin-top': '44px'}
+  }
+  $scope.divStyle = {'margin-bottom': '3px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.divStyle = {'margin-bottom': '20px'}
+  }
   var allposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5543,6 +5551,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   if (ionic.Platform.isIOS()) {
     $scope.barStyle = {'margin-top': '60px'}
   }
+  $scope.contentStyle = {'margin-top': '35px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.contentStyle = {'margin-top': '40px'}
+  }
   var myposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5668,6 +5680,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.barStyle = {'margin-top': '40px'}
   if (ionic.Platform.isIOS()) {
     $scope.barStyle = {'margin-top': '60px'}
+  }
+  $scope.contentStyle = {'margin-top': '35px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.contentStyle = {'margin-top': '40px'}
   }
   var mycollection = []
   $scope.posts = []
