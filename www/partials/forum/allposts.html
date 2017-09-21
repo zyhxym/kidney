@@ -4,20 +4,22 @@
         <button class="button button-clear" ng-click="GoToPost()"><i class="icon ion-compose"></i></button>
   </ion-nav-buttons>
 
-  <ion-content delegate-handle="myContentScroll"> 
-    <ion-refresher pulling-text="下拉刷新..." on-refresh="refresher()"></ion-refresher>
-    <div class="bar bar-header item-input-inset text-center" style="padding:0;height:38px;">
-            <a class="item col-33" style="padding-top: 2px;padding-bottom: 2px;border-top-width: 0px;border-bottom-width: 0px;color: #6ac4f8;">
+
+    <div class="bar bar-header item-input-inset text-center" style="padding:0;margin-top: 40px">
+            <a class="item col-33" style="margin-top: 2px;margin-bottom: 2px;color: #6ac4f8;">
                 <span style="font-size: 16px;">全部帖子</span>
             </a>
-            <a class="item col-33 " href="#/tab/myposts" style="border-right:0px;padding-top: 2px;padding-bottom: 2px;border-top-width: 0px;border-bottom-width: 0px;">
+            <a class="item col-33 " href="#/tab/myposts" style="border-right:0px;margin-top: 2px;margin-bottom: 2px;">
                 <span style="font-size: 16px;">我的帖子</span>
             </a>
-            <a class="item col-33 " href="#/tab/mycollection" style="border-right:0px;padding-top: 2px;padding-bottom: 2px;border-top-width: 0px;border-bottom-width: 0px;">
+            <a class="item col-33 " href="#/tab/mycollection" style="border-right:0px;margin-top: 2px;margin-bottom: 2px;">
                 <span style="font-size: 16px;">我的收藏</span>
             </a>
-    </div>
-    <div class="bar bar-header item-input-inset" style="height:40px">
+    </div>  
+
+    <ion-content delegate-handle="myContentScroll" style="margin-top: 35px"> 
+      <ion-refresher pulling-text="下拉刷新..." on-refresh="refresher()"></ion-refresher>
+      <div class="bar bar-header item-input-inset">
             <div class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon f-24"></i>
                 <input type="search" ng-model="search.title" placeholder="请输入搜索帖子主题" ng-change="goSearch()">

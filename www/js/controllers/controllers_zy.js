@@ -5398,6 +5398,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 论坛
 .controller('allpostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+  $scope.barStyle = {'margin-top': '40px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.barStyle = {'margin-top': '60px'}
+  }
   var allposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5535,6 +5539,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 .controller('mypostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+  $scope.barStyle = {'margin-top': '40px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.barStyle = {'margin-top': '60px'}
+  }
   var myposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5657,6 +5665,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 .controller('mycollectionCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+  $scope.barStyle = {'margin-top': '40px'}
+  if (ionic.Platform.isIOS()) {
+    $scope.barStyle = {'margin-top': '60px'}
+  }
   var mycollection = []
   $scope.posts = []
   $scope.moredata = true
