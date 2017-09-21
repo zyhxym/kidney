@@ -5,6 +5,7 @@
   </ion-nav-buttons>
 
 
+    <div class="bar bar-header item-input-inset text-center" style="padding:0;margin-top: 40px">
             <a class="item col-33" style="margin-top: 2px;margin-bottom: 2px;color: #6ac4f8;">
                 <span style="font-size: 16px;">全部帖子</span>
             </a>
@@ -16,7 +17,9 @@
             </a>
     </div>  
 
+    <ion-content delegate-handle="myContentScroll" style="margin-top: 35px"> 
       <ion-refresher pulling-text="下拉刷新..." on-refresh="refresher()"></ion-refresher>
+      <div class="bar bar-header item-input-inset">
             <div class="item-input-wrapper">
                 <i class="icon ion-ios-search placeholder-icon f-24"></i>
                 <input type="search" ng-model="search.title" placeholder="请输入搜索帖子主题" ng-change="goSearch()">
