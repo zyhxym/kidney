@@ -3908,26 +3908,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     if (!$scope.doctorinfo.status5) {
       services.getStatus({
       // token: Storage.get('TOKEN'),
-      userId: Storage.get('UID')}).then(function (data) {
-        console.log(data)
-        angular.forEach(data.results.serviceSchedules, function (value, key) {
-          console.log('value', value)
-          if (!value.total == 0) {
-            var para = {
+        userId: Storage.get('UID')}).then(function (data) {
+          console.log(data)
+          angular.forEach(data.results.serviceSchedules, function (value, key) {
+            console.log('value', value)
+            if (!value.total == 0) {
+              var para = {
               // userId: Storage.get('UID'),
               // token: Storage.get('TOKEN'),
-              day: value.day,
-              time: value.time
+                day: value.day,
+                time: value.time
+              }
+              services.deleteSchedules(para).then(function (data) {
+              }, function (err) {
+                console.log(err)
+              })
             }
-            services.deleteSchedules(para).then(function (data) {
-            }, function (err) {
-              console.log(err)
-            })
-          }
+          })
+        }, function (err) {
+          console.log(err)
         })
-      }, function (err) {
-        console.log(err)
-      })
     } else {
       $ionicPopup.show({
         template: '请输入面诊服务收费<input type="text" ng-model="inp.num[4]">',
@@ -4990,56 +4990,49 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 账户详情-zxf,zy
 .controller('billCtrl', ['$scope', 'Storage', '$http', '$ionicScrollDelegate', 'Order', function ($scope, Storage, $http, $ionicScrollDelegate, Order) {
-  var doc = {
-    // doctorId: Storage.get('UID'),
-    skip: 0,
-    limit: 10
-  }
-  $scope.doc = {
-    bills: [],
-    hasMore: false
+  $scope.skipnum = 0
+  $scope.bills = []
+
+  $scope.moredata = true
+  $scope.$on('$ionicView.enter', function () {
+    $scope.loadMore()
+  })
+  $scope.loadMore = function () {
+    Order.order({skip: $scope.skipnum, limit: 10}).then(function (data) {
+      console.log(data)
+      $scope.$broadcast('scroll.infiniteScrollComplete')
+      $scope.bills = $scope.bills.concat(data.results)
+      // console.log($scope.bills)
+      var skiploc = data.nexturl.indexOf('skip')
+      $scope.skipnum = data.nexturl.substring(skiploc + 5)
+      if (data.results.length == 0) { $scope.moredata = false } else { $scope.moredata = true };
+    }, function (err) {
+      console.log(err)
+      $scope.$broadcast('scroll.infiniteScrollComplete')
+    })
   }
   $scope.doRefresh = function () {
-    doc.skip = 0
-    $scope.doc.hasMore = false
-    Order.order(doc).then(function (data) {
-      $scope.doc.bills = data.results
-      doc.skip += data.results.length
-      data.results.length == doc.limit ? $scope.doc.hasMore = true : $scope.doc.hasMore = false
-      $scope.$broadcast('scroll.refreshComplete')
-    }, function (err) {
-      console.log(err)
-      $scope.$broadcast('scroll.refreshComplete')
-    })
+    $scope.skipnum = 0
+    $scope.bills = []
+    $scope.loadMore()
+    $scope.$broadcast('scroll.refreshComplete')
   }
-  $scope.doRefresh()
-  $scope.loadMore = function () {
-    Order.order(doc).then(function (data) {
-      $scope.doc.bills = $scope.doc.bills.concat(data.results)
-      doc.skip += data.results.length
-      data.results.length == doc.limit ? $scope.doc.hasMore = true : $scope.doc.hasMore = false
-      $scope.$broadcast('scroll.infiniteScrollComplete')
-    }, function (err) {
-      console.log(err)
-      $scope.$broadcast('scroll.infiniteScrollComplete')
-    })
-  }
-  $scope.scroll2Top = function () {
-    $ionicScrollDelegate.scrollTop(true)
-  }
+  // $scope.scroll2Top = function () {
+  //   $ionicScrollDelegate.scrollTop(true)
+  // }
 }])
 
 // 主管医生审核申请---rzx
-.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover','Doctor', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover,Doctor) {
+.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor) {
   $scope.Goback = function () {
     $ionicHistory.goBack()
   }
   var docname = ''
-  Doctor.getDoctorInfo().then(function(data){
+  Doctor.getDoctorInfo().then(function (data) {
     docname = data.results.name
   }, function (err) {
-      console.log(err)
-    })
+    console.log(err)
+  })
 
   $scope.passApplication = function (id) {
     console.log(id)
@@ -5061,7 +5054,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       sendBy: Storage.get('UID'),
       title: '审核完成',
       type: '7',
-      description: docname+'医生通过了您的申请,成为您的主管医生！'
+      description: docname + '医生通过了您的申请,成为您的主管医生！'
     }).then(function (data) {
       console.log(data)
       MessId = data.newResults.message.messageId
@@ -5070,7 +5063,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         userId: Storage.get('getpatientId'),
         type: 7,
         readOrNot: '0',
-        description: docname+'医生通过了您的申请,成为您的主管医生！',
+        description: docname + '医生通过了您的申请,成为您的主管医生！',
         messageId: MessId,
         userRole: 'patient'
       }).then(function (data) {
@@ -5133,7 +5126,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           sendBy: Storage.get('UID'),
           title: '审核完成',
           type: '7',
-          description: docname+'医生拒绝了您的主管医生服务申请，原因为：' + reason
+          description: docname + '医生拒绝了您的主管医生服务申请，原因为：' + reason
         }).then(function (data) {
           console.log(data.result)
           MessId = data.newResults.message.messageId
@@ -5142,7 +5135,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             userId: Storage.get('getpatientId'),
             type: 7,
             readOrNot: '0',
-            description: docname+'医生拒绝了您的主管医生服务申请，原因为：' + reason,
+            description: docname + '医生拒绝了您的主管医生服务申请，原因为：' + reason,
             messageId: MessId,
             userRole: 'patient'
           }).then(function (data) {
@@ -5405,7 +5398,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
 // 论坛
 .controller('allpostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
-
   var allposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5443,7 +5435,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-   $scope.refresher = function () {
+  $scope.refresher = function () {
     pagecontrol = {skip: 0, limit: 10},
     allposts = []
     $scope.loadMore()
@@ -5543,7 +5535,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 .controller('mypostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
- 
   var myposts = []
   $scope.posts = []
   $scope.moredata = true
@@ -5553,7 +5544,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     item: ''
   }
 
-$scope.$on('$ionicView.enter', function () {
+  $scope.$on('$ionicView.enter', function () {
     $scope.loadMore()
   })
 /**
@@ -5581,7 +5572,7 @@ $scope.$on('$ionicView.enter', function () {
     })
   }
 
-   $scope.refresher = function () {
+  $scope.refresher = function () {
     pagecontrol = {skip: 0, limit: 10},
     myposts = []
     $scope.loadMore()
@@ -5666,7 +5657,6 @@ $scope.$on('$ionicView.enter', function () {
 }])
 
 .controller('mycollectionCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
-
   var mycollection = []
   $scope.posts = []
   $scope.moredata = true
@@ -5676,7 +5666,7 @@ $scope.$on('$ionicView.enter', function () {
     item: ''
   }
 
-$scope.$on('$ionicView.enter', function () {
+  $scope.$on('$ionicView.enter', function () {
     $scope.loadMore()
   })
 
@@ -5707,7 +5697,7 @@ $scope.$on('$ionicView.enter', function () {
     })
   }
 
-   $scope.refresher = function () {
+  $scope.refresher = function () {
     pagecontrol = {skip: 0, limit: 10},
     mycollection = []
     $scope.loadMore()
@@ -5770,7 +5760,7 @@ $scope.$on('$ionicView.enter', function () {
     $state.go('tab.allposts')
   }
   $scope.$on('$ionicView.enter', function () {
-    imgModalInit();
+    imgModalInit()
   })
   $scope.hasDeliver = true
   $scope.postphoto = ''
@@ -5784,7 +5774,7 @@ $scope.$on('$ionicView.enter', function () {
     }],
     anonymous: ''
   }
-  $scope.Images=[]
+  $scope.Images = []
   $scope.Post = function () {
     var param = {
       token: Storage.get('TOKEN'),
@@ -5935,7 +5925,7 @@ $scope.$on('$ionicView.enter', function () {
 
   $scope.showoriginal = function (resizedpath) {
     for (i = 0; i < $scope.post.content[1].image.length; i++) {
-              $scope.Images[i] = CONFIG.imgLargeUrl+$scope.post.content[1].image[i].slice($scope.post.content[1].image[i].lastIndexOf('/')+1).substr(7)
+      $scope.Images[i] = CONFIG.imgLargeUrl + $scope.post.content[1].image[i].slice($scope.post.content[1].image[i].lastIndexOf('/') + 1).substr(7)
               // console.log('Images',$scope.Images)
               // console.log('images',$scope.image)
     }
@@ -5989,7 +5979,7 @@ $scope.$on('$ionicView.enter', function () {
   }
 }])
 
-.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover','$ionicModal', '$ionicScrollDelegate', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal, $ionicScrollDelegate) {
+.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', '$ionicModal', '$ionicScrollDelegate', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal, $ionicScrollDelegate) {
 // ----------------页面跳转------------------
   $scope.GoBack = function () {
     $state.go('tab.allposts')
@@ -6050,10 +6040,10 @@ $scope.$on('$ionicView.enter', function () {
 //     $ionicActionSheet.show({
 //       buttons: [
 //        { text: '删除' },
-       
+
 //       ],
 //       cancelOnStateChange: true,
-     
+
 //       buttonClicked: function (res) {
 //         console.log(11111)
 //         Forum.deletecomment({token: Storage.get('TOKEN'), postId: $scope.postId, commentId: tip.commentId}).then(function (data) {
@@ -6063,15 +6053,15 @@ $scope.$on('$ionicView.enter', function () {
 //           }, function (err) {
 //             console.log(err)
 //           })
-       
+
 //       }
 //     })
-   
+
 //   } else {
 //     $ionicActionSheet.show({
 //       buttons: [
 //        { text: '回复' },
-       
+
 //       ],
 //       cancelOnStateChange: true,
 //       buttonClicked: function (tip) {

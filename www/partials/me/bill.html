@@ -1,20 +1,17 @@
 <ion-view view-title="详细记录">
-    <ion-nav-title ng-click="scroll2Top()">
-        详细记录
-    </ion-nav-title>
-    <ion-nav-bar class="bar-positive " align-title="center">
-        <ion-nav-buttons side="left">
-            <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
-        </ion-nav-buttons>
-    </ion-nav-bar>
+  <ion-nav-bar class="bar-positive " align-title="center">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
 
-    <ion-content>
+  <ion-content>
         <ion-refresher
             pulling-text="下拉刷新..."
             on-refresh="doRefresh()">
         </ion-refresher>
-
-        <div class="card row" ng-repeat="bill in doc.bills track by $index" style="height: 110px">
+      <div>
+        <div class="card row" ng-repeat="bill in bills" style="height: 110px">
             <div class="col col-75 item item-text-wrap">
                 <p class="left">交易对象：{{bill.patientName}}</p>
                 <p class="left">服务类型：{{bill.type | chargeType}}</p>
@@ -28,11 +25,7 @@
         <div style="text-align:center;color:gray;">
             <span ng-if="!doc.hasMore">已经没有更多了</span>
         </div>
-        <ion-infinite-scroll
-            ng-if="doc.hasMore"
-            on-infinite="loadMore()"
-            immediate-check="false"
-            distance="1%">
-        </ion-infinite-scroll>
-    </ion-content>
+      </div>
+      <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" immediate-check="false"></ion-infinite-scroll>
+  </ion-content>
 </ion-view>
