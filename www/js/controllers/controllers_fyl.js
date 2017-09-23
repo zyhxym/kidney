@@ -144,9 +144,9 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       console.log(data)
       if (data.results.length) {
         if (data.results[0].type == 11) {
-          str1 = data.results[0].title.split(':')[1]
+          str1 = data.results[0].url.split('"fromName":')[1]
           // str2 = str1.split(':')[1]
-          str3 = str1.split('}')[0]
+          str3 = str1.split(',"fromID"')[0]
           document.getElementById('newMes').innerText = '最新消息：患者' + str3 + '给您发来一条消息“' + data.results[0].description + '”'
         } else if (data.results[0].type == 15) {
           document.getElementById('newMes').innerText = '您有一条病例讨论新消息：“' + data.results[0].description + '”'
