@@ -2267,12 +2267,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 
 // 未咨询报表推送消息-zy
-.controller('nocomessCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+.controller('nocomessCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'New', function ($scope, $state, $interval, $rootScope, Storage, New) {
   $scope.noCounsels = []
   var load = function () {
-    Message.getMessages({
-      type: 14 // 14是为及时咨询报告消息
-    }).then(function (data) {
+    New.getNewsByReadOrNot({type:'14',readOrNot:0}).then(function (data) {
       console.log(data)
       // for (var i = 0; i < data.results.length; i++) {        
       //   if (data.results[i].readOrNot==0) {
