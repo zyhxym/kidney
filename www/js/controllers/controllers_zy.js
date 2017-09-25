@@ -4420,9 +4420,20 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             $scope.suspend = true
             $scope.stausButtontText = '取消停诊'
           } else if (dateNow > dateE) {
-            $scope.stausButtontText = '设置停诊'
-            $scope.stausText = '接诊中...'
-            $scope.suspend = false
+            var param = {
+              // token: Storage.get('TOKEN'),
+              start: $scope.begin,
+              end: $scope.end
+            }
+            console.log(param)
+            services.deleteSuspend(param).then(function (data) {
+              console.log(data)
+              $scope.stausButtontText = '设置停诊'
+              $scope.stausText = '接诊中...'
+              $scope.suspend = false
+            }, function (err) {
+              console.log(err)
+            })
           } else {
             $scope.stausText = '接诊中...'
             $scope.stausButtontText = '取消停诊'
