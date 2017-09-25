@@ -42,14 +42,14 @@ angular.module('kidney', [
       })
     }
     showConfirm()
-
     return false
   }, 101)
 
   $ionicPlatform.ready(function () {
     // version.checkUpdate($rootScope)// 在app.js的ready里加
     // 记录message当前会话
-    $rootScope.isIOS = $ionicPlatform.is('ios')
+    // $rootScope.isIOS = $ionicPlatform.is('ios')
+    ionic.Platform.fullScreen(true, true)
     $rootScope.conversation = {
       type: null,
       id: ''
@@ -429,10 +429,10 @@ angular.module('kidney', [
       cache: false,
       views: {
         'tab-forum': {
-      templateUrl: 'partials/forum/myposts.html',
-      controller: 'mypostsCtrl'
+          templateUrl: 'partials/forum/myposts.html',
+          controller: 'mypostsCtrl'
+        }
       }
-     }
     })
     .state('tab.mycollection', {
       url: '/mycollection',
