@@ -2999,7 +2999,9 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
    * @return   {[type]}
    */
   $scope.save = function () {
-    Communication.conclusion({ consultationId: $state.params.groupId, conclusion: $scope.input.text})
+    var inputtext = $scope.input.text
+    $scope.input.text = ''
+    Communication.conclusion({ consultationId: $state.params.groupId, conclusion: inputtext})
             .then(function (data) {
               console.log(data)
               Communication.getCounselReport({ counselId: $scope.patient.diseaseInfo.counselId })
@@ -3024,10 +3026,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                         createTimeInMillis: Date.now(),
                         targetRole: 'patient',
                         content: {
-                          text: $scope.input.text
+                          text: inputtext
 
                         }
                       }
+
+                      $scope.pushMsg(msgJson)
                       if (res.results.type == 2 || res.results.type == 3) {
                             // 暂时把socket连接指向DID，用于此条消息的发送。之后call resetUserAsAppUser改回APP使用者
                             // var resetUserAsAppUser = mySocket.newUserForTempUse(DID,res.results.doctorId.name);
@@ -3049,7 +3053,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 'color': '#173177'
                               },
                               'keyword2': {
-                                'value': $scope.input.text, // 医生的回复
+                                'value': inputtext, // 医生的回复
                                 'color': '#173177'
                               },
                               'keyword3': {
@@ -3068,8 +3072,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                             // resetUserAsAppUser();
 
                         $ionicLoading.show({ template: '回复成功'})
-                        $scope.input.text = ''
-                        $scope.pushMsg(msgJson)
+
                         setTimeout(function () {
                           $ionicLoading.hide()
                         }, 1000)
@@ -3091,7 +3094,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                 'color': '#173177'
                               },
                               'keyword2': {
-                                'value': $scope.input.text, // 医生的回复
+                                'value': inputtext, // 医生的回复
                                 'color': '#173177'
                               },
                               'keyword3': {
@@ -3150,8 +3153,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                                   }
                                     // resetUserAsAppUser();
                                   $ionicLoading.show({ template: '回复成功'})
-                                  $scope.input.text = ''
-                                  $scope.pushMsg(msgJson)
+
                                   setTimeout(function () {
                                     $ionicLoading.hide()
                                   }, 1000)
