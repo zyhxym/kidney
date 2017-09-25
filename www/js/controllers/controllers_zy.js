@@ -5318,6 +5318,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.getDetail = function (noCounsel) {
     Storage.set('noCounselurl', noCounsel.url)
     Storage.set('noCounselMes', noCounsel.messageId)
+    Storage.set('readReport', noCounsel.readOrNot)
     $state.go('tab.nocodetail')
   }
 }])
@@ -5326,21 +5327,24 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 .controller('nocodetailCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', '$http', function ($scope, $state, $interval, $rootScope, Storage, Message, $http) {
   var noCounselurl = Storage.get('noCounselurl')
   // console.log(noCounselurl)
-  Message.editStatus({
-    type: 14, // 14是为及时咨询报告消息
-    messageId: Storage.get('noCounselMes'),
-    readOrNot: 1
-  }).then(function (data) {
-    console.log(data)
-  }, function (err) {
-    console.log(err)
-  })
+  if (Storage.get('readReport') == 0) {
+    Message.editStatus({
+      type: 14, // 14是为及时咨询报告消息
+      messageId: Storage.get('noCounselMes'),
+      readOrNot: 1
+    }).then(function (data) {
+      console.log(data)
+      Storage.rm('readReport')
+    }, function (err) {
+      console.log(err)
+    })
+  }
 
   $http({
     method: 'GET',
     url: noCounselurl
   }).success(function (data) {
-    // console.log(data)
+    console.log(data)
     $scope.details = data.results
   })
 }])
