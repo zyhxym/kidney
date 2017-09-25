@@ -2271,8 +2271,8 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.noCounsels = []
   var load = function () {
     Message.getMessages({
-      type: 14 // 14是为及时咨询报告消息
-      readOrNot:0,
+      type: 14, // 14是为及时咨询报告消息
+      readOrNot:0
     }).then(function (data) {
       console.log(data)
       // for (var i = 0; i < data.results.length; i++) {        
