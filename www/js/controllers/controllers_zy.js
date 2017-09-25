@@ -95,7 +95,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
          */
         logPromise.then(function (data) {
           if (data.results == 1) {
-            if (data.mesg == "Alluser doesn't Exist!") {
+            if (data.mesg == "Alluser doesn't Exist!" || data.mesg == 'No authority!') {
               $scope.logStatus = '账号不存在！'
             } else if (data.mesg == "Alluser password isn't correct!") {
               $scope.logStatus = '账号或密码错误！'
