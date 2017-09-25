@@ -29,8 +29,18 @@
 
   <ion-content class="has-header"  ng-style="barStyle" style="background-color: #f0f0f0;">
     <ion-refresher pulling-text="下拉刷新..." on-refresh="doRefresh(type)"></ion-refresher>
-    <select class="col" style="margin:5px 1%;width: 98%;color:RGBA(102,102,102,0.7);border: aliceblue;" ng-model="type"  ng-change="doRefresh(type)">
-          <option selected value="">类型</option> 
+<!--     <label  class="item item-input item-select-custom blue-round-input">
+        <div class="input-label">类别</div>
+      <select style="width: 80%" ng-model="type" ng-change="doRefresh(type)">
+        <option selected value="">所有</option>
+        <option selected value="Health_001">检查</option> 
+        <option selected value="Health_002">化验</option> 
+        <option selected value="Health_003">用药</option> 
+        <option selected value="Health_004">病历</option> 
+      </select>
+    </label> -->
+    <select class="col" style="margin:5px 1%;width: 98%;color:RGBA(102,102,102,0.7);border: aliceblue;background-color: white;" ng-model="type"  ng-change="doRefresh(type)">
+          <option selected value="">所有</option> 
           <option selected value="Health_001">检查</option> 
           <option selected value="Health_002">化验</option> 
           <option selected value="Health_003">用药</option> 
