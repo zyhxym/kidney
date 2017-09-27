@@ -176,7 +176,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }
         // console.log($scope.HasUnreadMessages);
       } else {
-        document.getElementById('newMes').innerText = '没有最新消息！'
+        $scope.newMes = '没有最新消息！'
         $scope.hasUnreadMessages = false
       }
     }, function (err) {
