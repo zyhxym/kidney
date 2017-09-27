@@ -125,7 +125,7 @@ angular.module('kidney', [
       cordova.plugins.Keyboard.disableScroll(true)
     }
     if (window.StatusBar) {
-      StatusBar.backgroundColorByHexString('#33bbff')
+      StatusBar.backgroundColorByHexString('#6ac4f8')
     }
     // 显示通知栏消息
     // custom消息内容
@@ -197,6 +197,9 @@ angular.module('kidney', [
     //    counseltype:1或2
     //    counselId:
     // }
+    $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+      $state.go('signin')
+    })
     // 显示通知栏消息
     $rootScope.$on('$cordovaLocalNotification:click', function (event, note, state) {
       console.log(arguments)
@@ -256,7 +259,7 @@ angular.module('kidney', [
 
   // ios 白屏可能问题配置
   $ionicConfigProvider.views.swipeBackEnabled(false)
-
+  $ionicConfigProvider.platform.android.navBar.alignTitle('center')
     // android导航栏在顶部解决办法
   $ionicConfigProvider.platform.android.tabs.style('standard')
   $ionicConfigProvider.platform.android.tabs.position('standard')
