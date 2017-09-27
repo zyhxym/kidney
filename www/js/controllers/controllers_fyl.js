@@ -229,10 +229,10 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
 // 病情报告--fyl
 .controller('ReportCtrl', ['Storage', '$scope', '$state', 'getPatientData', '$ionicLoading', function (Storage, $scope, $state, getPatientData, $ionicLoading) {
-  $scope.barStyle = {'margin-top': '40px'}
-  if (ionic.Platform.isIOS()) {
-    $scope.barStyle = {'margin-top': '60px'}
-  }
+  // $scope.barStyle = {'margin-top': '40px'}
+  // if (ionic.Platform.isIOS()) {
+  //   $scope.barStyle = {'margin-top': '60px'}
+  // }
   patientId = Storage.get('getpatientId')
   $scope.writeReport = true
   $scope.type = 'week'

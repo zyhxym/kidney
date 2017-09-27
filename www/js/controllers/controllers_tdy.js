@@ -2,10 +2,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 // 医生诊断-mzb
 .controller('DoctorDiagnoseCtrl', ['Task','$scope', 'Storage','ionicDatePicker','Patient','$state','$ionicLoading', function (Task,$scope, Storage,ionicDatePicker,Patient,$state,$ionicLoading) {
-  $scope.barStyle={'margin-top':'40px'}
-  if(ionic.Platform.isIOS()){
-      $scope.barStyle={'margin-top':'60px'}
-  }
+  // $scope.barStyle={'margin-top':'40px'}
+  // if(ionic.Platform.isIOS()){
+  //     $scope.barStyle={'margin-top':'60px'}
+  // }
   $scope.BacktoPD = function(){
     $state.go('tab.patient');
   }
@@ -327,10 +327,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 //测量记录-zxf
 .controller('TestRecordCtrl', ['$state','$scope', '$http','$stateParams','Storage','VitalSign','labtestImport', function ($state,$scope,$http,$stateParams,Storage,VitalSign,labtestImport) {
-  $scope.barStyle={'margin-top':'40px'}
-  if(ionic.Platform.isIOS()){
-      $scope.barStyle={'margin-top':'60px'}
-  }
+  // $scope.barStyle={'margin-top':'40px'}
+  // if(ionic.Platform.isIOS()){
+  //     $scope.barStyle={'margin-top':'60px'}
+  // }
   $scope.BacktoPD = function(){
     $state.go('tab.patient');
   }  
@@ -1156,10 +1156,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 //任务设置--GL
 .controller('TaskSetCtrl', ['$scope', '$state', '$ionicPopup', 'Storage', 'Task','$ionicLoading', function ($scope, $state, $ionicPopup, Storage, Task,$ionicLoading) {
-  $scope.barStyle={'margin-top':'40px'}
-  if(ionic.Platform.isIOS()){
-      $scope.barStyle={'margin-top':'60px'}
-  }
+  // $scope.barStyle={'margin-top':'40px'}
+  // if(ionic.Platform.isIOS()){
+  //     $scope.barStyle={'margin-top':'60px'}
+  // }
   $scope.BacktoPD = function(){
     $state.go('tab.patient');
   }
@@ -1431,10 +1431,10 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 
 //健康信息-pxy,zy
 .controller('HealthInfoCtrl', ['$state','$scope','$timeout','$state','$ionicHistory','$ionicPopup','Storage','Health','Dict','CONFIG','$ionicModal','$ionicScrollDelegate',function($state,$scope, $timeout,$state,$ionicHistory,$ionicPopup,Storage,Health,Dict,CONFIG,$ionicModal,$ionicScrollDelegate) {
-  $scope.barStyle={'margin-top':'40px'}
-  if(ionic.Platform.isIOS()){
-    $scope.barStyle={'margin-top':'60px'}
-  }
+  // $scope.barStyle={'margin-top':'40px'}
+  // if(ionic.Platform.isIOS()){
+  //   $scope.barStyle={'margin-top':'60px'}
+  // }
   $scope.barwidth="width:0%";
   // 返回健康详情
   $scope.BacktoPD = function(){
