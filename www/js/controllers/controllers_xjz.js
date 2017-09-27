@@ -667,7 +667,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
   $scope.$on('$ionicView.enter', function () {
     // 非ios平台不需要keyboard-attach directive
-    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
+    // if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     if ($rootScope.conversation) {
       $rootScope.conversation.type = 'single'
       $rootScope.conversation.id = $state.params.chatId
@@ -1881,7 +1881,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     }
   })
   $scope.$on('$ionicView.enter', function () {
-    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
+    // if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     console.log(document.getElementById('inputbar'))
     console.log($scope.photoUrls)
     $rootScope.conversation.type = 'group'
@@ -2908,7 +2908,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
 
   $scope.$on('$ionicView.enter', function () {
-    if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
+    // if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
     imgModalInit()
   })
 

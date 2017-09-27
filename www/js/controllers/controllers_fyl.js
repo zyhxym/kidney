@@ -448,8 +448,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                             // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                             // plotBorderColor:'blue',//主图表边框颜色
                             // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -562,8 +562,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                         // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                         // plotBorderColor:'blue',//主图表边框颜色
                         // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -683,8 +683,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -789,8 +789,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -901,8 +901,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1017,8 +1017,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1138,8 +1138,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1220,8 +1220,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1302,8 +1302,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1384,8 +1384,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
@@ -1466,8 +1466,8 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
                     // plotBackgroundColor:"#46A3FF",//主图表区背景颜色
                     // plotBorderColor:'blue',//主图表边框颜色
                     // plotBorderWidth:2,//主图表边框宽度
-              shadow: true, // 是否设置阴影
-              zoomType: 'xy'
+              shadow: true // 是否设置阴影
+              // zoomType: 'xy'
             },
             colors: [
               '#FF8040',
