@@ -2126,10 +2126,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   //     $ionicHistory.goBack();
   // }
   //
-  $scope.barStyle = {'margin-top': '40px'}
+/*  $scope.barStyle = {'margin-top': '40px'}
   if (ionic.Platform.isIOS()) {
     $scope.barStyle = {'margin-top': '60px'}
-  }
+  } */
   // 判断从哪个页面进入患者详情页，存入$scope.backview.stateId，返回时对应返回
   $scope.backview = $ionicHistory.viewHistory().backView
   $scope.backstateId = null
