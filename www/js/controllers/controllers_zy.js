@@ -4862,12 +4862,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                }, function (err) {
-                  console.log(err)
-                })
                 param.place = $scope.inp.pla
                 Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                  // console.log('insert', data)
                   $scope.workStatus[index].status = 1
                   $scope.workStatus[index].style = {'background-color': 'red'}
                   $scope.workStatus[index].place = $scope.inp.pla
