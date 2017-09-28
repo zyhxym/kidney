@@ -1633,7 +1633,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     })
     confirmPopup.then(function (res) {
       if (res) {
-        Communication.removeMember({ teamId: $state.params.teamId, membersuserId: $scope.doctors[id].userId })
+        Communication.removeMember({ teamId: $state.params.teamId, membersUserId: $scope.doctors[id].userId })
                     .then(function (data) {
                       if (data.result == '更新成员成功') {
                         Communication.getTeam({ teamId: $state.params.teamId })
@@ -1882,7 +1882,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
   })
   $scope.$on('$ionicView.enter', function () {
     // if ($ionicPlatform.is('ios') == false)document.getElementById('inputbar').removeAttribute('keyboard-attach')
-    console.log(document.getElementById('inputbar'))
+    // console.log(document.getElementById('inputbar'))
     console.log($scope.photoUrls)
     $rootScope.conversation.type = 'group'
     $rootScope.conversation.id = $scope.params.groupId
