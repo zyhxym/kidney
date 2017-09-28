@@ -2158,6 +2158,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     } else if (backId == 'tab.detail') {
       var q = JSON.parse(Storage.get('singleChatParams'))
       $state.go('tab.detail', q)
+    } else if (backId == 'tab.view-chat') {
+      var q = JSON.parse(Storage.get('viewChatParams'))
+      $state.go('tab.view-chat', q)
     } else {
       $state.go('tab.patient')
     }
