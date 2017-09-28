@@ -3910,21 +3910,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       // token: Storage.get('TOKEN'),
         userId: Storage.get('UID')}).then(function (data) {
           console.log(data)
-          angular.forEach(data.results.serviceSchedules, function (value, key) {
-            console.log('value', value)
-            if (!value.total == 0) {
-              var para = {
-              // userId: Storage.get('UID'),
-              // token: Storage.get('TOKEN'),
-                day: value.day,
-                time: value.time
-              }
-              services.deleteSchedules(para).then(function (data) {
-              }, function (err) {
-                console.log(err)
-              })
-            }
-          })
+          // angular.forEach(data.results.serviceSchedules, function (value, key) {
+          //   console.log('value', value)
+          //   if (!value.total == 0) {
+          //     var para = {
+          //     // userId: Storage.get('UID'),
+          //     // token: Storage.get('TOKEN'),
+          //       day: value.day,
+          //       time: value.time
+          //     }
+          //     services.deleteSchedules(para).then(function (data) {
+          //     }, function (err) {
+          //       console.log(err)
+          //     })
+          //   }
+          // })
         }, function (err) {
           console.log(err)
         })
@@ -4555,53 +4555,53 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       }, function (err) {
         console.log(err)
       })
-      angular.forEach($scope.workStatus, function (value, key) {
-        console.log('value', value)
-        var setDay = 0
-        var index
-        if (value.day == 'Mon') {
-          index = 0
-          setDay = 1
-        } else if (value.day == 'Tue') {
-          index = 1
-          setDay = 2
-        } else if (value.day == 'Wed') {
-          index = 2
-          setDay = 3
-        } else if (value.day == 'Thu') {
-          index = 3
-          setDay = 4
-        } else if (value.day == 'Fri') {
-          index = 4
-          setDay = 5
-        } else if (value.day == 'Sat') {
-          index = 5
-          setDay = 6
-        } else if (value.day == 'Sun') {
-          index = 6
-          setDay = 7
-        }
-        if (value.time == 'Afternoon') { index += 7 }
-        var nowDate = new Date()
-        var nowDay = nowDate.getDay()
-        if (nowDay < 1) { nowDay += 7 }
-        if (nowDay > setDay) { setDay += 7 }
-        var workStatusDate = new Date()
-        workStatusDate.setDate(workStatusDate.getDate() - nowDay + setDay)
-        if (new Date($scope.begin) <= workStatusDate && workStatusDate <= new Date($scope.end)) {
-          var para = {
-                    // userId: Storage.get('UID'),
-                    // token: Storage.get('TOKEN'),
-            day: value.day,
-            time: value.time
-          }
-          services.deleteSchedules(para).then(function (data) {
-            $scope.workStatus[index].number = 0
-          }, function (err) {
-            console.log(err)
-          })
-        }
-      })
+      // angular.forEach($scope.workStatus, function (value, key) {
+      //   console.log('value', value)
+      //   var setDay = 0
+      //   var index
+      //   if (value.day == 'Mon') {
+      //     index = 0
+      //     setDay = 1
+      //   } else if (value.day == 'Tue') {
+      //     index = 1
+      //     setDay = 2
+      //   } else if (value.day == 'Wed') {
+      //     index = 2
+      //     setDay = 3
+      //   } else if (value.day == 'Thu') {
+      //     index = 3
+      //     setDay = 4
+      //   } else if (value.day == 'Fri') {
+      //     index = 4
+      //     setDay = 5
+      //   } else if (value.day == 'Sat') {
+      //     index = 5
+      //     setDay = 6
+      //   } else if (value.day == 'Sun') {
+      //     index = 6
+      //     setDay = 7
+      //   }
+      //   if (value.time == 'Afternoon') { index += 7 }
+      //   var nowDate = new Date()
+      //   var nowDay = nowDate.getDay()
+      //   if (nowDay < 1) { nowDay += 7 }
+      //   if (nowDay > setDay) { setDay += 7 }
+      //   var workStatusDate = new Date()
+      //   workStatusDate.setDate(workStatusDate.getDate() - nowDay + setDay)
+      //   if (new Date($scope.begin) <= workStatusDate && workStatusDate <= new Date($scope.end)) {
+      //     var para = {
+      //               // userId: Storage.get('UID'),
+      //               // token: Storage.get('TOKEN'),
+      //       day: value.day,
+      //       time: value.time
+      //     }
+      //     services.deleteSchedules(para).then(function (data) {
+      //       $scope.workStatus[index].number = 0
+      //     }, function (err) {
+      //       console.log(err)
+      //     })
+      //   }
+      // })
     }
   }
 
@@ -4801,9 +4801,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             onTap: function (e) {
               var numReg = /^\d+$/
             // 收费正则表达式验证
-              if ($scope.suspendFlag) {
-                $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              } else if (!numReg.test($scope.inp.num)) {
+              // if ($scope.suspendFlag) {
+              //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
+              // } else 
+              if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
               } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
@@ -4900,9 +4901,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             onTap: function (e) {
               var numReg = /^\d+$/
             // 收费正则表达式验证
-              if ($scope.suspendFlag) {
-                $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              } else if (!numReg.test($scope.inp.num)) {
+              // if ($scope.suspendFlag) {
+              //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
+              // } else 
+              if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
               } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
