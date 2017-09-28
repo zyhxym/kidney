@@ -89,7 +89,7 @@ angular.module('kidney', [
       $ionicPopup.alert({
         title: '请重新登录'
       }).then(function () {
-                // $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
+        // $scope.navigation_login=$sce.trustAsResourceUrl("http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx");
         $state.go('signin')
       })
     })
@@ -490,12 +490,48 @@ angular.module('kidney', [
     })
     // 服务管理
     .state('tab.myservice', {
-        // cache: false,
+      // cache: false,
       url: '/myservice',
+      params: {last: null},
       views: {
         'tab-workplace': {
           controller: 'myserviceCtrl',
           templateUrl: 'partials/workplace/myservice.html'
+        }
+      }
+    })
+    .state('tab.myservice2', {
+      // cache: false,
+      url: '/myservice2',
+      params: {last: null},
+      views: {
+        'tab-me': {
+          controller: 'myserviceCtrl',
+          templateUrl: 'partials/workplace/myservice.html'
+        }
+      }
+    })
+
+    // 面诊服务页面
+    .state('tab.faceconsult', {
+      cache: false,
+      url: '/faceconsult',
+
+      views: {
+        'tab-workplace': {
+          controller: 'faceconsultCtrl',
+          templateUrl: 'partials/me/faceconsult.html'
+        }
+      }
+    })
+    .state('tab.faceconsult2', {
+      cache: false,
+      url: '/faceconsult',
+
+      views: {
+        'tab-me': {
+          controller: 'faceconsultCtrl',
+          templateUrl: 'partials/me/faceconsult.html'
         }
       }
     })
@@ -512,7 +548,7 @@ angular.module('kidney', [
     })
     // 主管医生审核申请--rzx
     .state('tab.review', {
-        // cache: false,
+      // cache: false,
       url: '/review',
       views: {
         'tab-workplace': {
@@ -522,7 +558,7 @@ angular.module('kidney', [
       }
     })
 
-// 预约面诊列表
+    // 预约面诊列表
     .state('tab.face', {
         // cache: false,
       url: '/face',
@@ -928,21 +964,9 @@ angular.module('kidney', [
       }
     })
 
-    // 我的服务
-    // .state('tab.myservice', {
-    //     // cache: false,
-    //   url: '/myservice',
-    //   views: {
-    //     'tab-me': {
-    //       controller: 'myserviceCtrl',
-    //       templateUrl: 'partials/me/myservice.html'
-    //     }
-    //   }
-    // })
-
     // 自动转发页
     .state('tab.forwarding', {
-        // cache: false,
+      // cache: false,
       url: '/me/forwarding',
       views: {
         'tab-me': {
@@ -952,21 +976,9 @@ angular.module('kidney', [
       }
     })
 
-    // 面诊服务页面
-    .state('tab.faceconsult', {
-      cache: false,
-      url: '/me/faceconsult',
-      views: {
-        'tab-me': {
-          controller: 'faceconsultCtrl',
-          templateUrl: 'partials/me/faceconsult.html'
-        }
-      }
-    })
-
     // 设置
     .state('tab.set', {
-        // cache: false,
+      // cache: false,
       url: '/set',
       views: {
         'tab-me': {
@@ -987,7 +999,7 @@ angular.module('kidney', [
     })
     // 查看协议页
     .state('tab.viewAgree', {
-        // cache: false,
+      // cache: false,
       url: '/me/set/viewAgree',
       views: {
         'tab-me': {

@@ -333,7 +333,6 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 手机号码验证-zy,zxf
-
 .controller('phonevalidCtrl', ['$scope', '$state', '$interval', '$stateParams', 'Storage', 'User', 'Patient', 'Doctor', 'mySocket', '$timeout', '$ionicLoading', function ($scope, $state, $interval, $stateParams, Storage, User, Patient, Doctor, mySocket, $timeout, $ionicLoading) {
   $scope.barwidth = 'width:0%'
   $scope.Verify = {Phone: '', Code: ''}
@@ -2410,7 +2409,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       myPopup()
     }
   }
-
+  $scope.goService = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.myservice2', {last: 'me'})
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
   // 获取用户角色
   $scope.master = false
   User.getUserId({
@@ -3623,7 +3628,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 我的服务
-.controller('myserviceCtrl', ['$scope', '$state', 'Storage', '$ionicPopup', '$ionicHistory', '$ionicLoading', 'services', function ($scope, $state, Storage, $ionicPopup, $ionicHistory, $ionicLoading, services) {
+.controller('myserviceCtrl', ['$scope', '$state', 'Storage', '$ionicPopup', '$stateParams', '$ionicHistory', '$ionicLoading', 'services', function ($scope, $state, Storage, $ionicPopup, $stateParams, $ionicHistory, $ionicLoading, services) {
   $scope.doctorinfo = {
     status1: '',
     status2: '',
@@ -3677,6 +3682,18 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.$on('$ionicView.enter', function () {
     getStatus()
   })
+
+  $scope.goFaceconsult = function () {
+    console.log(123)
+    console.log($stateParams.last)
+    if ($stateParams.last == 'workplace') {
+      console.log(456)
+      $state.go('tab.faceconsult')
+    }
+    if ($stateParams.last == 'me') {
+      $state.go('tab.faceconsult2')
+    }
+  }
 
   $scope.consultChange = function () {
     services.setStatus({
@@ -4826,7 +4843,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 }, function (err) {
                   console.log(err)
                 })
-                param.total = parseInt($scope.inp.num) 
+                param.total = parseInt($scope.inp.num)
                 if (!param.total == 0) {
                 // console.log('param',param)
                   services.setSchedules(param).then(function (data) {
@@ -4865,13 +4882,13 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             onTap: function (e) {
               // if ($scope.suspendFlag) {
               //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              // } else 
+              // } else
               if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                param.place = $scope.inp.pla 
+                param.place = $scope.inp.pla
                 Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                  console.log('delete', data) 
+                  console.log('delete', data)
                   Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
                     console.log('insert', data)
                     $scope.workStatus[index].status = 1
@@ -4882,7 +4899,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                   })
                 }, function (err) {
                   console.log(err)
-                }) 
+                })
               }
             }
           },
@@ -4914,7 +4931,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               } else {
                 param.place = $scope.inp.pla
                 Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                  console.log('delete', data) 
+                  console.log('delete', data)
                   Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
                     console.log('insert', data)
                     $scope.workStatus[index].status = 1
@@ -4925,7 +4942,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                   })
                 }, function (err) {
                   console.log(err)
-                }) 
+                })
                 param.total = parseInt($scope.inp.num)
                 if (!param.total == 0) {
                 // console.log('param',param)

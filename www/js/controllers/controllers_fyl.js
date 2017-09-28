@@ -121,7 +121,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
   }
   $scope.goService = function () {
     if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.myservice')
+      $state.go('tab.myservice', {last: 'workplace'})
     } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
       myPopup()
     }
@@ -176,7 +176,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
         }
         // console.log($scope.HasUnreadMessages);
       } else {
-        document.getElementById('newMes').innerText = '没有最新消息！'
+        $scope.newMes = '没有最新消息！'
         $scope.hasUnreadMessages = false
       }
     }, function (err) {
