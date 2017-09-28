@@ -957,7 +957,7 @@ angular.module('kidney', [
       cache: false,
       url: '/me/faceconsult',
       views: {
-        'tab-me': {
+        'tab-workplace': {
           controller: 'faceconsultCtrl',
           templateUrl: 'partials/me/faceconsult.html'
         }
