@@ -4460,7 +4460,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     {status: 0, number: 0, day: 'Sat', time: 'Afternoon', place: '', style: {'background-color': 'white'}},
     {status: 0, number: 0, day: 'Sun', time: 'Afternoon', place: '', style: {'background-color': 'white'}}
   ]
-  $scope.stausButtontText = '停诊'
+  $scope.stausButtontText = '等待中'
   $scope.stausText = '接诊中...'
   $scope.showSchedual = true
   $scope.inp = {num: '', pla: ''}
@@ -4808,19 +4808,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                }, function (err) {
-                  console.log(err)
-                })
-                param.total = parseInt($scope.inp.num)
                 param.place = $scope.inp.pla
-                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
-                  $scope.workStatus[index].status = 1
-                  $scope.workStatus[index].style = {'background-color': 'red'}
-                  $scope.workStatus[index].place = $scope.inp.pla
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                  console.log('delete', data)
+                  Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                    console.log('insert', data)
+                    $scope.workStatus[index].status = 1
+                    $scope.workStatus[index].style = {'background-color': 'red'}
+                    $scope.workStatus[index].place = $scope.inp.pla
+                  }, function (err) {
+                    console.log(err)
+                  })
                 }, function (err) {
                   console.log(err)
                 })
+                param.total = parseInt($scope.inp.num) 
                 if (!param.total == 0) {
                 // console.log('param',param)
                   services.setSchedules(param).then(function (data) {
@@ -4857,20 +4859,26 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              if ($scope.suspendFlag) {
-                $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              } else if ($scope.inp.pla == '') {
+              // if ($scope.suspendFlag) {
+              //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
+              // } else 
+              if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                param.place = $scope.inp.pla
-                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
-                  // console.log('insert', data)
-                  $scope.workStatus[index].status = 1
-                  $scope.workStatus[index].style = {'background-color': 'red'}
-                  $scope.workStatus[index].place = $scope.inp.pla
+                param.place = $scope.inp.pla 
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                  console.log('delete', data) 
+                  Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                    console.log('insert', data)
+                    $scope.workStatus[index].status = 1
+                    $scope.workStatus[index].style = {'background-color': 'red'}
+                    $scope.workStatus[index].place = $scope.inp.pla
+                  }, function (err) {
+                    console.log(err)
+                  })
                 }, function (err) {
                   console.log(err)
-                })
+                }) 
               }
             }
           },
@@ -4899,19 +4907,21 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               } else if ($scope.inp.pla == '') {
                 $ionicLoading.show({ template: '出诊医院不能为空！', duration: 1000 })
               } else {
-                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
-                }, function (err) {
-                  console.log(err)
-                })
-                param.total = parseInt($scope.inp.num)
                 param.place = $scope.inp.pla
-                Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
-                  // $scope.workStatus[index].status = 1
-                  // $scope.workStatus[index].style = {'background-color': 'red'}
-                  $scope.workStatus[index].place = $scope.inp.pla
+                Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                  console.log('delete', data) 
+                  Doctor.insertSchedule({day: param.day, time: param.time, place: param.place}).then(function (data) {
+                    console.log('insert', data)
+                    $scope.workStatus[index].status = 1
+                    $scope.workStatus[index].style = {'background-color': 'red'}
+                    $scope.workStatus[index].place = $scope.inp.pla
+                  }, function (err) {
+                    console.log(err)
+                  })
                 }, function (err) {
                   console.log(err)
-                })
+                }) 
+                param.total = parseInt($scope.inp.num)
                 if (!param.total == 0) {
                 // console.log('param',param)
                   services.setSchedules(param).then(function (data) {
@@ -4980,6 +4990,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             type: 'button-positive',
             onTap: function (e) {
               Doctor.deleteSchedule({day: param.day, time: param.time}).then(function (data) {
+                console.log('delete', data)
                 $scope.workStatus[index].status = 0
                 $scope.workStatus[index].style = {'background-color': 'white'}
                 $scope.workStatus[index].place = ''
@@ -4988,6 +4999,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               })
 
               services.deleteSchedules({day: param.day, time: param.time}).then(function (data) {
+                console.log('deletesche', data)
                 $scope.workStatus[index].number = 0
               }, function (err) {
                 console.log(err)
