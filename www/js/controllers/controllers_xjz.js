@@ -3305,18 +3305,20 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
   $scope.$on('profile', function (event, args) {
     event.stopPropagation()
-        // if(args[1].direct=='receive'){
-        //         Storage.set('getpatientId',args[1].fromID);
-        //         var statep={
-        //             type:$scope.params.type,
-        //             chatId:$scope.params.chatId
-        //         }
-        //         Storage.set('backId','tab.detail');
-        //         Storage.set('singleChatParams',JSON.stringify(statep));
-        //         $state.go('tab.patientDetail');
-        // }else{
-        //     $state.go('tab.group-profile', { memberId: args[1].fromID});
-        // }
+    if (args[1].direct == 'receive') {
+      Storage.set('getpatientId', args[1].fromID)
+      var statep = {
+        doctorId: $state.params.doctorId,
+        patientId: $state.params.patientId,
+        groupId: $state.params.groupId,
+        teamId: $state.params.teamId
+      }
+      Storage.set('backId', 'tab.view-chat')
+      Storage.set('viewChatParams', JSON.stringify(statep))
+      $state.go('tab.patientDetail')
+    } else {
+      $state.go('tab.group-profile', { memberId: args[1].concluderID || args[1].fromID})
+    }
   })
   /**
    * 回去
