@@ -4,7 +4,7 @@
             <button class="button button-icon icon ion-ios-arrow-left fc-ff" ng-click="$ionicGoBack()"></button>
         </ion-nav-buttons>
     </ion-nav-bar>
-    <div class="bar item-input-inset" ng-style="searchStyle">
+    <div class="bar item-input-inset" style="margin-top: 44px">
         <div class="item-input-wrapper">
             <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
             <input type="search" ng-blur="doResume()" ng-model="search.name" placeholder="搜索医生姓名">
@@ -15,7 +15,7 @@
             搜索
         </button>
     </div>
-    <ion-content class="has-subheader gray-back" ng-style="docStyle">
+    <ion-content class="has-subheader gray-back" style="margin-top: 0px">
 
         <div class="list">
             <div class="item item-avatar" ng-repeat="d in doctors" ng-click="doctorClick(d.userId)">
