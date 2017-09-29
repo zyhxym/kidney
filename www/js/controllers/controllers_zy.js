@@ -1523,10 +1523,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  // $scope.clearSearch = function() {
-  //     $scope.search.name = '';
-  //     $scope.patients = $scope.allpatients;
-  // }
+  $scope.clearSearch = function () {
+    $scope.search.name = ''
+    $scope.patients = $scope.allpatients
+  }
   // ----------------结束搜索患者------------------
   $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
     scope: $scope
@@ -1630,10 +1630,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-    // $scope.clearSearch = function() {
-    //     $scope.search.name = '';
-    //     $scope.patients = $scope.allpatients;
-    // }
+  $scope.clearSearch = function () {
+    $scope.search.name = ''
+    $scope.patients = $scope.allpatients
+  }
     // ----------------结束搜索患者------------------
   $ionicPopover.fromTemplateUrl('partials/others/sort_popover_consult.html', {
     scope: $scope
@@ -4823,7 +4823,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               // if ($scope.suspendFlag) {
               //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              // } else 
+              // } else
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
               } else if ($scope.inp.pla == '') {
@@ -4923,7 +4923,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             // 收费正则表达式验证
               // if ($scope.suspendFlag) {
               //   $ionicLoading.show({ template: '当前停诊中', duration: 1000 })
-              // } else 
+              // } else
               if (!numReg.test($scope.inp.num)) {
                 $ionicLoading.show({ template: '请输入非负整数！', duration: 1000 })
               } else if ($scope.inp.pla == '') {
