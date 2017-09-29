@@ -9,7 +9,7 @@ angular.module('kidney.directives', ['kidney.services'])
       // curr: '='
     },
         // replace: true,   //使用replace之后, 本元素的click不能删除输入框中的内容, 原因大致可以理解为: 父元素被替换后, scope.$apply没有执行对象
-    template: "<span ng-if='input' class='icon ion-android-close placeholder-icon' on-tap='clearInput()'></span>",
+    template: "<span ng-if='input' class='icon ion-close-circled placeholder-icon' on-tap='clearInput()'></span>",
     controller: function ($scope, $element, $attrs) {
       $scope.clearInput = function () {
         $scope.input = ''
