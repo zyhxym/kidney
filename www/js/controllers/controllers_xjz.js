@@ -3282,25 +3282,24 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     // };
   $scope.$on('viewcard', function (event, args) {
     event.stopPropagation()
-        // console.log(args[2]);
-        // if (args[2].target.tagName == "IMG") {
-        //     $scope.imageHandle.zoomTo(1, true);
-        //     $scope.imageUrl = args[2].target.currentSrc;
-        //     console.log(args[2].target.attributes.hires.nodeValue);
-        //     $scope.modal.show();
-        // } else {
-        //     Storage.set('getpatientId',args[1].content.contentStringMap.patientId);
-
-        //     var statep={
-        //     type:$scope.params.type,
-        //     chatId:$scope.params.chatId
-        //     }
-        //     Storage.set('backId','tab.detail');
-        //     Storage.set('singleChatParams',JSON.stringify(statep));
-        //     $state.go('tab.patientDetail');
-        //     // $state.go('tab.consult-detail',{consultId:args[1]});
-        // }
-        // $state.go('tab.consult-detail',{consultId:args[1]});
+    console.log(args[2])
+    if (args[2].target.tagName == 'IMG') {
+      $scope.imageHandle.zoomTo(1, true)
+      $scope.imageUrl = args[2].target.currentSrc
+      console.log(args[2].target.attributes.hires.nodeValue)
+      $scope.modal.show()
+    } else {
+      Storage.set('getpatientId', args[1].content.patientId)
+      var statep = {
+        doctorId: $state.params.doctorId,
+        patientId: $state.params.patientId,
+        groupId: $state.params.groupId,
+        teamId: $state.params.teamId
+      }
+      Storage.set('backId', 'tab.view-chat')
+      Storage.set('viewChatParams', JSON.stringify(statep))
+      $state.go('tab.patientDetail')
+    }
   })
 
   $scope.$on('profile', function (event, args) {
