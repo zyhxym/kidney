@@ -2141,6 +2141,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       Storage.set('backId', $scope.backstateId)
     } else if ($scope.backstateId == 'tab.patient') {
       Storage.set('backId', $scope.backstateId)
+    } else if ($scope.backstateId == 'changeTasks') {
+      Storage.set('backId', $scope.backstateId)
     }
   }
   console.log(Storage.get('backId'))
@@ -2160,6 +2162,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     } else if (backId == 'tab.view-chat') {
       var q = JSON.parse(Storage.get('viewChatParams'))
       $state.go('tab.view-chat', q)
+    } else if (backId == 'changeTasks') {
+      $state.go('changeTasks')
     } else {
       $state.go('tab.patient')
     }
