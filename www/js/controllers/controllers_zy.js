@@ -2456,7 +2456,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.onClickCamera = function ($event) {
     $ionicActionSheet.show({
       buttons: [
-       { text: '拍照' },
+        {
+
+          text: '拍照' },
        { text: '从相册选择' }
       ],
       cancelOnStateChange: true,
@@ -2467,7 +2469,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         } else {
           $scope.choosePhotos()
         }
-       // return true;
+        return true
       }
     })
     // $scope.openPopover($event)
