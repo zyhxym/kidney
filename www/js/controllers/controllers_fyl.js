@@ -141,7 +141,7 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
      * @return   data.results.length(有未读消息首页信箱标注小红点)
      */
     New.getNewsByReadOrNot({readOrNot: 0, userRole: 'doctor'}).then(function (data) {
-      console.log(data)
+      // console.log(data)
       if (data.results.length) {
         if (data.results[0].type == 11) {
           // str1 = data.results[0].url.split('"fromName":')[1]

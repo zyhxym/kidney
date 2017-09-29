@@ -32,14 +32,14 @@
 
        <!-- 未及时修改患者治疗方案的提醒 -->
       <ion-item class="item item-avatar card" ng-if="(!changingTasks.length==0)" style="padding-top:25px; padding-bottom:25px;" ng-repeat="changingTask in changingTasks" ng-click="getChatDetail(changingTask)">
-        <img ng-src="img/xx.png" image-red-point="true">
+        <img ng-src="img/xx.png" image-red-point="!changingTask.readOrNot">
         <h2>修改治疗方案的提醒</h2>
         <i class="icon ion-ios-arrow-right mine-msg-right" style="top:24px"></i>
       </ion-item>
 
        <!-- 警报消息 -->
       <ion-item class="item item-avatar card" ng-if="(!patientAlerts.length==0)" style="padding-top:25px; padding-bottom:25px;" ng-repeat="patientAlert in patientAlerts" ng-click="getChatDetail(patientAlert)">
-        <img ng-src="img/bj.png" image-red-point="true">
+        <img ng-src="img/bj.png" image-red-point="!patientAlert.readOrNot">
         <h2>警报消息</h2>
         <i class="icon ion-ios-arrow-right mine-msg-right" style="top:24px"></i>
       </ion-item>

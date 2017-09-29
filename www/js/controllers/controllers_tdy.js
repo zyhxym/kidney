@@ -2172,7 +2172,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     });   
 
      // 获取未及时修改患者方案的提醒列表
-    New.getNewsByReadOrNot({type:'9',readOrNot:0}).then(function(data){
+    New.getNews({type:'9'}).then(function(data){
       $scope.changingTasks=data.results;
       console.log($scope.changingTasks)
     },function(err){
@@ -2180,7 +2180,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
     });            
 
      // 获取警报消息
-    New.getNewsByReadOrNot({type:'2',readOrNot:0}).then(function(data){
+    New.getNews({type:'2'}).then(function(data){
       $scope.patientAlerts=data.results;
       console.log($scope.patientAlerts)
     },function(err){
@@ -2306,14 +2306,24 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
 }])
 
 // 未及时更新患者治疗方案
-.controller('changeTasksCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+.controller('changeTasksCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', 'New', function ($scope, $state, $interval, $rootScope, Storage, Message, New) {
   $scope.changingTasks = []
   var load = function () {
     Message.getMessages({
       type: 9
     }).then(function (data) {
-      console.log(data)
-     $scope.changingTasks=data.results  
+     $scope.changingTasks=data.results
+     for(i=0;i<$scope.changingTasks.length;i++){
+      if(data.results[i].readOrNot == 0){
+         Message.editStatus({token: Storage.get('TOKEN'), type:9, readOrNot: 1}).then(
+            function (data) {
+                console.log(data)
+              }, function (err) {
+            console.log(err)
+         })
+       }
+     }
+     console.log($scope.changingTasks)  
     }, function (err) {
       console.log(err)
     })
@@ -2321,11 +2331,31 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   // 进入加载
   $scope.$on('$ionicView.beforeEnter', function () {
     load()
+   // 标记红点去掉
+     New.getNewsByReadOrNot({userId: Storage.get('UID'), type:9, readOrNot: 0,userRole: 'doctor'}).then(
+            function (data) {
+              if (data.results&&data.results.length!=0) {
+                console.log(data.results)
+                for(i=0;i<data.results.length;i++){
+                   if (data.results[i].readOrNot == 0) {
+                  data.results[i].readOrNot = 1
+                  New.changeNewsStatus(data.results[i]).then(
+                    function (data) {
+                      console.log(data)
+                    }, function (err) {
+                    console.log(err)
+                  })}
+                }
+              }
+           }, function (err) {
+    }
+
+        )
+
   })
   // 下拉刷新
   $scope.doRefresh = function () {
     load()
-    // Stop the ion-refresher from spinning
     $scope.$broadcast('scroll.refreshComplete')
   }
 
@@ -2344,6 +2374,16 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
       type: 2
     }).then(function (data) {
      $scope.patientAlerts=data.results 
+    for(i=0;i<$scope.patientAlerts.length;i++){
+      if(data.results[i].readOrNot == 0){
+         Message.editStatus({token: Storage.get('TOKEN'), type:2, readOrNot: 1}).then(
+            function (data) {
+                console.log(data)
+              }, function (err) {
+            console.log(err)
+         })
+       }
+     }
      console.log($scope.patientAlerts) 
     }, function (err) {
       console.log(err)
@@ -2352,6 +2392,26 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   // 进入加载
   $scope.$on('$ionicView.beforeEnter', function () {
     load()
+    // 标记红点去掉
+     New.getNewsByReadOrNot({userId: Storage.get('UID'), type:2, readOrNot: 0,userRole: 'doctor'}).then(
+            function (data) {
+              if (data.results&&data.results.length!=0) {
+                console.log(data.results)
+                for(i=0;i<data.results.length;i++){
+                   if (data.results[i].readOrNot == 0) {
+                  data.results[i].readOrNot = 1
+                  New.changeNewsStatus(data.results[i]).then(
+                    function (data) {
+                      console.log(data)
+                    }, function (err) {
+                    console.log(err)
+                  })}
+                }
+              }
+           }, function (err) {
+    }
+
+        )
   })
 
   // 下拉刷新
