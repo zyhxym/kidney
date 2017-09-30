@@ -2134,7 +2134,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.backstateId = null
   if ($scope.backview != null) {
     $scope.backstateId = $scope.backview.stateId
-    // console.log($scope.backstateId)
+    console.log($scope.backstateId)
     if ($scope.backstateId == 'tab.doing') {
       Storage.set('backId', $scope.backstateId)
     } else if ($scope.backstateId == 'tab.did') {
