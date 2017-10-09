@@ -2301,6 +2301,7 @@ angular.module('tdy.controllers', ['ionic','kidney.services','ionic-datepicker']
   $scope.getDetail = function (noCounsel) {
     Storage.set('noCounselurl', noCounsel.url)
     Storage.set('noCounselMes', noCounsel.messageId)
+    Storage.set('readReport', noCounsel.readOrNot)
     $state.go('tab.nocodetail')
   }
 }])
