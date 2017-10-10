@@ -4224,35 +4224,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.illustration1 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '咨询',
-      template: '咨询'
+      template: '患者对您进行咨询，您最多需做三次回答，答满三次后，本次咨询结束；如不满三个问题，24小时后咨询关闭。患者若购买您的主管医生，向您咨询免费。'
     })
   }
 
   $scope.illustration2 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '问诊',
-      template: '问诊'
+      template: '患者对您进行问诊，询问次数不限，如您认为回答结束，请点击聊天页面右上角结束，24小时后自动关闭。患者若购买您的主管医生，向您问诊免费。'
     })
   }
 
   $scope.illustration3 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '加急咨询',
-      template: '加急咨询'
+      template: '患者对您进行加急咨询，需在2小时内回复患者，您最多需做三次回答，答满三次后，咨询结束；如不满三个问题，2小时后咨询关闭。'
     })
   }
 
   $scope.illustration4 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '主管医生',
-      template: '主管医生'
+      template: '主管医生服务包括为患者制定全面个性化的健康方案，并定期调整，数据分析解读，每月健康报告，以及每月免费咨询机会。患者若购买您的主管医生，向您咨询或问诊免费。'
     })
   }
 
   $scope.illustration5 = function () {
     var alertPopup = $ionicPopup.alert({
       title: '面诊服务',
-      template: '面诊服务'
+      template: '面诊患者可预约您的线下就诊时间，请您设定您的出诊时间／地点和人数。'
     })
   }
 }])
