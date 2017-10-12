@@ -3299,7 +3299,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "我”设置页-mzb,zy
-.controller('setCtrl', ['$scope', '$ionicPopup', '$state', '$timeout', '$stateParams', 'Storage', '$sce', 'socket', 'mySocket', function ($scope, $ionicPopup, $state, $timeout, $stateParams, Storage, $sce, socket, mySocket) {
+.controller('setCtrl', ['$scope', '$ionicPopup', '$state', '$timeout', '$stateParams', 'Storage', '$sce', 'socket', 'mySocket', 'User', function ($scope, $ionicPopup, $state, $timeout, $stateParams, Storage, $sce, socket, mySocket, User) {
   $scope.hideTabs = true
   /**
    * [退出登录]
@@ -3307,23 +3307,27 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
    * @DateTime 2017-07-05
    */
   $scope.logout = function () {
-    socket.emit('disconnect')
-    // Storage.set('IsSignIn','NO');
-    $state.logStatus = '用户已注销'
-    // 清除登陆信息
-    Storage.rm('password')
-    // Storage.rm('UID');
-    Storage.rm('doctorunionid')
-    Storage.rm('IsSignIn')
-    // Storage.rm('USERNAME');
-    Storage.rm('PASSWORD')
-    Storage.rm('userid')
-    console.log($state)
-    mySocket.cancelAll()
-    socket.emit('disconnect')
-    socket.disconnect()
-    // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
-    $timeout(function () { $state.go('signin') }, 500)
+    User.logOut({}).then(function (data) {
+      socket.emit('disconnect')
+      // Storage.set('IsSignIn','NO');
+      $state.logStatus = '用户已注销'
+      // 清除登陆信息
+      Storage.rm('password')
+      // Storage.rm('UID');
+      Storage.rm('doctorunionid')
+      Storage.rm('IsSignIn')
+      // Storage.rm('USERNAME');
+      Storage.rm('PASSWORD')
+      Storage.rm('userid')
+      console.log($state)
+      mySocket.cancelAll()
+      socket.emit('disconnect')
+      socket.disconnect()
+      // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
+      $timeout(function () { $state.go('signin') }, 500)
+    }, function (err) {
+      console.log(err)
+    })
   }
 }])
 
