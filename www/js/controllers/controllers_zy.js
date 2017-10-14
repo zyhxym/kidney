@@ -5276,11 +5276,10 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  // 点亮全部患者标签 显示全部患者
   $scope.ShowConfirming = function () {
     $scope.params.Confirming = true
   }
-  // 点亮今日新增标签 显示今日新增患者
+
   $scope.ShowHistory = function () {
     $scope.params.Confirming = false
   }
@@ -5446,6 +5445,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       MassCommunication.massToPatient(msg).then(function (data) {
         console.log(data)
         $ionicLoading.show({ template: '发送成功！', duration: 1000 })
+        document.getElementById('123').value = ''
       }, function (err) {
         console.error(err)
         $ionicLoading.show({ template: '发送失败！', duration: 1000 })
