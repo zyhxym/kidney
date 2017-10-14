@@ -410,12 +410,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               smsType: 2
             }).then(function (data) {
               unablebutton()
-              if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
-                $scope.logStatus = '您的验证码已发送，重新获取请稍后'
-              } else if (data.results == 1) {
-                $scope.logStatus = '验证码发送失败，请稍后再试'
+              if (data.results == 0) {
+                if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
+                  $scope.logStatus = '您的验证码已发送，重新获取请稍后'
+                } else {
+                  $scope.logStatus = '验证码发送成功！'
+                }
               } else {
-                $scope.logStatus = '验证码发送成功！'
+                $scope.logStatus = '验证码发送失败，请稍后再试'
               }
             }, function (err) {
               $scope.logStatus = '验证码发送失败！'
@@ -431,12 +433,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               smsType: 2
             }).then(function (data) {
               unablebutton()
-              if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
-                $scope.logStatus = '您的验证码已发送，重新获取请稍后'
-              } else if (data.results == 1) {
-                $scope.logStatus = '验证码发送失败，请稍后再试'
+              if (data.results == 0) {
+                if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
+                  $scope.logStatus = '您的验证码已发送，重新获取请稍后'
+                } else {
+                  $scope.logStatus = '验证码发送成功！'
+                }
               } else {
-                $scope.logStatus = '验证码发送成功！'
+                $scope.logStatus = '验证码发送失败，请稍后再试'
               }
             }, function (err) {
               $scope.logStatus = '验证码发送失败！'
@@ -449,12 +453,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
               smsType: 2
             }).then(function (data) {
               unablebutton()
-              if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
-                $scope.logStatus = '您的验证码已发送，重新获取请稍后'
-              } else if (data.results == 1) {
-                $scope.logStatus = '验证码发送失败，请稍后再试'
+              if (data.results == 0) {
+                if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
+                  $scope.logStatus = '您的验证码已发送，重新获取请稍后'
+                } else {
+                  $scope.logStatus = '验证码发送成功！'
+                }
               } else {
-                $scope.logStatus = '验证码发送成功！'
+                $scope.logStatus = '验证码发送失败，请稍后再试'
               }
             }, function (err) {
               $scope.logStatus = '验证码发送失败！'
@@ -468,12 +474,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
                 smsType: 2
               }).then(function (data) {
                 unablebutton()
-                if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
-                  $scope.logStatus = '您的验证码已发送，重新获取请稍后'
-                } else if (data.results == 1) {
-                  $scope.logStatus = '验证码发送失败，请稍后再试'
+                if (data.results == 0) {
+                  if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
+                    $scope.logStatus = '您的验证码已发送，重新获取请稍后'
+                  } else {
+                    $scope.logStatus = '验证码发送成功！'
+                  }
                 } else {
-                  $scope.logStatus = '验证码发送成功！'
+                  $scope.logStatus = '验证码发送失败，请稍后再试'
                 }
               }, function (err) {
                 $scope.logStatus = '验证码发送失败！'
@@ -488,12 +496,14 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             smsType: 2
           }).then(function (data) {
             unablebutton()
-            if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
-              $scope.logStatus = '您的验证码已发送，重新获取请稍后'
-            } else if (data.results == 1) {
-              $scope.logStatus = '验证码发送失败，请稍后再试'
+            if (data.results == 0) {
+              if (data.mesg.substr(0, 8) == '您的邀请码已发送') {
+                $scope.logStatus = '您的验证码已发送，重新获取请稍后'
+              } else {
+                $scope.logStatus = '验证码发送成功！'
+              }
             } else {
-              $scope.logStatus = '验证码发送成功！'
+              $scope.logStatus = '验证码发送失败，请稍后再试'
             }
           }, function (err) {
             $scope.logStatus = '验证码发送失败！'
