@@ -1193,11 +1193,12 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   } // function结束
 
   $scope.showoriginal = function (resizedpath) {
-        // $scope.openModal();
-        // console.log(resizedpath)
-    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
-        // console.log(originalfilepath)
-        // $scope.doctorimgurl=originalfilepath;
+    // $scope.openModal();
+    // console.log(resizedpath)
+    var resized = resizedpath.indexOf('resized') > -1 ? 7 : 0
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(resized)
+    // console.log(originalfilepath)
+    // $scope.doctorimgurl=originalfilepath;
 
     $scope.imageHandle.zoomTo(1, true)
     $scope.imageUrl = originalfilepath
@@ -2851,7 +2852,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     Camera.uploadPicture(imgURI, temp_photoaddress).then(function (res) {
       var data = angular.fromJson(res)
-            // 图片路径
+      // 图片路径
       if ($scope.flag == 0) {
         $scope.doctor.certificatePhotoUrl = CONFIG.mediaUrl + String(data.path_resized)
       } else {
@@ -2909,7 +2910,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   // 照相机的点击事件----------------------------------
   $scope.getPhoto = function () {
-        // console.log("要拍照了！");
+    // console.log("要拍照了！");
     $scope.takePicture()
     $scope.closePopover()
   }
@@ -2950,7 +2951,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   $scope.showoriginal = function (resizedpath) {
     // $scope.openModal();
     // console.log(resizedpath)
-    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+    var resized = resizedpath.indexOf('resized') > -1 ? 7 : 0
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(resized)
     // console.log(originalfilepath)
     // $scope.doctorimgurl=originalfilepath;
 
@@ -6022,14 +6024,16 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 
   $scope.showoriginal = function (resizedpath) {
     for (i = 0; i < $scope.post.content[1].image.length; i++) {
-      $scope.Images[i] = CONFIG.imgLargeUrl + $scope.post.content[1].image[i].slice($scope.post.content[1].image[i].lastIndexOf('/') + 1).substr(7)
+      var resized = $scope.post.content[1].image[i].indexOf('resized') > -1 ? 7 : 0
+      $scope.Images[i] = CONFIG.imgLargeUrl + $scope.post.content[1].image[i].slice($scope.post.content[1].image[i].lastIndexOf('/') + 1).substr(resized)
               // console.log('Images',$scope.Images)
               // console.log('images',$scope.image)
     }
     console.log(resizedpath)
     $scope.imageIndex = 0
         // console.log($scope.imageIndex)
-    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+    var orginResized = resizedpath.indexOf('resized') > -1 ? 7 : 0
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(orginResized)
         // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
     $scope.imageHandle.zoomTo(1, true)
@@ -6116,7 +6120,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       $scope.anonymous = data.data.anonymous
       $scope.comments = data.data.replies
       for (i = 0; i < data.data.content[1].image.length; i++) {
-        $scope.Images[i] = CONFIG.imgLargeUrl + data.data.content[1].image[i].slice(data.data.content[1].image[i].lastIndexOf('/') + 1).substr(7)
+        var resized = data.data.content[1].image[i].indexOf('resized') > -1 ? 7 : 0
+        $scope.Images[i] = CONFIG.imgLargeUrl + data.data.content[1].image[i].slice(data.data.content[1].image[i].lastIndexOf('/') + 1).substr(resized)
               // console.log('Images',$scope.Images)
               // console.log('images',$scope.image)
       }
@@ -6255,7 +6260,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     console.log(resizedpath)
     $scope.imageIndex = 0
         // console.log($scope.imageIndex)
-    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(7)
+    var resized = resizedpath.indexOf('resized') > -1 ? 7 : 0
+    var originalfilepath = CONFIG.imgLargeUrl + resizedpath.slice(resizedpath.lastIndexOf('/') + 1).substr(resized)
         // console.log(originalfilepath)
         // $scope.doctorimgurl=originalfilepath;
     $scope.imageHandle.zoomTo(1, true)
