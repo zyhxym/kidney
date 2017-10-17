@@ -3733,11 +3733,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              var chargeReg = /^\d+(\.\d+)?$/
+              var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
               if (!$scope.doctorinfo.status1) {
               } else if (!chargeReg.test($scope.inp.num[0])) {
-                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
                 services.setStatus({serviceType: 'service1'}).then(function (data) {
                 }, function (err) {
                   console.log(err)
@@ -3796,11 +3796,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              var chargeReg = /^\d+(\.\d+)?$/
+              var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
               if (!$scope.doctorinfo.status2) {
               } else if (!chargeReg.test($scope.inp.num[1])) {
-                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
                 services.setStatus({serviceType: 'service2'}).then(function (data) {
                 }, function (err) {
                   console.log(err)
@@ -3852,11 +3852,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              var chargeReg = /^\d+(\.\d+)?$/
+              var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
               if (!$scope.doctorinfo.status3) {
               } else if (!chargeReg.test($scope.inp.num[2])) {
-                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
                 services.setStatus({serviceType: 'service3'}).then(function (data) {
                 }, function (err) {
                   console.log(err)
@@ -3908,11 +3908,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              var chargeReg = /^\d+(\.\d+)?$/
+              var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
               if (!$scope.doctorinfo.status4) {
               } else if (!chargeReg.test($scope.inp.num[3])) {
-                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
                 services.setStatus({serviceType: 'service4'}).then(function (data) {
                 }, function (err) {
                   console.log(err)
@@ -3978,11 +3978,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
             text: '<b>确定</b>',
             type: 'button-positive',
             onTap: function (e) {
-              var chargeReg = /^\d+(\.\d+)?$/
+              var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
               if (!$scope.doctorinfo.status5) {
               } else if (!chargeReg.test($scope.inp.num[4])) {
-                $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+                $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
                 services.setStatus({serviceType: 'service5'}).then(function (data) {
                 }, function (err) {
                   console.log(err)
@@ -4019,11 +4019,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            var chargeReg = /^\d+(\.\d+)?$/
+            var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
             if (!$scope.doctorinfo.status1) {
             } else if (!chargeReg.test($scope.inp.num[0])) {
-              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
               services.setStatus({serviceType: 'service1'}).then(function (data) {
               }, function (err) {
                 console.log(err)
@@ -4073,11 +4073,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            var chargeReg = /^\d+(\.\d+)?$/
+            var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
             if (!$scope.doctorinfo.status2) {
             } else if (!chargeReg.test($scope.inp.num[1])) {
-              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
               services.setStatus({serviceType: 'service2'}).then(function (data) {
               }, function (err) {
                 console.log(err)
@@ -4120,11 +4120,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            var chargeReg = /^\d+(\.\d+)?$/
+            var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
             if (!$scope.doctorinfo.status3) {
             } else if (!chargeReg.test($scope.inp.num[2])) {
-              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
               services.setStatus({serviceType: 'service3'}).then(function (data) {
               }, function (err) {
                 console.log(err)
@@ -4167,11 +4167,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            var chargeReg = /^\d+(\.\d+)?$/
+            var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
             if (!$scope.doctorinfo.status4) {
             } else if (!chargeReg.test($scope.inp.num[3])) {
-              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
               services.setStatus({serviceType: 'service4'}).then(function (data) {
               }, function (err) {
                 console.log(err)
@@ -4207,11 +4207,11 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
           text: '<b>确定</b>',
           type: 'button-positive',
           onTap: function (e) {
-            var chargeReg = /^\d+(\.\d+)?$/
+            var chargeReg = /^\d+(\.\d{0,2})?$/
                 // 收费正则表达式验证
             if (!$scope.doctorinfo.status5) {
             } else if (!chargeReg.test($scope.inp.num[4])) {
-              $ionicLoading.show({ template: '请输入非负数字！', duration: 2000 })
+              $ionicLoading.show({ template: '请输入非负数字！（至多两位小数）', duration: 2000 })
               services.setStatus({serviceType: 'service5'}).then(function (data) {
               }, function (err) {
                 console.log(err)
