@@ -1,6 +1,6 @@
 angular.module('zy.controllers', ['ionic', 'kidney.services'])
 // 登录-zy,zxf
-.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', 'loginFactory', '$ionicHistory', '$sce', 'Doctor', 'Patient', '$rootScope', 'notify', '$interval', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, loginFactory, $ionicHistory, $sce, Doctor, Patient, $rootScope, notify, $interval, socket, Mywechat, mySocket) {
+.controller('SignInCtrl', ['$ionicLoading', 'User', '$scope', '$timeout', '$state', 'Storage', '$ionicHistory', '$sce', 'Doctor', 'Patient', 'notify', 'socket', 'Mywechat', 'mySocket', function ($ionicLoading, User, $scope, $timeout, $state, Storage, $ionicHistory, $sce, Doctor, Patient, notify, socket, Mywechat, mySocket) {
   $scope.barwidth = 'width:0%'
   // $scope.navigation_login = $sce.trustAsResourceUrl('http://proxy.haihonghospitalmanagement.com/member.php?mod=logging&action=logout&formhash=xxxxxx')
   if (Storage.get('USERNAME') != null && Storage.get('USERNAME') != undefined) {
@@ -646,7 +646,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 签署协议（0为签署）-zy
-.controller('AgreeCtrl', ['User', 'Patient', 'Doctor', 'mySocket', '$stateParams', '$scope', '$timeout', '$state', 'Storage', '$ionicHistory', '$http', 'Data', '$ionicPopup', 'Camera', 'CONFIG', function (User, Patient, Doctor, mySocket, $stateParams, $scope, $timeout, $state, Storage, $ionicHistory, $http, Data, $ionicPopup, Camera, CONFIG) {
+.controller('AgreeCtrl', ['User', 'Patient', 'Doctor', 'mySocket', '$stateParams', '$scope', '$timeout', '$state', 'Storage', 'Data', '$ionicPopup', 'Camera', function (User, Patient, Doctor, mySocket, $stateParams, $scope, $timeout, $state, Storage, Data, $ionicPopup, Camera) {
   /**
    * [签署协议]
    * @Author   ZY
@@ -769,7 +769,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 设置密码-zy
-.controller('setPasswordCtrl', ['$scope', '$state', '$rootScope', '$timeout', 'Storage', 'User', '$stateParams', function ($scope, $state, $rootScope, $timeout, Storage, User, $stateParams) {
+.controller('setPasswordCtrl', ['$scope', '$state', '$timeout', 'Storage', 'User', '$stateParams', function ($scope, $state, $timeout, Storage, User, $stateParams) {
   $scope.barwidth = 'width:0%'
   var validMode = Storage.get('validMode')// 0->set;1->reset
   var phoneNumber = Storage.get('RegisterNO')
@@ -826,7 +826,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 注册时填写医生个人信息-zy,mzb
-.controller('userdetailCtrl', ['CONFIG', 'Dict', 'Doctor', 'Patient', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', function (CONFIG, Dict, Doctor, Patient, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams) {
+.controller('userdetailCtrl', [ 'Dict', 'Doctor', 'Patient', '$scope', '$state', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', function (Dict, Doctor, Patient, $scope, $state, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams) {
   $scope.barwidth = 'width:0%'
   var phoneNumber = Storage.get('RegisterNO')
   var password = Storage.get('password')
@@ -1028,7 +1028,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 上传资质证书-zxf
-.controller('uploadcertificateCtrl', ['$interval', 'CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$ionicHistory', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', '$http', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function ($interval, CONFIG, Dict, Doctor, $scope, $state, $ionicHistory, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, $http, Camera, $ionicModal, $stateParams, socket, mySocket) {
+.controller('uploadcertificateCtrl', ['CONFIG', 'Dict', 'Doctor', '$scope', '$state', '$timeout', 'Storage', '$ionicPopup', '$ionicLoading', '$ionicPopover', '$ionicScrollDelegate', 'User', 'Camera', '$ionicModal', '$stateParams', 'socket', 'mySocket', function (CONFIG, Dict, Doctor, $scope, $state, $timeout, Storage, $ionicPopup, $ionicLoading, $ionicPopover, $ionicScrollDelegate, User, Camera, $ionicModal, $stateParams, socket, mySocket) {
   $scope.doctor = {}
   User.logIn({username: Storage.get('phoneNumber'), password: Storage.get('password'), role: 'doctor'}).then(function (data) {
     console.log(data)
@@ -1217,7 +1217,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 首页-mzb,zy
-.controller('homeCtrl', ['Communication', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$http', '$sce', '$timeout', 'Doctor', 'New', function (Communication, $scope, $state, $interval, $rootScope, Storage, $http, $sce, $timeout, Doctor, New) {
+.controller('homeCtrl', ['Communication', '$scope', '$state', '$interval', 'Storage', '$http', '$sce', '$timeout', 'Doctor', 'New', function (Communication, $scope, $state, $interval, Storage, $http, $sce, $timeout, Doctor, New) {
   $scope.barwidth = 'width:0%'
   $scope.sliderStyle = {'margin-top': '44px', 'height': '170px'}
   if (ionic.Platform.isIOS()) {
@@ -1425,7 +1425,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 咨询-zy
-.controller('consultCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'QRScan', 'Counsel', function ($scope, $state, $interval, $rootScope, Storage, QRScan, Counsel) {
+.controller('consultCtrl', ['$scope', '$state', 'Storage', 'QRScan', 'Counsel', function ($scope, $state, Storage, QRScan, Counsel) {
   $scope.barwidth = 'width:0%'
   // 变量a 等待患者数量 变量b 已完成咨询患者数量
   $scope.GoBack = function () {
@@ -1482,7 +1482,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "咨询”进行中-mzb,zy
-.controller('doingCtrl', ['$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Counsel', '$ionicHistory', 'New', function ($scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Counsel, $ionicHistory, New) {
+.controller('doingCtrl', ['$scope', '$state', '$ionicLoading', 'Storage', '$ionicPopover', 'Counsel', '$ionicHistory', 'New', function ($scope, $state, $ionicLoading, Storage, $ionicPopover, Counsel, $ionicHistory, New) {
   /**
    * [获取进行中咨询]
    * @Author   ZY
@@ -1592,7 +1592,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "咨询”已完成-mzb,zy
-.controller('didCtrl', ['$scope', '$state', 'Counsel', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$ionicHistory', 'New', function ($scope, $state, Counsel, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, $ionicHistory, New) {
+.controller('didCtrl', ['$scope', '$state', 'Counsel', '$ionicLoading', 'Storage', '$ionicPopover', '$ionicHistory', 'New', function ($scope, $state, Counsel, $ionicLoading, Storage, $ionicPopover, $ionicHistory, New) {
   /**
    * [获取已完成咨询]
    * @Author   ZY
@@ -1721,7 +1721,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   })
 }])
 // "患者”页-zy
-.controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor2', 'services', function (Counsel, Doctor, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor2, services) {
+.controller('patientCtrl', ['Counsel', 'Doctor', '$scope', '$state', '$ionicLoading', 'Storage', '$ionicPopover', 'Doctor2', 'services', function (Counsel, Doctor, $scope, $state, $ionicLoading, Storage, $ionicPopover, Doctor2, services) {
   $scope.barwidth = 'width:0%'
   $scope.GoBack = function () {
     $state.go('tab.workplace')
@@ -2354,13 +2354,8 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 }])
 
-// "交流”页
-.controller('communicationCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', function ($scope, $state, $interval, $rootScope, Storage) {
-  $scope.barwidth = 'width:0%'
-}])
-
 // "我”页-zy,mzb,zxf
-.controller('meCtrl', ['$ionicActionSheet', 'CONFIG', 'Camera', 'Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', '$ionicPopup', 'User', function ($ionicActionSheet, CONFIG, Camera, Doctor, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, $ionicPopup, User) {
+.controller('meCtrl', ['$ionicActionSheet', 'CONFIG', 'Camera', 'Doctor', '$scope', '$state', 'Storage', '$ionicPopover', '$http', '$ionicPopup', 'User', function ($ionicActionSheet, CONFIG, Camera, Doctor, $scope, $state, Storage, $ionicPopover, $http, $ionicPopup, User) {
   $scope.barwidth = 'width:0%'
     // $scope.$on('$ionicView.beforeEnter', function() {
     //     $scope.doRefresh();
@@ -2582,7 +2577,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // "我”二维码页-zy
-.controller('QRcodeCtrl', ['Doctor', '$scope', '$state', '$interval', '$rootScope', 'Storage', 'Mywechat', function (Doctor, $scope, $state, $interval, $rootScope, Storage, Mywechat) {
+.controller('QRcodeCtrl', ['Doctor', '$scope', '$state', 'Storage', 'Mywechat', function (Doctor, $scope, $state, Storage, Mywechat) {
   // $scope.hideTabs = true;
   // $scope.userid=Storage.get('userid');
   // $scope.doctor=meFactory.GetDoctorInfo($scope.userid);
@@ -3648,7 +3643,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 我的服务
-.controller('myserviceCtrl', ['$scope', '$state', 'Storage', '$ionicPopup', '$stateParams', '$ionicHistory', '$ionicLoading', 'services', function ($scope, $state, Storage, $ionicPopup, $stateParams, $ionicHistory, $ionicLoading, services) {
+.controller('myserviceCtrl', ['$scope', '$state', 'Storage', '$ionicPopup', '$stateParams', '$ionicLoading', 'services', function ($scope, $state, Storage, $ionicPopup, $stateParams, $ionicLoading, services) {
   $scope.doctorinfo = {
     status1: '',
     status2: '',
@@ -4274,7 +4269,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 是否转发页面
-.controller('forwardingCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', 'services', function ($scope, $state, Storage, $ionicHistory, services) {
+.controller('forwardingCtrl', ['$scope', '$state', 'Storage', 'services', function ($scope, $state, Storage, services) {
   $scope.forwardinginfo = {autoRelay: '' }
 
   $scope.initial = {
@@ -4333,7 +4328,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 面诊服务页面
-.controller('faceconsultCtrl', ['$scope', '$state', 'ionicDatePicker', '$ionicHistory', '$ionicPopup', '$ionicLoading', 'Doctor', 'services', 'Storage', '$interval', function ($scope, $state, ionicDatePicker, $ionicHistory, $ionicPopup, $ionicLoading, Doctor, services, Storage, $interval) {
+.controller('faceconsultCtrl', ['$scope', '$state', 'ionicDatePicker', '$ionicPopup', '$ionicLoading', 'Doctor', 'services', 'Storage', '$interval', function ($scope, $state, ionicDatePicker, $ionicPopup, $ionicLoading, Doctor, services, Storage, $interval) {
   $scope.dateC = new Date()
   var getStatus = function () {
     services.getStatus({
@@ -5090,7 +5085,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 主管医生审核申请---rzx
-.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', '$interval', '$rootScope', 'Storage', '$ionicPopover', 'Doctor', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, $interval, $rootScope, Storage, $ionicPopover, Doctor) {
+.controller('reviewCtrl', ['New', 'Message', '$ionicPopup', '$ionicHistory', 'Doctor2', '$scope', '$state', '$ionicLoading', 'Storage', '$ionicPopover', 'Doctor', function (New, Message, $ionicPopup, $ionicHistory, Doctor2, $scope, $state, $ionicLoading, Storage, $ionicPopover, Doctor) {
   $scope.Goback = function () {
     $ionicHistory.goBack()
   }
@@ -5259,7 +5254,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 医生核销面诊-zy
-.controller('faceCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'services', '$ionicPopup', '$ionicLoading', function ($scope, $state, $interval, $rootScope, Storage, services, $ionicPopup, $ionicLoading) {
+.controller('faceCtrl', ['$scope', '$state', 'Storage', 'services', '$ionicPopup', '$ionicLoading', function ($scope, $state, Storage, services, $ionicPopup, $ionicLoading) {
   $scope.params = {
     Confirming: true,
     updateTime: 0
@@ -5358,7 +5353,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 未咨询报表推送列表-zy
-.controller('nocounselCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', function ($scope, $state, $interval, $rootScope, Storage, Message) {
+.controller('nocounselCtrl', ['$scope', '$state', 'Storage', 'Message', function ($scope, $state, Storage, Message) {
   var load = function () {
     Message.getMessages({
       type: 14 // 14是为及时咨询报告消息
@@ -5390,7 +5385,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 未咨询报表推送详情-zy
-.controller('nocodetailCtrl', ['$scope', '$state', '$interval', '$rootScope', 'Storage', 'Message', '$http', function ($scope, $state, $interval, $rootScope, Storage, Message, $http) {
+.controller('nocodetailCtrl', ['$scope', '$state', 'Storage', 'Message', '$http', function ($scope, $state, Storage, Message, $http) {
   var noCounselurl = Storage.get('noCounselurl')
   // console.log(noCounselurl)
   if (Storage.get('readReport') == 0) {
@@ -5416,7 +5411,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 群发消息-zy
-.controller('GroupMessageCtrl', ['$scope', '$state', '$interval', '$rootScope', '$ionicHistory', '$ionicLoading', 'Storage', 'MassCommunication', 'Doctor', 'CONFIG', function ($scope, $state, $interval, $rootScope, $ionicHistory, $ionicLoading, Storage, MassCommunication, Doctor, CONFIG) {
+.controller('GroupMessageCtrl', ['$scope', '$state', '$ionicHistory', '$ionicLoading', 'Storage', 'MassCommunication', 'Doctor', function ($scope, $state, $ionicHistory, $ionicLoading, Storage, MassCommunication, Doctor) {
   $scope.Goback = function () {
     $ionicHistory.goBack()
   }
@@ -5468,7 +5463,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
 }])
 
 // 论坛
-.controller('allpostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+.controller('allpostsCtrl', [ '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
   // $scope.barStyle = {'margin-top': '40px'}
   // if (ionic.Platform.isIOS()) {
   //   $scope.barStyle = {'margin-top': '60px'}
@@ -5617,7 +5612,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // ----------------结束搜索患者------------------
 }])
 
-.controller('mypostsCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+.controller('mypostsCtrl', [ '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
   // $scope.barStyle = {'margin-top': '40px'}
   // if (ionic.Platform.isIOS()) {
   //   $scope.barStyle = {'margin-top': '60px'}
@@ -5747,7 +5742,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     // ----------------结束搜索患者------------------
 }])
 
-.controller('mycollectionCtrl', ['$interval', '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($interval, $scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
+.controller('mycollectionCtrl', [ '$scope', '$state', '$sce', '$http', 'Storage', 'Forum', '$stateParams', '$ionicPopup', '$ionicPopover', '$ionicLoading', '$ionicScrollDelegate', function ($scope, $state, $sce, $http, Storage, Forum, $stateParams, $ionicPopup, $ionicPopover, $ionicLoading, $ionicScrollDelegate) {
   // $scope.barStyle = {'margin-top': '40px'}
   // if (ionic.Platform.isIOS()) {
   //   $scope.barStyle = {'margin-top': '60px'}
@@ -5854,7 +5849,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 }])
 
-.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicHistory', '$ionicPopover', 'Forum', 'Camera', 'CONFIG', '$ionicLoading', '$timeout', '$ionicModal', '$ionicScrollDelegate', function ($scope, $state, Storage, $ionicHistory, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout, $ionicModal, $ionicScrollDelegate) {
+.controller('postCtrl', ['$scope', '$state', 'Storage', '$ionicPopover', 'Forum', 'Camera', 'CONFIG', '$ionicLoading', '$timeout', '$ionicModal', '$ionicScrollDelegate', function ($scope, $state, Storage, $ionicPopover, Forum, Camera, CONFIG, $ionicLoading, $timeout, $ionicModal, $ionicScrollDelegate) {
   $scope.GoBack = function () {
     $state.go('tab.allposts')
   }
@@ -6080,7 +6075,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
   }
 }])
 
-.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', '$ionicHistory', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', '$ionicModal', '$ionicScrollDelegate', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, $ionicHistory, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal, $ionicScrollDelegate) {
+.controller('postsdetailCtrl', ['$ionicActionSheet', 'CONFIG', '$scope', '$state', 'Storage', 'Forum', '$http', '$ionicPopup', '$timeout', '$ionicPopover', '$ionicModal', '$ionicScrollDelegate', function ($ionicActionSheet, CONFIG, $scope, $state, Storage, Forum, $http, $ionicPopup, $timeout, $ionicPopover, $ionicModal, $ionicScrollDelegate) {
 // ----------------页面跳转------------------
   $scope.GoBack = function () {
     $state.go('tab.allposts')

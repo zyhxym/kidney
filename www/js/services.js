@@ -70,52 +70,6 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
   }
 })
 
-// 自定义函数
-// 登录
-.service('loginFactory', function (Storage) {
-  var service = {}
-  var flag = false
-  var userid// 用户ID
-
-  this.isLogin = function (user, pwd) {
-    // 账户写死
-    if (user == '13709553333' && pwd == '123') {
-      userid = 'D201703240001'
-      Storage.set('userid', userid)// 存储全局变量userid,通过本地存储
-      flag = true
-    }
-    if (user == '13709553334' && pwd == '123') {
-      userid = 'D201703240002'
-      Storage.set('userid', userid)// 存储全局变量userid,通过本地存储
-      flag = true
-    }
-    if (user == '18868800021' && pwd == '123') {
-      userid = 'D201703240091'
-      Storage.set('userid', userid)// 存储全局变量userid,通过本地存储
-      flag = true
-    }
-    if (user == '18868800022' && pwd == '123') {
-      userid = 'D201703240092'
-      Storage.set('userid', userid)// 存储全局变量userid,通过本地存储
-      flag = true
-    }
-    if (window.jmessage) {
-      window.JMessage.login(user, user,
-        function (response) {
-          window.JMessage.username = user
-            // gotoConversation();
-        },
-        function (err) {
-          console.log(err)
-            // JM.register($scope.useruserID, $scope.passwd);
-        })
-    }
-    return flag
-  }
-
-  // return service;
-})
-
 // media文件操作 XJZ
 .factory('fs', ['$q', '$cordovaFile', '$filter', function ($q, $cordovaFile, $filter) {
   return {
