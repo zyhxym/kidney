@@ -1,11 +1,11 @@
 angular.module('fyl.controllers', ['ionic', 'kidney.services'])
 
 // "工作台”页-fyl,zy
-.controller('workplaceCtrl', ['CONFIG', 'Camera', 'Doctor', 'Counsel', 'Doctor2', 'services', '$scope', '$state', '$interval', '$rootScope', 'Storage', '$ionicPopover', '$http', 'New', '$ionicPopup', function (CONFIG, Camera, Doctor, Counsel, Doctor2, services, $scope, $state, $interval, $rootScope, Storage, $ionicPopover, $http, New, $ionicPopup) {
+.controller('workplaceCtrl', [ 'Doctor', 'Counsel', 'Doctor2', 'services', '$scope', '$state', '$interval', 'Storage', 'New', '$ionicPopup', function (Doctor, Counsel, Doctor2, services, $scope, $state, $interval, Storage, New, $ionicPopup) {
   $scope.barwidth = 'width:0%'
   $scope.hasUnreadMessages = false
   $scope.review = false
-  console.log(Storage.get('reviewStatus'))
+  // console.log(Storage.get('reviewStatus'))
   if (Storage.get('reviewStatus') == 1) {
     $scope.review = true
   }
@@ -84,48 +84,32 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  $scope.goQrcode = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.QRcode')
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
+  /**
+   * [获取医生详细信息]
+   * @Author   ZY
+   * @DateTime 2017-07-05
+   * @param    userId: string
+   * @return   data.results(医生详细信息)
+   */
+  // console.log(Storage.get('TOKEN'))
+  var getInfo = function () {
+    Doctor.getDoctorInfo({
+      // userId: Storage.get('UID')
+    }).then(function (data) {
+      // alert(Storage.get('UID')+JSON.stringify(data))
+      // console.log(data)
+      $scope.doctor = data.results
+      if ($scope.doctor.photoUrl == '' || $scope.doctor.photoUrl == null || $scope.doctor.photoUrl == undefined) {
+        $scope.doctor.photoUrl = 'img/doctor.png'
+        // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
+        //     $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
+        // }
+      }
+    }, function (err) {
+      console.log(err)
+    })
   }
-  $scope.goMessage = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('messages')
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
-  }
-  $scope.goConsult = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.consult')
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
-  }
-  $scope.goReserve = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.myreserve')
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
-  }
-  $scope.goPatient = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.patient')
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
-  }
-  $scope.goService = function () {
-    if (Storage.get('reviewStatus') == 1) {
-      $state.go('tab.myservice', {last: 'workplace'})
-    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
-      myPopup()
-    }
-  }
+
   /**
    * [查看是否有未读消息]
    * @Author   ZY
@@ -187,18 +171,16 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
     })
   }
 
-  // 审核通过进入页面执行查询是否有未读消息
   if (Storage.get('reviewStatus') == 1) {
+    // 审核通过进入页面执行查询是否有未读消息
     $scope.$on('$ionicView.enter', function () {
       console.log('enter')
       // GetLatest()
       GetNum()
+      getInfo()
       RefreshUnread = $interval(GetUnread, 2000)
     })
-  }
-
-  // 审核通过离开页面destroy查询
-  if (Storage.get('reviewStatus') == 1) {
+    // 审核通过离开页面destroy查询
     $scope.$on('$ionicView.leave', function () {
       console.log('destroy')
       if (RefreshUnread) {
@@ -206,29 +188,49 @@ angular.module('fyl.controllers', ['ionic', 'kidney.services'])
       }
     })
   }
-  /**
-   * [获取医生详细信息]
-   * @Author   ZY
-   * @DateTime 2017-07-05
-   * @param    userId: string
-   * @return   data.results(医生详细信息)
-   */
-  // console.log(Storage.get('TOKEN'))
-  Doctor.getDoctorInfo({
-    // userId: Storage.get('UID')
-  }).then(function (data) {
-    // alert(Storage.get('UID')+JSON.stringify(data))
-    // console.log(data)
-    $scope.doctor = data.results
-    if ($scope.doctor.photoUrl == '' || $scope.doctor.photoUrl == null || $scope.doctor.photoUrl == undefined) {
-      $scope.doctor.photoUrl = 'img/doctor.png'
-      // if(Storage.get('wechatheadimgurl')!=undefined||Storage.get('wechatheadimgurl')!=""||Storage.get('wechatheadimgurl')!=null){
-      //     $scope.doctor.photoUrl=Storage.get('wechatheadimgurl')
-      // }
+
+  $scope.goQrcode = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.QRcode')
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
     }
-  }, function (err) {
-    console.log(err)
-  })
+  }
+  $scope.goMessage = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('messages')
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
+  $scope.goConsult = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.consult')
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
+  $scope.goReserve = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.myreserve')
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
+  $scope.goPatient = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.patient')
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
+  $scope.goService = function () {
+    if (Storage.get('reviewStatus') == 1) {
+      $state.go('tab.myservice', {last: 'workplace'})
+    } else if (Storage.get('reviewStatus') == 0 || Storage.get('reviewStatus') == 2) {
+      myPopup()
+    }
+  }
 }])
 
 // 病情报告--fyl
