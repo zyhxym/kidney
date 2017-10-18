@@ -581,6 +581,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     if (!delay) delay = 100
     $timeout(function () {
       $scope.scrollHandle.scrollBottom(animate)
+      $timeout(function () {
+        $scope.scrollHandle.resize()
+      }, 500)
+      $timeout(function () {
+        $scope.scrollHandle.resize()
+      }, 1000)
     }, delay)
   }
     // render msgs
@@ -682,7 +688,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     imgModalInit()
     $scope.getMsg(15).then(function (data) {
       $scope.msgs = data
-      toBottom(true, 400)
+      toBottom(true, 500)
       $scope.params.loaded = true
     })
   })
@@ -1917,7 +1923,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         if ($scope.msgs.length == 0) return
         // var lastMsg = $scope.msgs[$scope.msgs.length - 1]
         // if (lastMsg.fromID == $scope.params.UID) return
-        return New.insertNews({ userId: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+        // return New.insertNews({ userId: $scope.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+        return New.changeNewsStatus({ sendBy: $scope.params.groupId, type: $scope.params.newsType })
       }
     })
     imgModalInit()
@@ -1952,7 +1959,8 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       $scope.$apply(function () {
         insertMsg(data.msg)
       })
-      New.insertNews({userId: $state.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+      // New.insertNews({userId: $state.params.groupId, type: $scope.params.newsType, readOrNot: 1, userRole: 'doctor', caseType: $scope.params.teamId})
+      New.changeNewsStatus({ sendBy: $state.params.groupId, type: $scope.params.newsType })
     }
   })
   $scope.$on('im:messageRes', function (event, data) {
