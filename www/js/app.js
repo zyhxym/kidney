@@ -222,7 +222,7 @@ angular.module('kidney', [
 
     if ($ionicPlatform.is('ios')) {
       cordova.plugins.notification.local.on('click', function (note, state) {
-        alert(note.id + ' was clicked')
+        // alert(note.id + ' was clicked')
         var msg = JSON.parse(note.data)
         if (msg.targetType == 'group') {
                 // '0':团队交流  '1': 未结束病历  '2':已结束病历
