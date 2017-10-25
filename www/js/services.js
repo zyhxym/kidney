@@ -41,11 +41,11 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
 }])
 .constant('CONFIG', {
   // baseUrl: 'http://121.43.107.106:4060/api/v1/',
-  baseTwoUrl: 'http://docker2.haihonghospitalmanagement.com/api/v2/',
-  mediaUrl: 'http://df2.haihonghospitalmanagement.com/',
-  socketServer: 'http://docker2.haihonghospitalmanagement.com/',
-  imgThumbUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/resize',
-  imgLargeUrl: 'http://df2.haihonghospitalmanagement.com/uploads/photos/',
+  baseTwoUrl: 'https://application.haihonghospitalmanagement.com/api/v2/',
+  mediaUrl: 'https://media.haihonghospitalmanagement.com/',
+  socketServer: 'https://application.haihonghospitalmanagement.com/',
+  imgThumbUrl: 'https://media.haihonghospitalmanagement.com/uploads/photos/resize',
+  imgLargeUrl: 'https://media.haihonghospitalmanagement.com/uploads/photos/',
   cameraOptions: {
     cam: {
       quality: 70,
@@ -2523,10 +2523,9 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
             })
     return deferred.promise
   }
-
   self.checkUpdate = function (scope) {
     $cordovaAppVersion.getAppVersion().then(function (version) {
-          // alert(version);
+      // alert(version)
       var json = {
         title: '',
         template: ''
@@ -2535,32 +2534,33 @@ angular.module('kidney.services', ['ionic', 'ngResource'])
         versionName: version,
         versionType: 'appdoctor'
       }
-          // alert(JSON.stringify(VersionParams));
 
       getVersion(VersionParams).then(function (data) {
-         // alert(JSON.stringify(data.results));
+        // alert(JSON.stringify(data.results))
         if (angular.isArray(data.results.msg)) {
           json.title = '肾事联盟有更新啦'
           for (x in data.results.msg) {
-            json.template += "<p style = 'padding-left:15px;'>" + 'V' + data.results.msg[x].versionName + ' 更新: ' + data.results.msg[x].content + '</p>'
+            json.template += "<p style = 'padding-left:15px;'>" + 'V' + data.results.msg[x].versionName + ' 更新: ' + data.results.msg[x].content + '</p >'
           }
-          return $ionicPopup.alert({
+          return $ionicPopup.confirm({
             title: json.title,
             template: json.template,
             scope: scope,
-            buttons: [
-              {
-                text: '我知道了',
-                type: 'button button-block bg-6a fc-ff',
-                onTap: function () {
-                  return 'ok'
-                }
+            okText: '去更新',
+            cancelText: '知道了'
+          }).then(function (res) {
+            if (res && window.cordova && window.cordova.InAppBrowser) {
+              if (ionic.Platform.isIOS()) {
+                window.cordova.InAppBrowser.open('https://itunes.apple.com/cn/app/%E8%82%BE%E4%BA%8B%E8%81%94%E7%9B%9F/id1276109371?mt=8', '_system')
+              } else if (ionic.Platform.isAndroid()) {
+                window.cordova.InAppBrowser.open('https://media.haihonghospitalmanagement.com/download', '_system')
+                // 安卓下载地址
               }
-            ]
+            }
           })
         }
       }, function (err) {
-            // alert("err");
+        // alert("err");
       })
     })
   }
