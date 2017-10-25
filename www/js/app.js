@@ -46,7 +46,7 @@ angular.module('kidney', [
   }, 101)
 
   $ionicPlatform.ready(function () {
-    // version.checkUpdate($rootScope)// 在app.js的ready里加
+    version.checkUpdate($rootScope)// 在app.js的ready里加
     // 记录message当前会话
     // $rootScope.isIOS = $ionicPlatform.is('ios')
     ionic.Platform.fullScreen(true, true)
@@ -1152,7 +1152,7 @@ angular.module('kidney', [
 .config(['$httpProvider', 'jwtOptionsProvider', function ($httpProvider, jwtOptionsProvider) {
     // 下面的getter可以注入各种服务, service, factory, value, constant, provider等, constant, provider可以直接在.config中注入, 但是前3者不行
   jwtOptionsProvider.config({
-    whiteListedDomains: ['docker2.haihonghospitalmanagement.com', '121.196.221.44', '106.15.185.172', 'testpatient.haihonghospitalmanagement.com', 'testdoctor.haihonghospitalmanagement.com', 'patient.haihonghospitalmanagement.com', 'doctor.haihonghospitalmanagement.com', 'localhost'],
+    whiteListedDomains: ['application.haihonghospitalmanagement.com', 'media.haihonghospitalmanagement.com', '121.196.221.44', '106.15.185.172', 'testpatient.haihonghospitalmanagement.com', 'testdoctor.haihonghospitalmanagement.com', 'patient.haihonghospitalmanagement.com', 'doctor.haihonghospitalmanagement.com', 'localhost'],
     tokenGetter: ['options', 'jwtHelper', '$http', 'CONFIG', 'Storage', '$state', '$ionicPopup', '$interval', function (options, jwtHelper, $http, CONFIG, Storage, $state, $ionicPopup, $interval) {
          // console.log(config);
         // console.log(CONFIG.baseUrl);
