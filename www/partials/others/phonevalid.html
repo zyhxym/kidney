@@ -12,10 +12,12 @@
             <label class="item item-input"  style="border-radius: 5px;border: 1px solid #6ac4f8">
               <span class="input" style="margin-right:16px"><i class="icon ion-android-phone-portrait"></i></span>
               <input type="text"  ng-model="Verify.Phone" placeholder="手机号" >
+              <button-clear-input input="Verify.Phone"></button-clear-input>
             </label>
             <label class="item item-input" style="margin-top: 10px;border-radius: 5px;border: 1px solid #6ac4f8" >
               <span class="input" style="margin-right:16px"><i class="icon ion-ios-locked-outline"></i></span>
               <input type="password" ng-model="Verify.Code" placeholder="验证码" >
+              <button-clear-input input="Verify.Code"></button-clear-input>
             </label>
         </div>
           <div class="col col-75"><p style="color:#B8B8B8">{{logStatus}}</p></div>
