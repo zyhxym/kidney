@@ -37,14 +37,17 @@
                 <label class="item item-input" style="border:1px solid #6ac4f8;border-radius: 5px">
                     <span class="input-label">输入旧密码</span>
                     <input type="password" ng-model="oldPW">
+                    <button-clear-input input="oldPW"></button-clear-input>
                 </label>
                 <label class="item item-input" style="border:1px solid #6ac4f8;border-radius: 5px;margin-top: 10px">
                     <span class="input-label">输入新密码</span>
                     <input type="password" ng-model="newPW">
+                    <button-clear-input input="newPW"></button-clear-input>
                 </label>
                 <label class="item item-input" style="border:1px solid #6ac4f8;border-radius: 5px;margin-top: 10px">
                     <span class="input-label">确认新密码</span>
                     <input type="password" ng-model="confirmPW">
+                    <button-clear-input input="confirmPW"></button-clear-input>
                 </label>
                 <span>{{changePasswordStatus}}</span>
                 <button class="button button-block button-positive login_btn" ng-click=resetPassword(oldPW,newPW,confirmPW)>
