@@ -392,7 +392,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         console.log(count)
         if (count < 5) {
           console.log(err)
-          setTimeout(sendSMS(Verify.Phone, count), 5000)
+          setTimeout(sendSMS(Verify.Phone, count), 1000)
         } else {
           $scope.logStatus = '验证码发送失败！'
         }
