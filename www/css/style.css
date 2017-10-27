@@ -1327,3 +1327,6 @@ button.messageBtn{
  transform: translateX(-100%); 
  }
 }
+#autoline{ 
+  white-space: pre-wrap;
+}
