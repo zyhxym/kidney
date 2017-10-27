@@ -1502,7 +1502,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     angular.forEach($scope.patients, function (value, key) {
       value.show = true
       if (!$scope.filters.item1) {
-        if (value.type == 1) { value.show = false }
+        if (value.type == 1 || value.type == 6 || value.type == 7) { value.show = false }
       }
       if (!$scope.filters.item2) {
         if (value.type == 2 || value.type == 3) { value.show = false }
@@ -1616,7 +1616,7 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     angular.forEach($scope.patients, function (value, key) {
       value.show = true
       if (!$scope.filters.item1) {
-        if (value.type == 1) { value.show = false }
+        if (value.type == 1 || value.type == 6 || value.type == 7) { value.show = false }
       }
       if (!$scope.filters.item2) {
         if (value.type == 2 || value.type == 3) { value.show = false }
@@ -5826,36 +5826,36 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
     }
     console.log('param', param)
 
-    if($scope.post.title == ''){
-       $ionicLoading.show({
-          template: '输入不能为空',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-    }else{
-      Forum.newpost(param).then(function (data) {
-      console.log(data)
-      if (data.msg == 'success') {
-        $ionicLoading.show({
-          template: '发帖成功',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-        $timeout(function () { $state.go('tab.allposts') }, 900)
-      }
-    }, function (err) {
-      $scope.hasDeliver = false
+    if ($scope.post.title == '') {
       $ionicLoading.show({
-        template: '发帖失败',
+        template: '输入不能为空',
         noBackdrop: false,
         duration: 1000,
         hideOnStateChange: true
       })
-      console.log(err)
-    })
-   }
+    } else {
+      Forum.newpost(param).then(function (data) {
+        console.log(data)
+        if (data.msg == 'success') {
+          $ionicLoading.show({
+            template: '发帖成功',
+            noBackdrop: false,
+            duration: 1000,
+            hideOnStateChange: true
+          })
+          $timeout(function () { $state.go('tab.allposts') }, 900)
+        }
+      }, function (err) {
+        $scope.hasDeliver = false
+        $ionicLoading.show({
+          template: '发帖失败',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        console.log(err)
+      })
+    }
   }
 
   $scope.onClickCamera = function ($event) {
@@ -6271,36 +6271,36 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       postId: Storage.get('POSTID')
     }
     console.log('param', param)
-    if($scope.post.content == ''){
+    if ($scope.post.content == '') {
       $ionicLoading.show({
-          template: '输入不能为空',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-    }else{
-        Forum.comment(param).then(function (data) {
-      console.log(data)
-      if (data.msg == 'success') {
-        $ionicLoading.show({
-          template: '提交成功',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-        $timeout(function () { $ionicHistory.goBack() }, 900)
-      }
-    }, function (err) {
-      $scope.hasDeliver = false
-      $ionicLoading.show({
-        template: '提交失败',
+        template: '输入不能为空',
         noBackdrop: false,
         duration: 1000,
         hideOnStateChange: true
       })
-      console.log(err)
-    }) 
-   }  
+    } else {
+      Forum.comment(param).then(function (data) {
+        console.log(data)
+        if (data.msg == 'success') {
+          $ionicLoading.show({
+            template: '提交成功',
+            noBackdrop: false,
+            duration: 1000,
+            hideOnStateChange: true
+          })
+          $timeout(function () { $ionicHistory.goBack() }, 900)
+        }
+      }, function (err) {
+        $scope.hasDeliver = false
+        $ionicLoading.show({
+          template: '提交失败',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        console.log(err)
+      })
+    }
   }
 }])
 
@@ -6325,35 +6325,35 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
       at: Storage.get('AT')
     }
     console.log('param', param)
-    if($scope.reply.content == ''){
+    if ($scope.reply.content == '') {
       $ionicLoading.show({
-          template: '输入不能为空',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-    }else{
-      Forum.reply(param).then(function (data) {
-      console.log(data)
-      if (data.msg == 'success') {
-        $ionicLoading.show({
-          template: '提交成功',
-          noBackdrop: false,
-          duration: 1000,
-          hideOnStateChange: true
-        })
-        $timeout(function () { $ionicHistory.goBack() }, 900)
-      }
-    }, function (err) {
-      $scope.hasDeliver = false
-      $ionicLoading.show({
-        template: '提交失败',
+        template: '输入不能为空',
         noBackdrop: false,
         duration: 1000,
         hideOnStateChange: true
       })
-      console.log(err)
-    })   
-   }   
+    } else {
+      Forum.reply(param).then(function (data) {
+        console.log(data)
+        if (data.msg == 'success') {
+          $ionicLoading.show({
+            template: '提交成功',
+            noBackdrop: false,
+            duration: 1000,
+            hideOnStateChange: true
+          })
+          $timeout(function () { $ionicHistory.goBack() }, 900)
+        }
+      }, function (err) {
+        $scope.hasDeliver = false
+        $ionicLoading.show({
+          template: '提交失败',
+          noBackdrop: false,
+          duration: 1000,
+          hideOnStateChange: true
+        })
+        console.log(err)
+      })
+    }
   }
 }])
