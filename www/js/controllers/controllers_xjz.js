@@ -2185,11 +2185,13 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     event.stopPropagation()
 
     if ($scope.params.type == '0') {
+      Storage.set('normalgroupchatback', '1')
+      // console.log(Storage.get('normalgroupchatback'))
       Communication.getConsultation({ consultationId: args[1].content.consultationId})
                 .then(function (data) {
                   var ctype = data.result.status
                   if (ctype == '0') ctype = '2'
-                  $state.go('tab.group-chat', {'type': ctype, 'teamId': $scope.params.teamId, 'groupId': args[1].content.consultationId})
+                  $state.go('tab.group-chat', {type: ctype, teamId: $scope.params.teamId, groupId: args[1].content.consultationId})
                 })
     }
   })
@@ -2406,7 +2408,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     voice.stopRec()
   }
   /**
-   * 去病例讨论页面
+   * 返回按钮
    * @Author   xjz
    * @DateTime 2017-07-05
    * @return   {[type]}
@@ -2418,8 +2420,15 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
     $ionicHistory.nextViewOptions({
       disableBack: true
     })
-    if ($ionicHistory.backView().title == '消息中心')$ionicHistory.goBack()
-    else {
+    if ($ionicHistory.backView()) {
+      // console.log($ionicHistory.backView())
+      if ($ionicHistory.backView().title == '消息中心') { $ionicHistory.goBack() }
+    }
+    if (Storage.get('normalgroupchatback') == '1') {
+      Storage.set('normalgroupchatback', '0')
+      // console.log(Storage.get('normalgroupchatback'))
+      $state.go('tab.group-chat', {type: '0', teamId: $scope.params.teamId, groupId: $scope.params.teamId})
+    } else {
       if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
       else $state.go('tab.group-patient', { teamId: $scope.params.teamId })
     }
@@ -2723,50 +2732,56 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
         }
                 // socket.emit('newUser',{user_name:thisDoctor.name,user_id:thisDoctor.userId});
         socket.emit('message', {msg: msgJson, to: doc.userId, role: 'doctor'})
-        var listener = $scope.$on('im:messageRes', function (event, messageRes) {
-          if (messageRes.msg.createTimeInMillis != msgJson.createTimeInMillis) return
-          var csl = messageRes.msg.content.counsel
-          listener()
-                    // socket.emit('disconnect');
-          var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfa2216ac422fb747&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=doctor_12_2_' + Storage.get('UID') + '_doctor' + '&#wechat_redirect'
-          var template = {
-            'userId': doc.userId, // 医生的UID
-            'role': 'doctor',
-            'postdata': {
-              'template_id': 'DWrM__2UuaLxYf5da6sKOQA_hlmYhlsazsaxYX59DtE',
-              'url': actionUrl,
-              'data': {
-                'first': {
-                  'value': thisDoctor.name + '向您转发了一个' + (csl.type == 1 ? '咨询' : '问诊') + '消息，请及时查看',
-                  'color': '#173177'
-                },
-                'keyword1': {
-                  'value': csl.counselId, // 咨询ID
-                  'color': '#173177'
-                },
-                'keyword2': {
-                  'value': doc.name, // 患者信息（姓名，性别，年龄）
-                  'color': '#173177'
-                },
-                'keyword3': {
-                  'value': csl.help, // 问题描述
-                  'color': '#173177'
-                },
-                'keyword4': {
-                  'value': csl.time.substr(0, 10), // 提交时间
-                  'color': '#173177'
-                },
-
-                'remark': {
-                  'value': '感谢您的使用！',
-                  'color': '#173177'
-                }
-              }
-            }
-          }
-          Mywechat.messageTemplate(template)
+        $ionicLoading.show({ template: '发送中'})
+        setTimeout(function () {
+          $ionicLoading.hide()
           $state.go('tab.detail', { type: '2', chatId: doc.userId, counselId: msgdata.counselId})
-        })
+        }, 2000)
+
+        // var listener = $scope.$on('im:messageRes', function (event, messageRes) {
+        //   if (messageRes.msg.createTimeInMillis != msgJson.createTimeInMillis) return
+        //   var csl = messageRes.msg.content.counsel
+        //   listener()
+        //             // socket.emit('disconnect');
+        //   var actionUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfa2216ac422fb747&redirect_uri=http://proxy.haihonghospitalmanagement.com/go&response_type=code&scope=snsapi_userinfo&state=doctor_12_2_' + Storage.get('UID') + '_doctor' + '&#wechat_redirect'
+        //   var template = {
+        //     'userId': doc.userId, // 医生的UID
+        //     'role': 'doctor',
+        //     'postdata': {
+        //       'template_id': 'DWrM__2UuaLxYf5da6sKOQA_hlmYhlsazsaxYX59DtE',
+        //       'url': actionUrl,
+        //       'data': {
+        //         'first': {
+        //           'value': thisDoctor.name + '向您转发了一个' + (csl.type == 1 ? '咨询' : '问诊') + '消息，请及时查看',
+        //           'color': '#173177'
+        //         },
+        //         'keyword1': {
+        //           'value': csl.counselId, // 咨询ID
+        //           'color': '#173177'
+        //         },
+        //         'keyword2': {
+        //           'value': doc.name, // 患者信息（姓名，性别，年龄）
+        //           'color': '#173177'
+        //         },
+        //         'keyword3': {
+        //           'value': csl.help, // 问题描述
+        //           'color': '#173177'
+        //         },
+        //         'keyword4': {
+        //           'value': csl.time.substr(0, 10), // 提交时间
+        //           'color': '#173177'
+        //         },
+
+        //         'remark': {
+        //           'value': '感谢您的使用！',
+        //           'color': '#173177'
+        //         }
+        //       }
+        //     }
+        //   }
+        //   Mywechat.messageTemplate(template)
+        //   $state.go('tab.detail', { type: '2', chatId: doc.userId, counselId: msgdata.counselId})
+        // })
       }
     })
   }
@@ -2776,7 +2791,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
  * @Author   xjz
  * @DateTime 2017-07-05
  */
-.controller('selectTeamCtrl', ['$state', '$scope', '$ionicPopup', 'Doctor', 'Communication', 'Storage', '$filter', 'CONFIG', 'socket', function ($state, $scope, $ionicPopup, Doctor, Communication, Storage, $filter, CONFIG, socket) {
+.controller('selectTeamCtrl', ['$state', '$scope', '$ionicPopup', 'Doctor', 'Communication', 'Storage', '$filter', 'CONFIG', 'socket', '$ionicLoading', function ($state, $scope, $ionicPopup, Doctor, Communication, Storage, $filter, CONFIG, socket, $ionicLoading) {
   $scope.params = {
         // isSearch:false,
   }
@@ -2839,11 +2854,17 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
                       console.log(data)
                         // socket.emit('newUser', { user_name: thisDoctor.name, user_id: thisDoctor.userId });
                       socket.emit('message', { msg: msgJson, to: team.teamId, role: 'doctor' })
-                      var listener = $scope.$on('im:messageRes', function (event, messageRes) {
-                        if (messageRes.msg.createTimeInMillis != msgJson.createTimeInMillis) return
-                        listener()
+                      $ionicLoading.show({ template: '发送中'})
+                      setTimeout(function () {
+                        $ionicLoading.hide()
                         $state.go('tab.group-chat', { type: '0', groupId: team.teamId, teamId: team.teamId })
-                      })
+                      }, 2000)
+
+                      // var listener = $scope.$on('im:messageRes', function (event, messageRes) {
+                      //   if (messageRes.msg.createTimeInMillis != msgJson.createTimeInMillis) return
+                      //   listener()
+                      //   $state.go('tab.group-chat', { type: '0', groupId: team.teamId, teamId: team.teamId })
+                      // })
                     }, function (er) {
                       console.error(err)
                     })
