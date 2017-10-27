@@ -2186,7 +2186,7 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
 
     if ($scope.params.type == '0') {
       Storage.set('normalgroupchatback', '1')
-      console.log(Storage.get('normalgroupchatback'))
+      // console.log(Storage.get('normalgroupchatback'))
       Communication.getConsultation({ consultationId: args[1].content.consultationId})
                 .then(function (data) {
                   var ctype = data.result.status
@@ -2421,12 +2421,12 @@ angular.module('xjz.controllers', ['ionic', 'kidney.services'])
       disableBack: true
     })
     if ($ionicHistory.backView()) {
-      console.log($ionicHistory.backView())
+      // console.log($ionicHistory.backView())
       if ($ionicHistory.backView().title == '消息中心') { $ionicHistory.goBack() }
     }
     if (Storage.get('normalgroupchatback') == '1') {
       Storage.set('normalgroupchatback', '0')
-      console.log(Storage.get('normalgroupchatback'))
+      // console.log(Storage.get('normalgroupchatback'))
       $state.go('tab.group-chat', {type: '0', teamId: $scope.params.teamId, groupId: $scope.params.teamId})
     } else {
       if ($scope.params.type == '0') $state.go('tab.groups', { type: '0' })
