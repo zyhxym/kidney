@@ -4231,7 +4231,9 @@ angular.module('zy.controllers', ['ionic', 'kidney.services'])
         if (data.results.autoRelay) {
           $scope.forwardinginfo.autoRelay = true
           $scope.teams = data.teams
-          $scope.initial.item = data.results.relayTarget[0].teamId
+          if (data.results.relayTarget[0].teamId) {
+            $scope.initial.item = data.results.relayTarget[0].teamId
+          }
           console.log($scope.teams)
         }
       }, function (err) {
